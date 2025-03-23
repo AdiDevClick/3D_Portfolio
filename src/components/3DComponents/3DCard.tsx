@@ -24,7 +24,7 @@ type CardProps = {
 export default function Card({ reducer, card, ...props }: CardProps) {
     const { id, ...rest } = card;
     const cardRef = useRef<Mesh>(null);
-    const cardHoverScale = card.isActive ? 4 : 1;
+    const cardHoverScale = card.isActive ? 1.15 : 1;
     const cardHoverRadius = card.isActive ? 0.25 : 0.1;
     const cardHoverZoom = card.isActive ? 1 : 1.5;
 
@@ -33,7 +33,7 @@ export default function Card({ reducer, card, ...props }: CardProps) {
 
     const onClickHandler = (e) => {
         e.stopPropagation();
-        reducer.animate(card, 'dropoff');
+        // reducer.animate(card, 'dropoff');
     };
     const onHover = (e) => {
         e.stopPropagation();
@@ -88,7 +88,7 @@ export default function Card({ reducer, card, ...props }: CardProps) {
         const newScale = cardRef.current.scale.x;
 
         card.isActive
-            ? easing.damp3(cardRef.current.position, [0, 0, 0], 0.15, delta)
+            ? easing.damp3(cardRef.current.position, [cardRef.current.position.x, cardRef.current.position.y, cardRef.current.position.z - 1], 0.15, delta)
             : // ? easing.damp3(cardRef.current.position, [0.5, 0, -2], 0.15, delta)
               easing.damp3(
                   cardRef.current.position,
@@ -118,7 +118,6 @@ export default function Card({ reducer, card, ...props }: CardProps) {
 
     return (
         <Image
-            scale={1.5}
             ref={cardRef}
             url={card.url}
             transparent

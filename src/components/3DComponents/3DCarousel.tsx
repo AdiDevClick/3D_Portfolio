@@ -127,6 +127,7 @@ export default function Carousel({ boundaries, datas }: CarouselProps) {
             const actualCardPosition = actualItem.position;
 
             collision.multiplyScalar(0);
+            actualItem.width = actualItem.ref.current
 
             reducer.showElements.forEach((c, i) => {
                 if (index === i) {
