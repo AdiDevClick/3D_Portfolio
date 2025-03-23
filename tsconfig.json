@@ -1,0 +1,31 @@
+{
+  "files": [],
+  "compilerOptions": {
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": false,
+      "target": "esnext",
+      "module": "esnext",
+      "jsx": "react-jsx",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "baseUrl": ".",
+      "allowJs": true,
+      "checkJs": true,
+      "paths": {
+        "@/*": ["src/*"],
+        "@assets/*": ["src/assets/*"],
+        "@css/*": ["src/assets/css/*"],
+        "@images/*": ["src/assets/images/*"],
+        "@models/*": ["src/3DModels/*"],
+        "@data/*": ["src/data/*"]
+      }
+  },
+  // "references": [
+  //   { "path": "./tsconfig.app.json" },
+  //   { "path": "./tsconfig.node.json" }
+  //   { "path": "./tsconfig.node.json" }
+  //   { "path": "./tsconfig.node.json" }
+  //   { "path": "./tsconfig.node.json" }
+  // ],
+}

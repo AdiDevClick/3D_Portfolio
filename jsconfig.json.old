@@ -1,0 +1,13 @@
+// {
+//     "compilerOptions": {
+//         "baseUrl": "./src",
+//         "jsx": "react",
+//         "paths": {
+//             "@/*": ["src/*"],
+//             "@assets/*": ["assets/*"],
+//             "@css/*": ["assets/css/*"],
+//             "@images/*": ["assets/images/*"],
+//             "@models/*": ["3DModels/*"]
+//         }
+//     },
+// }
