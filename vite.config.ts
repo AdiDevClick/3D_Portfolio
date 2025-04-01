@@ -1,9 +1,27 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import dns from 'node:dns';
 // https://vite.dev/config/
+dns.setDefaultResultOrder('verbatim');
 export default defineConfig({
     plugins: [react()],
+    // server: {
+    //     // origin: 'https://http://192.168.1.181:5173',
+    //     // origin: 'http://localhost:5173',
+    //     origin: 'https://127.0.0.1:80',
+    //     // origin: 'https://localhost:5173', // Règle le problème des chemins dans le CSS
+    //     // warmup: {
+    //     //     clientFiles: ["./src/components/*.vue", "./src/utils/big-utils.js"],
+    //     //     ssrFiles: ["./src/server/modules/*.js"],
+    //     // },
+    //     // hmr: {
+    //     // host: '192.168.1.181',
+    //     // host: '192.168.1.97',
+    //     // host: '192.168.1.100',
+    //     // host: 'vite.adi',
+    //     // }
+    // },
     resolve: {
         alias: [
             {
@@ -29,6 +47,14 @@ export default defineConfig({
             {
                 find: '@data',
                 replacement: resolve(__dirname, 'src/data'),
+            },
+            {
+                find: '@utils',
+                replacement: resolve(__dirname, 'src/utils'),
+            },
+            {
+                find: '@hooks',
+                replacement: resolve(__dirname, 'src/hooks'),
             },
         ],
     },

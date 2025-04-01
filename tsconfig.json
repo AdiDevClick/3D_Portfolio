@@ -1,11 +1,12 @@
 {
   "files": [],
   "compilerOptions": {
+      "composite": true,
       "strict": true,
       "esModuleInterop": true,
       "skipLibCheck": false,
-      "target": "esnext",
-      "module": "esnext",
+      "target": "ESNext",
+      "module": "ESNext",
       "jsx": "react-jsx",
       "moduleResolution": "node",
       "resolveJsonModule": true,
@@ -18,14 +19,17 @@
         "@css/*": ["src/assets/css/*"],
         "@images/*": ["src/assets/images/*"],
         "@models/*": ["src/3DModels/*"],
-        "@data/*": ["src/data/*"]
-      }
+        "@data/*": ["src/data/*"],
+        "@utils/*": ["src/utils/*"],
+        "@hooks/*": ["src/hooks/*"]
+      },
+      "types": ["react", "react-dom"],
+      "lib": ["DOM", "ESNext"],
   },
-  // "references": [
-  //   { "path": "./tsconfig.app.json" },
-  //   { "path": "./tsconfig.node.json" }
-  //   { "path": "./tsconfig.node.json" }
-  //   { "path": "./tsconfig.node.json" }
-  //   { "path": "./tsconfig.node.json" }
-  // ],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"] 
 }

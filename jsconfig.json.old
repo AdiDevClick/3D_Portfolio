@@ -1,13 +1,25 @@
-// {
-//     "compilerOptions": {
-//         "baseUrl": "./src",
-//         "jsx": "react",
-//         "paths": {
-//             "@/*": ["src/*"],
-//             "@assets/*": ["assets/*"],
-//             "@css/*": ["assets/css/*"],
-//             "@images/*": ["assets/images/*"],
-//             "@models/*": ["3DModels/*"]
-//         }
-//     },
-// }
+{
+    "compilerOptions": {
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": false,
+        "target": "ESNext",
+        "module": "ESNext",
+        "jsx": "react-jsx",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "allowJs": true,
+        "checkJs": true,
+        "paths": {
+            "@/*": ["src/*"],
+            "@assets/*": ["assets/*"],
+            "@css/*": ["assets/css/*"],
+            "@images/*": ["assets/images/*"],
+            "@models/*": ["3DModels/*"],
+            "@data/*": ["data/*"]
+        },
+        "types": ["react", "react-dom"],
+        "lib": ["DOM", "ESNext"],
+    },
+}
