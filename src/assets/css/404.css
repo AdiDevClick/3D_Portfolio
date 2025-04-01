@@ -1,0 +1,159 @@
+:root {
+    --button: hsl(44, 0%, 70%);
+    --button-color: hsl(0, 0%, 4%);
+    --shadow: hsl(0, 0%, 0%);
+    --bg: hsl(53, 0%, 45%);
+    --header: hsl(0, 0%, 41%);
+    --color: hsl(0, 0%, 98%);
+    --lit-header: hsl(0, 0%, 100%);
+    --speed: 2s
+}
+
+@property --swing-y {
+    initial-value: 0;
+    inherits: false;
+    syntax: '<integer>';
+}
+
+@property --swing-x {
+    initial-value: 0;
+    inherits: false;
+    syntax: '<integer>';
+}
+
+body:has(.fourofour) {
+    background: var(--bg) !important;
+    color: var(--color) !important;
+    /* overflow: hidden; */
+    /* transform-style: preserve-3d; */
+}
+
+/* main:has(.fourofour) {
+    display: contents;
+    max-height: 50vh;
+
+    footer {
+        margin-top: 30vh;
+    }
+} */
+
+h1.fourofour {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    animation: swing var(--speed) infinite alternate ease-in-out;
+    font-size: clamp(5rem, 40vmin, 20rem);
+    font-family: 'system-ui',
+        'sans-serif';
+    margin: 0;
+    margin-bottom: 1rem;
+    letter-spacing: 1rem;
+    transform: translate3d(0, 0, 0vmin);
+    --x: calc(50% + (var(--swing-x) * 0.5) * 1%);
+    background: radial-gradient(var(--lit-header), var(--header) 45%) var(--x) 100% / 200% 200%;
+    -webkit-background-clip: text;
+    color: transparent;
+
+    &:after {
+        animation: swing var(--speed) infinite alternate ease-in-out;
+        content: "404";
+        position: absolute;
+        inset: 0;
+        color: var(--shadow);
+        filter: blur(1.5vmin);
+        transform:
+            scale(1.05) translate3d(0, 12%, -10vmin) translate(calc((var(--swing-x, 0) * 0.05) * 1%),
+                calc((var(--swing-y) * 0.05) * 1%))
+    }
+
+    &.no-js:after {
+        content: "JS";
+    }
+}
+
+.cloak__wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+
+    >.cloak__container {
+        height: 250vmax;
+        width: 250vmax;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        >.cloak {
+            animation: swing var(--speed) infinite alternate-reverse ease-in-out;
+            height: 100%;
+            width: 100%;
+            transform-origin: 50% 30%;
+            transform: rotate(calc(var(--swing-x) * -0.25deg));
+            background: radial-gradient(40% 40% at 50% 42%, transparent, black 35%);
+        }
+    }
+}
+
+.info {
+    transform-style: preserve-3d;
+    justify-self: center;
+    inset: 0;
+    text-align: center;
+    line-height: 1.5;
+    margin-inline: auto;
+    max-width: clamp(16rem, 90vmin, 25rem);
+
+    &>p {
+        margin-bottom: 3rem;
+        font-weight: 100 !important;
+    }
+
+    &>a {
+        text-transform: uppercase;
+        /* text-decoration: none; */
+        /* background: var(--button-color); */
+        /* color: var(--button); */
+        padding: 1rem 4rem;
+        border-radius: 4rem;
+        font-size: 0.875rem;
+        letter-spacing: 0.05rem;
+        margin-inline: auto;
+        transition: all .3s ease;
+
+        &:hover,
+        &:active,
+        &:focus {
+            color: var(--button-color);
+            background: var(--button-hover-color);
+            border: 0.5px var(--button-color) solid;
+        }
+    }
+
+    &>h2 {
+        display: block;
+        font-size: 1.5em;
+        margin-block-start: 0.83em;
+        margin-block-end: 0.83em;
+        font-weight: bold;
+    }
+}
+
+@keyframes swing {
+    0% {
+        --swing-x: -100;
+        --swing-y: -100
+    }
+
+    50% {
+        --swing-y: 0
+    }
+
+    100% {
+        --swing-y: -100;
+        --swing-x: 100
+    }
+}
