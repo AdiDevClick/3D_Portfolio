@@ -8,7 +8,7 @@ export function carouselReducer(
     switch (action.type) {
         case 'UPDATE_ELEMENTS':
             // Update the state with the new dropdown data
-            console.log('Action Payload:', action.payload);
+            // console.log('Action Payload:', action.payload);
             return {
                 ...state,
                 elements: state.elements.map((element) => {
@@ -33,8 +33,18 @@ export function carouselReducer(
             return {
                 ...state,
                 elements: state.elements.map((el) =>
+                    el.id === action.payload.element.id
+                        ? { ...el, isActive: action.payload.property }
+                        : el
+                ),
+            };
+
+        case 'CLICK_ELEMENT':
+            return {
+                ...state,
+                elements: state.elements.map((el) =>
                     el.id === action.payload.id
-                        ? { ...el, isActive: !el.isActive }
+                        ? { ...el, isClicked: !el.isClicked }
                         : el
                 ),
             };
@@ -48,12 +58,11 @@ export function carouselReducer(
                 ),
             };
         case 'UPDATE_ELEMENT_SCALE':
-            // console.log(action.payload);
             return {
                 ...state,
                 elements: state.elements.map((el) =>
                     el.id === action.payload.element.id
-                        ? { ...el, animate: action.payload.property }
+                        ? { ...el, currentScale: action.payload.property }
                         : el
                 ),
             };
@@ -67,7 +76,9 @@ export function carouselReducer(
         case 'DELETE_ELEMENTS':
             return {
                 ...state,
-                elements: [...action.payload],
+                elements: state.elements.filter((el) =>
+                    action.payload.some((card) => card.id === el.id)
+                ),
             };
 
         default:
