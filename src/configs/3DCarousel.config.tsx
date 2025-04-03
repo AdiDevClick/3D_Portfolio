@@ -5,7 +5,7 @@
  */
 export const carouselGeneralSettings = {
     CONTAINER_SCALE: { value: 2.4, min: 0.1, max: 20, step: 0.1 },
-    CARD_SCALE: { value: 1, min: 0.1, max: 2, step: 0.1 },
+    CARD_SCALE: { value: 1.2, min: 0.1, max: 2, step: 0.1 },
     ACTIVE_CARD: false,
     CARD_ANIMATION: {
         value: 'Move_Out',
@@ -29,9 +29,9 @@ export const carouselGeneralSettings = {
 export const boundariesOptions = {
     attachCamera: true,
     debug: false,
-    x: { value: 12, min: 0, max: 40 },
-    y: { value: 8, min: 0, max: 40 },
-    z: { value: 20, min: 0, max: 40 },
+    x: { value: 8, min: 0, max: 40 },
+    y: { value: 5, min: 0, max: 40 },
+    z: { value: 10, min: 0, max: 40 },
     path: {
         value: 'Circle',
         options: ['Circle', 'Rollercoaster', 'Infinity', 'Heart'],
@@ -42,8 +42,11 @@ export const boundariesOptions = {
  * Toggle 3D/2D settings - Default : true
  */
 export const cardsSettings = {
-    threeD: { value: true },
+    THREED: { value: true },
     ALIGNMENT: { value: true },
+    BENDING: { value: 0.2, min: 0.01, max: 1, step: 0.1 },
+    // x_WIDTH: { value: 1, min: 0.01, max: 10 },
+    y_HEIGHT: { value: 2, min: 0.01, max: 10 },
 };
 
 /**
@@ -51,6 +54,7 @@ export const cardsSettings = {
  */
 export const presenceSettings = {
     PRESENCE_CIRCLE: false,
+    COLLISIONS: true,
     PRESENCE_RADIUS: { value: 0.5, min: 0, max: 10, step: 0.1 },
     CARD_WIREFRAME: false,
 };
