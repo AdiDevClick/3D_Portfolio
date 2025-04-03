@@ -9,21 +9,27 @@ import {
 import { Vector3 } from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
 import { useFrame } from '@react-three/fiber';
-import { useCarousel } from '../../hooks/reducers/useCarousel.tsx';
-import { ElementType } from '../../hooks/reducers/carouselTypes.ts';
-import { throttle } from '../../functions/promises.js';
+import { easing } from 'maath';
+import { MathPos } from '@/functions/positionning.ts';
+import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
+import { MeshReflectorMaterial, Text, Text3D } from '@react-three/drei';
 
-const MathPI = Math.PI * 2;
+const TWO_PI = Math.PI * 2;
 
 const collision = new Vector3();
 
 type CarouselProps = {
     boundaries: object;
     datas: [];
+    reducer: ReducerType;
 };
-export default function Carousel({ boundaries, datas }: CarouselProps) {
-    const { ...reducer } = useCarousel();
-
+export default function Carousel({
+    boundaries,
+    datas,
+    reducer,
+    ...props
+}: CarouselProps) {
     // Override cards count with datas.length
     const carouselSettings = {
         ...carouselGeneralSettings,
@@ -32,74 +38,65 @@ export default function Carousel({ boundaries, datas }: CarouselProps) {
             value: datas.length,
         },
     };
-
-    // Carousel General Settings
-    // const [{ CARDS_COUNT, CONTAINER_SCALE, CARD_ANIMATION }, set] = useControls(
-    //     () => {
-    //         carouselSettings,
-    //     }
-    // );
-
+    // Carousel Settings
     const [settings, set] = useControls(
         'Carousel Settings',
         () => ({
-            ...carouselSettings, // Ajout de tous les paramètres définis dans carouselSettings
+            ...carouselSettings,
         }),
         { collapsed: true }
     );
 
-    // 3D Toggle Settings
-    const { threeD, ALIGNMENT } = useControls('Card Rules', cardsSettings, {
-        collapsed: true,
-    });
+    // Card Rules Settings
+    const { THREED, ALIGNMENT, ...CARD_RULES } = useControls(
+        'Card Rules',
+        cardsSettings,
+        {
+            collapsed: true,
+        }
+    );
 
     // Collision Detection Settings
-    const { PRESENCE_CIRCLE, PRESENCE_RADIUS, CARD_WIREFRAME } = useControls(
-        'Presence Area',
-        presenceSettings,
-        { collapsed: true }
-    );
+    const { PRESENCE_CIRCLE, PRESENCE_RADIUS, CARD_WIREFRAME, COLLISIONS } =
+        useControls('Presence Area', presenceSettings, { collapsed: true });
 
     const id = useId();
 
-    const margin = 0.1; // Marge pour éviter les oscillations fréquentes
-    const lowerThreshold = 0; // Collision
-    const upperThreshold = PRESENCE_RADIUS + margin; // Trop éloigné
+    // Marge pour éviter les oscillations fréquentes
+    const margin = 0.1;
 
     const cards = useMemo(() => {
-        return new Array(settings.CARDS_COUNT).fill(null).map((_, i) => ({
+        return new Array(settings.CARDS_COUNT).fill(null).map((_, i, self) => ({
             url: datas[i]
                 ? datas[i].cover
                 : `src/assets/images/img${Math.floor(i % 10) + 1}.png`,
-            position: new Vector3(
-                threeD
-                    ? Math.sin((i / settings.CARDS_COUNT) * MathPI) *
-                      settings.CONTAINER_SCALE
-                    : 0,
-                0,
-                threeD
-                    ? Math.cos((i / settings.CARDS_COUNT) * MathPI) *
-                      settings.CONTAINER_SCALE
-                    : 0
-            ),
+            description: datas[i].description,
+            title: datas[i].title,
+            position: THREED ? new Vector3(100, 0, 500) : new Vector3(),
             velocity: new Vector3(0, 0, 0),
-            rotation: [
-                0,
-                Math.PI + (i / settings.CARDS_COUNT) * Math.PI * 2,
-                0,
-            ],
-            wander: randFloat(0, Math.PI * 2),
+            rotation: [0, Math.PI + (i / settings.CARDS_COUNT) * TWO_PI, 0],
+            wander: randFloat(0, TWO_PI),
             animation: settings.CARD_ANIMATION,
             baseScale: settings.CARD_SCALE,
             currentScale: settings.CARD_SCALE,
             active: settings.ACTIVE_CARD,
-            id: datas[i] ? datas[i].id : id + i, // Id unique
+            id: datas[i] ? datas[i].id : id + i,
+            containerScale: settings.CONTAINER_SCALE,
+            cardAngles: {
+                active: Math.atan2(
+                    Math.sin((i / settings.CARDS_COUNT) * TWO_PI) *
+                        settings.CONTAINER_SCALE,
+                    Math.cos((i / settings.CARDS_COUNT) * TWO_PI) *
+                        settings.CONTAINER_SCALE
+                ),
+                onHold: (i / self.length) * TWO_PI,
+            },
         }));
     }, [
         settings.CARDS_COUNT,
         settings.CARD_SCALE,
         settings.CONTAINER_SCALE,
-        threeD,
+        THREED,
     ]);
 
     /**
@@ -110,94 +107,253 @@ export default function Carousel({ boundaries, datas }: CarouselProps) {
         const currentIds = reducer.showElements.map((el) => el.id);
         cards.forEach((card) => {
             if (!currentIds.includes(card.id)) {
-                reducer.addElements(card); // Ajout des nouveaux éléments
+                reducer.addElements(card);
             } else {
-                reducer.updateElements(card); // Mise à jour des éléments existants
+                reducer.updateElements(card);
             }
         });
-
         if (cards.length < reducer.showElements.length) {
             reducer.deleteElements(cards);
         }
     }, [cards]);
 
     useFrame((state, delta) => {
-        for (let index = 0; index < reducer.showElements.length; index++) {
-            const actualItem = reducer.showElements[index];
-            const actualCardPosition = actualItem.position;
+        // Grab existing active card in the index
+        const activeCard = reducer.showElements.findIndex(
+            (el) => el.isActive || el.isClicked
+        );
 
-            collision.multiplyScalar(0);
-            actualItem.width = actualItem.ref.current
+        const activeForwardOffset = 0.5;
+        const total = reducer.showElements.length;
 
-            reducer.showElements.forEach((c, i) => {
-                if (index === i) {
-                    return;
+        reducer.showElements.forEach((item, i) => {
+            if (!item.ref || !item.ref.current) return;
+
+            const { position, rotation } = item.ref.current;
+            const { active, onHold } = item.cardAngles;
+
+            let positions;
+            let targetRotationY = 0;
+
+            // Recalculate circle formation
+            if (activeCard !== -1) {
+                if (i === activeCard) {
+                    // Finding initial angle position
+                    // It should be : [sin(angle)*R, 0, cos(angle)*R]
+                    const targetRadius =
+                        settings.CONTAINER_SCALE + activeForwardOffset;
+                    positions = MathPos(active, targetRadius);
+                    targetRotationY = active + Math.PI;
+                } else {
+                    const relativeIndex = i < activeCard ? i : i - 1;
+                    const countWithoutActive = total - 1;
+                    const angleStep = TWO_PI / countWithoutActive;
+                    const nonActiveCardAngle = relativeIndex * angleStep;
+                    positions = MathPos(
+                        nonActiveCardAngle,
+                        settings.CONTAINER_SCALE
+                    );
+                    targetRotationY = nonActiveCardAngle + Math.PI;
                 }
+            } else {
+                // If no active cards, we spread them all on the ring
+                positions = MathPos(onHold, settings.CONTAINER_SCALE);
+                targetRotationY = onHold + Math.PI;
 
-                // const actualCardPosition = actualItem.position.clone();
-                const othersCardPosition = c.position;
-                // const othersCardPosition = c.position.clone();
-                // const othersDistance = c.position;
+                // Calculating collisions
+                if (COLLISIONS) {
+                    reducer.showElements.forEach((element, index) => {
+                        if (index === i) return;
+                        const inRangeItem =
+                            position.distanceTo(element.ref.current.position) -
+                            effectiveRadius(item, element);
 
-                const scaleRatio = actualItem.currentScale / c.currentScale;
+                        // General collision - Checks if any item collide
+                        // if (
+                        //     inRangeItem <= 0 &&
+                        //     index !== i + 1 &&
+                        //     index !== i - 1
+                        // ) {
+                        //     console.log(
+                        //         'There is collision between some cards'
+                        //     );
+                        // }
+                        const margin = 0.4;
+                        const deltaScale = 0.01;
+                        let targetScale = settings.CONTAINER_SCALE;
 
-                const radiusDifference =
-                    effectiveRadius(actualItem, PRESENCE_RADIUS, 0.2) +
-                    effectiveRadius(c, PRESENCE_RADIUS, 4) * scaleRatio;
+                        // Collision between 2 items
+                        if (isNeighbor(i, index)) {
+                            if (inRangeItem > element.presenceRadius + margin) {
+                                targetScale =
+                                    settings.CONTAINER_SCALE - deltaScale;
+                            } else if (
+                                inRangeItem <=
+                                element.presenceRadius - margin
+                            ) {
+                                targetScale =
+                                    settings.CONTAINER_SCALE + deltaScale;
+                            }
+                            if (
+                                Math.abs(
+                                    targetScale - settings.CONTAINER_SCALE
+                                ) > 0.001
+                            ) {
+                                set({ CONTAINER_SCALE: targetScale });
+                            }
+                        }
+                    });
 
-                // Pondération dynamique
-                // const radiusDifference =
-                //     actualItem.baseScale *
-                //         actualItem.currentScale *
-                //         PRESENCE_RADIUS +
-                //     c.baseScale * c.currentScale * PRESENCE_RADIUS;
-
-                // Calculate distance from others
-                const inRangeDistance =
-                    actualCardPosition.distanceTo(othersCardPosition) -
-                    radiusDifference;
-
-                // Calculate collision with others
-                if (inRangeDistance <= 0) {
-                    // if (inRangeDistance > 0 && inRangeDistance < PRESENCE_RADIUS) {
-
-                    set({ CONTAINER_SCALE: settings.CONTAINER_SCALE + 0.05 });
+                    // for (let index = 0; index < reducer.showElements.length; index++) {
+                    //     const actualItem = reducer.showElements[index];
+                    //     // const sides = getSidesPositions(
+                    //     //     actualItem.ref.current,
+                    //     //     actualItem.ref
+                    //     // );
+                    //     collision.multiplyScalar(0);
+                    //     // actualItem.width = actualItem.ref.current
+                    //     reducer.showElements.forEach((c, i) => {
+                    //         if (index === i) {
+                    //             return;
+                    //         }
+                    //         if (actualItem.ref && c.ref) {
+                    //             const othersCardPosition = c.ref.current.position;
+                    //             const actualCardPosition =
+                    //                 actualItem.ref.current.position;
+                    //             const inRangeItem =
+                    //                 actualCardPosition.distanceTo(othersCardPosition) -
+                    //                 effectiveRadius(actualItem, c);
+                    //             /**
+                    //              * General collision -
+                    //              * Checks if any item collide
+                    //              */
+                    //             if (
+                    //                 inRangeItem <= 0 &&
+                    //                 i !== index + 1 &&
+                    //                 i !== index - 1
+                    //             ) {
+                    //                 console.log(
+                    //                     'There is collision between some cards'
+                    //                 );
+                    //             }
+                    //             const neighborDistance = Math.abs(inRangeItem);
+                    //             const margin = 0.2;
+                    //             /**
+                    //              * Collision between 2 close items
+                    //              */
+                    //             if (isNeighbor(index, i)) {
+                    //                 if (c.isActive) {
+                    //                     return easing.damp3(
+                    //                         c.ref.current.position,
+                    //                         [0, 0, 0], // Position cible pendant le hover
+                    //                         0.15,
+                    //                         delta
+                    //                     );
+                    //                 } else {
+                    //                     easing.damp3(
+                    //                         c.ref.current.position,
+                    //                         c.position,
+                    //                         0.15,
+                    //                         delta
+                    //                     );
+                    //                 }
+                    //                 const angleStep =
+                    //                     MathPI / reducer.showElements.length; // Espacement angulaire uniforme
+                    //                 const currentAngle = i * angleStep; // Angle pour chaque carte
+                    //                 if (inRangeItem > c.presenceRadius + margin) {
+                    //                     // c.ref.current.position.set(
+                    //                     //     Math.sin(
+                    //                     //         (i / reducer.showElements.length) * MathPI
+                    //                     //     ) * settings.CONTAINER_SCALE,
+                    //                     //     0,
+                    //                     //     Math.cos(
+                    //                     //         (i / reducer.showElements.length) * MathPI
+                    //                     //     ) * settings.CONTAINER_SCALE
+                    //                     // );
+                    //                     easing.damp3(
+                    //                         c.ref.current.position,
+                    //                         [
+                    //                             Math.sin(
+                    //                                 (i / reducer.showElements.length) *
+                    //                                     MathPI
+                    //                             ) * settings.CONTAINER_SCALE,
+                    //                             0,
+                    //                             Math.cos(
+                    //                                 (i / reducer.showElements.length) *
+                    //                                     MathPI
+                    //                             ) * settings.CONTAINER_SCALE,
+                    //                         ],
+                    //                         //   [position.x, position.y, position.z - 1],
+                    //                         0.15,
+                    //                         delta
+                    //                     );
+                    //                     // c.ref.current.position.set(
+                    //                     //     Math.sin(currentAngle) *
+                    //                     //         settings.CONTAINER_SCALE,
+                    //                     //     0,
+                    //                     //     Math.cos(currentAngle) *
+                    //                     //         settings.CONTAINER_SCALE
+                    //                     // );
+                    //                     console.log(
+                    //                         'Repositionnement des cartes pour combler le vide.'
+                    //                     );
+                    //                     // set({
+                    //                     //     CONTAINER_SCALE:
+                    //                     //         settings.CONTAINER_SCALE - 0.01,
+                    //                     // });
+                    //                 } else if (
+                    //                     inRangeItem <=
+                    //                     c.presenceRadius - margin
+                    //                 ) {
+                    //                     set({
+                    //                         CONTAINER_SCALE:
+                    //                             settings.CONTAINER_SCALE + 0.01,
+                    //                     });
+                    //                     console.log(
+                    //                         "Les cartes sont trop proches, ajustement de l'anneau."
+                    //                     );
+                    //                 }
+                    //             }
+                    //         }
+                    //     });
+                    // }
                 }
-                // if (inRangeDistance > upperThreshold + margin) {
-                //     const currentContainerScale = settings.CONTAINER_SCALE;
-                //     const newContainerScale =
-                //         currentContainerScale +
-                //         (settings.CONTAINER_SCALE -
-                //             0.05 -
-                //             currentContainerScale) *
-                //             0.1;
-                //     set({ CONTAINER_SCALE: settings.CONTAINER_SCALE - 0.05 });
-                // }
-                // if (inRangeDistance > 4)
-                // set({ CONTAINER_SCALE: settings.CONTAINER_SCALE - 0.05 });
-            });
-        }
+            }
+
+            // If no 3D activated we go back in the center
+            if (!THREED) positions = [0, 0, 0];
+
+            // Animating the new positions and rotations
+            easing.damp3(position, positions, 0.15, delta);
+            easing.damp(rotation, 'y', targetRotationY, 0.15, delta);
+        });
     });
 
     return reducer.showElements.map((card, i) => (
-        <Card
-            key={id + i}
-            card={card}
-            presenceCircle={PRESENCE_CIRCLE}
-            presenceRadius={PRESENCE_RADIUS * card.baseScale}
-            visibleWireframe={CARD_WIREFRAME}
-            reducer={reducer}
-        />
+        <group key={id + i}>
+            <Text
+                position={[
+                    card.ref?.current?.position.x,
+                    card.ref?.current?.position.y,
+                    card.ref?.current?.position.z,
+                ]}
+                rotation={[0, card.cardAngles?.onHold, 0.0]}
+                fontSize={0.3}
+                anchorY={-1.55}
+                anchorX={'center'}
+                color={'black'}
+            >
+                Title
+            </Text>
+            <Card
+                // key={id + i}
+                card={card}
+                presenceCircle={PRESENCE_CIRCLE}
+                presenceRadius={PRESENCE_RADIUS * card.baseScale}
+                visibleWireframe={CARD_WIREFRAME}
+                reducer={reducer}
+                {...CARD_RULES}
+            />
+        </group>
     ));
-}
-
-function effectiveRadius(
-    card: ElementType,
-    globalRadius: number,
-    ponderateFactor: number
-) {
-    const baseComponent = card.baseScale * globalRadius;
-    const additional =
-        Math.max(card.currentScale - 1, 0) * globalRadius * ponderateFactor;
-    return baseComponent + additional;
 }
