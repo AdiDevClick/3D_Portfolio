@@ -1,0 +1,15 @@
+.opened-content {
+    box-sizing: "border-box";
+    height: 100%;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 20px;
+    // position: relative;
+    max-width: 650px;
+    min-width: 550px;
+    max-height: 50vh;
+    // min-height: 650px;
+    z-index: 1000;
+    color: red;
+}
