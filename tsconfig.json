@@ -10,6 +10,7 @@
       "jsx": "react-jsx",
       "moduleResolution": "node",
       "resolveJsonModule": true,
+      "useUnknownInCatchVariables": true,
       "baseUrl": ".",
       "allowJs": true,
       "checkJs": true,
