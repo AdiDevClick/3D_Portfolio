@@ -1,13 +1,27 @@
 import { useCallback, useReducer } from 'react';
-import { carouselReducer } from './CarouselReducer.tsx';
 import { ReducerType } from './carouselTypes.ts';
+import { carouselReducer } from '@/hooks/reducers/carouselReducer.tsx';
 
+/**
+ * Reducer pour le Carousel
+ */
 export function useCarousel(): ReducerType {
     const [state, dispatch] = useReducer(carouselReducer, {
         elements: [],
     });
 
+    let activeContent = null;
+    let contentSizes = null;
+
+    if (state.elements.length > 0) {
+        activeContent = state.elements.find(
+            (value) => value.isActive || value.isClicked
+        );
+    }
     return {
+        isMobile: false,
+        contentSizes: contentSizes,
+        activeContent: activeContent,
         showElements: state.elements,
         updateElements: useCallback((element) => {
             if (!element || !element.id) {
@@ -21,8 +35,15 @@ export function useCarousel(): ReducerType {
             []
         ),
         activateElement: useCallback(
-            (element) =>
-                dispatch({ type: 'ACTIVATE_ELEMENT', payload: element }),
+            (element, property) =>
+                dispatch({
+                    type: 'ACTIVATE_ELEMENT',
+                    payload: { element, property },
+                }),
+            []
+        ),
+        clickElement: useCallback(
+            (element) => dispatch({ type: 'CLICK_ELEMENT', payload: element }),
             []
         ),
         animate: useCallback(
