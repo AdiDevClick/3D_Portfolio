@@ -1,5 +1,5 @@
 import '@css/404.css';
-import { Link, NavLink } from 'react-router';
+import { NavLink } from 'react-router';
 
 /**
  * Affiche la page 404
