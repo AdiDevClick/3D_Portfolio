@@ -5,6 +5,7 @@ import {
     useTexture,
     CameraControls,
     Html,
+    ScrollControls,
 } from '@react-three/drei';
 import { useEffect, useRef, useState } from 'react';
 import '../../utils/util.tsx';

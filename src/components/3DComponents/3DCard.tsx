@@ -1,4 +1,4 @@
-import { Image } from '@react-three/drei';
+import { Image, Scroll, ScrollControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { useEffect, useRef, useState } from 'react';
@@ -234,6 +234,8 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                 </mesh>
                 {
                     card.isClicked && (
+                        // <ScrollControls>
+                        // <Scroll>
                         <HtmlContainer width={width} reducer={reducer}>
                             <ProjectContainer
                                 onClick={onClickHandler}
@@ -241,12 +243,13 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                                 // style={{ top: '100px' }}
                             />
                         </HtmlContainer>
+                        // </Scroll>
+                        // </ScrollControls>
 
-                        // <Scroll>
                         // <Rig>
                     )
                     //</Rig>
-                    // </Scroll>
+                    //
                 }
                 {/* {card.isClicked && <axesHelper args={[2]} />} */}
             </Image>
