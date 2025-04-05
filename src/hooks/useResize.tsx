@@ -3,10 +3,9 @@ import { debounce } from '../functions/promises.js';
 
 /**
  * Window "resize" listener -
- * Delay par défaut : 100 -
  * Renvoi [window.innerWidth, window.innerHeight]
  */
-export default function useResize(delay = 100) {
+export default function useResize(delay: 100 = 100) {
     const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
 
     useEffect(() => {
