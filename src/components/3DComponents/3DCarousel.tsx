@@ -6,7 +6,7 @@ import {
     carouselGeneralSettings,
     presenceSettings,
 } from '../../configs/3DCarousel.config.tsx';
-import { Vector3 } from 'three';
+import { AxesHelper, Vector3 } from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -72,13 +72,15 @@ export default function Carousel({
                 : `src/assets/images/img${Math.floor(i % 10) + 1}.png`,
             description: datas[i].description,
             title: datas[i].title,
+            stack: datas[i].stack,
             position: THREED ? new Vector3(100, 0, 500) : new Vector3(),
             velocity: new Vector3(0, 0, 0),
-            rotation: [0, Math.PI + (i / settings.CARDS_COUNT) * TWO_PI, 0],
+            rotation: [0, (i / settings.CARDS_COUNT) * TWO_PI, 0],
+            // rotation: [0, Math.PI + (i / settings.CARDS_COUNT) * TWO_PI, 0],
             wander: randFloat(0, TWO_PI),
             animation: settings.CARD_ANIMATION,
             baseScale: settings.CARD_SCALE,
-            currentScale: settings.CARD_SCALE,
+            // currentScale: settings.CARD_SCALE,
             active: settings.ACTIVE_CARD,
             id: datas[i] ? datas[i].id : id + i,
             containerScale: settings.CONTAINER_SCALE,
@@ -118,6 +120,8 @@ export default function Carousel({
     }, [cards]);
 
     useFrame((state, delta) => {
+        // const helper = new AxesHelper(5);
+        // state.scene.add(helper);
         // Grab existing active card in the index
         const activeCard = reducer.showElements.findIndex(
             (el) => el.isActive || el.isClicked
@@ -143,7 +147,8 @@ export default function Carousel({
                     const targetRadius =
                         settings.CONTAINER_SCALE + activeForwardOffset;
                     positions = MathPos(active, targetRadius);
-                    targetRotationY = active + Math.PI;
+                    targetRotationY = active;
+                    // targetRotationY = active + Math.PI;
                 } else {
                     const relativeIndex = i < activeCard ? i : i - 1;
                     const countWithoutActive = total - 1;
@@ -153,12 +158,14 @@ export default function Carousel({
                         nonActiveCardAngle,
                         settings.CONTAINER_SCALE
                     );
-                    targetRotationY = nonActiveCardAngle + Math.PI;
+                    targetRotationY = nonActiveCardAngle;
+                    // targetRotationY = nonActiveCardAngle + Math.PI;
                 }
             } else {
                 // If no active cards, we spread them all on the ring
                 positions = MathPos(onHold, settings.CONTAINER_SCALE);
-                targetRotationY = onHold + Math.PI;
+                targetRotationY = onHold;
+                // targetRotationY = onHold + Math.PI;
 
                 // Calculating collisions
                 if (COLLISIONS) {
@@ -326,7 +333,39 @@ export default function Carousel({
             // Animating the new positions and rotations
             easing.damp3(position, positions, 0.15, delta);
             easing.damp(rotation, 'y', targetRotationY, 0.15, delta);
+            // easing.damp(rotation, 'y', card.cardAngles?.onHold, 0.15, delta);
         });
+
+        // if (reducer.activeContent?.isClicked) {
+        //     const controls = state;
+        //     // console.log(controls);
+        //     // On récupère la cible des contrôles : selon la version, cela peut être controls.target ou controls._target
+        //     const target = controls.target || controls._target;
+        //     if (!target) return;
+        //     console.log('object');
+        //     // Calculer la position relative (en coordonnées sphériques)
+        //     const relativePos = new Vector3().subVectors(
+        //         controls.camera.position,
+        //         target
+        //     );
+        //     const spherical = new Spherical().setFromVector3(relativePos);
+        //     // Angle de référence de l'objet cliqué ; par exemple :
+        //     const cardAngle = reducer.activeContent.cardAngles.active;
+        //     const minAngular = cardAngle + MathUtils.degToRad(-30);
+        //     const maxAngular = cardAngle + MathUtils.degToRad(30);
+        //     // Forcer l'angle theta dans ces limites
+        //     spherical.theta = MathUtils.clamp(
+        //         spherical.theta,
+        //         minAngular,
+        //         maxAngular
+        //     );
+        //     // Calculer la nouvelle position de la caméra
+        //     const newRelativePos = new Vector3().setFromSpherical(spherical);
+        //     const forcedPos = target.clone().add(newRelativePos);
+        //     // Pour éviter les sauts brutaux, on pourrait interpoler la position actuelle vers forcedPos
+        //     controls.camera.position.lerp(forcedPos, 0.1);
+        //     controls.camera.updateMatrixWorld();
+        // }
     });
 
     return reducer.showElements.map((card, i) => (
@@ -343,7 +382,7 @@ export default function Carousel({
                 anchorX={'center'}
                 color={'black'}
             >
-                Title
+                {card.id}
             </Text>
             <Card
                 // key={id + i}
