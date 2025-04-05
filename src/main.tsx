@@ -7,8 +7,6 @@ import { Scene } from './components/3DComponents/Scene.tsx';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, NavLink, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
-import { Canvas } from '@react-three/fiber';
-import { Experience } from '@/App3.tsx';
 
 const router = createBrowserRouter([
     {
@@ -47,8 +45,6 @@ createRoot(document.getElementById('root')).render(
  * Layout de la page -
  * App.JSX est le <main> container et est utilisé pour matérialiser le Outlet -
  * Si une erreur est trouvée, il sera remplacé par l'erreur -
- * @param {[{}]} contentType
- * @returns {JSX.Element}
  */
 export function Root(contentType) {
     let errorContent = false;
