@@ -1,8 +1,16 @@
-import { PropsWithChildren } from 'react';
-
+import { ReactNode } from 'react';
+type TagsTypes = {
+    children: ReactNode;
+    logo: string;
+};
 /**
  * Affiche un Tag contenant un texte ainsi qu'un logo
  */
-export function Tags({ children }: PropsWithChildren) {
-    return <li className="tag">{children}</li>;
+export function Tags({ children, logo }: TagsTypes) {
+    return (
+        <li className="tag">
+            <img src={logo} alt={children} />
+            {children}
+        </li>
+    );
 }
