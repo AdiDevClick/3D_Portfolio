@@ -13,7 +13,14 @@ export function ProjectContainer({
     ...props
 }: ProjectContainerTypes) {
     const onScrollHandler = (e: WheelEvent) => {
-        e.stopPropagation();
+        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+        if (
+            (scrollTop + e.deltaY > 0 && e.deltaY < 0) ||
+            (scrollHeight - (scrollTop + e.deltaY) > clientHeight &&
+                e.deltaY > 0)
+        ) {
+            e.stopPropagation();
+        }
     };
 
     return (
