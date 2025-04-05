@@ -12,6 +12,9 @@ export function ProjectContainer({
     card,
     ...props
 }: ProjectContainerTypes) {
+    /**
+     * Réactive le scrolling quand le contenu est ouvert
+     */
     const onScrollHandler = (e: WheelEvent) => {
         const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
         if (
