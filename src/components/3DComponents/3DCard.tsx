@@ -1,8 +1,8 @@
-import { Html, Image } from '@react-three/drei';
+import { Image } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { AxesHelper, DoubleSide, Group, Mesh, Vector3 } from 'three';
+import { useEffect, useRef, useState } from 'react';
+import { DoubleSide, Group, Mesh, Vector3 } from 'three';
 import { throttle } from '../../functions/promises.js';
 import {
     ElementType,
@@ -11,7 +11,6 @@ import {
 import { getSidesPositions } from '../../functions/3Dmodels.js';
 import { useNavigate } from 'react-router';
 import '@css/Card.scss';
-import { Helper } from '@/components/3DComponents/Helper.js';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.js';
 import { ProjectContainer } from '@/components/projects/ProjectContainer.js';
 
@@ -161,7 +160,7 @@ export default function Card({ reducer, card, ...props }: CardProps) {
      */
     useEffect(() => {
         if (cardRef.current) {
-            // Helper(true, false, cardRef);
+            // Helper(cardRef, true, false);
             // Force calculated default position
             cardRef.current.position.set(
                 card.position.x,
