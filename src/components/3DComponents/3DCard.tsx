@@ -1,8 +1,8 @@
-import { Html, Image, Scroll, Text, useScroll } from '@react-three/drei';
+import { Html, Image } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { DoubleSide, Group, Mesh, Vector3 } from 'three';
+import { AxesHelper, DoubleSide, Group, Mesh, Vector3 } from 'three';
 import { throttle } from '../../functions/promises.js';
 import {
     ElementType,
@@ -11,6 +11,9 @@ import {
 import { getSidesPositions } from '../../functions/3Dmodels.js';
 import { useNavigate } from 'react-router';
 import '@css/Card.scss';
+import { Helper } from '@/components/3DComponents/Helper.js';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.js';
+import { ProjectContainer } from '@/components/projects/ProjectContainer.js';
 
 interface AdditionalProps {
     visibleWireframe?: boolean;
@@ -38,9 +41,10 @@ export default function Card({ reducer, card, ...props }: CardProps) {
     // État local pour savoir si la carte est cliquée
     // const [isClicked, setIsClicked] = useState(false);
     const [bending, setBending] = useState(props.BENDING);
+    // For ZoomBouncing effect
     const [width, setWidth] = useState(card.baseScale);
+
     const [htmlWidth, setHtmlWidth] = useState(0);
-    const scroll = useScroll();
 
     // Références pour l'animation (pour éviter de re-render)
     // Facteur d'animation (t de 0 à 1)
@@ -75,16 +79,17 @@ export default function Card({ reducer, card, ...props }: CardProps) {
 
     const onPointerOut = (e) => {
         e.stopPropagation();
+        if (reducer.activeContent?.isClicked) return;
         reducer.activateElement(card, false);
     };
 
-    const throttledUpdatedScale = useMemo(
-        () =>
-            throttle((newScale: number) => {
-                reducer.updateScale(card, newScale);
-            }, 100),
-        [reducer, card]
-    );
+    // const throttledUpdatedScale = useMemo(
+    //     () =>
+    //         throttle((newScale: number) => {
+    //             reducer.updateScale(card, newScale);
+    //         }, 100),
+    //     [reducer, card]
+    // );
 
     // const throttledUpdatedPosition = useMemo(() => {
     //     getSidesPositions(card, cardRef);
@@ -95,7 +100,7 @@ export default function Card({ reducer, card, ...props }: CardProps) {
 
     useFrame((state, delta) => {
         if (!cardRef.current) return;
-        const { material, scale, position } = cardRef.current;
+        const { material, scale } = cardRef.current;
 
         if (!card.isClicked) {
             // Scale the card size up
@@ -104,16 +109,20 @@ export default function Card({ reducer, card, ...props }: CardProps) {
             easing.damp(material, 'radius', cardHoverRadius, 0.2, delta);
             // Scale the zoom inside the plane mesh
             easing.damp(material, 'zoom', cardHoverZoom, 0.2, delta);
+            // Et forcer la rotation X à revenir à 0 (ou autre valeur par défaut) en mode hover
+            easing.damp(cardRef.current.rotation, 'x', 0, 0.15, delta);
 
             const newScale = scale.x;
 
             // Bending effect on Hover / non hover
             if (card.isActive) {
                 if (bending > 0) setBending((prev) => prev - delta);
+                // Zoom Bounce effect
                 if (width < card.baseScale + 0.2)
                     setWidth((prev) => prev + delta);
             } else {
                 setBending((prev) => Math.min(prev + delta, props.BENDING));
+                // unzoom effect
                 if (width > card.baseScale) {
                     setWidth((prev) => prev - delta);
                 } else {
@@ -121,32 +130,29 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                 }
             }
 
-            if (newScale !== card.currentScale) {
-                throttledUpdatedScale(newScale);
-            }
-            // Et forcer la rotation X à revenir à 0 (ou autre valeur par défaut) en mode hover
-            easing.damp(cardRef.current.rotation, 'x', 0, 0.15, delta);
+            // if (newScale !== card.currentScale) {
+            //     throttledUpdatedScale(newScale);
+            // }
         } else {
-            // state.camera.position.lerp(cardRef.current.position, 0.32);
-            cardRef.current.scale.lerp(new Vector3(1.5, 1.5, 1.5), 0.1);
+            // easing.damp3(
+            //     cardRef.current.scale,
+            //     new Vector3(1.5, 1.5, 1.5),
+            //     0.15,
+            //     delta
+            // );
+            // cardRef.current.scale.lerp(new Vector3(1.5, 1.5, 1.5), 0.1);
             if (bending > 0) setBending((prev) => prev - delta);
-            if (width < card.baseScale + 0.2) setWidth((prev) => prev + delta);
-            // console.log(-scroll.offset * (Math.PI * 2));
-            // htmlGroupRef.current.rotation.y = -scroll.offset * (Math.PI * 2); // Rotate contents
-            if (card.animation === 'dropoff') {
-                easing.damp3(
-                    position,
-                    Math.sin(card.position.x * 0.1 + 0.25) -
-                        Math.sqrt(5 ^ (2 - card.position.x) ^ 3),
-                    0.15,
-                    delta
-                );
-                // card.position.x =
-                //     Math.sin(card.position.x * 0.1 + 0.25) -
-                //     Math.sqrt(5 ^ (2 - card.position.x) ^ 3);
-            }
-            // easing.damp3(state.camera.position, [0, -10, 0], 0.3, delta);
-            // state.camera.position.set(htmlGroupRef.current.position);
+            // Shows the whole picture instead of thumbnail
+            if (width < card.baseScale + 0.4) setWidth((prev) => prev + delta);
+            // if (card.animation === 'dropoff') {
+            //     easing.damp3(
+            //         position,
+            //         Math.sin(card.position.x * 0.1 + 0.25) -
+            //             Math.sqrt(5 ^ (2 - card.position.x) ^ 3),
+            //         0.15,
+            //         delta
+            //     );
+            // }
         }
     });
 
@@ -155,6 +161,7 @@ export default function Card({ reducer, card, ...props }: CardProps) {
      */
     useEffect(() => {
         if (cardRef.current) {
+            // Helper(true, false, cardRef);
             // Force calculated default position
             cardRef.current.position.set(
                 card.position.x,
@@ -171,7 +178,6 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                 presenceRadius: props.presenceRadius,
                 spacePositions: getSidesPositions(card, cardRef),
             });
-
             // Supposons que la hauteur de la carte se trouve dans la géométrie (par exemple, boxGeometry)
             // const geomParams = cardRef.current.geometry.parameters;
             // if (geomParams && geomParams.height) {
@@ -182,12 +188,12 @@ export default function Card({ reducer, card, ...props }: CardProps) {
         }
     }, []);
 
-    useLayoutEffect(() => {
-        if (htmlRef.current) {
-            setHtmlWidth(htmlRef.current.getBoundingClientRect().width);
-            console.log(htmlRef.current.getBoundingClientRect().width);
-        }
-    }, [htmlRef, htmlWidth, card]);
+    // useLayoutEffect(() => {
+    //     if (htmlRef.current) {
+    //         setHtmlWidth(htmlRef.current.getBoundingClientRect().width);
+    //         console.log(htmlRef.current.getBoundingClientRect().width);
+    //     }
+    // }, [htmlRef, htmlWidth, card]);
 
     return (
         <group
@@ -196,6 +202,8 @@ export default function Card({ reducer, card, ...props }: CardProps) {
             onPointerOut={onPointerOut}
             onClick={onClickHandler}
         >
+            {/* <axesHelper args={[5]} /> */}
+            {/* <axesHelper args={[5]} position={[0, 0, 0]} /> */}
             <Image
                 ref={cardRef}
                 url={card.url}
@@ -214,79 +222,38 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                     />
                 )}
 
+                {/* <mesh> */}
                 <bentPlaneGeometry
                     args={[bending, width, props.y_HEIGHT, 20]}
                 />
+                {/* </mesh> */}
 
                 <mesh ref={spherePresenceRef} visible={props.presenceCircle}>
                     <sphereGeometry args={[props.presenceRadius, 32]} />
                     <meshBasicMaterial color={'red'} wireframe />
                 </mesh>
-                {card.isClicked && (
-                    // <Scroll>
-                    // <Rig>
-                    <group ref={htmlGroupRef}>
-                        <Html
-                            // fullscreen
-                            // portal={document.body}
-                            ref={htmlRef}
-                            position={
-                                reducer.isMobile
-                                    ? [0, -1.5, 0]
-                                    : [-width - 0.1, 0, 0]
-                            }
-                            transform
-                            distanceFactor={1}
-                            rotation={[0, 3.2, 0]}
-                            anchorX={0}
-                            anchorY={0}
-                        >
-                            <div
-                                className="opened-content"
+                {
+                    card.isClicked && (
+                        <HtmlContainer width={width} reducer={reducer}>
+                            <ProjectContainer
                                 onClick={onClickHandler}
-                                // style={{ top: '100vh' }}
-                            >
-                                {/* <img src={card.url} alt="Preview Project" /> */}
-                                <h2>{card.title}</h2>
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Cupiditate doloribus ex
-                                    quam repellendus assumenda eligendi nam
-                                    rerum aut sequi nulla itaque atque, et
-                                    neque, ea minima magni fugit sunt quibusdam!
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Magni commodi fuga sed
-                                    asperiores neque amet corporis in facilis,
-                                    aliquam hic? Esse ea ipsa magni modi! Unde
-                                    totam quo quos ullam. Lorem, ipsum dolor sit
-                                    amet consectetur adipisicing elit. Maiores
-                                    delectus et illum placeat ea, dolore
-                                    accusamus animi, labore saepe quas
-                                    architecto corrupti, quo nulla ullam
-                                    nesciunt cum nisi voluptatem tempore. Lorem
-                                    ipsum dolor sit amet consectetur adipisicing
-                                    elit. Placeat nisi at quo natus odit
-                                    consectetur eius exercitationem, assumenda
-                                    ducimus sunt dolores voluptatem molestias,
-                                    cum nulla suscipit magni possimus! Harum,
-                                    libero.
-                                </p>
-                                {/* <p>{card.description}</p> */}
-                                <div className="tech-stack">
-                                    {/* Affichage des logos, etc. */}
-                                </div>
-                                <button>Retour</button>
-                            </div>
-                        </Html>
-                    </group>
+                                card={card}
+                                // style={{ top: '100px' }}
+                            />
+                        </HtmlContainer>
 
+                        // <Scroll>
+                        // <Rig>
+                    )
                     //</Rig>
                     // </Scroll>
-                )}
+                }
+                {/* {card.isClicked && <axesHelper args={[2]} />} */}
             </Image>
         </group>
     );
 }
+
 function Rig(props) {
     const ref = useRef(null);
     const scroll = useScroll();
