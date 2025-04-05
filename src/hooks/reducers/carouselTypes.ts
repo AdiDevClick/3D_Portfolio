@@ -6,11 +6,17 @@ export interface CarouselState {
 }
 
 type sidesPositions = {
+    /** Bottom side of the element */
     bottom: number;
+    /** Top side of the element */
     top: number;
+    /** Left side of the element */
     left: number;
+    /** Right side of the element */
     right: number;
+    /** Front side of the element */
     front: number | null;
+    /** Back side of the element */
     back: number | null;
 };
 
@@ -21,18 +27,28 @@ export interface ElementType {
     currentScale: number;
     baseScale: number;
     url: string;
+    /**
+     * Vector 3 Position of the card on creation -
+     * This will create a navigation effect
+     */
     position: Vector3;
     rotation: [number, number, number];
+    /** Activate the wireframe helper ? */
     visibleWireframe?: boolean;
     presenceRadius?: number;
     presenceCircle?: boolean;
     isActive?: boolean;
     isClicked?: boolean;
+    /** The 3D object reference of the card */
     ref?: RefObject<Mesh>;
     animation?: string;
+    /** Current container Scale */
     containerScale?: number;
+    /** Stores the side positions of the object (for collisions) */
     spacePositions?: sidesPositions;
+    /** Stores the angle of the card in order to reattribute it after movement */
     cardAngles?: typeAngles;
+    /** The content stack property */
     stack: {};
 }
 
