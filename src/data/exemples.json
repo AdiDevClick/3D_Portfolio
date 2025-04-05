@@ -1,70 +1,112 @@
 [
-    
     {
-        "id":"1",
+        "id": "1",
         "title": "Carte 1",
         "cover": "src/assets/images/img1.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"2",
+        "id": "2",
         "title": "Carte 2",
         "cover": "src/assets/images/img2.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"3",
+        "id": "3",
         "title": "Carte 3",
         "cover": "src/assets/images/img3.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"4",
+        "id": "4",
         "title": "Carte 4",
         "cover": "src/assets/images/img4.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"5",
+        "id": "5",
         "title": "Carte 5",
         "cover": "src/assets/images/img5.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"6",
+        "id": "6",
         "title": "Carte 6",
         "cover": "src/assets/images/img6.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"7",
+        "id": "7",
         "title": "Carte 7",
         "cover": "src/assets/images/img7.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"8",
+        "id": "8",
         "title": "Carte 8",
         "cover": "src/assets/images/img8.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"9",
+        "id": "9",
         "title": "Carte 9",
         "cover": "src/assets/images/img9.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"10",
+        "id": "10",
         "title": "Carte 10",
         "cover": "src/assets/images/img1.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     },
     {
-        "id":"11",
+        "id": "11",
         "title": "Carte 11",
         "cover": "src/assets/images/work.png",
-        "description": "Une description rapide"
+        "description": "Une description rapide",
+        "stack": {
+            "React": "src/assets/images/react-logo.png",
+            "TypeScript": "src/assets/images/typescript.png"
+        }
     }
-
 ]
