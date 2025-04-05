@@ -29,9 +29,9 @@ export const carouselGeneralSettings = {
 export const boundariesOptions = {
     attachCamera: true,
     debug: false,
-    x: { value: 8, min: 0, max: 40 },
-    y: { value: 5, min: 0, max: 40 },
-    z: { value: 10, min: 0, max: 40 },
+    x: { value: 10, min: 0, max: 40 },
+    y: { value: 4, min: 0, max: 40 },
+    z: { value: 8.2, min: 0, max: 40 },
     path: {
         value: 'Circle',
         options: ['Circle', 'Rollercoaster', 'Infinity', 'Heart'],
