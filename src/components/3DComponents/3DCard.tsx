@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router';
 import '@css/Card.scss';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.js';
 import { ProjectContainer } from '@/components/projects/ProjectContainer.js';
+import { Helper } from '@/components/3DComponents/Helper.js';
 
 interface AdditionalProps {
     visibleWireframe?: boolean;
