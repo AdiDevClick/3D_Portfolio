@@ -6,7 +6,7 @@ import { AxesHelper, Mesh } from 'three';
  * la direction ainsi que la position de l'élément dans l'espace
  * @param size - La taille du helper
  * @param position - Montre la position
- * @param rotation - Montre la rotation
+ * @param rotation- Montre la rotation
  * @param ref - La référence de l'objet 3D auquel le helper est attaché
  */
 export function Helper(
