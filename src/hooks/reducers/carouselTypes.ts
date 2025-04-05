@@ -46,4 +46,5 @@ export interface ReducerType {
     showElements: ElementType[];
     activeContent: ElementType | null | undefined;
     contentSizes: number[] | null | undefined;
+    isMobile: boolean;
 }
