@@ -1,6 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import '@css/index.css';
+import '@css/Main.scss';
+import '@css/reset.css';
 import App from './App2.tsx';
 // import App from './App.tsx';
 import { Scene } from './components/3DComponents/Scene.tsx';

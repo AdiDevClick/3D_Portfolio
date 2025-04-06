@@ -1,0 +1,76 @@
+@use 'mixins' as *;
+@use 'animations.scss';
+
+:root {
+    font-family: Montserrat, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+    --color-white: #ffffe3;
+    --bg-color: rgba(255, 255, 255, 0.95);
+    --dark-bg-color: rgba(46, 39, 39, 0.95);
+    --grid-gap: 30px;
+    --font-weight-large: 700;
+
+    --fs-very-big: 4.5rem;
+    --fs-big: 3rem;
+    // --fs-big: 2.5em;
+    // --fs-medium: 2em;
+    --fs-medium: 1rem;
+    // --fs-regular: 1.6em;
+    --fs-regular: 0.9rem;
+    --fs-small: .7em;
+    --fs-very-small: 0.5em;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url(../fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+canvas {
+    opacity: 0;
+    touch-action: none;
+    animation: fade-in 5s ease 1s forwards;
+}
+
+/* Html main Content */
+.html-container {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    grid-template-rows: max-content auto;
+}
+
+/* Main Content */
+// .main-container {
+//     $max-width-content: 1440px;
+//     $width-crop: 45px;
+//     $width-crop-tablet: 20px;
+
+//     @include apply-width-crop($max-width-content, $width-crop);
+
+//     margin-inline: auto;
+//     display: grid;
+//     grid-template-rows: auto;
+//     grid-template-rows: max-content auto;
+//     gap: var(--grid-gap);
+
+//     @include for-size(tablet) {
+//         @include apply-width-crop($max-width-content, $width-crop-tablet);
+//     }
+// }
