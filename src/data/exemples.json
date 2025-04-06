@@ -76,7 +76,13 @@
         "description": "Une description rapide",
         "stack": {
             "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "TypeScript": "src/assets/images/typescript.png",
+            "React1": "src/assets/images/react-logo.png",
+            "TypeScript1": "src/assets/images/typescript.png",
+            "React2": "src/assets/images/react-logo.png",
+            "TypeScript2": "src/assets/images/typescript.png",
+            "React3": "src/assets/images/react-logo.png",
+            "TypeScript3": "src/assets/images/typescript.png"
         }
     },
     {
