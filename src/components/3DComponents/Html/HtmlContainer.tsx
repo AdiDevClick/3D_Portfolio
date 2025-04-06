@@ -15,7 +15,6 @@ type HtmlContainerTypes = {
 export function HtmlContainer({
     children,
     reducer,
-    width,
     ...props
 }: HtmlContainerTypes) {
     return (
@@ -23,12 +22,12 @@ export function HtmlContainer({
             // fullscreen
             // portal={document.body}
             // ref={htmlRef}
-            position={reducer.isMobile ? [0, -1.5, 0] : [width, 0, 0.05]}
+
             transform
             distanceFactor={1}
-            // rotation={[0, 3.2, 0]}
-            // anchorX={100}
-            // anchorY={100}
+            // rotatio n={[0, 3.2, 0]}
+            // anchorX={1}
+            // anchorY={1}
             {...props}
         >
             {children}
