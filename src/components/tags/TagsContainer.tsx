@@ -1,6 +1,7 @@
 import { Tags } from '@/components/tags/Tags.tsx';
 import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
 import { useId } from 'react';
+import '@css/Tags.scss';
 type DatasType = {
     /** La propriété "stack" de la card contenant toute la stack technique */
     datas: ElementType['stack'];
