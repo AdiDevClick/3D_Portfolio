@@ -12,7 +12,7 @@ export function ProjectContent({ card }: cardType) {
     return (
         <>
             {/* <img src={card.url} alt="Preview Project" /> */}
-            <h2>{card.title}</h2>
+            <h2 className="card__title">{card.title}</h2>
             <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Cupiditate doloribus ex quam repellendus assumenda eligendi nam

@@ -1,7 +1,7 @@
 import { Image, Scroll, ScrollControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DoubleSide, Group, Mesh, Vector3 } from 'three';
 import { throttle } from '../../functions/promises.js';
 import {
@@ -10,7 +10,6 @@ import {
 } from '../../hooks/reducers/carouselTypes.js';
 import { getSidesPositions } from '../../functions/3Dmodels.js';
 import { useNavigate } from 'react-router';
-import '@css/Card.scss';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.js';
 import { ProjectContainer } from '@/components/projects/ProjectContainer.js';
 import { Helper } from '@/components/3DComponents/Helper.js';
@@ -83,13 +82,13 @@ export default function Card({ reducer, card, ...props }: CardProps) {
         reducer.activateElement(card, false);
     };
 
-    // const throttledUpdatedScale = useMemo(
-    //     () =>
-    //         throttle((newScale: number) => {
-    //             reducer.updateScale(card, newScale);
-    //         }, 100),
-    //     [reducer, card]
-    // );
+    const throttledUpdatedScale = useMemo(
+        () =>
+            throttle((newScale: number) => {
+                reducer.updateScale(card, newScale);
+            }, 100),
+        [reducer, card]
+    );
 
     // const throttledUpdatedPosition = useMemo(() => {
     //     getSidesPositions(card, cardRef);
@@ -130,9 +129,9 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                 }
             }
 
-            // if (newScale !== card.currentScale) {
-            //     throttledUpdatedScale(newScale);
-            // }
+            if (newScale !== card.currentScale) {
+                throttledUpdatedScale(newScale);
+            }
         } else {
             // easing.damp3(
             //     cardRef.current.scale,
@@ -236,7 +235,16 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                     card.isClicked && (
                         // <ScrollControls>
                         // <Scroll>
-                        <HtmlContainer width={width} reducer={reducer}>
+                        <HtmlContainer
+                            width={width}
+                            reducer={reducer}
+                            className="html-container"
+                            position={
+                                reducer.isMobile
+                                    ? [0, -1.5, 0]
+                                    : [width, 0, 0.05]
+                            }
+                        >
                             <ProjectContainer
                                 onClick={onClickHandler}
                                 card={card}

@@ -1,6 +1,7 @@
 import { ProjectContent } from '@/components/projects/ProjectContent.tsx';
 import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
 import { WheelEvent } from 'react';
+import '@css/Card.scss';
 
 type ProjectContainerTypes = {
     onClick: () => void;
@@ -28,7 +29,7 @@ export function ProjectContainer({
 
     return (
         <div
-            className="opened-content"
+            className="card"
             onClick={onClick}
             onWheel={onScrollHandler}
             {...props}
