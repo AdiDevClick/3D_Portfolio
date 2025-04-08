@@ -3,3 +3,17 @@
         opacity: 1;
     }
 }
+
+@keyframes balancing {
+    from {
+        transform: rotate(0)
+    }
+
+    50% {
+        transform: rotate(10deg)
+    }
+
+    to {
+        transform: rotate(-10deg);
+    }
+}
