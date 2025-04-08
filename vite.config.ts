@@ -41,6 +41,10 @@ export default defineConfig({
                 replacement: resolve(__dirname, 'src/assets/images'),
             },
             {
+                find: '@icons',
+                replacement: resolve(__dirname, 'src/assets/icons'),
+            },
+            {
                 find: '@models',
                 replacement: resolve(__dirname, 'src/3DModels'),
             },

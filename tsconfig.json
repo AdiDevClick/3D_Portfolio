@@ -19,6 +19,7 @@
         "@assets/*": ["src/assets/*"],
         "@css/*": ["src/assets/css/*"],
         "@images/*": ["src/assets/images/*"],
+        "@icons/*": ["src/assets/icons/*"],
         "@models/*": ["src/3DModels/*"],
         "@data/*": ["src/data/*"],
         "@utils/*": ["src/utils/*"],
