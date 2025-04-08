@@ -1,3 +1,5 @@
+// @use "animations";
+
 /* TAGS  */
 .tags_container {
     display: flex;
@@ -7,6 +9,7 @@
     align-items: center;
 
     .tag {
+        font-size: var(--fs-bigger-medium);
         display: inline-flex;
         overflow: hidden;
         max-height: 30px;
@@ -19,9 +22,20 @@
         align-items: center;
         color: white;
         outline: 1px solid color-mix(in oklab, var(--dark-bg-color)35%, transparent);
+        transition: scale 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 
         img {
-            width: 30px;
+            width: 25px;
+            transition: scale 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+            &:hover {
+                scale: 1.15;
+                animation: balancing 2s ease infinite alternate;
+            }
+        }
+
+        &:hover {
+            scale: 1.05;
         }
     }
 }
