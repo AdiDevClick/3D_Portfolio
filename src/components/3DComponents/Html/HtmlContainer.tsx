@@ -1,9 +1,9 @@
+import { measure } from '@/components/3DComponents/Html/Function.ts';
 import { debounce } from '@/functions/promises.js';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
-import { useMutationObserver } from '@/hooks/useMutationObserver.tsx';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import { ReactNode, useMemo, useRef, useState } from 'react';
 
 type HtmlContainerTypes = {
     width: number;
@@ -20,29 +20,17 @@ export function HtmlContainer({
     reducer,
     ...props
 }: HtmlContainerTypes) {
-    // const measure = (node) => {
-    //     if (!node) {
-    //         return;
-    //     }
-    //     const rect = node.getBoundingClientRect();
-    //     const viewportWidth = node.clientWidth;
-    //     const newRatio = viewportWidth / rect.width;
-    //     console.log(viewportWidth, rect.width);
-    //     if (rect.width !== viewportWidth && newRatio !== scaleRatio && !done) {
-    //         console.log(newRatio, scaleRatio);
-    //         setScaleRatio(newRatio);
-    //     } else {
-    //         setDone(true);
-    //         console.log('done');
-    //     }
-    // };
-
-    const htmlRef = useRef<HTMLElement>(null);
-    // const observer = useMutationObserver(handleObserver, measure);
-    // const htmlRef = mergeRefs(html, observer);
-
     const [scaleRatio, setScaleRatio] = useState(1);
     const [done, setDone] = useState(false);
+
+    const htmlRef = useRef<HTMLElement>(null);
+    // const observer = useMutationObserver(handleObserver, measure, {
+    //     scaleRatio,
+    //     setScaleRatio,
+    //     done,
+    //     setDone,
+    // });
+    // const htmlRef = mergeRefs(html, observer);
 
     const debouncedUpdateScale = useMemo(
         () =>
@@ -52,25 +40,15 @@ export function HtmlContainer({
         []
     );
 
-    const measure = () => {
-        if (!htmlRef.current) {
-            return;
-        }
-        const rect = htmlRef.current.getBoundingClientRect();
-        const viewportWidth = htmlRef.current.clientWidth;
-        const newRatio = viewportWidth / rect.width;
-
-        if (rect.width !== viewportWidth && newRatio !== scaleRatio && !done) {
-            setScaleRatio(newRatio);
-        } else {
-            setDone(true);
-        }
-    };
-
     useFrame(() => {
         if (done) return;
         if (htmlRef.current) {
-            measure();
+            measure(htmlRef.current, {
+                scaleRatio,
+                setScaleRatio,
+                done,
+                setDone,
+            });
         }
     });
 
@@ -83,18 +61,12 @@ export function HtmlContainer({
             transform
             distanceFactor={1}
             style={{ '--data-custom-scale': scaleRatio }}
+            // style={{ ...(done ? { '--data-custom-scale': scaleRatio } : {}) }}
             // rotatio n={[0, 3.2, 0]}
             // anchorX={1}
             // anchorY={1}
             {...props}
         >
-            {/* {React.Children.map(children, (child) =>
-                React.isValidElement(child)
-                    ? React.cloneElement(child, {
-                          'data-custom-scale': scaleRatio,
-                      })
-                    : child
-            )} */}
             {children}
         </Html>
     );
@@ -117,17 +89,6 @@ export function HtmlContainer({
 
 // // Si nécessaire, forcer le rafraîchissement des matrices
 // camera.updateMatrixWorld();
-function mergeRefs<T>(...refs: (React.Ref<T> | undefined)[]) {
-    return (node: T) => {
-        refs.forEach((ref) => {
-            if (typeof ref === 'function') {
-                ref(node);
-            } else if (ref != null) {
-                ref.current = node;
-            }
-        });
-    };
-}
 
 const handleObserver = (mutationsList, observer) => {
     console.log(observer);
