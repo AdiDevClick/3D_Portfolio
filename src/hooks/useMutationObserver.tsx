@@ -95,6 +95,7 @@ export interface MutationObserverOptions {
 export function useMutationObserver(
     callback: MutationCallback,
     measure,
+    state,
     options: MutationObserverOptions = {
         attributes: true,
         characterData: true,
@@ -105,7 +106,7 @@ export function useMutationObserver(
     const observerRef = useRef(null);
     // const observerRef = useRef(new MutationObserver(callback));
     // const optionsRef = useRef(options);
-    const [done, setDone] = useState(false);
+    // const [done, setDone] = useState(false);
     // optionsRef.current = options;
     // const internalCallback = useCallback(
     //     (mutations: MutationRecord[], observer: MutationObserver) => {
@@ -127,7 +128,7 @@ export function useMutationObserver(
     // return observerRef;
 
     return useCallback((node: HTMLElement) => {
-        if (!node) {
+        if (!node || state.done) {
             if (observerRef.current) observerRef.current.disconnect();
             return;
         }
@@ -136,7 +137,7 @@ export function useMutationObserver(
         observerRef.current = new MutationObserver(callback);
         observerRef.current.observe(node, options);
 
-        // measure(node);
+        measure(node, state);
     }, []);
 
     // useEffect(() => {
