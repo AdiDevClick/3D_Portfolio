@@ -16,7 +16,7 @@ import { useControls } from 'leva';
 import JSONDatas from '@data/exemples.json';
 import useResize from '../../hooks/useResize.tsx';
 import { boundariesOptions } from '../../configs/3DCarousel.config.tsx';
-import Carousel from './3DCarousel.tsx';
+import Carousel from './Carousel/Carousel.js';
 import { DoubleSide, Vector3 } from 'three';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
 // import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
