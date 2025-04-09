@@ -5,7 +5,7 @@ import '@css/Main.scss';
 import '@css/reset.css';
 import App from './App2.tsx';
 // import App from './App.tsx';
-import { Scene } from './components/3DComponents/Scene.tsx';
+import { Scene } from './components/3DComponents/Scene/Scene.js';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, NavLink, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
