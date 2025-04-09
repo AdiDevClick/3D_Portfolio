@@ -16,6 +16,8 @@ import { boundariesOptions } from '../../configs/3DCarousel.config.tsx';
 import Carousel from './3DCarousel.tsx';
 import { Box3, DoubleSide, MathUtils, Vector3 } from 'three';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
+import { useSettings } from '@/hooks/useSettings.tsx';
 // import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
 const initialCameraFov = 20;
@@ -39,11 +41,7 @@ export function Scene() {
     const { ...reducer } = useCarousel();
 
     // Boundaries Settings
-    const { attachCamera, debug, path, ...boundaries } = useControls(
-        'Boundaries',
-        boundariesOptions,
-        { collapsed: true }
-    );
+    const { ...SETTINGS } = useSettings();
 
     // Specify boundaries & responsive boundaries
     const { size } = useResize(100);
@@ -53,10 +51,16 @@ export function Scene() {
     const scaleX = Math.max(0.5, size[0] / 1920);
     const scaleY = Math.max(0.5, size[1] / 1080);
     const responsiveBoundaries = {
-        x: boundaries.x * scaleX,
-        y: boundaries.y * scaleY,
-        z: boundaries.z,
+        x: SETTINGS.x * scaleX,
+        y: SETTINGS.y * scaleY,
+        z: SETTINGS.z,
     };
+
+    const compensationRatio = size[0] / size[1];
+    document.documentElement.style.setProperty(
+        '--compensation-scale',
+        compensationRatio
+    );
 
     useEffect(() => {
         if (controlsRef.current) {
@@ -127,7 +131,7 @@ export function Scene() {
                         rightVector.multiplyScalar(offsetDistance);
                     // Déterminez la target finale en décalant newTarget par le vecteur rightOffset
                     const shiftedTarget = newTarget.clone().add(rightOffset);
-                    camera.fov = reducer.isMobile ? 15 : 20;
+                    camera.fov = reducer.isMobile ? 19 : 20;
                     // console.log('Nouvelle position cible :', newCamPos);
                     // console.log('Déplacement de la caméra en cours...');
                     controlsRef.current.setLookAt(
@@ -207,7 +211,6 @@ export function Scene() {
             }
         }
     }, [reducer.activeContent, size]);
-
     // useFrame(() => {
     // if (reducer.activeContent?.isClicked && controlsRef.current) {
     //     const controls = controlsRef.current;
@@ -254,24 +257,39 @@ export function Scene() {
             id="canva"
             camera={{ position: [0, 0, -14], fov: 50 }}
             // camera={{ position: [0, 0, -20], fov: 20 }}
-            // dpr={[1, 1.5]}
+            // dpr={[1, 1]}
             dpr={window.devicePixelRatio}
             // camera={{ position: [0, 0, 5], fov: 70 }}
         >
+            {/* <HtmlContainer>
+                <aside
+                    style={{
+                        position: 'relative',
+                        display: 'block',
+                        top: 0,
+                        height: '650px',
+                        width: '500px',
+                        background: 'rgba(255, 255, 255, 0.95)',
+                    }}
+                    // className="lateral-menu"
+                    className="html-container"
+                ></aside>
+            </HtmlContainer> */}
             {/* <Html
                 ref={menuRef}
-                style={{ position: 'relative', height: '100%', width: '100%' }}
-                fullscreen
-                anchorX={0}
+                // style={{ position: 'relative', height: '100%', width: '100%' }}
+                // fullscreen
+                transform
+                // anchorX={0}
 
                 // portal={document.body}
                 // position={
                 //     reducer.isMobile ? [0, -1.5, 0] : [-width - 0.1, 0, 0]
                 // }
->                                                                                                                                                               
+            >
                 <aside
                     style={{
-                        position: 'absolute',
+                        position: 'relative',
                         display: 'block',
                         top: 0,
                         height: '650px',
@@ -302,7 +320,7 @@ export function Scene() {
             {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
             {/* <ScrollControls pages={4} infinite> */}
             <group position={[0, 0.5, 0]}>
-                <mesh visible={debug}>
+                <mesh visible={SETTINGS.debug}>
                     <boxGeometry
                         args={[
                             responsiveBoundaries.x,
