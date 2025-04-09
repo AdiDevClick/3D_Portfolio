@@ -8,16 +8,18 @@
  * @fires [debounce]
  * @returns {Function}
  */
-export const debounce = function (funct, duration) {
+export const debounce = function (func, duration) {
     let timer;
     return (...args) => {
-        return new Promise((resolve) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                funct.apply(null, ...args);
-                resolve(duration);
-            }, duration);
-        });
+        // let context = this;
+        // return new Promise((resolve) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func(...args);
+            // func.apply(context, ...args);
+            // resolve(duration);
+        }, duration);
+        // });
     };
 };
 
