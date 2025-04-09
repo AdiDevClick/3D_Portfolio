@@ -1,5 +1,6 @@
 import { debounce } from '@/functions/promises.js';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import { useMutationObserver } from '@/hooks/useMutationObserver.tsx';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import React, { ReactNode, useMemo, useRef, useState } from 'react';
@@ -19,8 +20,27 @@ export function HtmlContainer({
     reducer,
     ...props
 }: HtmlContainerTypes) {
+    // const measure = (node) => {
+    //     if (!node) {
+    //         return;
+    //     }
+    //     const rect = node.getBoundingClientRect();
+    //     const viewportWidth = node.clientWidth;
+    //     const newRatio = viewportWidth / rect.width;
+    //     console.log(viewportWidth, rect.width);
+    //     if (rect.width !== viewportWidth && newRatio !== scaleRatio && !done) {
+    //         console.log(newRatio, scaleRatio);
+    //         setScaleRatio(newRatio);
+    //     } else {
+    //         setDone(true);
+    //         console.log('done');
+    //     }
+    // };
+
     const htmlRef = useRef<HTMLElement>(null);
-    // useMutationObserver(handleObserver, htmlRef);
+    // const observer = useMutationObserver(handleObserver, measure);
+    // const htmlRef = mergeRefs(html, observer);
+
     const [scaleRatio, setScaleRatio] = useState(1);
     const [done, setDone] = useState(false);
 
