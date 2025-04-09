@@ -1,4 +1,4 @@
-import { measure } from '@/components/3DComponents/Html/Function.ts';
+import { measure } from '@/components/3DComponents/Html/Functions';
 import { debounce } from '@/functions/promises.js';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Html } from '@react-three/drei';
