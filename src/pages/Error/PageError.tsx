@@ -2,13 +2,11 @@ import { Error404 } from '@/pages/Error/404/Error404.tsx';
 import { useRouteError } from 'react-router';
 interface RouteError {
     data: string;
-    error: {
-        columnNumber: number;
-        fileName: string;
-        lineNumber: number;
-        message: string;
-        stack: string;
-    };
+    columnNumber: number;
+    fileName: string;
+    lineNumber: number;
+    message: string;
+    stack: string;
     internal: boolean;
     status: number;
     statusText: string;
@@ -27,7 +25,7 @@ export function PageError() {
                 <h1>Oops!</h1>
                 <p>Sorry, an unexpected error has occurred.</p>
                 <p>
-                    <i>{error.statusText || error.error.message}</i>
+                    <i>{error.statusText || error.message}</i>
                 </p>
             </div>
         </>
