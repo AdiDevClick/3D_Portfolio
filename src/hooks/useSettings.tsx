@@ -3,13 +3,23 @@ import {
     cardsSettings,
     carouselGeneralSettings,
     presenceSettings,
-} from '@/configs/3DCarousel.config.tsx';
+} from '@/configs/3DCarousel.config.ts';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { useControls } from 'leva';
 
 /**
  * Ajoute un panel de contrôle contenant différentes sections.
  */
-export function useSettings(datas: [] = []) {
+export function useSettings(datas: []): SettingsType {
+    /**
+     * Boundaries Settings
+     */
+    const { ...BOUDARIES_RULES } = useControls(
+        'Boundaries',
+        boundariesOptions,
+        { collapsed: true }
+    );
+
     /**
      * Carousel settings
      */
@@ -39,15 +49,6 @@ export function useSettings(datas: [] = []) {
     const { ...COLLISIONS_RULES } = useControls(
         'Presence Area',
         presenceSettings,
-        { collapsed: true }
-    );
-
-    /**
-     * Boundaries Settings
-     */
-    const { ...BOUDARIES_RULES } = useControls(
-        'Boundaries',
-        boundariesOptions,
         { collapsed: true }
     );
 
