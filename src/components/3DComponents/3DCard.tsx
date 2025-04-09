@@ -1,7 +1,13 @@
-import { Image, Scroll, ScrollControls } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import {
+    Center,
+    Image,
+    Scroll,
+    ScrollControls,
+    Text3D,
+} from '@react-three/drei';
+import { useFrame, useLoader } from '@react-three/fiber';
 import { easing } from 'maath';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { DoubleSide, Group, Mesh, Vector3 } from 'three';
 import { throttle } from '../../functions/promises.js';
 import {
@@ -13,6 +19,9 @@ import { useNavigate } from 'react-router';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.js';
 import { ProjectContainer } from '@/components/projects/ProjectContainer.js';
 import { Helper } from '@/components/3DComponents/Helper.js';
+// import montserrat from '@assets/fonts/Montserrat-VariableFont_wght.ttf';
+import montserrat from '@assets/fonts/Montserrat_Thin_Regular.json';
+import { FontLoader } from 'three/examples/jsm/Addons.js';
 
 interface AdditionalProps {
     visibleWireframe?: boolean;
@@ -36,6 +45,8 @@ export default function Card({ reducer, card, ...props }: CardProps) {
     const htmlRef = useRef<HTMLElement>(null!);
     const htmlGroupRef = useRef<HTMLElement>(null!);
     const spherePresenceRef = useRef<Mesh>(null!);
+
+    // const montserratt = useLoader(FontLoader, montserrat);
 
     // État local pour savoir si la carte est cliquée
     // const [isClicked, setIsClicked] = useState(false);
@@ -133,13 +144,13 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                 throttledUpdatedScale(newScale);
             }
         } else {
-            // easing.damp3(
-            //     cardRef.current.scale,
-            //     new Vector3(1.5, 1.5, 1.5),
-            //     0.15,
-            //     delta
-            // );
-            // cardRef.current.scale.lerp(new Vector3(1.5, 1.5, 1.5), 0.1);
+            easing.damp3(
+                cardRef.current.scale,
+                new Vector3(1.5, 1.5, 1.5),
+                0.15,
+                delta
+            );
+            cardRef.current.scale.lerp(new Vector3(1.5, 1.5, 1.5), 0.1);
             if (bending > 0) setBending((prev) => prev - delta);
             // Shows the whole picture instead of thumbnail
             if (width < card.baseScale + 0.4) setWidth((prev) => prev + delta);
@@ -193,9 +204,11 @@ export default function Card({ reducer, card, ...props }: CardProps) {
     //         console.log(htmlRef.current.getBoundingClientRect().width);
     //     }
     // }, [htmlRef, htmlWidth, card]);
+    const id = useId();
 
     return (
         <group
+            key={id}
             ref={groupRef}
             onPointerOver={onHover}
             onPointerOut={onPointerOut}
@@ -203,6 +216,7 @@ export default function Card({ reducer, card, ...props }: CardProps) {
         >
             {/* <axesHelper args={[5]} /> */}
             {/* <axesHelper args={[5]} position={[0, 0, 0]} /> */}
+
             <Image
                 ref={cardRef}
                 url={card.url}
@@ -213,6 +227,20 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                 scale={[width - 0.1, width]}
                 // sidePositions={card.sidePositions}
             >
+                {/* <HtmlContainer>
+                    <aside
+                        style={{
+                            position: 'relative',
+                            display: 'block',
+                            top: 0,
+                            height: '650px',
+                            width: '500px',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                        }}
+                        // className="lateral-menu"
+                        className="html-container"
+                    ></aside>
+                </HtmlContainer> */}
                 {props.visibleWireframe && (
                     <meshBasicMaterial
                         visible={props.visibleWireframe}
@@ -236,30 +264,128 @@ export default function Card({ reducer, card, ...props }: CardProps) {
                         // <ScrollControls>
                         // <Scroll>
                         <HtmlContainer
+                            // style={
+                            //     reducer.isMobile
+                            //         ? null
+                            //         : { transform: 'translate(48%)' }
+                            // }
+                            // portal={cardRef.current}
                             width={width}
                             reducer={reducer}
                             className="html-container"
+                            // stype={{ position: 'relative', left: '100px' }}
                             position={
                                 reducer.isMobile
-                                    ? [0, -1.5, 0]
-                                    : [width, 0, 0.05]
+                                    ? [0, -1.5, 0.05]
+                                    : [width / 2, 0, 0.05]
+                            }
+                            rotation={
+                                reducer.isMobile ? [0, 0.1, 0] : [0, 0, 0]
                             }
                         >
                             <ProjectContainer
                                 onClick={onClickHandler}
                                 card={card}
+
                                 // style={{ top: '100px' }}
                             />
                         </HtmlContainer>
-                        // </Scroll>
-                        // </ScrollControls>
 
-                        // <Rig>
+                        // <HtmlContainer className="html-container">
+                        //     {/* <aside
+                        //         style={{
+                        //             position: 'relative',
+                        //             display: 'block',
+                        //             top: 0,
+                        //             height: '650px',
+                        //             width: '500px',
+                        //             background: 'rgba(255, 255, 255, 0.95)',
+                        //         }}
+                        //         // className="lateral-menu"
+                        //         className="html-container"
+                        //     ></aside> */}
+                        //     <ProjectContainer
+                        //         onClick={onClickHandler}
+                        //         className="html-container"
+                        //         card={card}
+                        //         // style={{
+                        //         //     position: 'relative',
+                        //         //     display: 'grid',
+                        //         //     top: 0,
+                        //         //     height: '650px',
+                        //         //     width: '500px',
+                        //         //     background: 'rgba(255, 255, 255, 0.95)',
+                        //         // }}
+                        //     />
+                        // </HtmlContainer>
                     )
+
+                    // </Scroll>
+                    // </ScrollControls>
+
+                    // <Rig>
                     //</Rig>
                     //
                 }
+                {card.ref?.current && (
+                    <Center
+                        front
+                        position={
+                            reducer.isMobile ? [0, -1.5, 0.05] : [0, 1.1, 0.15]
+                        }
+                    >
+                        <Text3D
+                            // position={[0, 0, 0]}
+                            // anchorX="center"
+                            // anchorY="middle"
+                            castShadow
+                            bevelEnabled
+                            curveSegments={10}
+                            bevelSegments={5}
+                            bevelThickness={1}
+                            bevelSize={1}
+                            bevelOffset={0}
+                            // position={
+                            //     reducer.isMobile
+                            //         ? [0, -1.5, 0.05]
+                            //         : [0, 0, -0.8]
+                            // }
+                            // position={[
+                            //     card.ref?.current.position.x,
+                            //     card.ref?.current.position.y,
+                            //     card.ref?.current.position.z,
+                            // ]}
+                            // rotation={[0, card.cardAngles?.onHold, 0]}
+                            // fontSize={0.01}
+                            // anchorY={-1.55}
+                            // anchorX={'center'}
+                            // color={'black'}
+                            scale={0.01}
+                            size={10}
+                            height={1}
+                            smooth={1}
+                            font={montserrat}
+                        >
+                            {card.cardTitle ? card.cardTitle : 'test'}
+                            <meshNormalMaterial />
+                        </Text3D>
+                    </Center>
+                )}
                 {/* {card.isClicked && <axesHelper args={[2]} />} */}
+                {/* <HtmlContainer>
+                    <aside
+                        style={{
+                            position: 'relative',
+                            display: 'block',
+                            top: 0,
+                            height: '650px',
+                            width: '500px',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                        }}
+                        // className="lateral-menu"
+                        className="html-container"
+                    ></aside>
+                </HtmlContainer> */}
             </Image>
         </group>
     );
