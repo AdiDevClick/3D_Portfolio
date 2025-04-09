@@ -20,10 +20,22 @@ type sidesPositions = {
     /** Back side of the element */
     back: number | null;
 };
+interface CardContentType {
+    /** The content stack property */
+    stack: {};
+    /** The main title */
+    cardTitle: string;
+    /** The secondaty title shown in the clicked card */
+    title: string;
+    /** An array of strings containing the skills */
+    content: string[];
+    /** The description of the project next to the title of the card content */
+    description: string;
+}
 
 type typeAngles = { active: number; onHold: number };
 
-export interface ElementType {
+export interface ElementType extends CardContentType {
     id: string;
     currentScale: number;
     baseScale: number;
@@ -49,8 +61,6 @@ export interface ElementType {
     spacePositions?: sidesPositions;
     /** Stores the angle of the card in order to reattribute it after movement */
     cardAngles?: typeAngles;
-    /** The content stack property */
-    stack: {};
 }
 
 export interface ReducerType {
