@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo } from 'react';
+import { useEffect, useId, useMemo, useRef } from 'react';
 import Card from './3DCard.tsx';
 import { useControls } from 'leva';
 import {
@@ -13,7 +13,11 @@ import { easing } from 'maath';
 import { MathPos } from '@/functions/positionning.ts';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
-import { MeshReflectorMaterial, Text, Text3D } from '@react-three/drei';
+import { Center, MeshReflectorMaterial, Text, Text3D } from '@react-three/drei';
+import montserrat from '@assets/fonts/Montserrat_Regular.json';
+import montserratt from '@assets/fonts/Montserrat_Thin_Regular.json';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
+import { useSettings } from '@/hooks/useSettings.tsx';
 
 const TWO_PI = Math.PI * 2;
 
@@ -30,75 +34,57 @@ export default function Carousel({
     reducer,
     ...props
 }: CarouselProps) {
-    // Override cards count with datas.length
-    const carouselSettings = {
-        ...carouselGeneralSettings,
-        CARDS_COUNT: {
-            ...carouselGeneralSettings.CARDS_COUNT,
-            value: datas.length,
-        },
-    };
-    // Carousel Settings
-    const [settings, set] = useControls(
-        'Carousel Settings',
-        () => ({
-            ...carouselSettings,
-        }),
-        { collapsed: true }
-    );
-
-    // Card Rules Settings
-    const { THREED, ALIGNMENT, ...CARD_RULES } = useControls(
-        'Card Rules',
-        cardsSettings,
-        {
-            collapsed: true,
-        }
-    );
-
-    // Collision Detection Settings
-    const { PRESENCE_CIRCLE, PRESENCE_RADIUS, CARD_WIREFRAME, COLLISIONS } =
-        useControls('Presence Area', presenceSettings, { collapsed: true });
-
+    // Hook that has all panel control
+    const controlsSettings = useSettings(datas);
+    const cardRef = useRef(null);
     const id = useId();
 
-    // Marge pour éviter les oscillations fréquentes
-    const margin = 0.1;
-
     const cards = useMemo(() => {
-        return new Array(settings.CARDS_COUNT).fill(null).map((_, i, self) => ({
-            url: datas[i]
-                ? datas[i].cover
-                : `src/assets/images/img${Math.floor(i % 10) + 1}.png`,
-            description: datas[i].description,
-            title: datas[i].title,
-            stack: datas[i].stack,
-            position: THREED ? new Vector3(100, 0, 500) : new Vector3(),
-            velocity: new Vector3(0, 0, 0),
-            rotation: [0, (i / settings.CARDS_COUNT) * TWO_PI, 0],
-            // rotation: [0, Math.PI + (i / settings.CARDS_COUNT) * TWO_PI, 0],
-            wander: randFloat(0, TWO_PI),
-            animation: settings.CARD_ANIMATION,
-            baseScale: settings.CARD_SCALE,
-            // currentScale: settings.CARD_SCALE,
-            active: settings.ACTIVE_CARD,
-            id: datas[i] ? datas[i].id : id + i,
-            containerScale: settings.CONTAINER_SCALE,
-            cardAngles: {
-                active: Math.atan2(
-                    Math.sin((i / settings.CARDS_COUNT) * TWO_PI) *
-                        settings.CONTAINER_SCALE,
-                    Math.cos((i / settings.CARDS_COUNT) * TWO_PI) *
-                        settings.CONTAINER_SCALE
-                ),
-                onHold: (i / self.length) * TWO_PI,
-            },
-        }));
+        return new Array(controlsSettings.CARDS_COUNT)
+            .fill(null)
+            .map((_, i, self) => ({
+                url: datas[i]
+                    ? datas[i].cover
+                    : `src/assets/images/img${Math.floor(i % 10) + 1}.png`,
+                description: datas[i] ? datas[i].description : 'description',
+                title: datas[i] ? datas[i].title : 'title',
+                cardTitle: datas[i] ? datas[i].cardTitle : 'cardTitle',
+                content: datas[i]
+                    ? datas[i].content
+                    : [
+                          'Intégration du Canvas avec ThreeJS',
+                          'Créé avec React et TypeScript',
+                          "Une implémentation responsive de l'expérience 3D",
+                      ],
+                stack: datas[i] ? datas[i].stack : {},
+                position: controlsSettings.THREED
+                    ? new Vector3(100, 0, 500)
+                    : new Vector3(),
+                velocity: new Vector3(0, 0, 0),
+                rotation: [0, (i / controlsSettings.CARDS_COUNT) * TWO_PI, 0],
+                // rotation: [0, Math.PI + (i / settings.CARDS_COUNT) * TWO_PI, 0],
+                wander: randFloat(0, TWO_PI),
+                animation: controlsSettings.CARD_ANIMATION,
+                baseScale: controlsSettings.CARD_SCALE,
+                // currentScale: settings.CARD_SCALE,
+                active: controlsSettings.ACTIVE_CARD,
+                id: datas[i] ? datas[i].id : id + i,
+                containerScale: controlsSettings.CONTAINER_SCALE,
+                cardAngles: {
+                    active: Math.atan2(
+                        Math.sin((i / controlsSettings.CARDS_COUNT) * TWO_PI) *
+                            controlsSettings.CONTAINER_SCALE,
+                        Math.cos((i / controlsSettings.CARDS_COUNT) * TWO_PI) *
+                            controlsSettings.CONTAINER_SCALE
+                    ),
+                    onHold: (i / self.length) * TWO_PI,
+                },
+            }));
     }, [
-        settings.CARDS_COUNT,
-        settings.CARD_SCALE,
-        settings.CONTAINER_SCALE,
-        THREED,
+        controlsSettings.CARDS_COUNT,
+        controlsSettings.CARD_SCALE,
+        controlsSettings.CONTAINER_SCALE,
+        controlsSettings.THREED,
     ]);
 
     /**
@@ -145,7 +131,7 @@ export default function Carousel({
                     // Finding initial angle position
                     // It should be : [sin(angle)*R, 0, cos(angle)*R]
                     const targetRadius =
-                        settings.CONTAINER_SCALE + activeForwardOffset;
+                        controlsSettings.CONTAINER_SCALE + activeForwardOffset;
                     positions = MathPos(active, targetRadius);
                     targetRotationY = active;
                     // targetRotationY = active + Math.PI;
@@ -156,19 +142,19 @@ export default function Carousel({
                     const nonActiveCardAngle = relativeIndex * angleStep;
                     positions = MathPos(
                         nonActiveCardAngle,
-                        settings.CONTAINER_SCALE
+                        controlsSettings.CONTAINER_SCALE
                     );
                     targetRotationY = nonActiveCardAngle;
                     // targetRotationY = nonActiveCardAngle + Math.PI;
                 }
             } else {
                 // If no active cards, we spread them all on the ring
-                positions = MathPos(onHold, settings.CONTAINER_SCALE);
+                positions = MathPos(onHold, controlsSettings.CONTAINER_SCALE);
                 targetRotationY = onHold;
                 // targetRotationY = onHold + Math.PI;
 
                 // Calculating collisions
-                if (COLLISIONS) {
+                if (controlsSettings.COLLISIONS) {
                     reducer.showElements.forEach((element, index) => {
                         if (index === i) return;
                         const inRangeItem =
@@ -187,26 +173,31 @@ export default function Carousel({
                         // }
                         const margin = 0.4;
                         const deltaScale = 0.01;
-                        let targetScale = settings.CONTAINER_SCALE;
+                        let targetScale = controlsSettings.CONTAINER_SCALE;
 
                         // Collision between 2 items
                         if (isNeighbor(i, index)) {
                             if (inRangeItem > element.presenceRadius + margin) {
                                 targetScale =
-                                    settings.CONTAINER_SCALE - deltaScale;
+                                    controlsSettings.CONTAINER_SCALE -
+                                    deltaScale;
                             } else if (
                                 inRangeItem <=
                                 element.presenceRadius - margin
                             ) {
                                 targetScale =
-                                    settings.CONTAINER_SCALE + deltaScale;
+                                    controlsSettings.CONTAINER_SCALE +
+                                    deltaScale;
                             }
                             if (
                                 Math.abs(
-                                    targetScale - settings.CONTAINER_SCALE
+                                    targetScale -
+                                        controlsSettings.CONTAINER_SCALE
                                 ) > 0.001
                             ) {
-                                set({ CONTAINER_SCALE: targetScale });
+                                controlsSettings.set({
+                                    CONTAINER_SCALE: targetScale,
+                                });
                             }
                         }
                     });
@@ -328,7 +319,7 @@ export default function Carousel({
             }
 
             // If no 3D activated we go back in the center
-            if (!THREED) positions = [0, 0, 0];
+            if (!controlsSettings.THREED) positions = [0, 0, 0];
 
             // Animating the new positions and rotations
             easing.damp3(position, positions, 0.15, delta);
@@ -369,30 +360,19 @@ export default function Carousel({
     });
 
     return reducer.showElements.map((card, i) => (
-        <group key={id + i}>
-            <Text
-                position={[
-                    card.ref?.current?.position.x,
-                    card.ref?.current?.position.y,
-                    card.ref?.current?.position.z,
-                ]}
-                rotation={[0, card.cardAngles?.onHold, 0.0]}
-                fontSize={0.3}
-                anchorY={-1.55}
-                anchorX={'center'}
-                color={'black'}
-            >
-                {card.id}
-            </Text>
-            <Card
-                // key={id + i}
-                card={card}
-                presenceCircle={PRESENCE_CIRCLE}
-                presenceRadius={PRESENCE_RADIUS * card.baseScale}
-                visibleWireframe={CARD_WIREFRAME}
-                reducer={reducer}
-                {...CARD_RULES}
-            />
-        </group>
+        // <group key={`${id} ${i * i}`}>
+
+        <Card
+            ref={cardRef}
+            key={id + i}
+            card={card}
+            presenceCircle={controlsSettings.PRESENCE_CIRCLE}
+            presenceRadius={controlsSettings.PRESENCE_RADIUS * card.baseScale}
+            visibleWireframe={controlsSettings.CARD_WIREFRAME}
+            reducer={reducer}
+            {...controlsSettings}
+        />
+
+        // </group>
     ));
 }
