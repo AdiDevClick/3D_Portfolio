@@ -4,9 +4,14 @@
         "title": "Carte 1",
         "cover": "src/assets/images/img1.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -14,9 +19,14 @@
         "title": "Carte 2",
         "cover": "src/assets/images/img2.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -24,9 +34,14 @@
         "title": "Carte 3",
         "cover": "src/assets/images/img3.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -34,9 +49,14 @@
         "title": "Carte 4",
         "cover": "src/assets/images/img4.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -44,9 +64,14 @@
         "title": "Carte 5",
         "cover": "src/assets/images/img5.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -54,9 +79,14 @@
         "title": "Carte 6",
         "cover": "src/assets/images/img6.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -64,25 +94,33 @@
         "title": "Carte 7",
         "cover": "src/assets/images/img7.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
         "id": "8",
-        "title": "Carte 8",
+        "title": "Mon Portfolio 3D",
+        "cardTitle": "Portfolio 3D",
         "cover": "src/assets/images/img8.png",
-        "description": "Une description rapide",
+        "description": "Un portfolio personnel qui exploîte la puissance du développement 3D moderne. Un avant-goût de ce que peut être un développement web 3D ainsi que mes compétences et projets.",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png",
-            "React1": "src/assets/images/react-logo.png",
-            "TypeScript1": "src/assets/images/typescript.png",
-            "React2": "src/assets/images/react-logo.png",
-            "TypeScript2": "src/assets/images/typescript.png",
-            "React3": "src/assets/images/react-logo.png",
-            "TypeScript3": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg",
+            "Sass": "src/assets/icons/sass.svg",
+            "ThreeJS": "src/assets/icons/threedotjs.svg",
+            "Vite": "src/assets/icons/vite.svg"
         }
     },
     {
@@ -90,9 +128,14 @@
         "title": "Carte 9",
         "cover": "src/assets/images/img9.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -100,9 +143,14 @@
         "title": "Carte 10",
         "cover": "src/assets/images/img1.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     },
     {
@@ -110,9 +158,14 @@
         "title": "Carte 11",
         "cover": "src/assets/images/work.png",
         "description": "Une description rapide",
+        "content": [
+            "Intégration du Canvas avec ThreeJS",
+            "Créé avec React et TypeScript",
+            "Une implémentation responsive de l'expérience 3D"
+        ],
         "stack": {
-            "React": "src/assets/images/react-logo.png",
-            "TypeScript": "src/assets/images/typescript.png"
+            "React": "src/assets/icons/react.svg",
+            "TypeScript": "src/assets/icons/typescript.svg"
         }
     }
 ]
