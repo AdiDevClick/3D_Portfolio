@@ -136,7 +136,7 @@ export function useMutationObserver(
         observerRef.current = new MutationObserver(callback);
         observerRef.current.observe(node, options);
 
-        measure(node);
+        // measure(node);
     }, []);
 
     // useEffect(() => {
