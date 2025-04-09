@@ -58,3 +58,5 @@ export const presenceSettings = {
     PRESENCE_RADIUS: { value: 0.5, min: 0, max: 10, step: 0.1 },
     CARD_WIREFRAME: false,
 };
+
+export const TWO_PI = Math.PI * 2;
