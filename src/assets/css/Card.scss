@@ -32,8 +32,7 @@
     //     border-left: 3px solid black;
     //     height: 100%;
     // }
-    transform: translate(5%);
-    transition: scale 0.3s ease;
+    // transform: translate(0);
 
 
     &::after {
@@ -133,5 +132,4 @@
             }
         }
     }
-
 }
