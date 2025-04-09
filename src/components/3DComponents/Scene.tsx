@@ -4,19 +4,14 @@ import {
     useScroll,
     useTexture,
     CameraControls,
-    Html,
-    ScrollControls,
 } from '@react-three/drei';
 import { useEffect, useRef, useState } from 'react';
 import '../../utils/util.tsx';
-import { useControls } from 'leva';
 import JSONDatas from '@data/exemples.json';
 import useResize from '../../hooks/useResize.tsx';
-import { boundariesOptions } from '../../configs/3DCarousel.config.tsx';
 import Carousel from './3DCarousel.tsx';
 import { Box3, DoubleSide, MathUtils, Vector3 } from 'three';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
-import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
 import { useSettings } from '@/hooks/useSettings.tsx';
 // import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
@@ -38,10 +33,10 @@ export function Scene() {
             : new Vector3(0, 0, -20)
     );
 
-    const { ...reducer } = useCarousel();
+    const reducer = useCarousel();
 
     // Boundaries Settings
-    const { ...SETTINGS } = useSettings();
+    const SETTINGS = useSettings(JSONDatas);
 
     // Specify boundaries & responsive boundaries
     const { size } = useResize(100);
@@ -341,6 +336,7 @@ export function Scene() {
                     reducer={reducer}
                     boundaries={responsiveBoundaries}
                     datas={JSONDatas}
+                    SETTINGS={SETTINGS}
                 />
                 {/* </Rig> */}
 
