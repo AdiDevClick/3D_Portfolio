@@ -2,8 +2,8 @@ import { Center, Text3D } from '@react-three/drei';
 import montserrat from '@assets/fonts/Montserrat_Thin_Regular.json';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import {
-    desktopTitlePosition,
-    mobileTitlePosition,
+    DESKTOP_TITLE_POSITION,
+    MOBILE_TITLE_POSITION,
 } from '@/configs/3DCarousel.config.ts';
 
 interface CardTitleTypes {
@@ -20,7 +20,9 @@ export function CardMainTitle({ reducer, card }: CardTitleTypes) {
         <Center
             front
             position={
-                reducer.isMobile ? mobileTitlePosition : desktopTitlePosition
+                reducer.isMobile
+                    ? MOBILE_TITLE_POSITION
+                    : DESKTOP_TITLE_POSITION
             }
         >
             <Text3D
