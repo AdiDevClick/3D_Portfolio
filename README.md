@@ -1,54 +1,131 @@
-# React + TypeScript + Vite
+# Portfolio 3D Interactif
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Un portfolio moderne utilisant React, Three.js et TypeScript pour créer une expérience utilisateur immersive en 3D.
 
-Currently, two official plugins are available:
+## 🌟 Caractéristiques
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Carrousel 3D
+- Affichage dynamique des projets en cercle
+- Animations fluides et interactives
+- Système de positionnement intelligent avec gestion des collisions
+- Effets de courbure des cartes (bending)
 
-## Expanding the ESLint configuration
+### Interactions
+- Hover : Mise en avant de la carte avec animations
+- Click : Ouverture détaillée du projet
+- Navigation fluide entre les projets
+- Adaptation responsive (mobile/desktop)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠 Technologies
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- React + TypeScript
+- Three.js
+- @react-three/fiber & @react-three/drei
+- Maath (animations)
+- Vite (build tool)
+
+## 📁 Structure du Projet
+
+```
+src/
+├── components/
+│   ├── 3DComponents/
+│   │   ├── Carousel/
+│   │   │   ├── Carousel.tsx    # Composant principal
+│   │   │   └── Functions.ts    # Logique d'animation
+│   │   ├── Cards/
+│   │   │   ├── CardContainer.tsx
+│   │   │   └── CardMainTitle.tsx
+│   │   └── Html/
+│   │       └── HtmlContainer.tsx
+│   └── projects/
+│       └── ProjectContainer.tsx
+├── hooks/
+│   └── reducers/
+│       └── carouselTypes.ts
+└── configs/
+    └── 3DCarousel.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🎮 Fonctionnalités Principales
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+### Système de Carrousel
+```typescript
+export function createCardProperties(
+    SETTINGS: SettingsType,
+    datas: ElementType[],
+    i: number,
+    self: ElementType[],
+    id: string
+) {
+    // Configuration des propriétés de chaque carte
+}
 ```
+
+### Animations
+```typescript
+handleNormalAnimation(
+    material,
+    scale,
+    rotation,
+    cardHoverScale,
+    cardHoverRadius,
+    cardHoverZoom,
+    delta
+);
+```
+
+## 🚀 Installation
+
+1. Cloner le repository
+```bash
+git clone <repository-url>
+```
+
+2. Installer les dépendances
+```bash
+npm install
+```
+
+3. Lancer en développement
+```bash
+npm run dev
+```
+
+## ⚙️ Configuration
+
+Les paramètres du carrousel sont configurables via le fichier `3DCarousel.config.ts` :
+
+```typescript
+export const SETTINGS = {
+    CARDS_COUNT: 10,
+    CARD_SCALE: 1,
+    CONTAINER_SCALE: 5,
+    BENDING: 0.1,
+    THREED: true,
+    COLLISIONS: true
+};
+```
+
+## 📝 Notes de Développement
+
+### Gestion des États
+- Utilisation d'un reducer pour la gestion globale des cartes
+- État local pour les animations spécifiques
+- Système de référence pour les interactions 3D
+
+### Optimisations
+- Throttling des mises à jour de position
+- Gestion efficace des collisions
+- Animations optimisées avec Maath
+
+## 🔜 Améliorations Prévues
+
+- [ ] Optimisation des performances
+- [ ] Nouveaux effets de transition
+- [ ] Amélioration du système de collision
+- [ ] Support pour plus de types de contenu
+
+## 📄 License
+
+MIT License
