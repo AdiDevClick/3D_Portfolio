@@ -9,26 +9,27 @@ interface MeasureTypes {
  * Utilise le setter pour renvoyer le scale entre
  * la fenêtre HTML ouverte et le viewport du device -
  *
- * @param currentRef - Le ref.current de l'élément HTML
+ * @param element - L'élément HTML
  * @param param1.scaleRatio - Le state actuel du scaleRatio
  * @param param1.setScaleRatio - Le setter du scaleRatio
  * @param param1.setDone - Le setter du state Done pour ne pas avoir trop de callbacks
  * @param param1.done - Le state actuel false/true
  */
 export function measure(
-    currentRef: HTMLElement | null,
+    element: HTMLElement,
     { scaleRatio, setScaleRatio, done, setDone }: MeasureTypes
 ) {
-    if (!currentRef || done) {
+    if (!element || done) {
         return;
     }
-    const rect = currentRef.getBoundingClientRect();
-    const viewportWidth = currentRef.clientWidth;
-    const newRatio = viewportWidth / rect.width;
 
-    if (rect.width !== viewportWidth && newRatio !== scaleRatio && !done) {
+    const { width } = element.getBoundingClientRect();
+    const viewportWidth = element.clientWidth;
+    const newRatio = viewportWidth / width;
+
+    if (width !== viewportWidth && newRatio !== scaleRatio && !done) {
         setScaleRatio(newRatio);
-    } else {
+    } else if (!done) {
         setDone(true);
     }
 }
