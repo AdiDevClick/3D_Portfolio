@@ -66,6 +66,15 @@ export function carouselReducer(
                         : el
                 ),
             };
+        case 'UPDATE_ELEMENT_WIDTH':
+            return {
+                ...state,
+                elements: state.elements.map((el) =>
+                    el.id === action.payload.element.id
+                        ? { ...el, currentWidth: action.payload.property }
+                        : el
+                ),
+            };
         // return {
         //     ...state,
         //     elements:
