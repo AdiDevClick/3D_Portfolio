@@ -86,7 +86,6 @@ export default function Carousel({
         );
 
         const activeForwardOffset = 0.5;
-        const total = reducer.showElements.length;
 
         reducer.showElements.forEach((item, i) => {
             if (!item.ref || !item.ref.current) return;
@@ -109,8 +108,8 @@ export default function Carousel({
                     // targetRotationY = active + Math.PI;
                 } else {
                     const relativeIndex = i < activeCard ? i : i - 1;
-                    const countWithoutActive = total - 1;
-                    const angleStep = TWO_PI / countWithoutActive;
+                    const angleStep =
+                        TWO_PI / (reducer.showElements.length - 1);
                     const nonActiveCardAngle = relativeIndex * angleStep;
                     positions = MathPos(
                         nonActiveCardAngle,
