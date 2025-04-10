@@ -19,7 +19,7 @@ export function measure(
     element: HTMLElement,
     { scaleRatio, setScaleRatio, done, setDone }: MeasureTypes
 ) {
-    if (!element || done) {
+    if (!element) {
         return;
     }
 
