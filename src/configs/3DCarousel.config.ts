@@ -60,3 +60,33 @@ export const presenceSettings = {
 };
 
 export const TWO_PI = Math.PI * 2;
+/*****************
+ * MOBILE
+ ***********/
+
+/** Position du titre 3D */
+export const MOBILE_TITLE_POSITION = [0, -1.2, 0.05];
+/** Position du conteneur HTML */
+export const MOBILE_CONTAINER_POSITION = [0, -1.5, 0.05];
+/** Rotation du conteneur HTML */
+export const MOBILE_CONTAINER_ROTATION = [0, 0.1, 0];
+
+/*****************
+ * DESKTOP
+ * @description : La position X du conteneur HTML est
+ * dépendante de la largeur de la carte - Elle ne peut pas être modifiée.
+ ***********/
+
+/** Position du titre 3D */
+export const DESKTOP_TITLE_POSITION = [0, 1.1, 0.15];
+/** Depth du conteneur HTML */
+export const DESKTOP_CONTAINER_DEPTH = 0.05;
+/** Rotation du conteneur HTML */
+export const DESKTOP_CONTAINER_ROTATION = [0, 0, 0];
+
+/*****************
+ * GENERAL SETTINGS
+ ***********/
+
+/** On Hover card scale */
+export const CARD_HOVER_SCALE = 1.15;
