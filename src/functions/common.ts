@@ -1,3 +1,6 @@
+/**
+ * Merge différentes refs en une seule -
+ */
 export function mergeRefs<T>(...refs: (React.Ref<T> | undefined)[]) {
     return (node: T) => {
         refs.forEach((ref) => {
