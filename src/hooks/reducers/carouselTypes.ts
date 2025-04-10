@@ -61,6 +61,7 @@ export interface ElementType extends CardContentType {
     spacePositions?: sidesPositions;
     /** Stores the angle of the card in order to reattribute it after movement */
     cardAngles?: typeAngles;
+    currentWidth: number;
 }
 
 export interface ReducerType {
@@ -74,6 +75,8 @@ export interface ReducerType {
     animate: (element: ElementType, animationName: string) => void;
     /** Update the card Scale */
     updateScale: (element: ElementType, number: number) => void;
+    /** Update the card Width */
+    updateWidth: (element: ElementType, number: number) => void;
     /** Add some new properties to the element - Avoid using it */
     updateElements: (element: ElementType) => void;
     /** Delete an element based on it's ID */
