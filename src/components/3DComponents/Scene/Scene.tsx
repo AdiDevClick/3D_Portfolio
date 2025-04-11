@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
     Environment,
     useScroll,
@@ -10,9 +10,12 @@ import '../../../utils/util.js';
 import JSONDatas from '@data/exemples.json';
 import useResize from '../../../hooks/useResize.js';
 import Carousel from '../Carousel/Carousel.js';
-import { Box3, DoubleSide, MathUtils, Vector3 } from 'three';
+import { Box3, MathUtils, Vector3 } from 'three';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
 import { useSettings } from '@/hooks/useSettings.tsx';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.js';
+import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.js';
+import { useParams } from 'react-router';
 // import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
 const initialCameraFov = 20;
@@ -20,6 +23,9 @@ let minAngle = -Infinity;
 let maxAngle = Infinity;
 
 export function Scene() {
+    const params = useParams();
+    const { id } = params;
+
     const controlsRef = useRef(null!);
     const menuRef = useRef(null!);
     const initialCameraConfig = useRef({
@@ -27,12 +33,14 @@ export function Scene() {
         fov: 20,
     });
 
+    // Default camera position if no controlsRef
     const [prevCamPos, setPrevCamPos] = useState(() =>
         controlsRef.current
             ? controlsRef.current.camera.position.clone()
-            : new Vector3(0, 0, -20)
+            : DEFAULT_CAMERA_POSITION
     );
 
+    // General Store
     const reducer = useCarousel();
 
     // Boundaries Settings
@@ -62,7 +70,6 @@ export function Scene() {
             const { camera } = controlsRef.current;
             camera.updateProjectionMatrix();
             reducer.contentSizes = size;
-            // camera.updateMatrixWorld();
 
             if (reducer.activeContent) {
                 setPrevCamPos(camera.position.clone());
@@ -127,8 +134,6 @@ export function Scene() {
                     // Déterminez la target finale en décalant newTarget par le vecteur rightOffset
                     const shiftedTarget = newTarget.clone().add(rightOffset);
                     camera.fov = reducer.isMobile ? 19 : 20;
-                    // console.log('Nouvelle position cible :', newCamPos);
-                    // console.log('Déplacement de la caméra en cours...');
                     controlsRef.current.setLookAt(
                         newCamPos.x,
                         newCamPos.y,
@@ -140,54 +145,7 @@ export function Scene() {
                         shiftedTarget.z,
                         true // Option d'animation
                     );
-                    // console.log(
-                    //     'Position actuelle après setLookAt :',
-                    //     camera.position
-                    // );
                     camera.updateProjectionMatrix();
-
-                    // maxAngle = cardAngles.active + Math.PI * 2;
-                    // minAngle = cardAngles.active - Math.PI * 2;
-                    // const controls = controlsRef.current;
-                    // // Assurez-vous d'avoir la cible du contrôle
-                    // const target = controls.target || controls._target;
-                    // if (!target) return; // sécurité
-
-                    // // Calculer la position relative de la caméra par rapport à la cible
-                    // const relativePos = new Vector3().subVectors(
-                    //     controls.camera.position,
-                    //     target
-                    // );
-                    // // Convertir en coordonnées sphériques
-                    // const spherical = new Spherical().setFromVector3(
-                    //     relativePos
-                    // );
-
-                    // // Angle de référence de la carte active
-                    // const cardAngle = reducer.activeContent.cardAngles.active; // en radians
-                    // const minAngular = cardAngle + MathUtils.degToRad(-30);
-                    // const maxAngular = cardAngle + MathUtils.degToRad(30);
-
-                    // // Clamp de l'angle theta entre ces deux bornes
-                    // spherical.theta = MathUtils.clamp(
-                    //     spherical.theta,
-                    //     minAngular,
-                    //     maxAngular
-                    // );
-
-                    // // Reconvertir en coordonnées cartésiennes
-                    // const newRelativePos = new Vector3().setFromSpherical(
-                    //     spherical
-                    // );
-                    // // Recalculer la nouvelle position de la caméra
-                    // controls.camera.position.copy(target).add(newRelativePos);
-
-                    // // Si vous avez besoin d'une interpolation douce, vous pouvez y ajouter un lerp ici.
-                    // // Par exemple, pour éviter un "saut" brutal, interpoler la position actuelle vers la position clamped.
-                    // // const clampedPos = target.clone().add(newRelativePos);
-                    // // controls.camera.position.lerp(clampedPos, 0.1);
-
-                    // controls.camera.updateMatrixWorld();
                 }
             } else {
                 // minAngle = -Infinity;
@@ -241,6 +199,21 @@ export function Scene() {
     //     notActive: relativeIndex * angleStep,
     //     onHold: (i / total) * TWO_PI,
     // };
+    // useLayoutEffect(() => {
+    //     if (id === 'projets' && projectsRef.current) {
+    //         console.log('object');
+
+    //         // const delta = useThree((state) => state.clock.getDelta());
+    //         // console.log(delta);
+    //         // easing.damp3(
+    //         //     projectsRef.current.position,
+    //         //     [-100, -100, 0],
+    //         //     0.2,
+    //         //     delta
+    //         // );
+    //     }
+    // }, [projectsRef.current]);
+
     return (
         // <div
         //     id="canvas-container"
@@ -256,18 +229,16 @@ export function Scene() {
             dpr={window.devicePixelRatio}
             // camera={{ position: [0, 0, 5], fov: 70 }}
         >
-            {/* <HtmlContainer>
+            {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
+            {/* <HtmlContainer className="html-container" position={[0, 0, 0]}>
                 <aside
                     style={{
-                        position: 'relative',
-                        display: 'block',
-                        top: 0,
-                        height: '650px',
-                        width: '500px',
+                        transform: 'translate(-50%)',
+                        height: '500px',
+                        width: '600px',
                         background: 'rgba(255, 255, 255, 0.95)',
                     }}
                     // className="lateral-menu"
-                    className="html-container"
                 ></aside>
             </HtmlContainer> */}
             {/* <Html
@@ -314,33 +285,38 @@ export function Scene() {
 
             {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
             {/* <ScrollControls pages={4} infinite> */}
-            <group position={[0, 0.5, 0]}>
-                <mesh visible={SETTINGS.debug}>
-                    <boxGeometry
-                        args={[
-                            responsiveBoundaries.x,
-                            responsiveBoundaries.y,
-                            responsiveBoundaries.z,
-                        ]}
-                    />
-                    <meshStandardMaterial
-                        color={'orange'}
-                        transparent
-                        opacity={0.5}
-                        side={DoubleSide}
-                    />
-                </mesh>
-                {/* <Rig> */}
-                {/* <Rig rotation={[0, 0, 0.15]}> */}
-                <Carousel
-                    reducer={reducer}
-                    boundaries={responsiveBoundaries}
-                    datas={JSONDatas}
-                    SETTINGS={SETTINGS}
-                />
-                {/* </Rig> */}
+            {/* </group> 
+            // ref={projectsRef}
+            // position={
+            //     id === 'projets'
+            //         ? easing.damp3(
+            //               projectsRef?.current?.position,
+            //               ACTIVE_PROJECTS_POSITION,
+            //               0.2,
+            //               0.1
+            //           )
+            //         : easing.damp3(
+            //               projectsRef?.current?.position,
+            //               DEFAULT_PROJECTS_POSITION,
+            //               0.2,
+            //               0.1
+            //           )
+            // }
+            // position={ACTIVE_PROJECTS_POSITION}
+            // position={
+            //     id === 'projets'
+            //         ? ACTIVE_PROJECTS_POSITION
+            //         : DEFAULT_PROJECTS_POSITION
+            // }
+            >
+                {/* <Banner position={[0, -0.15, 0]} /> */}
 
-                {/* <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            {/* <Rig> */}
+            {/* <Rig rotation={[0, 0, 0.15]}> */}
+
+            {/* </Rig> */}
+
+            {/* <mesh rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[50, 50]} />
                     <MeshReflectorMaterial
                         blur={[300, 100]}
@@ -355,8 +331,13 @@ export function Scene() {
                         metalness={0.5}
                     />
                 </mesh> */}
-            </group>
-
+            {/* </group> */}
+            <Carousel
+                reducer={reducer}
+                boundaries={responsiveBoundaries}
+                datas={JSONDatas}
+                SETTINGS={SETTINGS}
+            />
             {/* <Banner position={[0, -0.15, 0]} /> */}
             {/* </ScrollControls> */}
             <Environment preset="dawn" background blur={0.5} />
@@ -367,6 +348,11 @@ export function Scene() {
     );
 }
 
+/**
+ * Gère la rotation max de la caméra -
+ * @param e
+ * @param active
+ */
 function onControlStart(e, active) {
     // e.target.azimuthAngle = 0;
 
