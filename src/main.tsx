@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import '@css/index.css';
 import '@css/Main.scss';
 import '@css/reset.css';
+import '@css/NavHeader.scss';
 import App from './App2.tsx';
 // import App from './App.tsx';
 import { Scene } from './components/3DComponents/Scene/Scene.js';
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'a-propos',
+                element: <Scene />,
                 // element: (
                 //     <Canvas camera={{ position: [0, 0, 0] }}>
                 //         {/* <ambientLight /> */}
@@ -30,8 +32,8 @@ const router = createBrowserRouter([
                 // ),
             },
             {
-                // path: ':id',
-                // element: <Room />,
+                path: ':id',
+                element: <Scene />,
             },
         ],
     },
@@ -56,6 +58,8 @@ export function Root(contentType) {
     return (
         <>
             <header className="main-container">
+                <button type="button">Close</button>
+
                 <nav>
                     {/* <Logo /> */}
                     <ul>
@@ -71,11 +75,20 @@ export function Root(contentType) {
                         <li>
                             <NavLink to="/a-propos">A Propos</NavLink>
                         </li>
+                        <li>
+                            <NavLink to="/projets">Mes Projets</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/contact">Me Contacter</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/more">More</NavLink>
+                        </li>
                     </ul>
                 </nav>
             </header>
             <App>{errorContent ? <PageError /> : <Outlet />}</App>
-            <App />
+            {/* <App /> */}
         </>
     );
 }
