@@ -168,7 +168,7 @@ export function handleActiveCardEffects(
     baseScale: number,
     { ...props }: CardProps
 ): void {
-    // Remove bending effect when active
+    // Remove bending effect
     if (props.bending > 0) {
         props.setBending((prev) => prev - props.delta);
     }
@@ -195,3 +195,18 @@ export function handleActiveCardEffects(
 //         reducer.updatePosition(card, newScale);
 //     }, 100);
 // }, [reducer, card]);
+
+// const measureContent = useMemo(
+//     () =>
+//         debounce((element: HTMLElement | null, currentScale: number) => {
+//             if (!element) return;
+//             console.log('object');
+//             measure(element, {
+//                 scaleRatio: currentScale,
+//                 setScaleRatio,
+//                 done,
+//                 setDone,
+//             });
+//         }, 100),
+//     [done]
+// );
