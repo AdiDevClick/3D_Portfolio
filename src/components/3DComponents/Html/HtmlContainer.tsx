@@ -9,6 +9,7 @@ type HtmlContainerTypes = {
     width: number;
     reducer: ReducerType;
     children: ReactNode;
+    dynamicContent?: boolean;
 };
 
 /**
@@ -18,6 +19,7 @@ type HtmlContainerTypes = {
 export function HtmlContainer({
     children,
     reducer,
+    dynamicContent = false,
     ...props
 }: HtmlContainerTypes) {
     const [scaleRatio, setScaleRatio] = useState(1);
@@ -52,8 +54,10 @@ export function HtmlContainer({
      * when out of the canvas -
      */
     useEffect(() => {
-        setDone(false);
-        frameCountRef.current = 0;
+        if (dynamicContent) {
+            setDone(false);
+            frameCountRef.current = 0;
+        }
     }, [children]);
 
     return (
@@ -61,6 +65,7 @@ export function HtmlContainer({
             ref={htmlRef}
             transform
             distanceFactor={1}
+            scale={0.7}
             style={{ '--data-custom-scale': scaleRatio }}
             {...props}
         >
