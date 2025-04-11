@@ -1,0 +1,61 @@
+$borderRadius: 0 50px 50px 0;
+
+header {
+    display: grid;
+    position: absolute;
+    height: 100%;
+    width: min(250px, 100%);
+    background-color: #333333e1;
+    text-align: center;
+    align-content: center;
+    z-index: 1000;
+    border-radius: $borderRadius;
+    overflow: hidden;
+
+    ul {
+        display: grid;
+        row-gap: 20px;
+
+        li {
+            cursor: pointer;
+        }
+
+        a {
+            color: white
+        }
+    }
+
+    button {
+        cursor: pointer;
+        height: 100%;
+        width: 20%;
+        position: absolute;
+        place-self: end;
+        // background-color: #333333e1;
+        color: transparent;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        // border-radius: $borderRadius;
+
+        &:hover {
+            background-color: #555555e1;
+        }
+
+        // &::after {
+        //     content: 'X';
+        //     position: absolute;
+        //     color: white;
+        //     font-size: 20px;
+        // }
+
+        &::before {
+            content: '≡';
+            position: absolute;
+            inset: 0;
+            place-self: center;
+            color: white;
+        }
+    }
+}
