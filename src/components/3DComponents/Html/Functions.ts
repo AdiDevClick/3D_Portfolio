@@ -24,7 +24,7 @@ export function measure(
     }
 
     const { width } = element.getBoundingClientRect();
-    const viewportWidth = element.clientWidth - 15;
+    const viewportWidth = element.clientWidth;
     const newRatio = viewportWidth / width;
 
     if (width !== viewportWidth && !done && scaleRatio !== newRatio) {
