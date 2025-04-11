@@ -2,6 +2,7 @@ type SpherePresenceTypes = {
     position: [number, number, number];
     radius: [number, number];
     color: string;
+    /** @defaultValue true */
     visible?: boolean;
 };
 
