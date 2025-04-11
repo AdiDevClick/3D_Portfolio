@@ -33,19 +33,6 @@ export function HtmlContainer({
     // });
     // const htmlRef = mergeRefs(html, observer);
 
-    const debouncedUpdateScale = useMemo(
-        () =>
-            debounce((scaleRatio: number) => {
-                // setScaleRatio(newScale);
-                measure(htmlRef.current, {
-                    scaleRatio,
-                    setScaleRatio,
-                    done,
-                    setDone,
-                });
-            }, 50),
-        []
-    );
     const measureContent = useMemo(
         () =>
             debounce((element: HTMLElement | null, currentScale: number) => {
@@ -96,24 +83,6 @@ export function HtmlContainer({
         </Html>
     );
 }
-// const relativePos = new Vector3().subVectors(camera.position, target);
-// const spherical = new Spherical();
-// spherical.setFromVector3(relativePos);
-// // Définir les limites à ±30° en radians
-// const minAzimuth = MathUtils.degToRad(-30);
-// const maxAzimuth = MathUtils.degToRad(30);
-
-// // On « clampe » l'azimut (theta) entre ces deux valeurs
-// spherical.theta = MathUtils.clamp(spherical.theta, minAzimuth, maxAzimuth);
-
-// // Reconvertir en coordonnées cartésiennes
-// const newRelativePos = new Vector3().setFromSpherical(spherical);
-
-// // La nouvelle position de la caméra est la cible plus la nouvelle position relative
-// camera.position.copy(target).add(newRelativePos);
-
-// // Si nécessaire, forcer le rafraîchissement des matrices
-// camera.updateMatrixWorld();
 
 const handleObserver = (mutationsList, observer) => {
     console.log(observer);
