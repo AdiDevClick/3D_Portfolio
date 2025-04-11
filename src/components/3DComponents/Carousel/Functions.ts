@@ -3,7 +3,10 @@
  */
 
 import { CardProps } from '@/components/3DComponents/Carousel/FunctionsTypes.ts';
-import { TWO_PI } from '@/configs/3DCarousel.config.ts';
+import {
+    DEFAULT_PROJECTS_POSITION,
+    TWO_PI,
+} from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { ThreeEvent } from '@react-three/fiber';
@@ -34,7 +37,9 @@ export function createCardProperties(
     ];
 
     const angle = (i / SETTINGS.CARDS_COUNT) * TWO_PI;
-    const position = SETTINGS.THREED ? new Vector3(100, 0, 500) : new Vector3();
+    const position = SETTINGS.THREED
+        ? DEFAULT_PROJECTS_POSITION
+        : new Vector3();
     const rotation = [0, angle, 0];
 
     const cardAngles = {
@@ -74,7 +79,6 @@ export function onClickHandler(
     reducer: ReducerType
 ): void {
     e.stopPropagation();
-    console.log(card);
     // Deny any other clicked elements if one is opened
     if (reducer.activeContent?.id === card.id) reducer.clickElement(card);
     if (!reducer.activeContent) reducer.clickElement(card);
@@ -180,6 +184,8 @@ export function handleActiveCardEffects(
         // easing.damp3(props.scale, 0.5, 0.15, props.delta);
     }
 }
+
+// export function handleCollisions(elementPosition, item, element);
 
 // const throttledUpdatedScale = useMemo(
 //     () =>
