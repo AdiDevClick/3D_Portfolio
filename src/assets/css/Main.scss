@@ -15,6 +15,7 @@
     --fs-big: 3rem;
     // --fs-big: 2.5em;
     // --fs-medium: 2em;
+    --fs-bigger-intermediate: 2rem;
     --fs-bigger-medium: 1.15rem;
     --fs-medium: 1rem;
     // --fs-regular: 1.6em;
@@ -64,7 +65,7 @@ canvas {
     // transform: scale(var(--data-custom-scale));
     // transform: translate(48%) scale(var(--data-custom-scale));
     scale: var(--data-custom-scale);
-    transition: scale 0.5s 0.1s;
+    transition: scale 0.5s;
     // transition: transform 0.3s ease, scale 0.3s ease;
     // animation: scaleFromZero 0.5s ease 0.3s both;
 
