@@ -19,7 +19,7 @@
     // width: 95vw;
     // width: calc(100vw * 2);
     // ok
-    width: clamp(10%, 100%, calc(100% - 48%));
+    width: clamp(min(52%, 100%), 100%, 52vw);
     // plus ok
     // width: clamp(550px, 100vw, 960px);
     max-height: 80vh;
@@ -35,20 +35,20 @@
     // transform: translate(0);
 
 
-    &::after {
-        content: "";
-        grid-column: 1 / 1;
-        grid-row: 1 / 1;
-        align-self: center;
-        justify-self: center;
-        background-color: red;
-        position: absolute;
-        // border: 2px solid black;
-        height: 30px;
-        width: 30px;
-        border-radius: 50%;
-        outline: 10px solid var(--bg-color)
-    }
+    // &::after {
+    //     content: "";
+    //     grid-column: 1 / 1;
+    //     grid-row: 1 / 1;
+    //     align-self: center;
+    //     justify-self: center;
+    //     background-color: red;
+    //     position: absolute;
+    //     // border: 2px solid black;
+    //     height: 30px;
+    //     width: 30px;
+    //     border-radius: 50%;
+    //     outline: 10px solid var(--bg-color)
+    // }
 
     // min-height: 650px;
     * {
@@ -109,26 +109,36 @@
     }
 
     @include for-size(tablet) {
-        width: clamp(10%, 100%, calc(100% - 30%));
+        // width: clamp(10%, 100%, calc(100% - 30%));
+        // width: clamp(min(52%, 100%), 100%, 52vw);
+
         background: red;
     }
 
     @include for-size(smalltablet) {
         transform: translate(0);
-        width: 95vw;
+        width: 100%;
+        // width: 95vw;
         background: blue;
     }
 
     @include for-size(mobile) {
+        grid-template-columns: 0.3fr 4fr 0.3fr;
         column-gap: 0;
+        padding: 20px 0;
         background: var(--dark-bg-color);
 
+        &__title {
+            font-size: var(--fs-bigger-intermediate);
+        }
+
         &__close {
-            // margin-right: 20px;
-            align-content: top;
+            // grid-column: 2;
+            // place-self: end;
+            margin-left: -15px;
 
             &::after {
-                place-self: unset;
+                place-self: end;
             }
         }
     }
