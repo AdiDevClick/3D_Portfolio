@@ -3,7 +3,7 @@ import { debounce } from '@/functions/promises.js';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { ReactNode, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 type HtmlContainerTypes = {
     width: number;
@@ -24,6 +24,7 @@ export function HtmlContainer({
     const [done, setDone] = useState(false);
 
     const htmlRef = useRef<HTMLElement>(null);
+    const frameCountRef = useRef(0);
     // const observer = useMutationObserver(handleObserver, measure, {
     //     scaleRatio,
     //     setScaleRatio,
@@ -34,15 +35,37 @@ export function HtmlContainer({
 
     const debouncedUpdateScale = useMemo(
         () =>
-            debounce((newScale: number) => {
-                setScaleRatio(newScale);
-            }, 15),
+            debounce((scaleRatio: number) => {
+                // setScaleRatio(newScale);
+                measure(htmlRef.current, {
+                    scaleRatio,
+                    setScaleRatio,
+                    done,
+                    setDone,
+                });
+            }, 50),
         []
+    );
+    const measureContent = useMemo(
+        () =>
+            debounce((element: HTMLElement | null, currentScale: number) => {
+                if (!element) return;
+                console.log('object');
+                measure(element, {
+                    scaleRatio: currentScale,
+                    setScaleRatio,
+                    done,
+                    setDone,
+                });
+            }, 100),
+        [done]
     );
 
     useFrame(() => {
-        if (done) return;
-        if (htmlRef.current) {
+        if (done || !htmlRef.current) return;
+        frameCountRef.current += 1;
+        // Update every 4 frames
+        if (frameCountRef.current % 4 === 0) {
             measure(htmlRef.current, {
                 scaleRatio,
                 setScaleRatio,
@@ -52,19 +75,21 @@ export function HtmlContainer({
         }
     });
 
+    /**
+     * In & Out animation for the HTML element
+     * when out of the canvas -
+     */
+    useEffect(() => {
+        setDone(false);
+        frameCountRef.current = 0;
+    }, [children]);
+
     return (
         <Html
-            // fullscreen
-            // portal={document.body.main}
-            // sprite
             ref={htmlRef}
             transform
             distanceFactor={1}
             style={{ '--data-custom-scale': scaleRatio }}
-            // style={{ ...(done ? { '--data-custom-scale': scaleRatio } : {}) }}
-            // rotatio n={[0, 3.2, 0]}
-            // anchorX={1}
-            // anchorY={1}
             {...props}
         >
             {children}
