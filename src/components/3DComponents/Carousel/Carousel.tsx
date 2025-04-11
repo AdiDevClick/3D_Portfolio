@@ -1,21 +1,14 @@
 import { useEffect, useId, useMemo, useRef } from 'react';
-import Card from '../Cards/CardContainer.js';
-import { DoubleSide, Mesh, Vector3 } from 'three';
-import { randFloat } from 'three/src/math/MathUtils.js';
+import { DoubleSide, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { MathPos } from '@/functions/positionning.ts';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
-import { Center, MeshReflectorMaterial, Text, Text3D } from '@react-three/drei';
-// import montserrat from '@assets/fonts/Montserrat_Regular.json';
-
-import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
-import CardContainer from '../Cards/CardContainer.js';
 import { TWO_PI } from '@/configs/3DCarousel.config.js';
 import { createCardProperties } from '@/components/3DComponents/Carousel/Functions.js';
-import { CardMainTitle } from '@/components/3DComponents/Cards/CardMainTitle.js';
+import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.js';
+import { ReducerType } from '@/hooks/reducers/carouselTypes.js';
 
 const collision = new Vector3();
 
@@ -27,7 +20,7 @@ const collision = new Vector3();
 // };
 interface CarouselProps {
     reducer: ReducerType;
-    boundaries: object;
+    boundaries: { x: number; y: number; z: number };
     datas: [];
     SETTINGS: SettingsType;
 }
@@ -36,16 +29,14 @@ export default function Carousel({
     datas,
     reducer,
     SETTINGS,
-    ...props
 }: CarouselProps) {
-    // Hook that has all panel control
-    // const settings = useSettings(datas);
-    const spherePresenceRef = useRef<Mesh>(null!);
-    const cardRef = useRef(null);
-
+    const frameCountRef = useRef(0);
     const id = useId();
 
-    const cards = useMemo(() => {
+    /**
+     * Création des propriétés des cartes -
+     */
+    const cardsMemo = useMemo(() => {
         return new Array(SETTINGS.CARDS_COUNT)
             .fill(null)
             .map((_, i, self) =>
@@ -64,22 +55,20 @@ export default function Carousel({
      */
     useEffect(() => {
         const currentIds = reducer.showElements.map((el) => el.id);
-        cards.forEach((card) => {
-            console.log(card);
+        cardsMemo.forEach((card) => {
             if (!currentIds.includes(card.id)) {
                 reducer.addElements(card);
             } else {
                 reducer.updateElements(card);
             }
         });
-        if (cards.length < reducer.showElements.length) {
-            reducer.deleteElements(cards);
+        if (cardsMemo.length < reducer.showElements.length) {
+            reducer.deleteElements(cardsMemo);
         }
-    }, [cards]);
+    }, [cardsMemo]);
 
     useFrame((state, delta) => {
-        // const helper = new AxesHelper(5);
-        // state.scene.add(helper);
+        frameCountRef.current += 1;
         // Grab existing active card in the index
         const activeCard = reducer.showElements.findIndex(
             (el) => el.isActive || el.isClicked
@@ -122,7 +111,6 @@ export default function Carousel({
                 // If no active cards, we spread them all on the ring
                 positions = MathPos(onHold, SETTINGS.CONTAINER_SCALE);
                 targetRotationY = onHold;
-                // targetRotationY = onHold + Math.PI;
 
                 // Calculating collisions
                 if (SETTINGS.COLLISIONS) {
@@ -169,130 +157,17 @@ export default function Carousel({
                             }
                         }
                     });
-
-                    // for (let index = 0; index < reducer.showElements.length; index++) {
-                    //     const actualItem = reducer.showElements[index];
-                    //     // const sides = getSidesPositions(
-                    //     //     actualItem.ref.current,
-                    //     //     actualItem.ref
-                    //     // );
-                    //     collision.multiplyScalar(0);
-                    //     // actualItem.width = actualItem.ref.current
-                    //     reducer.showElements.forEach((c, i) => {
-                    //         if (index === i) {
-                    //             return;
-                    //         }
-                    //         if (actualItem.ref && c.ref) {
-                    //             const othersCardPosition = c.ref.current.position;
-                    //             const actualCardPosition =
-                    //                 actualItem.ref.current.position;
-                    //             const inRangeItem =
-                    //                 actualCardPosition.distanceTo(othersCardPosition) -
-                    //                 effectiveRadius(actualItem, c);
-                    //             /**
-                    //              * General collision -
-                    //              * Checks if any item collide
-                    //              */
-                    //             if (
-                    //                 inRangeItem <= 0 &&
-                    //                 i !== index + 1 &&
-                    //                 i !== index - 1
-                    //             ) {
-                    //                 console.log(
-                    //                     'There is collision between some cards'
-                    //                 );
-                    //             }
-                    //             const neighborDistance = Math.abs(inRangeItem);
-                    //             const margin = 0.2;
-                    //             /**
-                    //              * Collision between 2 close items
-                    //              */
-                    //             if (isNeighbor(index, i)) {
-                    //                 if (c.isActive) {
-                    //                     return easing.damp3(
-                    //                         c.ref.current.position,
-                    //                         [0, 0, 0], // Position cible pendant le hover
-                    //                         0.15,
-                    //                         delta
-                    //                     );
-                    //                 } else {
-                    //                     easing.damp3(
-                    //                         c.ref.current.position,
-                    //                         c.position,
-                    //                         0.15,
-                    //                         delta
-                    //                     );
-                    //                 }
-                    //                 const angleStep =
-                    //                     MathPI / reducer.showElements.length; // Espacement angulaire uniforme
-                    //                 const currentAngle = i * angleStep; // Angle pour chaque carte
-                    //                 if (inRangeItem > c.presenceRadius + margin) {
-                    //                     // c.ref.current.position.set(
-                    //                     //     Math.sin(
-                    //                     //         (i / reducer.showElements.length) * MathPI
-                    //                     //     ) * settings.CONTAINER_SCALE,
-                    //                     //     0,
-                    //                     //     Math.cos(
-                    //                     //         (i / reducer.showElements.length) * MathPI
-                    //                     //     ) * settings.CONTAINER_SCALE
-                    //                     // );
-                    //                     easing.damp3(
-                    //                         c.ref.current.position,
-                    //                         [
-                    //                             Math.sin(
-                    //                                 (i / reducer.showElements.length) *
-                    //                                     MathPI
-                    //                             ) * settings.CONTAINER_SCALE,
-                    //                             0,
-                    //                             Math.cos(
-                    //                                 (i / reducer.showElements.length) *
-                    //                                     MathPI
-                    //                             ) * settings.CONTAINER_SCALE,
-                    //                         ],
-                    //                         //   [position.x, position.y, position.z - 1],
-                    //                         0.15,
-                    //                         delta
-                    //                     );
-                    //                     // c.ref.current.position.set(
-                    //                     //     Math.sin(currentAngle) *
-                    //                     //         settings.CONTAINER_SCALE,
-                    //                     //     0,
-                    //                     //     Math.cos(currentAngle) *
-                    //                     //         settings.CONTAINER_SCALE
-                    //                     // );
-                    //                     console.log(
-                    //                         'Repositionnement des cartes pour combler le vide.'
-                    //                     );
-                    //                     // set({
-                    //                     //     CONTAINER_SCALE:
-                    //                     //         settings.CONTAINER_SCALE - 0.01,
-                    //                     // });
-                    //                 } else if (
-                    //                     inRangeItem <=
-                    //                     c.presenceRadius - margin
-                    //                 ) {
-                    //                     set({
-                    //                         CONTAINER_SCALE:
-                    //                             settings.CONTAINER_SCALE + 0.01,
-                    //                     });
-                    //                     console.log(
-                    //                         "Les cartes sont trop proches, ajustement de l'anneau."
-                    //                     );
-                    //                 }
-                    //             }
-                    //         }
-                    //     });
-                    // }
                 }
             }
 
-            // If no 3D activated we go back in the center
+            // If no 3D activated we go back to the center
             if (!SETTINGS.THREED) positions = [0, 0, 0];
-
             // Animating the new positions and rotations
+            // if (frameCountRef.current % 2 === 0) {
             easing.damp3(position, positions, 0.15, delta);
             easing.damp(rotation, 'y', targetRotationY, 0.15, delta);
             // easing.damp(rotation, 'y', card.cardAngles?.onHold, 0.15, delta);
+            // }
         });
 
         // if (reducer.activeContent?.isClicked) {
@@ -327,33 +202,20 @@ export default function Carousel({
         // }
     });
 
-    return reducer.showElements.map((card, i) => (
-        <CardContainer
-            ref={cardRef}
-            key={id + i}
-            card={card}
-            presenceRadius={SETTINGS.PRESENCE_RADIUS * card.baseScale}
-            reducer={reducer}
-            {...SETTINGS}
-        >
-            <mesh ref={spherePresenceRef} visible={SETTINGS.PRESENCE_CIRCLE}>
-                <sphereGeometry
-                    args={[SETTINGS.PRESENCE_RADIUS * card.baseScale, 32]}
+    return (
+        <group>
+            <mesh visible={SETTINGS.debug}>
+                <boxGeometry
+                    args={[boundaries.x, boundaries.y, boundaries.z]}
                 />
-                <meshBasicMaterial color={'red'} wireframe />
-            </mesh>
-
-            {SETTINGS.CARD_WIREFRAME && (
-                <meshBasicMaterial
-                    visible={SETTINGS.CARD_WIREFRAME}
-                    wireframe
+                <meshStandardMaterial
+                    color={'orange'}
+                    transparent
+                    opacity={0.5}
                     side={DoubleSide}
                 />
-            )}
-
-            {card.ref?.current && (
-                <CardMainTitle reducer={reducer} card={card} />
-            )}
-        </CardContainer>
-    ));
+            </mesh>
+            <CardContainer reducer={reducer} SETTINGS={SETTINGS} />
+        </group>
+    );
 }
