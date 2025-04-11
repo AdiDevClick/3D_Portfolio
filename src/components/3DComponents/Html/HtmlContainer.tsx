@@ -33,21 +33,6 @@ export function HtmlContainer({
     // });
     // const htmlRef = mergeRefs(html, observer);
 
-    const measureContent = useMemo(
-        () =>
-            debounce((element: HTMLElement | null, currentScale: number) => {
-                if (!element) return;
-                console.log('object');
-                measure(element, {
-                    scaleRatio: currentScale,
-                    setScaleRatio,
-                    done,
-                    setDone,
-                });
-            }, 100),
-        [done]
-    );
-
     useFrame(() => {
         if (done || !htmlRef.current) return;
         frameCountRef.current += 1;
