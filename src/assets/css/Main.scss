@@ -54,8 +54,7 @@ canvas {
 @include property("data-custom-scale", "<number>", false, 1);
 
 /* Html main Content */
-.html-container,
-.html-container>* {
+.html-container {
     // width: 920px;
     // height: 100%;
     // overflow: hidden;
