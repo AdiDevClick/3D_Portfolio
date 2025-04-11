@@ -55,33 +55,8 @@ canvas {
 
 /* Html main Content */
 .html-container {
-    // width: 920px;
-    // height: 100%;
-    // overflow: hidden;
-    // width: 960px;
-    // height: 100%;
-    // transform: translate(48%);
-    // transform: scale(var(--data-custom-scale));
-    // transform: translate(48%) scale(var(--data-custom-scale));
     scale: var(--data-custom-scale);
     transition: scale 0.5s;
-    // transition: transform 0.3s ease, scale 0.3s ease;
-    // animation: scaleFromZero 0.5s ease 0.3s both;
-
-
-
-    // >:has([data-custom-scale]) {
-    //     transform: scale(var(--data-custom-scale));
-    // }
-
-    // transform: scale($scale) translate(48%);
-    // transform: scale(clamp($min-scale,
-    //             var(--compensation-scale),
-    //             $max-scale ));
-    // grid-template-rows: max-content auto;
-}
-
-.html-container {
     transform: translate(48%);
 
     @include for-size(smalltablet) {
