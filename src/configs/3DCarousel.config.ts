@@ -1,3 +1,5 @@
+import { Vector3 } from 'three';
+
 /**
  * Configuration initiale du carousel -
  * !! IMPORTANT !! CARD_COUNT.value sera remplacé par l'array d'image
@@ -59,7 +61,6 @@ export const presenceSettings = {
     CARD_WIREFRAME: false,
 };
 
-export const TWO_PI = Math.PI * 2;
 /*****************
  * MOBILE
  ***********/
@@ -67,9 +68,9 @@ export const TWO_PI = Math.PI * 2;
 /** Position du titre 3D */
 export const MOBILE_TITLE_POSITION = [0, -1.2, 0.05];
 /** Position du conteneur HTML */
-export const MOBILE_CONTAINER_POSITION = [0, -1.5, 0.05];
+export const MOBILE_HTML_CONTAINER_POSITION = [0, -1.5, 0.05];
 /** Rotation du conteneur HTML */
-export const MOBILE_CONTAINER_ROTATION = [0, 0.1, 0];
+export const MOBILE_HTML_CONTAINER_ROTATION = [0, 0.1, 0];
 
 /*****************
  * DESKTOP
@@ -80,9 +81,21 @@ export const MOBILE_CONTAINER_ROTATION = [0, 0.1, 0];
 /** Position du titre 3D */
 export const DESKTOP_TITLE_POSITION = [0, 1.1, 0.15];
 /** Depth du conteneur HTML */
-export const DESKTOP_CONTAINER_DEPTH = 0.05;
+export const DESKTOP_HTML_CONTAINER_DEPTH = 0.05;
 /** Rotation du conteneur HTML */
-export const DESKTOP_CONTAINER_ROTATION = [0, 0, 0];
+export const DESKTOP_HTML_CONTAINER_ROTATION = [0, 0, 0];
+
+/**
+ * DEFAULTS POSITIONNINGS -
+ */
+
+/** Default carousel position on loading page */
+export const DEFAULT_PROJECTS_POSITION = new Vector3(0, -100, 0);
+// export const DEFAULT_PROJECTS_POSITION = new Vector3(0, -100, 0);
+export const ACTIVE_PROJECTS_POSITION = [0, 0.15, 0];
+
+/** Default camera position on loading page */
+export const DEFAULT_CAMERA_POSITION = new Vector3(0, 0, -20);
 
 /*****************
  * GENERAL SETTINGS
@@ -90,3 +103,6 @@ export const DESKTOP_CONTAINER_ROTATION = [0, 0, 0];
 
 /** On Hover card scale */
 export const CARD_HOVER_SCALE = 1.15;
+
+/** Double PI for common purposes */
+export const TWO_PI = Math.PI * 2;
