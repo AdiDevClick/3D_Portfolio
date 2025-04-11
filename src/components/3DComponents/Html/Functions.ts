@@ -24,12 +24,14 @@ export function measure(
     }
 
     const { width } = element.getBoundingClientRect();
-    const viewportWidth = element.clientWidth;
+    const viewportWidth = element.clientWidth - 15;
     const newRatio = viewportWidth / width;
 
-    if (width !== viewportWidth && newRatio !== scaleRatio && !done) {
+    if (width !== viewportWidth && !done && scaleRatio !== newRatio) {
+        setDone(true);
         setScaleRatio(newRatio);
-    } else if (!done) {
+        // setScaleRatio((prev) => (prev < newRatio ? newRatio : prev));
+    } else {
         setDone(true);
     }
 }
