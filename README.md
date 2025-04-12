@@ -121,7 +121,7 @@ export const SETTINGS = {
 
 ## 🔜 Améliorations Prévues
 
-- [ ] Optimisation des performances
+- [x] Optimisation des performances
 - [ ] Nouveaux effets de transition
 - [ ] Amélioration du système de collision
 - [ ] Support pour plus de types de contenu
