@@ -3,32 +3,47 @@ $borderRadius: 0 50px 50px 0;
 header {
     display: grid;
     position: absolute;
+    z-index: 1000;
     height: 100%;
-    width: min(250px, 100%);
+    width: 100%;
+    max-width: min(250px, 100%);
     background-color: #333333e1;
     text-align: center;
     align-content: center;
-    z-index: 1000;
     border-radius: $borderRadius;
     overflow: hidden;
+    transition: max-width 0.3s ease;
 
-    ul {
-        display: grid;
-        row-gap: 20px;
+    >nav {
+        transition: opacity 0.3s ease-in-out;
 
-        li {
-            cursor: pointer;
+        >ul {
+            display: grid;
+            row-gap: 20px;
+
+            li {
+                cursor: pointer;
+            }
+
+            a {
+                color: white;
+            }
         }
+    }
 
-        a {
-            color: white
+    &.active {
+        max-width: min(50px, 100%);
+
+        >nav {
+            opacity: 0;
+            transition: opacity 0.1s ease
         }
     }
 
     button {
         cursor: pointer;
         height: 100%;
-        width: 20%;
+        width: 50px;
         position: absolute;
         place-self: end;
         // background-color: #333333e1;
