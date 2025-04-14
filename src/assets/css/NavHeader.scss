@@ -12,7 +12,8 @@ header {
     align-content: center;
     border-radius: $borderRadius;
     overflow: hidden;
-    transition: max-width 0.3s ease;
+    transform: translate(0);
+    transition: max-width 0.3s;
 
     >nav {
         transition: opacity 0.3s ease-in-out;
@@ -40,6 +41,19 @@ header {
         }
     }
 
+    &.closed {
+        // animation: forwards slideToLeft 0.3s;
+        // position: fixed;
+        // transform: translate3d(calc(-100% + 50px), 0, 0);
+        left: -200px;
+    }
+
+    &.opened {
+        // left: 0;
+        // animation: forwards slideToRight 0.3s;
+        // transform: translate3d(0, 0, 0);
+    }
+
     button {
         cursor: pointer;
         height: 100%;
@@ -49,7 +63,7 @@ header {
         // background-color: #333333e1;
         color: transparent;
         border: none;
-        padding: 10px 20px;
+        // padding: 10px 20px;
         font-size: 16px;
         transition: background-color 0.3s ease;
         // border-radius: $borderRadius;
