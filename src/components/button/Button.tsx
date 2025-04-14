@@ -19,6 +19,7 @@ type ButtonProps = {
  */
 export function Button({
     children,
+    ref,
     onClick,
     onMouseEnter,
     onTouchStart,
@@ -37,13 +38,15 @@ export function Button({
 
     return (
         <button
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onDragStart={handleDragStart}
-            onTouchEnd={onTouchEnd}
-            onTouchCancel={onTouchCancel}
+            ref={ref}
+            // onTouchStart={onTouchStart}
+            // onTouchMove={onTouchMove}
+            // onDragStart={handleDragStart}
+            // onTouchEnd={onTouchEnd}
+            // onTouchCancel={onTouchCancel}
             onMouseEnter={onClick}
             onClick={onClick}
+            // draggable={false}
             {...props}
         >
             {children}
