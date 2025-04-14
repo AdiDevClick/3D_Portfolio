@@ -2,12 +2,16 @@
  * CAROUSEL FUNCTIONS
  */
 
-import { CardProps } from '@/components/3DComponents/Carousel/FunctionsTypes.ts';
+import {
+    CardProps,
+    CollisionConfig,
+} from '@/components/3DComponents/Carousel/FunctionsTypes.ts';
 import {
     DEFAULT_PROJECTS_POSITION,
     TWO_PI,
 } from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
+import { isNeighbor } from '@/functions/collisions.ts';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -185,6 +189,55 @@ export function handleActiveCardEffects(
     }
 }
 
+const DEFAULT_COLLISION_CONFIG: CollisionConfig = {
+    margin: 0.4,
+    deltaScale: 0.1,
+    minScaleDifference: 0.001,
+};
+
+/**
+ * Calcul des collisions entre éléments voisins
+ */
+export function handleNeighborCollision(
+    currentIndex: number,
+    neighborIndex: number,
+    inRangeDistance: number,
+    presenceRadius: number,
+    containerScale: number,
+    config: CollisionConfig = DEFAULT_COLLISION_CONFIG
+): number | null {
+    if (!isNeighbor(currentIndex, neighborIndex)) {
+        return null;
+    }
+
+    let targetScale = containerScale;
+
+    if (inRangeDistance > presenceRadius + config.margin) {
+        targetScale = containerScale - config.deltaScale;
+    } else if (inRangeDistance <= presenceRadius - config.margin) {
+        targetScale = containerScale + config.deltaScale;
+    }
+
+    const scaleDifference = Math.abs(targetScale - containerScale);
+    return scaleDifference > config.minScaleDifference ? targetScale : null;
+}
+
+/**
+ * Calcul des collisions entre éléments du Radius
+ */
+export function handleCollisions(
+    currentIndex: number,
+    neighborIndex: number,
+    inRangeDistance: number
+): void {
+    if (
+        inRangeDistance <= 0 &&
+        neighborIndex !== currentIndex + 1 &&
+        neighborIndex !== currentIndex - 1
+    ) {
+        console.log('There is collision between some cards');
+    }
+}
 // export function handleCollisions(elementPosition, item, element);
 
 // const throttledUpdatedScale = useMemo(
