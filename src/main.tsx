@@ -3,13 +3,14 @@ import { createRoot } from 'react-dom/client';
 import '@css/index.css';
 import '@css/Main.scss';
 import '@css/reset.css';
-import '@css/NavHeader.scss';
 import App from './App2.tsx';
 // import App from './App.tsx';
 import { Scene } from './components/3DComponents/Scene/Scene.js';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, NavLink, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
+import { Button } from '@/components/button/Button.tsx';
+import { Header } from '@/components/header/Header.tsx';
 
 const router = createBrowserRouter([
     {
@@ -21,16 +22,16 @@ const router = createBrowserRouter([
                 index: true,
                 element: <Scene />,
             },
-            {
-                path: 'a-propos',
-                element: <Scene />,
-                // element: (
-                //     <Canvas camera={{ position: [0, 0, 0] }}>
-                //         {/* <ambientLight /> */}
-                //         <Experience />
-                //     </Canvas>
-                // ),
-            },
+            // {
+            //     path: 'a-propos',
+            //     element: <Scene />,
+            //     // element: (
+            //     //     <Canvas camera={{ position: [0, 0, 0] }}>
+            //     //         {/* <ambientLight /> */}
+            //     //         <Experience />
+            //     //     </Canvas>
+            //     // ),
+            // },
             {
                 path: ':id',
                 element: <Scene />,
@@ -57,36 +58,7 @@ export function Root(contentType) {
     }
     return (
         <>
-            <header className="main-container">
-                <button type="button">Close</button>
-
-                <nav>
-                    {/* <Logo /> */}
-                    <ul>
-                        <li>
-                            <NavLink
-                                id="home-link"
-                                aria-labelledby="home-link-text"
-                                to="/"
-                            >
-                                <span id="home-link-text">Accueil</span>
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/a-propos">A Propos</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/projets">Mes Projets</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/contact">Me Contacter</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/more">More</NavLink>
-                        </li>
-                    </ul>
-                </nav>
-            </header>
+            <Header />
             <App>{errorContent ? <PageError /> : <Outlet />}</App>
             {/* <App /> */}
         </>
