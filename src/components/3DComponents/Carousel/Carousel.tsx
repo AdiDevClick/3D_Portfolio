@@ -6,7 +6,10 @@ import { MathPos } from '@/functions/positionning.ts';
 import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { TWO_PI } from '@/configs/3DCarousel.config.js';
-import { createCardProperties } from '@/components/3DComponents/Carousel/Functions.js';
+import {
+    createCardProperties,
+    handleNeighborCollision,
+} from '@/components/3DComponents/Carousel/Functions.js';
 import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.js';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.js';
 
@@ -121,38 +124,21 @@ export default function Carousel({
                             effectiveRadius(item, element);
 
                         // General collision - Checks if any item collide
-                        // if (
-                        //     inRangeItem <= 0 &&
-                        //     index !== i + 1 &&
-                        //     index !== i - 1
-                        // ) {
-                        //     console.log(
-                        //         'There is collision between some cards'
-                        //     );
-                        // }
-                        const margin = 0.4;
-                        const deltaScale = 0.01;
-                        let targetScale = SETTINGS.CONTAINER_SCALE;
+                        // handleCollisions(i, index, inRangeItem);
 
-                        // Collision between 2 items
-                        if (isNeighbor(i, index)) {
-                            if (inRangeItem > element.presenceRadius + margin) {
-                                targetScale =
-                                    SETTINGS.CONTAINER_SCALE - deltaScale;
-                            } else if (
-                                inRangeItem <=
-                                element.presenceRadius - margin
-                            ) {
-                                targetScale =
-                                    SETTINGS.CONTAINER_SCALE + deltaScale;
-                            }
-                            if (
-                                Math.abs(
-                                    targetScale - SETTINGS.CONTAINER_SCALE
-                                ) > 0.001
-                            ) {
+                        // Collision handler
+                        if (frameCountRef.current % 10 === 0) {
+                            const newScale = handleNeighborCollision(
+                                i,
+                                index,
+                                inRangeItem,
+                                element.presenceRadius,
+                                SETTINGS.CONTAINER_SCALE
+                            );
+
+                            if (newScale !== null) {
                                 SETTINGS.set({
-                                    CONTAINER_SCALE: targetScale,
+                                    CONTAINER_SCALE: newScale,
                                 });
                             }
                         }
