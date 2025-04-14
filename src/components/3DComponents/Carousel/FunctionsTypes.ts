@@ -13,3 +13,9 @@ export interface CardProps {
     scale: Vector3;
     width: number;
 }
+
+export interface CollisionConfig {
+    margin: number;
+    deltaScale: number;
+    minScaleDifference: number;
+}
