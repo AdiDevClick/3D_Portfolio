@@ -1,5 +1,4 @@
 import { TouchEventProps } from '@/hooks/Touch/useTouchEventsTypes.ts';
-import { colorsGraph } from 'node_modules/r3f-perf/dist/components/Perf';
 import {
     MouseEvent,
     RefObject,
@@ -72,7 +71,7 @@ export function useTouchEvents(
                 abortControllerRef.current?.abort();
             };
         },
-        [node, props]
+        [props]
         // [origin, lastTranslate]
     );
     // return {};
@@ -184,6 +183,10 @@ function drag(e, element: HTMLElement, { ...props }: TouchEventProps) {
         console.log('je ne peux pas bouger');
         return;
     }
+    if (translate.x < 0 && offsets.left < 0) {
+        console.log(props.elementSize.width);
+        // return;
+    }
     // props.transitionElement.current.classList.remove('closed');
 
     props.setLastTranslate(translate);
@@ -218,7 +221,7 @@ function endDrag(
 
     if (
         props.isMoving &&
-        Math.abs(props.lastTranslate.x / props.elementSize.width) > 0.1
+        Math.abs(props.lastTranslate.x / props.elementSize.width) > 0.2
     ) {
         let options = {};
 
@@ -242,6 +245,12 @@ function endDrag(
             { once: true }
         );
         // props.transitionElement.current.classList.toggle('active');
+    } else {
+        translateElement(
+            props.transitionElement.current,
+            0,
+            props.lastTranslate.x / props.elementSize.width
+        );
     }
     // if (
     //     props.isMoving &&
