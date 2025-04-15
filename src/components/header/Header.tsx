@@ -17,54 +17,6 @@ export function Header({ ...props }) {
         setClicked(!clicked);
     };
 
-    const onTouchStart = (e: TouchEvent<HTMLButtonElement>) => {
-        console.log('ca commence');
-        if (e.targetTouches) {
-            if (e.targetTouches.length > 1) {
-                e.preventDefault();
-            } else {
-                if (e.target === e.targetTouches[0].target) {
-                    setClicked(true);
-                }
-                e = e.targetTouches[0];
-            }
-        }
-        setOrigin((prev) => ({ x: e.screenX, y: e.screenY }));
-        disableTransition(headerRef.current);
-    };
-
-    const onTouchMove = (e: TouchEvent<HTMLButtonElement>) => {
-        if (origin) {
-            console.log('je bouge');
-            const pressionPoint = e.targetTouches[0];
-            const translate = {
-                x: pressionPoint.screenX - origin.x,
-                y: pressionPoint.screenY - origin.y,
-            };
-            if (
-                e.targetTouches &&
-                Math.abs(translate.x) > Math.abs(translate.y)
-            ) {
-                if (e.cancelable) e.preventDefault();
-                e.stopPropagation();
-                setClicked(false);
-            }
-            const baseWidth = headerRef.current.clientWidth / 100;
-            // console.log(translate);
-            headerRef.current.style.width = `${baseWidth + translate.x}px`;
-            // headerRef.current.style.width = `translate(${translate.x}px, ${translate.y}px)`;
-            setIsMoving(true);
-        }
-    };
-
-    const onTouchEnd = (e: TouchEvent<HTMLButtonElement>) => {
-        console.log('je ne touche plus');
-    };
-
-    const onTouchCancel = (e: TouchEvent<HTMLButtonElement>) => {
-        console.log('Je cancel mon touch');
-    };
-
     useTouchEvents(buttonRef, headerRef);
     // const handleDrag = useTouchEvents();
 
@@ -82,10 +34,6 @@ export function Header({ ...props }) {
                 {...props}
                 onClick={handleClick}
                 onMouseEnter={handleClick}
-                // onTouchStart={onTouchStart}
-                // onTouchMove={onTouchMove}
-                // onTouchEnd={onTouchEnd}
-                // onTouchCancel={onTouchCancel}
             >
                 Open
             </Button>
