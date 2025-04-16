@@ -164,41 +164,6 @@ export function Scene() {
             }
         }
     }, [reducer.activeContent, size]);
-    // useFrame(() => {
-    // if (reducer.activeContent?.isClicked && controlsRef.current) {
-    //     const controls = controlsRef.current;
-    //     // On récupère la cible des contrôles : selon la version, cela peut être controls.target ou controls._target
-    //     const target = controls.target || controls._target;
-    //     if (!target) return;
-    //     // Calculer la position relative (en coordonnées sphériques)
-    //     const relativePos = new Vector3().subVectors(
-    //         controls.camera.position,
-    //         target
-    //     );
-    //     const spherical = new Spherical().setFromVector3(relativePos);
-    //     // Angle de référence de l'objet cliqué ; par exemple :
-    //     const cardAngle = reducer.activeContent.cardAngles.active;
-    //     const minAngular = cardAngle + MathUtils.degToRad(-30);
-    //     const maxAngular = cardAngle + MathUtils.degToRad(30);
-    //     // Forcer l'angle theta dans ces limites
-    //     spherical.theta = MathUtils.clamp(
-    //         spherical.theta,
-    //         minAngular,
-    //         maxAngular
-    //     );
-    //     // Calculer la nouvelle position de la caméra
-    //     const newRelativePos = new Vector3().setFromSpherical(spherical);
-    //     const forcedPos = target.clone().add(newRelativePos);
-    //     // Pour éviter les sauts brutaux, on pourrait interpoler la position actuelle vers forcedPos
-    //     controls.camera.position.lerp(forcedPos, 0.1);
-    //     controls.camera.updateMatrixWorld();
-    // }
-    // });
-    // activeCardAngles = {
-    //     active: Math.atan2(item.position.x, item.position.z),
-    //     notActive: relativeIndex * angleStep,
-    //     onHold: (i / total) * TWO_PI,
-    // };
     // useLayoutEffect(() => {
     //     if (id === 'projets' && projectsRef.current) {
     //         console.log('object');
