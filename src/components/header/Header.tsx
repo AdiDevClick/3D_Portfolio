@@ -14,11 +14,11 @@ export function Header({ ...props }) {
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        e.stopPropagation();
         setClicked(!clicked);
     };
 
     useTouchEvents(buttonRef, headerRef);
-    // const handleDrag = useTouchEvents();
 
     const active = clicked ? 'active' : '';
 
@@ -27,13 +27,13 @@ export function Header({ ...props }) {
             ref={headerRef}
             {...props}
             className={`main-container ${active}`}
+            onMouseEnter={handleClick}
         >
             <Button
                 ref={buttonRef}
                 type="button"
                 {...props}
                 onClick={handleClick}
-                onMouseEnter={handleClick}
             >
                 Open
             </Button>
