@@ -1,17 +1,22 @@
-import { useEffect, useId, useMemo, useRef } from 'react';
+import { useEffect, useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { DoubleSide, Vector3 } from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { easing } from 'maath';
 import { MathPos } from '@/functions/positionning.ts';
 import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
-import { TWO_PI } from '@/configs/3DCarousel.config.js';
+import {
+    ACTIVE_PROJECTS_POSITION,
+    DEFAULT_PROJECTS_POSITION,
+    TWO_PI,
+} from '@/configs/3DCarousel.config.js';
 import {
     createCardProperties,
     handleNeighborCollision,
 } from '@/components/3DComponents/Carousel/Functions.js';
 import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.js';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.js';
+import { useParams } from 'react-router';
 
 const collision = new Vector3();
 
@@ -34,6 +39,9 @@ export default function Carousel({
     SETTINGS,
 }: CarouselProps) {
     const frameCountRef = useRef(0);
+    const projectsRef = useRef(null);
+
+    const urlParams = useParams();
     const id = useId();
 
     /**
@@ -69,6 +77,22 @@ export default function Carousel({
             reducer.deleteElements(cardsMemo);
         }
     }, [cardsMemo]);
+
+    // useLayoutEffect(() => {
+    //     console.log(urlParams);
+    //     if (urlParams.id === 'projets' && projectsRef.current) {
+    //         console.log('object');
+
+    //         const delta = useThree((state) => state.clock.getDelta());
+    //         console.log(delta);
+    //         easing.damp3(
+    //             projectsRef.current.position,
+    //             [-100, -100, 0],
+    //             0.2,
+    //             delta
+    //         );
+    //     }
+    // }, [urlParams]);
 
     useFrame((state, delta) => {
         frameCountRef.current += 1;
@@ -186,10 +210,29 @@ export default function Carousel({
         //     controls.camera.position.lerp(forcedPos, 0.1);
         //     controls.camera.updateMatrixWorld();
         // }
+        // if (frameCountRef.current % 2 === 0) {
+        if (projectsRef.current) {
+            switch (urlParams.id) {
+                case 'projets':
+                    return easing.damp3(
+                        projectsRef.current.position,
+                        ACTIVE_PROJECTS_POSITION,
+                        0.2,
+                        delta
+                    );
+                default:
+                    return easing.damp3(
+                        projectsRef.current.position,
+                        DEFAULT_PROJECTS_POSITION,
+                        0.2,
+                        delta
+                    );
+            }
+        }
     });
 
     return (
-        <group>
+        <group ref={projectsRef} position={DEFAULT_PROJECTS_POSITION}>
             <mesh visible={SETTINGS.debug}>
                 <boxGeometry
                     args={[boundaries.x, boundaries.y, boundaries.z]}
