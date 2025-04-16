@@ -10,8 +10,10 @@ import { DEFAULT_CARD_POSITION, TWO_PI } from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { isNeighbor } from '@/functions/collisions.ts';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import { useCursor } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
+import { Navigate } from 'react-router';
 import { Euler, Vector3 } from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
 
@@ -75,12 +77,17 @@ export function createCardProperties(
 export function onClickHandler(
     e: ThreeEvent<MouseEvent>,
     card: ElementType,
-    reducer: ReducerType
+    reducer: ReducerType,
+    location: string,
+    navigate: (path: string, options: any) => void
 ): void {
     e.stopPropagation();
     // Deny any other clicked elements if one is opened
     if (reducer.activeContent?.id === card.id) reducer.clickElement(card);
     if (!reducer.activeContent) reducer.clickElement(card);
+    navigate(location, {
+        replace: true,
+    });
     // reducer.animate(card, 'dropoff');
     // navigate('/error/page');
     // return <Navigate to={'/error/page'} replace={true} />;
