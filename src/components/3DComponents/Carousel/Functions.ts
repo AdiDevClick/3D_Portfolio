@@ -6,10 +6,7 @@ import {
     CardProps,
     CollisionConfig,
 } from '@/components/3DComponents/Carousel/FunctionsTypes.ts';
-import {
-    DEFAULT_PROJECTS_POSITION,
-    TWO_PI,
-} from '@/configs/3DCarousel.config.ts';
+import { DEFAULT_CARD_POSITION, TWO_PI } from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { isNeighbor } from '@/functions/collisions.ts';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
@@ -41,9 +38,7 @@ export function createCardProperties(
     ];
 
     const angle = (i / SETTINGS.CARDS_COUNT) * TWO_PI;
-    const position = SETTINGS.THREED
-        ? DEFAULT_PROJECTS_POSITION
-        : new Vector3();
+    const position = SETTINGS.THREED ? DEFAULT_CARD_POSITION : new Vector3();
     const rotation = [0, angle, 0];
 
     const cardAngles = {
