@@ -90,9 +90,9 @@ export const DESKTOP_HTML_CONTAINER_ROTATION = [0, 0, 0];
  */
 
 /** Default carousel position on loading page */
+export const DEFAULT_CARD_POSITION = new Vector3(0, -100, 0);
 export const DEFAULT_PROJECTS_POSITION = new Vector3(0, -100, 0);
-// export const DEFAULT_PROJECTS_POSITION = new Vector3(0, -100, 0);
-export const ACTIVE_PROJECTS_POSITION = [0, 0.15, 0];
+export const ACTIVE_PROJECTS_POSITION = new Vector3(0, 0.15, 0);
 
 /** Default camera position on loading page */
 export const DEFAULT_CAMERA_POSITION = new Vector3(0, 0, -20);
