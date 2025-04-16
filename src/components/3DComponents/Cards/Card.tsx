@@ -1,4 +1,4 @@
-import { Image } from '@react-three/drei';
+import { Image, useCursor } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import {
     PropsWithChildren,
@@ -14,7 +14,7 @@ import {
     ReducerType,
 } from '../../../hooks/reducers/carouselTypes.js';
 import { getSidesPositions } from '../../../functions/3Dmodels.js';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import {
     handleActiveCardEffects,
     handleClickedCardEffects,
@@ -48,7 +48,9 @@ export default function Card({
     ...SETTINGS
 }: PropsWithChildren<CardProps>) {
     const cardRef = useRef<Mesh>(null!);
-
+    const navigate = useNavigate();
+    const location = useLocation();
+    const locationRef = useRef((location.pathname = '/projets/' + card.id));
     // Optimisation mobile
     const segments = reducer.isMobile ? 10 : 20;
     const textureQuality = reducer.isMobile ? 512 : 1024;
@@ -69,8 +71,10 @@ export default function Card({
     const cardHoverRadius = card.isActive ? 0.25 : 0.1;
     const cardHoverZoom = card.isActive ? 1 : 1.5;
 
-    const navigate = useNavigate();
+    // location.pathname = '/projets/' + card.id;
 
+    console.log(location);
+    useCursor(card.isActive);
     useFrame((state, delta) => {
         if (!cardRef.current) return;
         const { material, scale, rotation } = cardRef.current;
@@ -143,7 +147,9 @@ export default function Card({
             key={id}
             onPointerOver={(e) => onHover(e, card, reducer)}
             onPointerOut={(e) => onPointerOut(e, card, reducer)}
-            onClick={(e) => onClickHandler(e, card, reducer)}
+            onClick={(e) =>
+                onClickHandler(e, card, reducer, locationRef.current, navigate)
+            }
         >
             <Image
                 ref={cardRef}
