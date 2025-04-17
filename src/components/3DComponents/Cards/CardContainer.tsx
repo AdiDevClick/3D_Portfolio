@@ -13,6 +13,7 @@ import { useId } from 'react';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/SpherePresence.tsx';
+import { useLocation, useNavigate } from 'react-router';
 
 type CardContainerTypes = {
     reducer: ReducerType;
@@ -25,6 +26,8 @@ type CardContainerTypes = {
  */
 export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
     const id = useId();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     return reducer.showElements.map((card, i) => (
         <Card
@@ -63,7 +66,9 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                     dynamicContent={true}
                 >
                     <ProjectContainer
-                        onClick={(e) => onClickHandler(e, card, reducer)}
+                        onClick={(e) =>
+                            onClickHandler(e, card, reducer, location, navigate)
+                        }
                         card={card}
                     />
                 </HtmlContainer>
