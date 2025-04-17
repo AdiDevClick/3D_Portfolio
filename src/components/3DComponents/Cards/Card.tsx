@@ -50,7 +50,8 @@ export default function Card({
     const cardRef = useRef<Mesh>(null!);
     const navigate = useNavigate();
     const location = useLocation();
-    const locationRef = useRef((location.pathname = '/projets/' + card.id));
+    // const urlParams = useParams()
+    // const locationRef = useRef((location.pathname = '/projets/' + card.id));
     // Optimisation mobile
     const segments = reducer.isMobile ? 10 : 20;
     const textureQuality = reducer.isMobile ? 512 : 1024;
@@ -73,7 +74,6 @@ export default function Card({
 
     // location.pathname = '/projets/' + card.id;
 
-    console.log(location);
     useCursor(card.isActive);
     useFrame((state, delta) => {
         if (!cardRef.current) return;
@@ -128,6 +128,7 @@ export default function Card({
             //     // soit aligné avec l'origin du groupe
             //     cardRef.current.position.y = -geomParams.height / 2;
             // }
+            // console.log(card);
         }
         return () => {
             // Cleanup textures and geometries
@@ -142,13 +143,28 @@ export default function Card({
         }
     }, [width]);
 
+    // useEffect(() => {
+    //     if (cardRef.current) {
+    //         if (
+    //             location.pathname === '/projets/' + card.id &&
+    //             reducer.activeContent?.id === undefined &&
+    //             !card.isClicked
+    //         ) {
+    //             console.log('jactive mon contenu');
+    //             reducer.activateElement(card, true);
+    //             reducer.clickElement(card);
+    //             console.log(card);
+    //         }
+    //     }
+    // }, [card.isClicked, card.isActive, reducer.activeContent]);
+
     return (
         <group
             key={id}
             onPointerOver={(e) => onHover(e, card, reducer)}
-            onPointerOut={(e) => onPointerOut(e, card, reducer)}
+            onPointerOut={(e) => onPointerOut(e, card, reducer, navigate)}
             onClick={(e) =>
-                onClickHandler(e, card, reducer, locationRef.current, navigate)
+                onClickHandler(e, card, reducer, location, navigate)
             }
         >
             <Image
