@@ -5,58 +5,71 @@ import {
     presenceSettings,
 } from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
-import { useControls } from 'leva';
+import { useControls, folder, useStoreContext } from 'leva';
+import { useMemo } from 'react';
 
 /**
  * Ajoute un panel de contrôle contenant différentes sections.
+ * Version optimisée pour éviter les re-créations multiples
  */
 export function useSettings(datas: []): SettingsType {
-    /**
-     * Boundaries Settings
-     */
-    const { ...BOUDARIES_RULES } = useControls(
-        'Boundaries',
-        boundariesOptions,
-        { collapsed: true }
-    );
-
-    /**
-     * Carousel settings
-     */
-    const [{ ...SETTINGS }, set] = useControls(
-        'Carousel Settings',
-        () => ({
-            // !! IMPORTANT !! Override cards count with datas.length
+    // Utiliser useMemo pour ne calculer la configuration qu'une seule fois
+    // lorsque datas.length change
+    const settingsConfig = useMemo(() => {
+        // Préparation des paramétrages du carousel adaptés au nombre d'éléments
+        const carouselSettings = {
             ...carouselGeneralSettings,
             CARDS_COUNT: {
                 ...carouselGeneralSettings.CARDS_COUNT,
                 value: datas.length,
             },
-        }),
-        { collapsed: true }
+        };
+
+        // Configuration regroupée pour Leva avec tous les dossiers
+        return {
+            // Dossier "Carousel Settings"
+            CarouselSettings: folder(
+                {
+                    ...carouselSettings,
+                },
+                { collapsed: true }
+            ),
+
+            // Dossier "Card Rules"
+            CardRules: folder(
+                {
+                    ...cardsSettings,
+                },
+                { collapsed: true }
+            ),
+
+            // Dossier "Boundaries"
+            Boundaries: folder(
+                {
+                    ...boundariesOptions,
+                },
+                { collapsed: true }
+            ),
+
+            // Dossier "Presence Area"
+            PresenceArea: folder(
+                {
+                    ...presenceSettings,
+                },
+                { collapsed: true }
+            ),
+        };
+    }, [datas.length]);
+
+    const [{ ...allSettings }, set] = useControls(
+        'Carousel',
+        () => settingsConfig
     );
 
-    /**
-     * Card Rules Settings
-     */
-    const { ...CARD_RULES } = useControls('Card Rules', cardsSettings, {
-        collapsed: true,
-    });
-
-    /**
-     * Collision Detection Settings
-     */
-    const { ...COLLISIONS_RULES } = useControls(
-        'Presence Area',
-        presenceSettings,
-        { collapsed: true }
-    );
-
-    return {
-        ...SETTINGS,
+    const result = {
+        ...allSettings,
         set,
-        ...COLLISIONS_RULES,
-        ...CARD_RULES,
-        ...BOUDARIES_RULES,
     };
+
+    return result;
 }
