@@ -10,10 +10,10 @@ import { DEFAULT_CARD_POSITION, TWO_PI } from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { isNeighbor } from '@/functions/collisions.ts';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
-import { useCursor } from '@react-three/drei';
+import { Loader, useCursor } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
-import { Navigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 import { Euler, Vector3 } from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
 
@@ -78,16 +78,38 @@ export function onClickHandler(
     e: ThreeEvent<MouseEvent>,
     card: ElementType,
     reducer: ReducerType,
-    location: string,
-    navigate: (path: string, options: any) => void
+    location: Location,
+    navigate: any
 ): void {
     e.stopPropagation();
     // Deny any other clicked elements if one is opened
-    if (reducer.activeContent?.id === card.id) reducer.clickElement(card);
-    if (!reducer.activeContent) reducer.clickElement(card);
-    navigate(location, {
-        replace: true,
-    });
+    // if (reducer.activeContent?.id === card.id) {
+    //     // location.pathname = '/projets/' + card.id;
+    //     reducer.clickElement(card);
+    // }
+    // if (reducer.activeContent?.isClicked) return;
+    // if (card.isClicked && card.id !== card.id) return;
+    if (card.id === reducer.activeContent?.id) {
+        console.log('Je clic');
+        navigate(
+            !card.isClicked ? `${location.pathname}/${card.id}` : '/projets',
+            {
+                replace: true,
+            }
+        );
+        reducer.clickElement(card);
+        if (card.isClicked) reducer.activateElement(card, false);
+    } else {
+        return;
+    }
+    // }
+
+    // if (!reducer.activeContent) {
+    //     console.log('je clic');
+
+    //     reducer.clickElement(card);
+    // }
+
     // reducer.animate(card, 'dropoff');
     // navigate('/error/page');
     // return <Navigate to={'/error/page'} replace={true} />;
@@ -99,11 +121,16 @@ export function onClickHandler(
 export function onPointerOut(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
-    reducer: ReducerType
+    reducer: ReducerType,
+    navigate: any
 ): void {
     e.stopPropagation();
+
     if (reducer.activeContent?.isClicked) return;
     reducer.activateElement(card, false);
+    navigate('/projets', {
+        replace: true,
+    });
 }
 
 /**
