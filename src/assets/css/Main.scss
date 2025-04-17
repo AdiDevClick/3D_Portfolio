@@ -58,6 +58,11 @@ canvas {
     scale: var(--data-custom-scale);
     transition: scale 0.5s;
     transform: translate(48%);
+    visibility: hidden;
+
+    >* {
+        visibility: visible;
+    }
 
     @include for-size(smalltablet) {
         transform: translate(0);
