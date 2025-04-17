@@ -9,7 +9,6 @@ export function useCarousel(): ReducerType {
     const [state, dispatch] = useReducer(carouselReducer, {
         elements: [],
     });
-
     let activeContent = null;
     let contentSizes = null;
 

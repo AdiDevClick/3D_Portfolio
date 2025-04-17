@@ -16,6 +16,8 @@ import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.ts';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
+import { Home } from '@/pages/Home/Home.tsx';
 // import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
 const initialCameraFov = 20;
@@ -23,13 +25,13 @@ let minAngle = -Infinity;
 let maxAngle = Infinity;
 
 // export function Scene({ children }) {
-export function Scene() {
+export function Scene({ SETTINGS, size }) {
     const params = useParams();
     const navigate = useNavigate();
     const id = params['*']?.split('/')[1];
 
     const location = useLocation();
-    const isCarouselActive = location.pathname.includes('projets');
+    // const isCarouselActive = location.pathname.includes('projets');
 
     const controlsRef = useRef(null!);
     const menuRef = useRef(null!);
@@ -46,22 +48,22 @@ export function Scene() {
     );
 
     // Partager l'état "isActive" avec tous les composants enfants
-    const sceneContext = useMemo(
-        () => ({
-            isActive: isCarouselActive,
-            // ...autres propriétés de contexte
-        }),
-        [isCarouselActive]
-    );
+    // const sceneContext = useMemo(
+    //     () => ({
+    //         isActive: isCarouselActive,
+    //         // ...autres propriétés de contexte
+    //     }),
+    //     [isCarouselActive]
+    // );
 
     // General Store
     const reducer = useCarousel();
 
     // Boundaries Settings
-    const SETTINGS = useSettings(JSONDatas);
+    // const SETTINGS = useSettings(JSONDatas);
 
     // Specify boundaries & responsive boundaries
-    const { size } = useResize(100);
+    // const { size } = useResize(100);
     reducer.isMobile = size[0] < 768;
     const isMobile = size[0] < 768;
 
@@ -82,6 +84,10 @@ export function Scene() {
         compensationRatio
     );
 
+    /**
+     * Camera positioning -
+     * @description : Camera is positionned on the active card
+     */
     useEffect(() => {
         if (controlsRef.current) {
             const { camera } = controlsRef.current;
@@ -101,8 +107,6 @@ export function Scene() {
                     );
                 }
             } else {
-                // minAngle = -Infinity;
-                // maxAngle = Infinity;
                 camera.fov = initialCameraFov;
                 controlsRef.current.setLookAt(
                     prevCamPos.x,
@@ -114,116 +118,16 @@ export function Scene() {
                     true // Option d'animation
                 );
                 camera.updateProjectionMatrix();
-                // if (
-                //     location.pathname === '/projets/' + card.id &&
-                //     reducer.activeContent?.id === undefined &&
-                //     !card.isClicked
-                // ) {
-                //     console.log('jactive mon contenu');
-                //     reducer.activateElement(card, true);
-                // }
-                // if (params['*']?.includes('projets') && id) {
-                //     JSONDatas.forEach((element) => {
-                //         if (element.id === id) {
-                //             console.log('jactive mon contenu:', element);
-                //             reducer.activateElement({ id: element.id }, true);
-                //         }
-                //     });
-                // }
-                // JSONDatas.forEach((element) => {
-                //     if (element.id === id) {
-                //         reducer.activateElement(element, true);
-                //     }
-                // });
             }
         }
     }, [reducer.activeContent, size]);
-    // useLayoutEffect(() => {
-    //     if (id === 'projets' && projectsRef.current) {
-    //         console.log('object');
 
-    //         // const delta = useThree((state) => state.clock.getDelta());
-    //         // console.log(delta);
-    //         // easing.damp3(
-    //         //     projectsRef.current.position,
-    //         //     [-100, -100, 0],
-    //         //     0.2,
-    //         //     delta
-    //         // );
-    //     }
-    // }, [projectsRef.current]);
-    // useEffect(() => {
-    //     if (
-    //         !menuRef.current ||
-    //         !controlsRef.current ||
-    //         !params['*']?.includes('projets') ||
-    //         !id ||
-    //         reducer.activeContent
-    //     ) {
-    //         return;
-    //     }
-    //     // Si on a un ID dans l'URL mais pas de carte active
-    //     if (params['*']?.includes('projets') && id && !reducer.activeContent) {
-    //         console.log("Tentative d'activation par URL, id:", id);
-
-    //         // Parcourir les éléments du reducer (plutôt que JSONDatas)
-    //         const targetCard = reducer.showElements.find(
-    //             (element) => element.id === id
-    //         );
-
-    //         if (targetCard) {
-    //             console.log('Carte trouvée, activation:', targetCard);
-
-    //             // D'abord activer
-    //             setTimeout(() => {
-    //                 reducer.activateElement(targetCard, true);
-    //             }, 100);
-    //             // Puis marquer comme cliquée pour déclencher l'animation complète
-    //             setTimeout(() => {
-    //                 reducer.clickElement(targetCard);
-    //             }, 100); // Petit délai pour laisser le temps au state de se mettre à jour
-    //         } else {
-    //             // console.warn('Carte non trouvée dans reducer:', id);
-    //             // // Si la carte n'est pas encore chargée dans le reducer
-    //             // // Chercher dans les données brutes
-    //             // const dataCard = JSONDatas.find((element) => element.id === id);
-    //             // if (dataCard) {
-    //             //     console.log(
-    //             //         'Carte trouvée dans les données brutes, attente du chargement...'
-    //             //     );
-    //             //     // Attendez que les cartes soient chargées puis réessayez
-    //             //     const checkInterval = setInterval(() => {
-    //             //         const targetCard = reducer.showElements.find(
-    //             //             (element) => element.id === id
-    //             //         );
-    //             //         if (targetCard) {
-    //             //             clearInterval(checkInterval);
-    //             //             reducer.activateElement(targetCard, true);
-    //             //             setTimeout(
-    //             //                 () => reducer.clickElement(targetCard),
-    //             //                 100
-    //             //             );
-    //             //         }
-    //             //     }, 300);
-    //             //     // Nettoyage
-    //             //     setTimeout(() => clearInterval(checkInterval), 5000);
-    //             // } else {
-    //             //     // Carte invalide, redirection
-    //             //     navigate('/projets', { replace: true });
-    //             // }
-    //             console.log('else: ', reducer.activeContent);
-    //         }
-    //     }
-    // }, [
-    //     menuRef.current,
-    //     controlsRef.current,
-    //     id,
-    //     reducer.activeContent,
-    //     reducer.showElements.length,
-    // ]);
-
+    /**
+     * Camera positioning on URL loading -
+     * @description : Camera is positionned on the active card
+     * if the URL contains a card ID -
+     */
     useEffect(() => {
-        // Permettre au système de se stabiliser avant de tenter une activation
         const initialDelay = 500;
 
         const activateCardByURL = () => {
@@ -243,32 +147,28 @@ export function Scene() {
             );
 
             if (targetCard) {
-                // 1. D'abord activer la carte (pour la mettre en avant)
+                // !! IMPORTANT !! Activate card to focus
                 reducer.activateElement(targetCard, true);
-
-                // 2. Mettre à jour la position de la caméra manuellement après activation
                 setTimeout(() => {
                     if (!targetCard.ref?.current) {
                         // Retry
                         return activateCardByURL();
                     }
 
-                    // Forcer une mise à jour de la position de caméra
                     const { camera } = controlsRef.current;
-
+                    // Force camera position
                     positionCameraToCard(
                         controlsRef,
                         targetCard,
                         reducer.isMobile,
-                        false, // Pas encore marqué comme cliqué
-                        1.0 // Facteur d'interpolation plus direct
+                        false,
+                        1.0
                     );
 
-                    // 4. Marquer comme cliquée APRÈS que la caméra ait commencé à bouger
                     setTimeout(() => {
+                        // Expand the card
                         reducer.clickElement(targetCard);
 
-                        // 5. Ajustement final après le clic si nécessaire
                         setTimeout(() => {
                             // Réajuster si nécessaire après que tout soit stable
                             camera.fov = reducer.isMobile ? 19 : 20;
@@ -279,11 +179,6 @@ export function Scene() {
             } else {
                 // Attendre que les éléments soient chargés puis réessayer
                 if (reducer.showElements.length > 0) {
-                    console.warn(
-                        'Carte non trouvée dans reducer malgré des éléments présents:',
-                        id
-                    );
-
                     // Si nous avons déjà des cartes mais pas celle demandée, rediriger
                     setTimeout(() => {
                         if (
@@ -308,6 +203,8 @@ export function Scene() {
 
         return () => clearTimeout(timer);
     }, [id, reducer]);
+
+    console.log('je crer la Scene');
     return (
         // <div
         //     id="canvas-container"
@@ -324,17 +221,28 @@ export function Scene() {
             // camera={{ position: [0, 0, 5], fov: 70 }}
         >
             {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
-            {/* <HtmlContainer className="html-container" position={[0, 0, 0]}>
-                <aside
+            {/* <HtmlContainer
+                reducer={reducer}
+                // position={[0, 0, 0]}
+                className="html-container"
+            >
+                <div
                     style={{
-                        transform: 'translate(-50%)',
+                        transform: 'translate(-50%) rotateY(180deg)',
                         height: '500px',
                         width: '600px',
                         background: 'rgba(255, 255, 255, 0.95)',
                     }}
                     // className="lateral-menu"
-                ></aside>
+                >
+                    <h1 style={{ color: 'black' }}>Accueil</h1>
+                    <p style={{ color: 'black' }}>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Quisquam, voluptatibus. Lorem ipsum dolor sit amet{' '}
+                    </p>
+                </div>
             </HtmlContainer> */}
+            <Home />
             {/* <Html
                 ref={menuRef}
                 // style={{ position: 'relative', height: '100%', width: '100%' }}
@@ -433,8 +341,8 @@ export function Scene() {
                     boundaries={responsiveBoundaries}
                     datas={JSONDatas}
                     SETTINGS={SETTINGS}
-                    isActive={isCarouselActive}
-                    updateFrequency={isCarouselActive ? 1 : 100}
+                    // isActive={isCarouselActive}
+                    // updateFrequency={isCarouselActive ? 1 : 100}
                 />
             </group>
 

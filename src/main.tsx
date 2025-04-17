@@ -64,10 +64,9 @@ export function Root(contentType) {
     // const reducer = useCarousel();
 
     // // Boundaries Settings
-    // const SETTINGS = useSettings(JSONDatas);
-
+    const SETTINGS = useSettings(JSONDatas);
     // // Specify boundaries & responsive boundaries
-    // const { size } = useResize(100);
+    const { size } = useResize(100);
     // reducer.isMobile = size[0] < 768;
     // // const isMobile = size[0] < 768;
 
@@ -92,7 +91,7 @@ export function Root(contentType) {
                 {errorContent ? (
                     <PageError />
                 ) : (
-                    <Scene />
+                    <Scene SETTINGS={SETTINGS} size={size} />
                     // <Outlet />
                 )}
             </App>

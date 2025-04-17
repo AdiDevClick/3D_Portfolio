@@ -98,7 +98,11 @@ export function onClickHandler(
             }
         );
         reducer.clickElement(card);
+
         if (card.isClicked) reducer.activateElement(card, false);
+    } else if (reducer.isMobile) {
+        reducer.activateElement(card, true);
+        reducer.clickElement(card);
     } else {
         return;
     }

@@ -1,15 +1,16 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
-import { debounce } from '@/functions/promises.js';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 type HtmlContainerTypes = {
-    width: number;
-    reducer: ReducerType;
+    width?: number;
+    reducer?: ReducerType;
     children: ReactNode;
     dynamicContent?: boolean;
+    className?: string;
+    position?: [number, number, number];
 };
 
 /**
