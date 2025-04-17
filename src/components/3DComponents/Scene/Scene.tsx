@@ -1,30 +1,35 @@
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import {
     Environment,
     useScroll,
     useTexture,
     CameraControls,
 } from '@react-three/drei';
-import { useEffect, useRef, useState } from 'react';
-import '../../../utils/util.js';
+import { use, useEffect, useMemo, useRef, useState } from 'react';
+import '../../../utils/util.tsx';
 import JSONDatas from '@data/exemples.json';
-import useResize from '../../../hooks/useResize.js';
-import Carousel from '../Carousel/Carousel.js';
+import useResize from '../../../hooks/useResize.tsx';
 import { Box3, MathUtils, Vector3 } from 'three';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
 import { useSettings } from '@/hooks/useSettings.tsx';
-import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.js';
-import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.js';
-import { useParams } from 'react-router';
+import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.ts';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
+import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
 // import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
 const initialCameraFov = 20;
 let minAngle = -Infinity;
 let maxAngle = Infinity;
 
+// export function Scene({ children }) {
 export function Scene() {
     const params = useParams();
-    const { id } = params;
+    const navigate = useNavigate();
+    const id = params['*']?.split('/')[1];
+
+    const location = useLocation();
+    const isCarouselActive = location.pathname.includes('projets');
 
     const controlsRef = useRef(null!);
     const menuRef = useRef(null!);
@@ -38,6 +43,15 @@ export function Scene() {
         controlsRef.current
             ? controlsRef.current.camera.position.clone()
             : DEFAULT_CAMERA_POSITION
+    );
+
+    // Partager l'état "isActive" avec tous les composants enfants
+    const sceneContext = useMemo(
+        () => ({
+            isActive: isCarouselActive,
+            // ...autres propriétés de contexte
+        }),
+        [isCarouselActive]
     );
 
     // General Store
@@ -59,6 +73,9 @@ export function Scene() {
         z: SETTINGS.z,
     };
 
+    // Hook for camera positioning
+    const { positionCameraToCard } = useCameraPositioning();
+
     const compensationRatio = size[0] / size[1];
     document.documentElement.style.setProperty(
         '--compensation-scale',
@@ -73,79 +90,15 @@ export function Scene() {
 
             if (reducer.activeContent) {
                 setPrevCamPos(camera.position.clone());
-                const { cardAngles, ref, containerScale, isClicked, isActive } =
-                    reducer.activeContent;
+                const { isClicked, isActive } = reducer.activeContent;
 
                 if (isActive || isClicked) {
-                    // console.log(camera);
-                    // maxAngle = cardAngles.active + MathUtils.degToRad(30);
-                    // minAngle = cardAngles.active + MathUtils.degToRad(-30);
-                    // Définir les offsets
-                    // Pour pousser la carte active vers l'avant
-                    const activeForwardOffset = 10.5;
-                    // Recul supplémentaire pour l'effet focus
-                    const extraPullback = reducer.isMobile ? 5.5 : 3.5;
-                    // const extraPullback = isMobile ? 5.5 : 3.5;
-                    // Légère déviation si nécessaire
-                    const desiredAngle = cardAngles.active + Math.PI / 28;
-                    // Le rayon de base de l'anneau pour la caméra est settings.CONTAINER_SCALE,
-                    // mais vous l'augmentez pour que la caméra se place légèrement à l'extérieur.
-                    // Le rayon final de la trajectoire de la caméra inclut le recul supplémentaire
-                    const finalDesiredRadius =
-                        containerScale + activeForwardOffset + extraPullback;
-                    // Calculez la position cible.
-                    const camTargetPos = ref.current.position.clone(); // La carte active est la cible principale
-                    // Définir un offset vertical basé sur les dimensions de l'écran
-                    const bbox = new Box3().setFromObject(ref.current);
-                    const sizeObj = new Vector3();
-                    bbox.getSize(sizeObj);
-                    // Supposons que l'on souhaite centrer verticalement en prenant en compte la hauteur
-                    const verticalCenterOffset = sizeObj.y / 5;
-                    // const verticalOffset = size[1] / 100; // Ajuster la division pour placer convenablement le contenu
-                    // Calculez la position de la caméra à partir de l'angle désiré et du rayon.
-                    const camPos = new Vector3(
-                        Math.sin(desiredAngle) * finalDesiredRadius,
-                        // camTargetPos.y + verticalOffset, // Ajustez la hauteur si nécessaire
-                        camTargetPos.y + verticalCenterOffset, // Ajustez la hauteur si nécessaire
-                        // camTargetPos.y + 0.5, // Ajustez la hauteur si nécessaire
-                        Math.cos(desiredAngle) * finalDesiredRadius
+                    positionCameraToCard(
+                        controlsRef,
+                        reducer.activeContent,
+                        reducer.isMobile,
+                        isClicked
                     );
-                    // La cible de regard de la caméra est la position de la carte active.
-                    // On part de la position du ref de la carte active pour la cible.
-                    // Récupérer la position actuelle de la caméra et la cible actuelle
-                    // Ces propriétés dépendent de votre implémentation de CameraControls
-                    // Ici, nous supposons que controlsRef.current.camera et controlsRef.current.target existent
-
-                    // Définir un lerpFactor qui contrôle la rapidité de l'interpolation (entre 0 et 1)
-                    const lerpFactor = 0.6; // Ajustez selon l'effet désiré
-
-                    // Calculer les positions interpolées entre la position actuelle et la position cible
-                    const newCamPos = camera.position
-                        .clone()
-                        .lerp(camPos, lerpFactor);
-                    const newTarget = camTargetPos.clone();
-                    // Calcul du vecteur "right" de l'élément en fonction de son quaternion
-                    const rightVector = new Vector3(1, 0, 0);
-                    rightVector.applyQuaternion(ref.current.quaternion);
-                    // Multiplier par l'offset désiré (2.5 par exemple)
-                    const offsetDistance = !isMobile && isClicked ? 2 : 0;
-                    const rightOffset =
-                        rightVector.multiplyScalar(offsetDistance);
-                    // Déterminez la target finale en décalant newTarget par le vecteur rightOffset
-                    const shiftedTarget = newTarget.clone().add(rightOffset);
-                    camera.fov = reducer.isMobile ? 19 : 20;
-                    controlsRef.current.setLookAt(
-                        newCamPos.x,
-                        newCamPos.y,
-                        newCamPos.z,
-                        shiftedTarget.x,
-                        isClicked && isMobile
-                            ? shiftedTarget.y - 1.5
-                            : shiftedTarget.y,
-                        shiftedTarget.z,
-                        true // Option d'animation
-                    );
-                    camera.updateProjectionMatrix();
                 }
             } else {
                 // minAngle = -Infinity;
@@ -161,6 +114,27 @@ export function Scene() {
                     true // Option d'animation
                 );
                 camera.updateProjectionMatrix();
+                // if (
+                //     location.pathname === '/projets/' + card.id &&
+                //     reducer.activeContent?.id === undefined &&
+                //     !card.isClicked
+                // ) {
+                //     console.log('jactive mon contenu');
+                //     reducer.activateElement(card, true);
+                // }
+                // if (params['*']?.includes('projets') && id) {
+                //     JSONDatas.forEach((element) => {
+                //         if (element.id === id) {
+                //             console.log('jactive mon contenu:', element);
+                //             reducer.activateElement({ id: element.id }, true);
+                //         }
+                //     });
+                // }
+                // JSONDatas.forEach((element) => {
+                //     if (element.id === id) {
+                //         reducer.activateElement(element, true);
+                //     }
+                // });
             }
         }
     }, [reducer.activeContent, size]);
@@ -178,7 +152,162 @@ export function Scene() {
     //         // );
     //     }
     // }, [projectsRef.current]);
+    // useEffect(() => {
+    //     if (
+    //         !menuRef.current ||
+    //         !controlsRef.current ||
+    //         !params['*']?.includes('projets') ||
+    //         !id ||
+    //         reducer.activeContent
+    //     ) {
+    //         return;
+    //     }
+    //     // Si on a un ID dans l'URL mais pas de carte active
+    //     if (params['*']?.includes('projets') && id && !reducer.activeContent) {
+    //         console.log("Tentative d'activation par URL, id:", id);
 
+    //         // Parcourir les éléments du reducer (plutôt que JSONDatas)
+    //         const targetCard = reducer.showElements.find(
+    //             (element) => element.id === id
+    //         );
+
+    //         if (targetCard) {
+    //             console.log('Carte trouvée, activation:', targetCard);
+
+    //             // D'abord activer
+    //             setTimeout(() => {
+    //                 reducer.activateElement(targetCard, true);
+    //             }, 100);
+    //             // Puis marquer comme cliquée pour déclencher l'animation complète
+    //             setTimeout(() => {
+    //                 reducer.clickElement(targetCard);
+    //             }, 100); // Petit délai pour laisser le temps au state de se mettre à jour
+    //         } else {
+    //             // console.warn('Carte non trouvée dans reducer:', id);
+    //             // // Si la carte n'est pas encore chargée dans le reducer
+    //             // // Chercher dans les données brutes
+    //             // const dataCard = JSONDatas.find((element) => element.id === id);
+    //             // if (dataCard) {
+    //             //     console.log(
+    //             //         'Carte trouvée dans les données brutes, attente du chargement...'
+    //             //     );
+    //             //     // Attendez que les cartes soient chargées puis réessayez
+    //             //     const checkInterval = setInterval(() => {
+    //             //         const targetCard = reducer.showElements.find(
+    //             //             (element) => element.id === id
+    //             //         );
+    //             //         if (targetCard) {
+    //             //             clearInterval(checkInterval);
+    //             //             reducer.activateElement(targetCard, true);
+    //             //             setTimeout(
+    //             //                 () => reducer.clickElement(targetCard),
+    //             //                 100
+    //             //             );
+    //             //         }
+    //             //     }, 300);
+    //             //     // Nettoyage
+    //             //     setTimeout(() => clearInterval(checkInterval), 5000);
+    //             // } else {
+    //             //     // Carte invalide, redirection
+    //             //     navigate('/projets', { replace: true });
+    //             // }
+    //             console.log('else: ', reducer.activeContent);
+    //         }
+    //     }
+    // }, [
+    //     menuRef.current,
+    //     controlsRef.current,
+    //     id,
+    //     reducer.activeContent,
+    //     reducer.showElements.length,
+    // ]);
+
+    useEffect(() => {
+        // Permettre au système de se stabiliser avant de tenter une activation
+        const initialDelay = 500;
+
+        const activateCardByURL = () => {
+            if (
+                !menuRef.current ||
+                !controlsRef.current ||
+                !params['*']?.includes('projets') ||
+                !id ||
+                reducer.activeContent
+            ) {
+                return;
+            }
+
+            // Card exists ?
+            const targetCard = reducer.showElements.find(
+                (element) => element.id === id
+            );
+
+            if (targetCard) {
+                // 1. D'abord activer la carte (pour la mettre en avant)
+                reducer.activateElement(targetCard, true);
+
+                // 2. Mettre à jour la position de la caméra manuellement après activation
+                setTimeout(() => {
+                    if (!targetCard.ref?.current) {
+                        // Retry
+                        return activateCardByURL();
+                    }
+
+                    // Forcer une mise à jour de la position de caméra
+                    const { camera } = controlsRef.current;
+
+                    positionCameraToCard(
+                        controlsRef,
+                        targetCard,
+                        reducer.isMobile,
+                        false, // Pas encore marqué comme cliqué
+                        1.0 // Facteur d'interpolation plus direct
+                    );
+
+                    // 4. Marquer comme cliquée APRÈS que la caméra ait commencé à bouger
+                    setTimeout(() => {
+                        reducer.clickElement(targetCard);
+
+                        // 5. Ajustement final après le clic si nécessaire
+                        setTimeout(() => {
+                            // Réajuster si nécessaire après que tout soit stable
+                            camera.fov = reducer.isMobile ? 19 : 20;
+                            camera.updateProjectionMatrix();
+                        }, 300);
+                    }, 600); // Délai suffisant pour que l'animation de caméra ait commencé
+                }, 300); // Délai pour laisser activateElement prendre effet
+            } else {
+                // Attendre que les éléments soient chargés puis réessayer
+                if (reducer.showElements.length > 0) {
+                    console.warn(
+                        'Carte non trouvée dans reducer malgré des éléments présents:',
+                        id
+                    );
+
+                    // Si nous avons déjà des cartes mais pas celle demandée, rediriger
+                    setTimeout(() => {
+                        if (
+                            !reducer.showElements.find(
+                                (element) => element.id === id
+                            )
+                        ) {
+                            navigate('/projets', { replace: true });
+                        }
+                    }, 1000);
+                } else {
+                    console.log(
+                        'Attente du chargement des cartes avant de réessayer...'
+                    );
+                    setTimeout(activateCardByURL, 300);
+                }
+            }
+        };
+
+        // Lancer l'activation après un délai initial
+        const timer = setTimeout(activateCardByURL, initialDelay);
+
+        return () => clearTimeout(timer);
+    }, [id, reducer]);
     return (
         // <div
         //     id="canvas-container"
@@ -297,12 +426,20 @@ export function Scene() {
                     />
                 </mesh> */}
             {/* </group> */}
-            <Carousel
-                reducer={reducer}
-                boundaries={responsiveBoundaries}
-                datas={JSONDatas}
-                SETTINGS={SETTINGS}
-            />
+            {/* <SceneContext.Provider value={sceneContext}> */}
+            <group ref={menuRef}>
+                <Carousel
+                    reducer={reducer}
+                    boundaries={responsiveBoundaries}
+                    datas={JSONDatas}
+                    SETTINGS={SETTINGS}
+                    isActive={isCarouselActive}
+                    updateFrequency={isCarouselActive ? 1 : 100}
+                />
+            </group>
+
+            {/* {children} */}
+            {/* </SceneContext.Provider> */}
             {/* <Banner position={[0, -0.15, 0]} /> */}
             {/* </ScrollControls> */}
             <Environment preset="dawn" background blur={0.5} />
