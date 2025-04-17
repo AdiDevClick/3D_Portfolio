@@ -1,22 +1,22 @@
-import { useEffect, useId, useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useId, useMemo, useRef } from 'react';
 import { DoubleSide, Vector3 } from 'three';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { MathPos } from '@/functions/positionning.ts';
-import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
+import { effectiveRadius } from '@/functions/collisions.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import {
-    ACTIVE_PROJECTS_POSITION,
-    DEFAULT_PROJECTS_POSITION,
+    ACTIVE_PROJECTS_POSITION_SETTINGS,
+    DEFAULT_PROJECTS_POSITION_SETTINGS,
     TWO_PI,
-} from '@/configs/3DCarousel.config.js';
+} from '@/configs/3DCarousel.config.ts';
 import {
     createCardProperties,
     handleNeighborCollision,
-} from '@/components/3DComponents/Carousel/Functions.js';
-import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.js';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.js';
-import { useParams } from 'react-router';
+} from '@/components/3DComponents/Carousel/Functions.ts';
+import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.tsx';
+import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import { useLocation } from 'react-router';
 
 const collision = new Vector3();
 
@@ -38,10 +38,12 @@ export default function Carousel({
     reducer,
     SETTINGS,
 }: CarouselProps) {
+    // const { boundaries, datas, reducer, SETTINGS } = useOutletContext();
+
     const frameCountRef = useRef(0);
     const projectsRef = useRef(null);
 
-    const urlParams = useParams();
+    const location = useLocation();
     const id = useId();
 
     /**
@@ -77,22 +79,6 @@ export default function Carousel({
             reducer.deleteElements(cardsMemo);
         }
     }, [cardsMemo]);
-
-    // useLayoutEffect(() => {
-    //     console.log(urlParams);
-    //     if (urlParams.id === 'projets' && projectsRef.current) {
-    //         console.log('object');
-
-    //         const delta = useThree((state) => state.clock.getDelta());
-    //         console.log(delta);
-    //         easing.damp3(
-    //             projectsRef.current.position,
-    //             [-100, -100, 0],
-    //             0.2,
-    //             delta
-    //         );
-    //     }
-    // }, [urlParams]);
 
     useFrame((state, delta) => {
         frameCountRef.current += 1;
@@ -180,59 +166,23 @@ export default function Carousel({
             // }
         });
 
-        // if (reducer.activeContent?.isClicked) {
-        //     const controls = state;
-        //     // console.log(controls);
-        //     // On récupère la cible des contrôles : selon la version, cela peut être controls.target ou controls._target
-        //     const target = controls.target || controls._target;
-        //     if (!target) return;
-        //     console.log('object');
-        //     // Calculer la position relative (en coordonnées sphériques)
-        //     const relativePos = new Vector3().subVectors(
-        //         controls.camera.position,
-        //         target
-        //     );
-        //     const spherical = new Spherical().setFromVector3(relativePos);
-        //     // Angle de référence de l'objet cliqué ; par exemple :
-        //     const cardAngle = reducer.activeContent.cardAngles.active;
-        //     const minAngular = cardAngle + MathUtils.degToRad(-30);
-        //     const maxAngular = cardAngle + MathUtils.degToRad(30);
-        //     // Forcer l'angle theta dans ces limites
-        //     spherical.theta = MathUtils.clamp(
-        //         spherical.theta,
-        //         minAngular,
-        //         maxAngular
-        //     );
-        //     // Calculer la nouvelle position de la caméra
-        //     const newRelativePos = new Vector3().setFromSpherical(spherical);
-        //     const forcedPos = target.clone().add(newRelativePos);
-        //     // Pour éviter les sauts brutaux, on pourrait interpoler la position actuelle vers forcedPos
-        //     controls.camera.position.lerp(forcedPos, 0.1);
-        //     controls.camera.updateMatrixWorld();
-        // }
         // if (frameCountRef.current % 2 === 0) {
+        // POSITIONING IF URL IS ACTIVE / NON ACTIVE -
         if (projectsRef.current) {
-            switch (urlParams.id) {
-                case 'projets':
-                    return easing.damp3(
-                        projectsRef.current.position,
-                        ACTIVE_PROJECTS_POSITION,
-                        0.2,
-                        delta
-                    );
-                default:
-                    return easing.damp3(
-                        projectsRef.current.position,
-                        DEFAULT_PROJECTS_POSITION,
-                        0.2,
-                        delta
-                    );
-            }
+            const activeURL = location.pathname.includes('projets');
+            easing.damp3(
+                projectsRef.current.position,
+                activeURL
+                    ? ACTIVE_PROJECTS_POSITION_SETTINGS
+                    : DEFAULT_PROJECTS_POSITION_SETTINGS,
+                0.2,
+                delta
+            );
         }
     });
 
     return (
-        <group ref={projectsRef} position={DEFAULT_PROJECTS_POSITION}>
+        <group ref={projectsRef}>
             <mesh visible={SETTINGS.debug}>
                 <boxGeometry
                     args={[boundaries.x, boundaries.y, boundaries.z]}
