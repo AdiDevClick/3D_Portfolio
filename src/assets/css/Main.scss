@@ -65,7 +65,7 @@ canvas {
     }
 
     @include for-size(smalltablet) {
-        transform: translate(0);
+        // transform: translate(0);
         // transition: transform 0.3s 0.2s;
     }
 }
