@@ -5,23 +5,29 @@ import '@css/Main.scss';
 import '@css/reset.css';
 import App from './App2.tsx';
 // import App from './App.tsx';
-import { Scene } from './components/3DComponents/Scene/Scene.js';
+import { Scene } from './components/3DComponents/Scene/Scene.tsx';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, NavLink, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
 import { Button } from '@/components/button/Button.tsx';
 import { Header } from '@/components/header/Header.tsx';
+import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
+import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
+import { useSettings } from '@/hooks/useSettings.tsx';
+import useResize from '@/hooks/useResize.tsx';
+import JSONDatas from '@data/exemples.json';
+import { CarouselActivator } from '@/components/3DComponents/Carousel/CarouselActivator.tsx';
 
 const router = createBrowserRouter([
     {
-        path: '/',
+        path: '*',
         element: <Root />,
         errorElement: <Root contentType={'error'} />,
         children: [
-            {
-                index: true,
-                element: <Scene />,
-            },
+            // {
+            //     index: true,
+            //     element: <Scene />,
+            // },
             // {
             //     path: 'a-propos',
             //     element: <Scene />,
@@ -32,10 +38,11 @@ const router = createBrowserRouter([
             //     //     </Canvas>
             //     // ),
             // },
-            {
-                path: ':id',
-                element: <Scene />,
-            },
+            // {
+            //     path: 'projets',
+            //     // element: <Scene />,
+            //     element: <CarouselActivator />,
+            // },
         ],
     },
 ]);
@@ -52,17 +59,49 @@ createRoot(document.getElementById('root')).render(
  * Si une erreur est trouvée, il sera remplacé par l'erreur -
  */
 export function Root(contentType) {
-    let errorContent = false;
-    if (contentType.contentType === 'error') {
-        errorContent = true;
-    }
+    const errorContent = contentType.contentType === 'error';
+    // General Store
+    // const reducer = useCarousel();
+
+    // // Boundaries Settings
+    // const SETTINGS = useSettings(JSONDatas);
+
+    // // Specify boundaries & responsive boundaries
+    // const { size } = useResize(100);
+    // reducer.isMobile = size[0] < 768;
+    // // const isMobile = size[0] < 768;
+
+    // const scaleX = Math.max(0.5, size[0] / 1920);
+    // const scaleY = Math.max(0.5, size[1] / 1080);
+    // const responsiveBoundaries = {
+    //     x: SETTINGS.x * scaleX,
+    //     y: SETTINGS.y * scaleY,
+    //     z: SETTINGS.z,
+    // };
+    // const contextProps = {
+    //     boundaries: responsiveBoundaries,
+    //     reducer,
+    //     SETTINGS,
+    //     datas: JSONDatas,
+    // };
     return (
         <>
             <Header />
-            <App>{errorContent ? <PageError /> : <Outlet />}</App>
+            {/* <App>{errorContent ? <PageError /> : <Outlet />}</App> */}
+            <App>
+                {errorContent ? (
+                    <PageError />
+                ) : (
+                    <Scene />
+                    // <Outlet />
+                )}
+            </App>
             {/* <App /> */}
         </>
     );
+}
+{
+    /* <Outlet context={contextProps} /> */
 }
 
 {
