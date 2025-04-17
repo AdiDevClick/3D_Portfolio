@@ -56,11 +56,11 @@ export interface ElementType extends CardContentType {
     ref?: RefObject<Mesh>;
     animation?: string;
     /** Current container Scale */
-    containerScale?: number;
+    containerScale: number;
     /** Stores the side positions of the object (for collisions) */
     spacePositions?: sidesPositions;
     /** Stores the angle of the card in order to reattribute it after movement */
-    cardAngles?: typeAngles;
+    cardAngles: typeAngles;
     currentWidth: number;
 }
 
