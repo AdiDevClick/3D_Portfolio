@@ -2,7 +2,7 @@ import { measure } from '@/components/3DComponents/Html/Functions';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, use, useEffect, useRef, useState } from 'react';
 
 type HtmlContainerTypes = {
     width?: number;
@@ -49,6 +49,11 @@ export function HtmlContainer({
             });
         }
     });
+
+    useEffect(() => {
+        if (htmlRef.current) {
+        }
+    }, [htmlRef.current]);
 
     /**
      * In & Out animation for the HTML element
