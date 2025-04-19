@@ -4,37 +4,32 @@ import '@css/NavHeader.scss';
 import { MouseEvent, RefObject, TouchEvent, useRef, useState } from 'react';
 import { useTouchEvents } from '@/hooks/Touch/useTouchEvents';
 
-export function Header({ ...props }) {
+export function Header({ isTouchDevice }) {
     const headerRef = useRef<RefObject<HTMLElement>>(null!);
     const buttonRef = useRef<RefObject<HTMLButtonElement>>(null!);
     const touchRef = useRef<RefObject<TouchEvent<HTMLButtonElement>>>(null!);
-    const [clicked, setClicked] = useState(false);
+    const [clicked, setClicked] = useState(true);
     const [isMoving, setIsMoving] = useState(false);
     const [origin, setOrigin] = useState({});
+
+    const click = useTouchEvents(buttonRef, headerRef);
+    const active = clicked && !isTouchDevice ? 'active' : '';
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
+        console.log('its mobile:', isTouchDevice);
+        if (isTouchDevice) return;
         setClicked(!clicked);
     };
-
-    useTouchEvents(buttonRef, headerRef);
-
-    const active = clicked ? 'active' : '';
-
     return (
         <header
             ref={headerRef}
-            {...props}
             className={`main-container ${active}`}
             onMouseEnter={handleClick}
+            onMouseLeave={handleClick}
         >
-            <Button
-                ref={buttonRef}
-                type="button"
-                {...props}
-                onClick={handleClick}
-            >
+            <Button ref={buttonRef} type="button" onClick={handleClick}>
                 Open
             </Button>
             <nav>
