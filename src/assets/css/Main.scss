@@ -54,6 +54,10 @@ canvas {
 @include property("data-custom-scale", "<number>", false, 1);
 
 /* Html main Content */
+*:has(>.html-container) {
+    visibility: hidden;
+}
+
 .html-container {
     scale: var(--data-custom-scale);
     transition: scale 0.5s;
@@ -64,10 +68,10 @@ canvas {
         visibility: visible;
     }
 
-    @include for-size(smalltablet) {
-        // transform: translate(0);
-        // transition: transform 0.3s 0.2s;
-    }
+    // @include for-size(smalltablet) {
+    //     transform: translate(0);
+    //     // transition: transform 0.3s 0.2s;
+    // }
 }
 
 @keyframes scaleFromZero {
