@@ -116,7 +116,7 @@
     }
 
     @include for-size(smalltablet) {
-        transform: translate(0);
+        transform: translate(-48%);
         width: 100%;
         // width: 95vw;
         background: blue;
