@@ -68,7 +68,7 @@ export function Root(contentType) {
     // // Specify boundaries & responsive boundaries
     const { size } = useResize(100);
     // reducer.isMobile = size[0] < 768;
-    // // const isMobile = size[0] < 768;
+    const isTouchDevice = size[0] < 968;
 
     // const scaleX = Math.max(0.5, size[0] / 1920);
     // const scaleY = Math.max(0.5, size[1] / 1080);
@@ -85,7 +85,7 @@ export function Root(contentType) {
     // };
     return (
         <>
-            <Header />
+            <Header isTouchDevice={isTouchDevice} />
             {/* <App>{errorContent ? <PageError /> : <Outlet />}</App> */}
             <App>
                 {errorContent ? (
