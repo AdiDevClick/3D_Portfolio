@@ -47,34 +47,26 @@ export function useTouchEvents(
         abortControllerRef,
     };
 
-    useEffect(
-        // const initEvents = useCallback(
-        () => {
-            // (node) => {
-            const element = node.current;
-            if (!element) return;
-            console.log('je crer mon hook');
-            abortControllerRef.current = new AbortController();
+    useEffect(() => {
+        const element = node.current;
+        if (!element) return;
+        abortControllerRef.current = new AbortController();
 
-            events.forEach((event) => {
-                element.addEventListener(
-                    event.name as keyof HTMLElementEventMap,
-                    (e) => event.eventHandler(e, element, props),
-                    {
-                        ...event.options,
-                        signal: abortControllerRef.current?.signal,
-                    }
-                );
-            });
-            return () => {
-                console.log('je remove');
-                abortControllerRef.current?.abort();
-            };
-        },
-        [props]
-        // [origin, lastTranslate]
-    );
-    // return {};
+        events.forEach((event) => {
+            element.addEventListener(
+                event.name as keyof HTMLElementEventMap,
+                (e) => event.eventHandler(e, element, props),
+                {
+                    ...event.options,
+                    signal: abortControllerRef.current?.signal,
+                }
+            );
+        });
+        return () => {
+            abortControllerRef.current?.abort();
+        };
+    }, [origin, props]);
+    return { isClick };
 }
 
 /**
@@ -104,7 +96,7 @@ function startDrag(
         handleActiveElement(
             target,
             props.activeElementRef.current,
-            props.setClicked
+            props.setClicked(true)
         );
 
         if (
@@ -132,6 +124,7 @@ function startDrag(
     //     x: pressionPoint.screenX - props.origin.x,
     //     y: pressionPoint.screenY - props.origin.y,
     // });
+    console.log('last translate', props.lastTranslate);
 }
 
 function handleActiveElement(
@@ -172,33 +165,65 @@ function drag(e, element: HTMLElement, { ...props }: TouchEventProps) {
     const offsets = props.transitionElement.current.getBoundingClientRect();
     // offsets.x = translate.x;
 
-    console.log(props.elementSize);
-    console.log(translate.x, offsets);
+    // console.log(props.elementSize);
+    // console.log(translate.x, offsets);
     // let positiveWidth = false;
     // let translateX;
+
     // translate.x > 0 ? (positiveWidth = true) : false;
     console.log('mon offset Left', offsets.left);
     console.log('mon translate X', translate.x);
-    if (translate.x > 0 && offsets.left >= 0) {
-        console.log('je ne peux pas bouger');
-        return;
-    }
-    if (translate.x < 0 && offsets.left < 0) {
-        console.log(props.elementSize.width);
-        // return;
+    element.classList.add('opening');
+
+    // if (translate.x >= 0 && offsets.left >= 0) {
+    //     console.log(
+    //         offsets,
+    //         'offset left > 0',
+    //         'last translate',
+    //         props.lastTranslate
+    //     );
+    //     // if (element.classList.contains('opening')) {
+    //     //     e.preventDefault();
+    //     //     return;
+    //     // }
+    //     // e.preventDefault();
+    //     // element.classList.remove('closed');
+    //     // element.classList.add('opened');
+    //     props.transitionElement.current.style.transform = 'none';
+    //     return;
+    // }
+    props.setLastTranslate(translate);
+
+    if (translate.x >= 0) {
+        if (offsets.left >= 0 || translate.x >= props.elementSize.width) {
+            // console.log('translate x > 0', translate.x, offsets.left);
+            // props.transitionElement.current.classList.add('stopped');
+
+            // props.transitionElement.current.style.transform =
+            //     '';
+            // props.transitionElement.current.style.animation = null;
+            // props.transitionElement.current.style.animation =
+            //     'slideToRight 0.5s forwards';
+            console.log('(je return)');
+
+            return;
+        }
     }
     // props.transitionElement.current.classList.remove('closed');
-
-    props.setLastTranslate(translate);
+    if (props.transitionElement.current.classList.contains('active')) {
+        props.transitionElement.current.classList.remove('active');
+    }
 
     // modifyWidth(
     //     props.transitionElement.current,
     //     props.elementWidth + translate.x
     // );
+
     translateElement(
         props.transitionElement.current,
         0,
-        (100 * translate.x) / props.elementSize.width
+        (100 * translate.x) / props.elementSize.width,
+        translate.x
     );
     // translateWidth(props.transitionElement.current, baseWidth + translate.x);
     // props.transitionElement.current.style.width = `${translateX}px`;
@@ -216,18 +241,19 @@ function endDrag(
     { ...props }: any
 ) {
     if (!props.isClick) e.preventDefault();
-    console.log(props.lastTranslate);
-    enableTransition(props.transitionElement.current);
+    if (!props.isMoving) return;
+    const element = props.transitionElement.current;
+    enableTransition(element);
 
     if (
         props.isMoving &&
         Math.abs(props.lastTranslate.x / props.elementSize.width) > 0.2
     ) {
-        let options = {};
+        const options = {};
 
-        if (props.transitionElement.current.classList.contains('closed')) {
-            props.transitionElement.current.style.left = '0';
-            props.transitionElement.current.classList.remove('closed');
+        if (element.classList.contains('closed')) {
+            element.style.left = '0';
+            element.classList.remove('closed');
             options.animation = 'slideToRight 0.5s forwards';
             options.class = 'opened';
         } else {
@@ -235,19 +261,21 @@ function endDrag(
             options.class = 'closed';
         }
 
-        props.transitionElement.current.style.animation = options.animation;
-        props.transitionElement.current.addEventListener(
+        element.style.animation = options.animation;
+        element.addEventListener(
             'animationend',
             () => {
-                props.transitionElement.current.classList.add(options.class);
-                props.transitionElement.current.removeAttribute('style');
+                element.classList.add(options.class);
+                if (element.classList.contains('opening')) {
+                    element.classList.remove('opening');
+                }
+                element.removeAttribute('style');
             },
             { once: true }
         );
-        // props.transitionElement.current.classList.toggle('active');
     } else {
         translateElement(
-            props.transitionElement.current,
+            element,
             0,
             props.lastTranslate.x / props.elementSize.width
         );
@@ -256,7 +284,7 @@ function endDrag(
     //     props.isMoving &&
     //     Math.abs(props.lastTranslate.x / props.elementWidth) > 0.1
     // ) {
-    //     enableTransition(props.transitionElement.current);
+    //     enableTransition(element);
     //     props.transitionElement.current.classList.remove('active');
     // }
     props.setOrigin(null);
@@ -312,15 +340,14 @@ function translateElement(
     element: HTMLElement,
     percentY = 0,
     percentX = 0,
-    width = null
+    position = null
 ) {
-    // let element;
+    if (!element) return;
     // if (this.#clickedElement === 'card') element = this.#card;
     // if (this.#clickedElement === 'steps') element = this.#steps;
-    console.log(percentX);
+    console.log('je transofrm', percentX);
+    if (percentX > 0 && percentX < 0.2) percentX = 0;
+
     element.style.transform =
         'translate3d(' + percentX + '%,' + percentY + '%, 0)';
-    if (width) {
-        element.style.width = width;
-    }
 }
