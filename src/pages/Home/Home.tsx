@@ -3,12 +3,15 @@ import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
+import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
 import { useMutationObserver } from '@/hooks/useMutationObserver.tsx';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
+import { g } from 'node_modules/react-router/dist/development/fog-of-war-1hWhK5ey.d.mts';
+import { ac } from 'node_modules/react-router/dist/development/route-data-5OzAzQtT.d.mts';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Group } from 'three';
+import { Group, Vector3 } from 'three';
 
 const handleObserver = (mutationsList, observer) => {
     console.log('Mutation détectée:', mutationsList.length);
@@ -49,43 +52,100 @@ const handleObserver = (mutationsList, observer) => {
     });
 };
 
-export function Home() {
-    const containerRef = useRef(null);
+export function Home({ controlsRef, reducer }) {
+    const pageRef = useRef(null);
     const groupRef = useRef<Group>(null);
     const location = useLocation();
     const [isLoaded, setIsLoaded] = useState(false);
     const [activeURL, setActiveURL] = useState(false);
+
+    const targetPosition = useRef(new Vector3());
+    const targetLookAt = useRef(new Vector3());
+    const currentLookAt = useRef(new Vector3(0, 0, 0));
+
+    const { positionCameraToCard } = useCameraPositioning();
     // const homeRef = useRef(null);
     // const { setRef, node, observer } = useMutationObserver(handleObserver);
 
+    /**
+     * Activate page URL and content loaded
+     */
     useEffect(() => {
-        if (!containerRef.current) return;
+        if (!pageRef.current) return;
         setIsLoaded(true);
         !location.pathname.includes('projets')
             ? setActiveURL(true)
             : setActiveURL(false);
-    }, [containerRef.current, location]);
+    }, [pageRef.current, location]);
+
+    useEffect(() => {
+        if (!groupRef.current || !controlsRef.current || !isLoaded) return;
+
+        // Position du groupe
+        const groupPosition = groupRef.current.position;
+
+        if (activeURL) {
+            // Si page active, positionner la caméra devant le contenu HTML
+            targetPosition.current.set(
+                groupPosition.x,
+                groupPosition.y,
+                groupPosition.z + 2.5 // Distance pour voir bien le contenu
+            );
+
+            // Point de focus au centre du contenu HTML
+            targetLookAt.current.copy(groupPosition);
+        } else {
+            // Si inactif, revenir à la vue générale
+            const { camera } = controlsRef.current;
+            targetPosition.current.set(0, 0, 5);
+            targetLookAt.current.set(0, 0, 0);
+        }
+    }, [activeURL, isLoaded]);
 
     /**
      * POSITIONING IF URL IS ACTIVE / NON ACTIVE -
      */
     useFrame((state, delta) => {
-        if (!groupRef.current && !isLoaded) return;
-        easing.damp3(
-            groupRef.current.position,
-            activeURL
-                ? ACTIVE_PROJECTS_POSITION_SETTINGS
-                : DEFAULT_PROJECTS_POSITION_SETTINGS,
-            0.2,
-            delta
-        );
+        if (groupRef.current && isLoaded) {
+            easing.damp3(
+                groupRef.current.position,
+                activeURL
+                    ? ACTIVE_PROJECTS_POSITION_SETTINGS
+                    : DEFAULT_PROJECTS_POSITION_SETTINGS,
+                0.3,
+                delta
+            );
+        }
+
+        // if (controlsRef.current && isLoaded && activeURL) {
+        //     const { camera } = controlsRef.current;
+
+        //     // Animation fluide de la position de la caméra
+        //     easing.damp3(camera.position, targetPosition.current, 0.3, delta);
+
+        //     // Animation fluide du point de vue
+        //     easing.damp3(
+        //         currentLookAt.current,
+        //         targetLookAt.current,
+        //         0.3,
+        //         delta
+        //     );
+        //     // Faire regarder la caméra vers le point cible
+        //     camera.lookAt(currentLookAt.current);
+
+        //     // Si page active, ajuster le FOV pour un meilleur cadrage
+        //     easing.damp(camera, 'fov', activeURL ? 40 : 50, 0.5, delta);
+
+        //     // Mettre à jour la matrice de projection après changement de FOV
+        //     camera.updateProjectionMatrix();
+        // }
     });
 
     return (
         <group ref={groupRef}>
             <HtmlContainer className="html-container">
                 <HomeContent
-                    ref={containerRef}
+                    ref={pageRef}
                     style={{
                         opacity: isLoaded ? 1 : 0,
                         transform: 'translate(-50%) rotateY(180deg)',
