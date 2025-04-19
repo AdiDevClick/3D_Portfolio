@@ -65,7 +65,8 @@ export function Scene({ SETTINGS, size }) {
     // Specify boundaries & responsive boundaries
     // const { size } = useResize(100);
     reducer.isMobile = size[0] < 768;
-    const isMobile = size[0] < 768;
+    reducer.isTablet = size[0] < 1024;
+    // const isMobile = size[0] < 768;
 
     const scaleX = Math.max(0.5, size[0] / 1920);
     const scaleY = Math.max(0.5, size[1] / 1080);
@@ -242,7 +243,7 @@ export function Scene({ SETTINGS, size }) {
                     </p>
                 </div>
             </HtmlContainer> */}
-            <Home />
+            <Home controlsRef={controlsRef} reducer={reducer} />
             {/* <Html
                 ref={menuRef}
                 // style={{ position: 'relative', height: '100%', width: '100%' }}
