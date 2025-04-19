@@ -12,10 +12,12 @@ import { isNeighbor } from '@/functions/collisions.ts';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Loader, useCursor } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
+import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
 import { easing } from 'maath';
 import { Navigate, useNavigate } from 'react-router';
 import { Euler, Vector3 } from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
+import { element } from 'three/tsl';
 
 /**
  * Définit les propriétés qui seront intégrées aux cartes.
@@ -89,6 +91,7 @@ export function onClickHandler(
     // }
     // if (reducer.activeContent?.isClicked) return;
     // if (card.isClicked && card.id !== card.id) return;
+    console.log(reducer);
     if (card.id === reducer.activeContent?.id) {
         console.log('Je clic');
         navigate(
@@ -100,7 +103,7 @@ export function onClickHandler(
         reducer.clickElement(card);
 
         if (card.isClicked) reducer.activateElement(card, false);
-    } else if (reducer.isMobile) {
+    } else if (reducer.isMobile || reducer.isTablet) {
         reducer.activateElement(card, true);
         reducer.clickElement(card);
     } else {
@@ -270,6 +273,32 @@ export function handleCollisions(
     ) {
         console.log('There is collision between some cards');
     }
+}
+const animateItem = {
+    function: easing.damp,
+    property: projectsRef.current.scale,
+    axe: 'y',
+    duration: 0.3,
+    position: {
+        active: [targetScale, targetScale, targetScale],
+        inactive: [40, 40, 40],
+    },
+
+    delta: delta,
+};
+export function animate(array) {
+    array = Array.isArray(array) ? array : [array];
+    array.forEach((element) => {
+        element.function(
+            element.property,
+            axe && element.axe,
+            element.position
+                ? element.position.active
+                : element.position.inactive,
+            element.duration,
+            element.delta
+        );
+    });
 }
 // export function handleCollisions(elementPosition, item, element);
 
