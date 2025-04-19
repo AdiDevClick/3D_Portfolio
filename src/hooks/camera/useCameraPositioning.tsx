@@ -37,8 +37,7 @@ export function useCameraPositioning() {
             isClicked = false,
             lerpFactor = 0.6
         ) => {
-            if (!cardProps.ref?.current || !controlsRef?.current) return null;
-
+            if (!cardProps.ref?.current || !controlsRef?.current) return;
             const { camera } = controlsRef.current;
             const { cardAngles, ref, containerScale } = cardProps;
 
