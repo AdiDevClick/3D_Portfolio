@@ -44,7 +44,7 @@ export function Button({
             // onDragStart={handleDragStart}
             // onTouchEnd={onTouchEnd}
             // onTouchCancel={onTouchCancel}
-            onMouseEnter={onClick}
+            // onMouseEnter={onClick}
             onClick={onClick}
             // draggable={false}
             {...props}
