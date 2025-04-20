@@ -8,6 +8,10 @@
     gap: 10px;
     align-items: center;
 
+    >a {
+        width: fit-content;
+    }
+
     .tag {
         font-size: var(--fs-bigger-medium);
         display: inline-flex;
@@ -18,7 +22,7 @@
         padding: 1.1rem;
         background-color: var(--dark-bg-color);
         // font-weight: var(--font-weight-large);
-        width: max-content;
+        width: fit-content;
         align-items: center;
         color: white;
         outline: 1px solid color-mix(in oklab, var(--dark-bg-color)35%, transparent);
