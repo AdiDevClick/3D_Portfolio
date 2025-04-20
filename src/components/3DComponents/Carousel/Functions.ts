@@ -60,6 +60,7 @@ export function createCardProperties(
         cardTitle: datas[i]?.cardTitle || 'cardTitle',
         content: datas[i]?.content || defaultContent,
         stack: datas[i]?.stack || {},
+        links: datas[i]?.links || {},
         position,
         velocity: new Vector3(0, 0, 0),
         rotation,
