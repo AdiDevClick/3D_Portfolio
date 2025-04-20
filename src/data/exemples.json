@@ -15,16 +15,14 @@
         },
         "links": [
             {
-                "GitHub": {
-                    "link": "www.github.com/AdiDevClick/3d_portfolio",
-                    "logo": "../src/assets/icons/github.svg"
-                }
+                "name": "GitHub",
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
             },
             {
-                "Website": {
-                    "link": "www.github.com/AdiDevClick/3d_portfolio",
-                    "logo": "../src/assets/icons/github.svg"
-                }
+                "name": "Visit Website",
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
             }
         ]
     },
@@ -42,16 +40,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "3",
@@ -67,16 +67,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "4",
@@ -92,16 +94,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "5",
@@ -117,16 +121,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "6",
@@ -142,16 +148,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "7",
@@ -167,16 +175,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "8",
@@ -196,16 +206,18 @@
             "ThreeJS": "../src/assets/icons/threedotjs.svg",
             "Vite": "../src/assets/icons/vite.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "9",
@@ -221,16 +233,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "10",
@@ -246,16 +260,18 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     },
     {
         "id": "11",
@@ -271,15 +287,17 @@
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
         },
-        "links": {
-            "GitHub": {
+        "links": [
+            {
+                "name": "GitHub",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
-            "Website": {
+            {
+                "name": "Visit Website",
                 "link": "www.github.com/AdiDevClick/3d_portfolio",
                 "logo": "../src/assets/icons/github.svg"
             }
-        }
+        ]
     }
 ]
