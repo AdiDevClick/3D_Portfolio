@@ -38,6 +38,7 @@ export function CardMainTitle({ reducer, card }: CardTitleTypes) {
                 height={1}
                 smooth={1}
                 font={montserrat}
+                as={'H1'}
             >
                 {card.cardTitle ? card.cardTitle : 'test'}
                 <meshNormalMaterial />
