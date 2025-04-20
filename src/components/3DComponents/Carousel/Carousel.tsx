@@ -52,7 +52,7 @@ export default function Carousel({
     const location = useLocation();
     const id = useId();
 
-    // États pour l'animation séquentielle
+    // États pour l'animation
     const [isAnimatingIn, setIsAnimatingIn] = useState(false);
     const [animationProgress, setAnimationProgress] = useState(0);
     const [wasActive, setWasActive] = useState(false);
