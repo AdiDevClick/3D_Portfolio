@@ -31,6 +31,8 @@ interface CardContentType {
     content: string[];
     /** The description of the project next to the title of the card content */
     description: string;
+    /** The links of the project */
+    links: { name: string; url: string; logo: string }[];
 }
 
 type typeAngles = { active: number; onHold: number };
