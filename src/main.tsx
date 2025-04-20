@@ -7,16 +7,12 @@ import App from './App2.tsx';
 // import App from './App.tsx';
 import { Scene } from './components/3DComponents/Scene/Scene.tsx';
 import { RouterProvider } from 'react-router/dom';
-import { createBrowserRouter, NavLink, Outlet } from 'react-router';
+import { createBrowserRouter, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
-import { Button } from '@/components/button/Button.tsx';
 import { Header } from '@/components/header/Header.tsx';
-import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
-import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
 import { useSettings } from '@/hooks/useSettings.tsx';
 import useResize from '@/hooks/useResize.tsx';
 import JSONDatas from '@data/exemples.json';
-import { CarouselActivator } from '@/components/3DComponents/Carousel/CarouselActivator.tsx';
 
 const router = createBrowserRouter([
     {
@@ -69,20 +65,6 @@ export function Root(contentType) {
     const { size } = useResize(100);
     // reducer.isMobile = size[0] < 768;
     const isTouchDevice = size[0] < 968;
-
-    // const scaleX = Math.max(0.5, size[0] / 1920);
-    // const scaleY = Math.max(0.5, size[1] / 1080);
-    // const responsiveBoundaries = {
-    //     x: SETTINGS.x * scaleX,
-    //     y: SETTINGS.y * scaleY,
-    //     z: SETTINGS.z,
-    // };
-    // const contextProps = {
-    //     boundaries: responsiveBoundaries,
-    //     reducer,
-    //     SETTINGS,
-    //     datas: JSONDatas,
-    // };
     return (
         <>
             <Header isTouchDevice={isTouchDevice} />
@@ -95,31 +77,9 @@ export function Root(contentType) {
                     // <Outlet />
                 )}
             </App>
-            {/* <App /> */}
         </>
     );
 }
 {
     /* <Outlet context={contextProps} /> */
-}
-
-{
-    /* <MotionPathControls
-                ref={motionPathRef}
-                object={motionPathObject}
-                curves={[
-                    new THREE.CubicBezierCurve3(
-                        new THREE.Vector3(-5, -5, 0),
-                        new THREE.Vector3(-10, 0, 0),
-                        new THREE.Vector3(0, 3, 0),
-                        new THREE.Vector3(6, 3, 0)
-                    ),
-                    new THREE.CubicBezierCurve3(
-                        new THREE.Vector3(6, 3, 0),
-                        new THREE.Vector3(10, 5, 5),
-                        new THREE.Vector3(5, 3, 5),
-                        new THREE.Vector3(5, 5, 5)
-                    ),
-                ]}
-            /> */
 }
