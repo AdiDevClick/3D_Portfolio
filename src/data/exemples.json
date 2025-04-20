@@ -12,7 +12,21 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
-        }
+        },
+        "links": [
+            {
+                "GitHub": {
+                    "link": "www.github.com/AdiDevClick/3d_portfolio",
+                    "logo": "../src/assets/icons/github.svg"
+                }
+            },
+            {
+                "Website": {
+                    "link": "www.github.com/AdiDevClick/3d_portfolio",
+                    "logo": "../src/assets/icons/github.svg"
+                }
+            }
+        ]
     },
     {
         "id": "2",
@@ -27,6 +41,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -42,6 +66,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -57,6 +91,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -72,6 +116,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -87,6 +141,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -102,6 +166,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -121,6 +195,16 @@
             "Sass": "../src/assets/icons/sass.svg",
             "ThreeJS": "../src/assets/icons/threedotjs.svg",
             "Vite": "../src/assets/icons/vite.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -136,6 +220,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -151,6 +245,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     },
     {
@@ -166,6 +270,16 @@
         "stack": {
             "React": "../src/assets/icons/react.svg",
             "TypeScript": "../src/assets/icons/typescript.svg"
+        },
+        "links": {
+            "GitHub": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            },
+            "Website": {
+                "link": "www.github.com/AdiDevClick/3d_portfolio",
+                "logo": "../src/assets/icons/github.svg"
+            }
         }
     }
 ]
