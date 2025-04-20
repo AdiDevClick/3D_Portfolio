@@ -203,9 +203,9 @@ export function Scene({ SETTINGS, size }) {
         const timer = setTimeout(activateCardByURL, initialDelay);
 
         return () => clearTimeout(timer);
-    }, [id, reducer]);
+    }, [reducer.showElements]);
 
-    console.log('je crer la Scene');
+    // console.log('je crer la Scene');
     return (
         // <div
         //     id="canvas-container"

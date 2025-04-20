@@ -59,7 +59,7 @@ export default function Carousel({
     const [shouldBreathe, setShouldBreathe] = useState(false);
 
     const activeURL = location.pathname.includes('projets');
-
+    const activeProject = location.pathname.split('/')[2];
     // Fonctions d'easing personnalisées
     const customEasing = {
         // Fonction d'easing élastique (rebond)
@@ -140,12 +140,17 @@ export default function Carousel({
      */
     useEffect(() => {
         // Turn off animations
-        if (!activeURL && isAnimatingIn) {
-            setIsAnimatingIn(false);
+        if (!activeURL) {
+            if (isAnimatingIn) setIsAnimatingIn(false);
+            if (reducer.activeContent) {
+                setShouldBreathe(activeURL);
+                reducer.activeContent.isActive = false;
+                reducer.activeContent.isClicked = false;
+            }
         }
 
         // Animations init
-        if (activeURL && !wasActive) {
+        if (activeURL && !wasActive && !activeProject) {
             setShouldBreathe(activeURL);
             setAnimationProgress(0);
             setIsAnimatingIn(true);
@@ -167,20 +172,23 @@ export default function Carousel({
                 0.2,
                 delta
             );
+
             // Breathing effect of the carousel on idle
-            const breathingEffect =
-                Math.sin(state.clock.elapsedTime * 2) * 0.002;
-            const targetScale = 1 + breathingEffect;
-            // On insert, the card will be in the center of the screen
-            // and very wide giving the illusion of a 3D effect
-            easing.damp3(
-                projectsRef.current.scale,
-                activeURL
-                    ? [targetScale, targetScale, targetScale]
-                    : [40, 40, 40],
-                0.3,
-                delta
-            );
+            if (!reducer.activeContent) {
+                const breathingEffect =
+                    Math.sin(state.clock.elapsedTime * 2) * 0.002;
+                const targetScale = 1 + breathingEffect;
+                // On insert, the card will be in the center of the screen
+                // and very wide giving the illusion of a 3D effect
+                easing.damp3(
+                    projectsRef.current.scale,
+                    activeURL
+                        ? [targetScale, targetScale, targetScale]
+                        : [40, 40, 40],
+                    0.3,
+                    delta
+                );
+            }
 
             if (activeURL) {
                 // Rotating effect of the carousel
