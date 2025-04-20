@@ -2,7 +2,6 @@ import { Tags } from '@/components/tags/Tags.tsx';
 import { TagsContainer } from '@/components/tags/TagsContainer.tsx';
 import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
 import { useId } from 'react';
-import { Link } from 'react-router';
 
 type cardType = {
     card: ElementType;
