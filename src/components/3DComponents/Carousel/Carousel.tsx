@@ -203,6 +203,8 @@ export default function Carousel({
                     isAnimatingIn ? 0.3 : 0.4,
                     delta
                 );
+            } else {
+                easing.damp3(projectsRef.current.scale, [1, 1, 1], 0.3, delta);
             }
         }
 
