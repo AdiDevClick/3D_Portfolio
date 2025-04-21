@@ -15,7 +15,6 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
 import { Home } from '@/pages/Home/Home.tsx';
-import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
 const initialCameraFov = 20;
 let minAngle = -Infinity;
