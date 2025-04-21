@@ -136,12 +136,11 @@ export function onPointerOut(
     navigate: any
 ): void {
     e.stopPropagation();
-
     if (reducer.activeContent?.isClicked) return;
     reducer.activateElement(card, false);
-    navigate('/projets', {
-        replace: true,
-    });
+    // navigate('/projets', {
+    //     replace: true,
+    // });
 }
 
 /**
