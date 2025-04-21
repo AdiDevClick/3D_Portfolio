@@ -39,8 +39,8 @@ export function HtmlContainer({
     useFrame(() => {
         if (done || !htmlRef.current) return;
         frameCountRef.current += 1;
-        // Update every 4 frames
-        if (frameCountRef.current % 4 === 0) {
+        // Update every 5 frames
+        if (frameCountRef.current % 5 === 0) {
             measure(htmlRef.current, {
                 scaleRatio,
                 setScaleRatio,
