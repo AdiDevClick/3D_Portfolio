@@ -86,41 +86,44 @@ export function onClickHandler(
 ): void {
     e.stopPropagation();
     // Deny any other clicked elements if one is opened
+    if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
+        return;
+    }
+
+    navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
+        replace: true,
+    });
+    reducer.activateElement(card, !card.isClicked ? true : false);
+    reducer.clickElement(card);
     // if (reducer.activeContent?.id === card.id) {
     //     // location.pathname = '/projets/' + card.id;
     //     reducer.clickElement(card);
     // }
     // if (reducer.activeContent?.isClicked) return;
     // if (card.isClicked && card.id !== card.id) return;
-    console.log(reducer);
-    if (card.id === reducer.activeContent?.id) {
-        console.log('Je clic');
-        navigate(
-            !card.isClicked ? `${location.pathname}/${card.id}` : '/projets',
-            {
-                replace: true,
-            }
-        );
-        reducer.clickElement(card);
-
-        if (card.isClicked) reducer.activateElement(card, false);
-    } else if (reducer.isMobile || reducer.isTablet) {
-        reducer.activateElement(card, true);
-        reducer.clickElement(card);
-    } else {
-        return;
-    }
-    // }
-
-    // if (!reducer.activeContent) {
-    //     console.log('je clic');
+    // console.log(reducer);
+    // if (card.id === reducer.activeContent?.id) {
+    //     console.log('Je clic');
+    //     navigate(
+    //         !card.isClicked ? `${location.pathname}/${card.id}` : '/projets',
+    //         {
+    //             replace: true,
+    //         }
+    //     );
 
     //     reducer.clickElement(card);
+
+    //     if (card.isClicked) reducer.activateElement(card, false);
+    // } else if (reducer.isMobile || reducer.isTablet) {
+    //     reducer.activateElement(card, true);
+    //     reducer.clickElement(card);
+    // } else {
+    //     return;
+    // }
     // }
 
-    // reducer.animate(card, 'dropoff');
-    // navigate('/error/page');
-    // return <Navigate to={'/error/page'} replace={true} />;
+    // if (!reducer.activeContent && !card.isClicked)
+    //     reducer.activateElement(card, true);
 }
 
 /**
