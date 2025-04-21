@@ -5,20 +5,17 @@ import {
     useTexture,
     CameraControls,
 } from '@react-three/drei';
-import { use, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../../../utils/util.tsx';
 import JSONDatas from '@data/exemples.json';
-import useResize from '../../../hooks/useResize.tsx';
-import { Box3, MathUtils, Vector3 } from 'three';
+import { MathUtils, Vector3 } from 'three';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
-import { useSettings } from '@/hooks/useSettings.tsx';
 import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.ts';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
-import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
 import { Home } from '@/pages/Home/Home.tsx';
-// import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
+import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
 const initialCameraFov = 20;
 let minAngle = -Infinity;
@@ -31,6 +28,7 @@ export function Scene({ SETTINGS, size }) {
     const id = params['*']?.split('/')[1];
 
     const location = useLocation();
+    // const lookAtSmooth = useLookAtSmooth();
     // const isCarouselActive = location.pathname.includes('projets');
 
     const controlsRef = useRef(null!);
