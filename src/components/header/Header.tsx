@@ -39,32 +39,34 @@ export function Header({ isTouchDevice }) {
             <Button ref={buttonRef} type="button" onClick={handleClick}>
                 Open
             </Button>
-            <nav>
-                {/* <Logo /> */}
-                <ul>
-                    <li>
-                        <NavLink
-                            id="home-link"
-                            aria-labelledby="home-link-text"
-                            to="/"
-                        >
-                            <span id="home-link-text">Accueil</span>
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/a-propos">A Propos</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/projets">Mes Projets</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/contact">Me Contacter</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/more">More</NavLink>
-                    </li>
-                </ul>
-            </nav>
+            {isMoving && (
+                <nav>
+                    {/* <Logo /> */}
+                    <ul>
+                        <li>
+                            <NavLink
+                                id="home-link"
+                                aria-labelledby="home-link-text"
+                                to="/"
+                            >
+                                <span id="home-link-text">Accueil</span>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/a-propos">A Propos</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/projets">Mes Projets</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/contact">Me Contacter</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/more">More</NavLink>
+                        </li>
+                    </ul>
+                </nav>
+            )}
         </header>
     );
 }
