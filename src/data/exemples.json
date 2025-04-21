@@ -184,7 +184,7 @@
             {
                 "name": "Visit Website",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "../src/assets/icons/github.svg"
+                "logo": "www"
             }
         ]
     },
@@ -215,7 +215,7 @@
             {
                 "name": "Visit Website",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "../src/assets/icons/github.svg"
+                "logo": "../src/assets/icons/website.svg"
             }
         ]
     },
