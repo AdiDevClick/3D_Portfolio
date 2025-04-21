@@ -4,14 +4,16 @@ import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
+import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 import { useMutationObserver } from '@/hooks/useMutationObserver.tsx';
+import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { g } from 'node_modules/react-router/dist/development/fog-of-war-1hWhK5ey.d.mts';
 import { ac } from 'node_modules/react-router/dist/development/route-data-5OzAzQtT.d.mts';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Group, Vector3 } from 'three';
+import { Group, Matrix4, Quaternion, Vector3 } from 'three';
 
 const handleObserver = (mutationsList, observer) => {
     console.log('Mutation détectée:', mutationsList.length);
@@ -64,6 +66,7 @@ export function Home({ controlsRef, reducer }) {
     const currentLookAt = useRef(new Vector3(0, 0, 0));
 
     const { positionCameraToCard } = useCameraPositioning();
+    const { lookAtSmooth } = useLookAtSmooth();
     // const homeRef = useRef(null);
     // const { setRef, node, observer } = useMutationObserver(handleObserver);
 
@@ -78,27 +81,14 @@ export function Home({ controlsRef, reducer }) {
             : setActiveURL(false);
     }, [pageRef.current, location]);
 
+    /**
+     * Positioning camera to the page on load
+     */
     useEffect(() => {
-        if (!groupRef.current || !controlsRef.current || !isLoaded) return;
-
-        // Position du groupe
-        const groupPosition = groupRef.current.position;
+        if (!groupRef.current || !isLoaded || !pageRef.current) return;
 
         if (activeURL) {
-            // Si page active, positionner la caméra devant le contenu HTML
-            targetPosition.current.set(
-                groupPosition.x,
-                groupPosition.y,
-                groupPosition.z + 2.5 // Distance pour voir bien le contenu
-            );
-
-            // Point de focus au centre du contenu HTML
-            targetLookAt.current.copy(groupPosition);
-        } else {
-            // Si inactif, revenir à la vue générale
-            const { camera } = controlsRef.current;
-            targetPosition.current.set(0, 0, 5);
-            targetLookAt.current.set(0, 0, 0);
+            lookAtSmooth(groupRef.current.position);
         }
     }, [activeURL, isLoaded]);
 
@@ -115,40 +105,70 @@ export function Home({ controlsRef, reducer }) {
                 0.3,
                 delta
             );
+
+            // if (pageRef.current && activeURL) {
+            //     const cameraPosition = state.camera.position.clone();
+
+            //     // Créer un vecteur de direction vers la caméra
+            //     const directionToCamera = cameraPosition
+            //         .clone()
+            //         .sub(groupRef.current.position)
+            //         .normalize();
+
+            //     // Calculer la rotation nécessaire pour regarder la caméra
+            //     const lookAtMatrix = new Matrix4().lookAt(
+            //         directionToCamera,
+            //         new Vector3(0, 0, 0),
+            //         new Vector3(0, 1, 0)
+            //     );
+            //     const lookAtQuaternion = new Quaternion().setFromRotationMatrix(
+            //         lookAtMatrix
+            //     );
+
+            //     groupRef.current.quaternion.copy(lookAtQuaternion);
+
+            //     const targetDistance = 20;
+            //     const currentDistance =
+            //         groupRef.current.position.distanceTo(cameraPosition);
+
+            //     if (Math.abs(currentDistance - targetDistance) > 0.1) {
+            //         // Calculer la position idéale à la distance cible
+            //         const idealPosition = cameraPosition
+            //             .clone()
+            //             .sub(directionToCamera.multiplyScalar(targetDistance));
+
+            //         // Interpoler vers cette position avec amortissement pour éviter les sauts
+            //         easing.damp3(
+            //             groupRef.current.position,
+            //             [idealPosition.x, idealPosition.y, idealPosition.z],
+            //             1,
+            //             delta
+            //         );
+            //     }
+            // }
         }
-
-        // if (controlsRef.current && isLoaded && activeURL) {
-        //     const { camera } = controlsRef.current;
-
-        //     // Animation fluide de la position de la caméra
-        //     easing.damp3(camera.position, targetPosition.current, 0.3, delta);
-
-        //     // Animation fluide du point de vue
-        //     easing.damp3(
-        //         currentLookAt.current,
-        //         targetLookAt.current,
-        //         0.3,
-        //         delta
-        //     );
-        //     // Faire regarder la caméra vers le point cible
-        //     camera.lookAt(currentLookAt.current);
-
-        //     // Si page active, ajuster le FOV pour un meilleur cadrage
-        //     easing.damp(camera, 'fov', activeURL ? 40 : 50, 0.5, delta);
-
-        //     // Mettre à jour la matrice de projection après changement de FOV
-        //     camera.updateProjectionMatrix();
-        // }
     });
 
     return (
-        <group ref={groupRef}>
-            <HtmlContainer className="html-container">
+        // <group>
+        <Billboard
+            ref={groupRef}
+            follow={true}
+            lockX={false}
+            lockY={false}
+            lockZ={false}
+            position={[0, 0, 0]}
+        >
+            <HtmlContainer
+                distanceFactor={1}
+                portal={document.body}
+                className="html-container"
+            >
                 <HomeContent
                     ref={pageRef}
                     style={{
                         opacity: isLoaded ? 1 : 0,
-                        transform: 'translate(-50%) rotateY(180deg)',
+                        transform: 'translate(-50%)',
                         transition:
                             'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
                         height: '500px',
@@ -158,7 +178,8 @@ export function Home({ controlsRef, reducer }) {
                     }}
                 />
             </HtmlContainer>
-        </group>
+        </Billboard>
+        // </group>
     );
 }
 export function HomeContent({ ...props }) {
