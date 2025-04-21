@@ -13,21 +13,28 @@ export function Header({ isTouchDevice }) {
     const [origin, setOrigin] = useState({});
 
     const click = useTouchEvents(buttonRef, headerRef);
-    const active = clicked && !isTouchDevice ? 'active' : '';
+    const active = isMoving ? 'inactive' : 'active';
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
         console.log('its mobile:', isTouchDevice);
-        if (isTouchDevice) return;
+        if (isMoving) return;
         setClicked(!clicked);
+    };
+    const handleMouseOver = (e: MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('its mobile:', isTouchDevice);
+        // if (isTouchDevice) return;
+        setIsMoving(!isMoving);
     };
     return (
         <header
             ref={headerRef}
             className={`main-container ${active}`}
-            onMouseEnter={handleClick}
-            onMouseLeave={handleClick}
+            onMouseEnter={handleMouseOver}
+            onMouseLeave={handleMouseOver}
         >
             <Button ref={buttonRef} type="button" onClick={handleClick}>
                 Open
