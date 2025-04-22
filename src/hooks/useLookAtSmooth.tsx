@@ -8,7 +8,7 @@ import { Vector3 } from 'three';
 export function useLookAtSmooth(speed = 0.05) {
     const { camera } = useThree();
     const lookAtProgress = useRef(0); // 0 to 1
-    const lookAtTarget = useRef(null);
+    const lookAtTarget = useRef<Vector3>(null);
 
     /**
      * Ensure position passed is of type THREE.Vector3
