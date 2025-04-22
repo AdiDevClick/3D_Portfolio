@@ -66,7 +66,7 @@ export function useTouchEvents(
             abortControllerRef.current?.abort();
         };
     }, [origin, props]);
-    return { isClick };
+    return { isMoving };
 }
 
 /**
@@ -173,7 +173,7 @@ function drag(e, element: HTMLElement, { ...props }: TouchEventProps) {
     // translate.x > 0 ? (positiveWidth = true) : false;
     console.log('mon offset Left', offsets.left);
     console.log('mon translate X', translate.x);
-    element.classList.add('opening');
+    props.transitionElement.current.classList.add('opening');
 
     // if (translate.x >= 0 && offsets.left >= 0) {
     //     console.log(
