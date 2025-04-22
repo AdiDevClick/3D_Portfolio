@@ -1,34 +1,34 @@
 import { Button } from '@/components/button/Button.tsx';
 import { NavLink } from 'react-router';
 import '@css/NavHeader.scss';
-import { MouseEvent, RefObject, TouchEvent, useRef, useState } from 'react';
+import { MouseEvent, RefObject, useEffect, useRef, useState } from 'react';
 import { useTouchEvents } from '@/hooks/Touch/useTouchEvents';
 
 export function Header({ isTouchDevice }) {
     const headerRef = useRef<RefObject<HTMLElement>>(null!);
     const buttonRef = useRef<RefObject<HTMLButtonElement>>(null!);
-    const touchRef = useRef<RefObject<TouchEvent<HTMLButtonElement>>>(null!);
-    const [clicked, setClicked] = useState(true);
+    const [isClicked, setClicked] = useState(false);
     const [isMoving, setIsMoving] = useState(false);
-    const [origin, setOrigin] = useState({});
 
     const click = useTouchEvents(buttonRef, headerRef);
-    const active = isMoving ? 'inactive' : 'active';
+    const active = isMoving || isClicked ? 'active' : 'inactive';
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        e.stopPropagation();
-        console.log('its mobile:', isTouchDevice);
-        if (isMoving) return;
-        setClicked(!clicked);
+        setClicked(!isClicked);
+        setIsMoving(!isClicked);
     };
+
     const handleMouseOver = (e: MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        e.stopPropagation();
-        console.log('its mobile:', isTouchDevice);
-        // if (isTouchDevice) return;
         setIsMoving(!isMoving);
+        setClicked(!isMoving);
     };
+
+    useEffect(() => {
+        headerRef.current?.removeAttribute('style');
+    }, [isMoving, isClicked]);
+
     return (
         <header
             ref={headerRef}
