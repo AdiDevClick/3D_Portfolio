@@ -16,7 +16,11 @@ header {
     transition: max-width 0.3s;
 
     >nav {
-        transition: opacity 0.3s ease-in-out;
+        transition: opacity 0.2s ease-in-out;
+
+        @starting-style {
+            opacity: 0;
+        }
 
         >ul {
             display: grid;
@@ -32,7 +36,7 @@ header {
         }
     }
 
-    &.active {
+    &.inactive {
         max-width: min(50px, 100%);
 
         >nav {
