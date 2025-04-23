@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Vector3 } from 'three';
 
 /**
@@ -7,7 +7,8 @@ import { Vector3 } from 'three';
  */
 export function useLookAtSmooth(speed = 0.05) {
     const { camera } = useThree();
-    const lookAtProgress = useRef(0); // 0 to 1
+    const [isCompleted, setCompleted] = useState(false);
+    const lookAtProgress = useRef(0);
     const lookAtTarget = useRef<Vector3>(null);
 
     /**
@@ -31,6 +32,7 @@ export function useLookAtSmooth(speed = 0.05) {
             ) {
                 // the differernce between the clone's quaternion and the camera's
                 // are close enough, so we clear the target to complete the animation
+                // console.log('progress avant null:', lookAtProgress.current);
                 lookAtTarget.current = null;
             } else {
                 // take a step towards target quaternion
@@ -38,13 +40,18 @@ export function useLookAtSmooth(speed = 0.05) {
                     lookAtProgress.current + speed,
                     1
                 );
+
                 camera.quaternion.slerp(
                     clone.quaternion,
                     lookAtProgress.current
                 );
+
+                if (lookAtProgress.current >= 1) {
+                    setCompleted(true);
+                }
             }
         }
     });
 
-    return { lookAtSmooth };
+    return { lookAtSmooth, isCompleted };
 }
