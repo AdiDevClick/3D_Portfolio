@@ -17,6 +17,7 @@ import {
 import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.tsx';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { useLocation } from 'react-router';
+import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 
 const collision = new Vector3();
 
@@ -42,6 +43,8 @@ export default function Carousel({
 
     const frameCountRef = useRef(0);
     const projectsRef = useRef(null);
+
+    const { lookAtSmooth } = useLookAtSmooth();
 
     // Animations Refs
     const startPosRef = useRef(new Vector3());
@@ -173,6 +176,13 @@ export default function Carousel({
                 delta
             );
 
+            // easing.damp3(
+            //     state.camera.position,
+            //     ACTIVE_PROJECTS_POSITION_SETTINGS,
+            //     0.1,
+            //     delta
+            // );
+
             // Breathing effect of the carousel on idle
             if (!reducer.activeContent) {
                 const breathingEffect =
@@ -279,7 +289,7 @@ export default function Carousel({
                             position.distanceTo(element.ref.current.position) -
                             effectiveRadius(item, element);
 
-                        // Collision handler - en une seule étape
+                        // Collision handler
                         const newScale = handleNeighborCollision(
                             i,
                             index,
