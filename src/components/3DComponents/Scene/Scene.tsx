@@ -10,7 +10,10 @@ import '../../../utils/util.tsx';
 import JSONDatas from '@data/exemples.json';
 import { MathUtils, Vector3 } from 'three';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
-import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.ts';
+import {
+    ACTIVE_PROJECTS_POSITION_SETTINGS,
+    DEFAULT_CAMERA_POSITION,
+} from '@/configs/3DCarousel.config.ts';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
@@ -32,6 +35,13 @@ export function Scene({ SETTINGS, size }) {
 
     const controlsRef = useRef(null!);
     const menuRef = useRef(null!);
+
+    const [viewMode, setViewMode] = useState('home'); // "home", "carousel", ou "card-detail"
+    const homeCameraRef = useRef({
+        position: new Vector3(0, 0, -14),
+        target: new Vector3(0, 0, 0),
+        distance: null,
+    });
     const initialCameraConfig = useRef({
         position: new Vector3(0, 0, -20),
         fov: 20,
@@ -76,35 +86,157 @@ export function Scene({ SETTINGS, size }) {
     // Hook for camera positioning
     const { positionCameraToCard } = useCameraPositioning();
 
-    const compensationRatio = size[0] / size[1];
-    document.documentElement.style.setProperty(
-        '--compensation-scale',
-        compensationRatio
-    );
+    // const compensationRatio = size[0] / size[1];
+    // document.documentElement.style.setProperty(
+    //     '--compensation-scale',
+    //     compensationRatio
+    // );
+
+    /**
+     * Detect route change -
+     * @description : Sets the camera position on route change
+     */
+    useEffect(() => {
+        if (location.pathname === '/') {
+            setViewMode('home');
+        } else if (
+            location.pathname.includes('projets') &&
+            !id &&
+            !reducer.activeContent
+        ) {
+            setViewMode('carousel');
+        } else if (id || reducer.activeContent) {
+            setViewMode('card-detail');
+            // } else if (reducer.activeContent) {
+            //     setViewMode('card-hovered');
+            // }
+        }
+        console.log(viewMode, 'viewMode');
+    }, [location, id, reducer.activeContent]);
 
     /**
      * Camera positioning -
      * @description : Camera is positionned on the active card
      */
+    // useEffect(() => {
+    //     if (!controlsRef.current) return;
+    //     const { camera } = controlsRef.current;
+
+    //     console.log('Mode actuel:', viewMode);
+    //     camera.updateProjectionMatrix();
+    //     reducer.contentSizes = size;
+
+    //     if (reducer.activeContent) {
+    //         setPrevCamPos(camera.position.clone());
+    //         const { isClicked, isActive } = reducer.activeContent;
+
+    //         if (isActive || isClicked) {
+    //             positionCameraToCard(
+    //                 controlsRef,
+    //                 reducer.activeContent,
+    //                 reducer.isMobile,
+    //                 isClicked
+    //             );
+    //         }
+    //     } else {
+    //         camera.fov = initialCameraFov;
+    //         controlsRef.current.setLookAt(
+    //             prevCamPos.x,
+    //             prevCamPos.y,
+    //             prevCamPos.z,
+    //             0,
+    //             0,
+    //             0,
+    //             true // Option d'animation
+    //         );
+    //         camera.updateProjectionMatrix();
+    //     }
+    // }, [reducer.activeContent, size]);
+    // Sauvegardez la position initiale de la caméra au premier chargement
     useEffect(() => {
-        if (controlsRef.current) {
+        if (controlsRef.current && !homeCameraRef.current.distance) {
             const { camera } = controlsRef.current;
-            camera.updateProjectionMatrix();
-            reducer.contentSizes = size;
 
-            if (reducer.activeContent) {
-                setPrevCamPos(camera.position.clone());
-                const { isClicked, isActive } = reducer.activeContent;
+            // Sauvegarder la position initiale comme position "home"
+            homeCameraRef.current = {
+                position: camera.position.clone(),
+                target: new Vector3(0, 0, 0),
+                distance: camera.position.distanceTo(new Vector3(0, 0, 0)),
+            };
 
-                if (isActive || isClicked) {
-                    positionCameraToCard(
-                        controlsRef,
-                        reducer.activeContent,
-                        reducer.isMobile,
-                        isClicked
+            console.log('Position Home sauvegardée:', homeCameraRef.current);
+        }
+    }, [controlsRef.current]);
+
+    /**
+     * Camera positioning -
+     * @description : Camera is positionned on the active page or content
+     */
+    useEffect(() => {
+        if (!controlsRef.current) return;
+
+        const { camera } = controlsRef.current;
+
+        console.log('Mode actuel:', viewMode);
+
+        // camera.updateProjectionMatrix();
+        reducer.contentSizes = size;
+
+        switch (viewMode) {
+            case 'home':
+                // Restaurer la position "home" si elle existe
+                if (homeCameraRef.current.distance) {
+                    console.log('Restauration position Home');
+
+                    // Calculer position en préservant la direction actuelle
+                    const direction = homeCameraRef.current.target
+                        .clone()
+                        .sub(camera.position)
+                        .normalize();
+
+                    const targetPos = homeCameraRef.current.target.clone();
+                    const idealCamPos = targetPos
+                        .clone()
+                        .sub(
+                            direction.multiplyScalar(
+                                homeCameraRef.current.distance
+                            )
+                        );
+
+                    controlsRef.current.setLookAt(
+                        idealCamPos.x,
+                        idealCamPos.y,
+                        idealCamPos.z,
+                        targetPos.x,
+                        targetPos.y,
+                        targetPos.z,
+                        true
                     );
+
+                    // controlsRef.current.setLookAt(
+                    //     prevCamPos.x,
+                    //     prevCamPos.y,
+                    //     prevCamPos.z,
+                    //     0,
+                    //     0,
+                    //     0,
+                    //     true
+                    // );
+                    // camera.updateProjectionMatrix();
+                    // controlsRef.current.camera.position.set(
+                    //     DEFAULT_CAMERA_POSITION.x,
+                    //     DEFAULT_CAMERA_POSITION.y,
+                    //     0
+                    // );
+                    // console.log(controlsRef.current.camera.position);
+                    // console.log(controlsRef.current.camera);
+                    camera.fov = initialCameraFov;
+                    camera.updateProjectionMatrix();
                 }
-            } else {
+                break;
+
+            case 'carousel':
+                // Position pour vue d'ensemble du carousel
                 camera.fov = initialCameraFov;
                 controlsRef.current.setLookAt(
                     prevCamPos.x,
@@ -113,12 +245,40 @@ export function Scene({ SETTINGS, size }) {
                     0,
                     0,
                     0,
-                    true // Option d'animation
+                    true
                 );
                 camera.updateProjectionMatrix();
-            }
+                break;
+
+            case 'card-detail':
+                if (reducer.activeContent) {
+                    setPrevCamPos(camera.position.clone());
+                    const { isClicked } = reducer.activeContent;
+
+                    positionCameraToCard(
+                        controlsRef,
+                        reducer.activeContent,
+                        reducer.isMobile,
+                        isClicked
+                    );
+                    camera.updateProjectionMatrix();
+                }
+                break;
+            // case 'card-hovered':
+            //     if (reducer.activeContent) {
+            //         setPrevCamPos(camera.position.clone());
+            //         const { isClicked } = reducer.activeContent;
+
+            //         positionCameraToCard(
+            //             controlsRef,
+            //             reducer.activeContent,
+            //             reducer.isMobile,
+            //             isClicked
+            //         );
+            //     }
+            //     break;
         }
-    }, [reducer.activeContent, size]);
+    }, [viewMode, reducer.activeContent, size]);
 
     /**
      * Camera positioning on URL loading -
@@ -138,6 +298,7 @@ export function Scene({ SETTINGS, size }) {
             ) {
                 return;
             }
+            console.log('je suis dans le useEffect de la scene');
 
             // Card exists ?
             const targetCard = reducer.showElements.find(
