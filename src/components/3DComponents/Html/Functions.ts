@@ -1,3 +1,5 @@
+import { Vector3 } from 'three';
+
 interface MeasureTypes {
     scaleRatio: number;
     setScaleRatio: (newRatio: number) => void;
@@ -24,13 +26,45 @@ export function measure(
     }
 
     const { width } = element.getBoundingClientRect();
+    // const viewportWidth = element.parentElement.clientWidth;
     const viewportWidth = element.clientWidth;
-    const newRatio = viewportWidth / width;
+    // const viewportWidth = window.innerWidth;
+    let newRatio = viewportWidth / width;
+
+    // if (camera && element.parentElement) {
+    //     // Récupérer la position 3D du conteneur parent
+    //     const parentPos = new Vector3();
+    //     element.getWorldPosition(parentPos);
+
+    //     // Calculer la distance réelle à la caméra
+    //     const distanceToCamera = camera.position.distanceTo(parentPos);
+    //     if (distanceToCamera > 0.1) {
+    //         const idealDistance = 10;
+    //         const distanceRatio = idealDistance / distanceToCamera;
+    //         newRatio *= 1 * distanceRatio * 0.1;
+    //         newRatio = Math.max(0.5, Math.min(newRatio, 2));
+    //     }
+    // }
 
     if (width !== viewportWidth && !done && scaleRatio !== newRatio) {
+        console.log(
+            'newRatio',
+            newRatio,
+            'viewport',
+            viewportWidth,
+            'width',
+            width,
+            'element',
+            element
+        );
+
         setDone(true);
         setScaleRatio(newRatio);
         // setScaleRatio((prev) => (prev < newRatio ? newRatio : prev));
+        // document.documentElement.style.setProperty(
+        //     '--compensation-scale',
+        //     newRatio.toString()
+        // );
     } else {
         setDone(true);
     }
