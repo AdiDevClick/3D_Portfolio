@@ -33,7 +33,7 @@
     //     height: 100%;
     // }
     // transform: translate(0);
-
+    transform: translate(-2%);
 
     // &::after {
     //     content: "";
@@ -116,7 +116,7 @@
     }
 
     @include for-size(smalltablet) {
-        transform: translate(-48%);
+        transform: translate(-50%);
         width: 100%;
         // width: 95vw;
         background: blue;
