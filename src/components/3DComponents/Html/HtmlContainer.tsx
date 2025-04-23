@@ -1,5 +1,6 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import { useMeasureCalculation } from '@/hooks/useMeasureCalculation.tsx';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { ReactNode, use, useEffect, useRef, useState } from 'react';
@@ -11,6 +12,8 @@ type HtmlContainerTypes = {
     dynamicContent?: boolean;
     className?: string;
     position?: [number, number, number];
+    forceMeasure?: boolean;
+    distanceFactor?: number;
 };
 
 /**
@@ -21,6 +24,8 @@ export function HtmlContainer({
     children,
     reducer,
     dynamicContent = false,
+    forceMeasure = false,
+    distanceFactor = 1,
     ...props
 }: HtmlContainerTypes) {
     const [scaleRatio, setScaleRatio] = useState(1);
@@ -36,11 +41,12 @@ export function HtmlContainer({
     // });
     // const htmlRef = mergeRefs(html, observer);
 
-    useFrame(() => {
+    useFrame((state) => {
         if (done || !htmlRef.current) return;
         frameCountRef.current += 1;
         // Update every 5 frames
-        if (frameCountRef.current % 5 === 0) {
+        if (frameCountRef.current % 30 === 0) {
+            console.log('je fais la mesure');
             measure(htmlRef.current, {
                 scaleRatio,
                 setScaleRatio,
@@ -48,29 +54,47 @@ export function HtmlContainer({
                 setDone,
             });
         }
+
+        // if (forceMeasure && done) {
+        //     console.log('je force la mesure');
+        //     setDone(false);
+        // }
     });
 
-    useEffect(() => {
-        if (htmlRef.current) {
-        }
-    }, [htmlRef.current]);
-
+    // const { scaleRatio } = useMeasureCalculation(
+    //     htmlRef,
+    //     dynamicContent,
+    //     children
+    // );
     /**
      * In & Out animation for the HTML element
      * when out of the canvas -
      */
+    // useEffect(() => {
+    //     if (dynamicContent) {
+    //         setDone(false);
+    //         frameCountRef.current = 0;
+    //     }
+    // }, [children]);
     useEffect(() => {
-        if (dynamicContent) {
+        if (dynamicContent || forceMeasure) {
+            console.log(
+                'je force la mesure: ',
+                forceMeasure,
+                'dyanamicContent',
+                dynamicContent
+            );
+            htmlRef.current?.removeAttribute('style');
             setDone(false);
             frameCountRef.current = 0;
         }
-    }, [children]);
+    }, [dynamicContent, forceMeasure]);
 
     return (
         <Html
             ref={htmlRef}
             transform
-            distanceFactor={1}
+            distanceFactor={distanceFactor}
             scale={0.7}
             style={{ '--data-custom-scale': scaleRatio }}
             {...props}
