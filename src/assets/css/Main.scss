@@ -51,7 +51,7 @@ canvas {
     animation: fade-in 5s ease 1.1s forwards;
 }
 
-@include property("data-custom-scale", "<number>", false, 1);
+@include property("data-custom-scale", "<number>", true, 1);
 
 /* Html main Content */
 *:has(>.html-container) {
@@ -61,17 +61,12 @@ canvas {
 .html-container {
     scale: var(--data-custom-scale);
     transition: scale 0.5s;
-    transform: translate(48%);
+    transform: translate(50%);
     visibility: hidden;
 
     >* {
         visibility: visible;
     }
-
-    // @include for-size(smalltablet) {
-    //     transform: translate(0);
-    //     // transition: transform 0.3s 0.2s;
-    // }
 }
 
 @keyframes scaleFromZero {
