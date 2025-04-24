@@ -1,19 +1,14 @@
-import { CardMainTitle } from '@/components/3DComponents/Cards/CardMainTitle.tsx';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
 import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
-    DEFAULT_CAMERA_POSITION,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
-import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
-import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
-import { useMutationObserver } from '@/hooks/useMutationObserver.tsx';
 import { Billboard } from '@react-three/drei';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { use, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Group, Matrix4, Quaternion, Vector3 } from 'three';
+import { Group } from 'three';
 
 const handleObserver = (mutationsList, observer) => {
     console.log('Mutation détectée:', mutationsList.length);
