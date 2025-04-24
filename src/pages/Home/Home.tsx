@@ -3,6 +3,7 @@ import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
+import { HomeContent } from '@/pages/Home/HomeContent.tsx';
 import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -56,7 +57,6 @@ export function Home({ force = false }) {
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [activeURL, setActiveURL] = useState(false);
-    // const { setRef, node, observer } = useMutationObserver(handleObserver);
 
     /**
      * Activate page URL and content loaded
@@ -113,21 +113,5 @@ export function Home({ force = false }) {
                 />
             </HtmlContainer>
         </Billboard>
-    );
-
-    // </group>
-}
-export function HomeContent({ ...props }) {
-    return (
-        <div
-            {...props}
-            // className="lateral-menu"
-        >
-            <h1 style={{ color: 'black' }}>Accueil</h1>
-            <p style={{ color: 'black' }}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam, voluptatibus. Lorem ipsum dolor sit amet{' '}
-            </p>
-        </div>
     );
 }
