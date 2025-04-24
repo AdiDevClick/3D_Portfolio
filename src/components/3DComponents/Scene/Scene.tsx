@@ -23,29 +23,19 @@ const initialCameraFov = 20;
 let minAngle = -Infinity;
 let maxAngle = Infinity;
 
-// export function Scene({ children }) {
 export function Scene({ SETTINGS, size }) {
     const params = useParams();
     const navigate = useNavigate();
     const id = params['*']?.split('/')[1];
 
     const location = useLocation();
-    // const lookAtSmooth = useLookAtSmooth();
-    // const isCarouselActive = location.pathname.includes('projets');
 
     const controlsRef = useRef(null!);
     const menuRef = useRef(null!);
+    const homeRef = useRef(null!);
 
-    const [viewMode, setViewMode] = useState('home'); // "home", "carousel", ou "card-detail"
-    const homeCameraRef = useRef({
-        position: new Vector3(0, 0, -14),
-        target: new Vector3(0, 0, 0),
-        distance: null,
-    });
-    const initialCameraConfig = useRef({
-        position: new Vector3(0, 0, -20),
-        fov: 20,
-    });
+    const [viewMode, setViewMode] = useState('home');
+    const [forceMeasure, setForceMeasure] = useState(false);
 
     // Default camera position if no controlsRef
     const [prevCamPos, setPrevCamPos] = useState(() =>
@@ -54,26 +44,23 @@ export function Scene({ SETTINGS, size }) {
             : DEFAULT_CAMERA_POSITION
     );
 
-    // Partager l'état "isActive" avec tous les composants enfants
-    // const sceneContext = useMemo(
-    //     () => ({
-    //         isActive: isCarouselActive,
-    //         // ...autres propriétés de contexte
-    //     }),
-    //     [isCarouselActive]
-    // );
-
+    const cameraPositions = {
+        home: {
+            position: DEFAULT_CAMERA_POSITION.clone(),
+            target: new Vector3(0, 0, 0),
+            fov: initialCameraFov,
+        },
+        carousel: {
+            position: prevCamPos.clone(),
+            target: new Vector3(0, 0, 0),
+            fov: initialCameraFov,
+        },
+    };
     // General Store
     const reducer = useCarousel();
 
-    // Boundaries Settings
-    // const SETTINGS = useSettings(JSONDatas);
-
-    // Specify boundaries & responsive boundaries
-    // const { size } = useResize(100);
     reducer.isMobile = size[0] < 768;
     reducer.isTablet = size[0] < 1024;
-    // const isMobile = size[0] < 768;
 
     const scaleX = Math.max(0.5, size[0] / 1920);
     const scaleY = Math.max(0.5, size[1] / 1080);
@@ -107,66 +94,8 @@ export function Scene({ SETTINGS, size }) {
             setViewMode('carousel');
         } else if (id || reducer.activeContent) {
             setViewMode('card-detail');
-            // } else if (reducer.activeContent) {
-            //     setViewMode('card-hovered');
-            // }
         }
-        console.log(viewMode, 'viewMode');
-    }, [location, id, reducer.activeContent]);
-
-    /**
-     * Camera positioning -
-     * @description : Camera is positionned on the active card
-     */
-    // useEffect(() => {
-    //     if (!controlsRef.current) return;
-    //     const { camera } = controlsRef.current;
-
-    //     console.log('Mode actuel:', viewMode);
-    //     camera.updateProjectionMatrix();
-    //     reducer.contentSizes = size;
-
-    //     if (reducer.activeContent) {
-    //         setPrevCamPos(camera.position.clone());
-    //         const { isClicked, isActive } = reducer.activeContent;
-
-    //         if (isActive || isClicked) {
-    //             positionCameraToCard(
-    //                 controlsRef,
-    //                 reducer.activeContent,
-    //                 reducer.isMobile,
-    //                 isClicked
-    //             );
-    //         }
-    //     } else {
-    //         camera.fov = initialCameraFov;
-    //         controlsRef.current.setLookAt(
-    //             prevCamPos.x,
-    //             prevCamPos.y,
-    //             prevCamPos.z,
-    //             0,
-    //             0,
-    //             0,
-    //             true // Option d'animation
-    //         );
-    //         camera.updateProjectionMatrix();
-    //     }
-    // }, [reducer.activeContent, size]);
-    // Sauvegardez la position initiale de la caméra au premier chargement
-    useEffect(() => {
-        if (controlsRef.current && !homeCameraRef.current.distance) {
-            const { camera } = controlsRef.current;
-
-            // Sauvegarder la position initiale comme position "home"
-            homeCameraRef.current = {
-                position: camera.position.clone(),
-                target: new Vector3(0, 0, 0),
-                distance: camera.position.distanceTo(new Vector3(0, 0, 0)),
-            };
-
-            console.log('Position Home sauvegardée:', homeCameraRef.current);
-        }
-    }, [controlsRef.current]);
+    }, [location, id, reducer.activeContent, viewMode]);
 
     /**
      * Camera positioning -
@@ -177,74 +106,33 @@ export function Scene({ SETTINGS, size }) {
 
         const { camera } = controlsRef.current;
 
-        console.log('Mode actuel:', viewMode);
-
         // camera.updateProjectionMatrix();
         reducer.contentSizes = size;
 
         switch (viewMode) {
             case 'home':
-                // Restaurer la position "home" si elle existe
-                if (homeCameraRef.current.distance) {
-                    console.log('Restauration position Home');
-
-                    // Calculer position en préservant la direction actuelle
-                    const direction = homeCameraRef.current.target
-                        .clone()
-                        .sub(camera.position)
-                        .normalize();
-
-                    const targetPos = homeCameraRef.current.target.clone();
-                    const idealCamPos = targetPos
-                        .clone()
-                        .sub(
-                            direction.multiplyScalar(
-                                homeCameraRef.current.distance
-                            )
-                        );
-
-                    controlsRef.current.setLookAt(
-                        idealCamPos.x,
-                        idealCamPos.y,
-                        idealCamPos.z,
-                        targetPos.x,
-                        targetPos.y,
-                        targetPos.z,
-                        true
-                    );
-
-                    // controlsRef.current.setLookAt(
-                    //     prevCamPos.x,
-                    //     prevCamPos.y,
-                    //     prevCamPos.z,
-                    //     0,
-                    //     0,
-                    //     0,
-                    //     true
-                    // );
-                    // camera.updateProjectionMatrix();
-                    // controlsRef.current.camera.position.set(
-                    //     DEFAULT_CAMERA_POSITION.x,
-                    //     DEFAULT_CAMERA_POSITION.y,
-                    //     0
-                    // );
-                    // console.log(controlsRef.current.camera.position);
-                    // console.log(controlsRef.current.camera);
-                    camera.fov = initialCameraFov;
-                    camera.updateProjectionMatrix();
-                }
+                camera.fov = cameraPositions.home.fov;
+                controlsRef.current.setLookAt(
+                    cameraPositions.home.position.x,
+                    cameraPositions.home.position.y,
+                    cameraPositions.home.position.z,
+                    cameraPositions.home.target.x,
+                    cameraPositions.home.target.y,
+                    cameraPositions.home.target.z,
+                    true
+                );
+                camera.updateProjectionMatrix();
                 break;
 
             case 'carousel':
-                // Position pour vue d'ensemble du carousel
-                camera.fov = initialCameraFov;
+                camera.fov = cameraPositions.carousel.fov;
                 controlsRef.current.setLookAt(
-                    prevCamPos.x,
-                    prevCamPos.y,
-                    prevCamPos.z,
-                    0,
-                    0,
-                    0,
+                    cameraPositions.carousel.position.x,
+                    cameraPositions.carousel.position.y,
+                    cameraPositions.carousel.position.z,
+                    cameraPositions.carousel.target.x,
+                    cameraPositions.carousel.target.y,
+                    cameraPositions.carousel.target.z,
                     true
                 );
                 camera.updateProjectionMatrix();
@@ -264,19 +152,6 @@ export function Scene({ SETTINGS, size }) {
                     camera.updateProjectionMatrix();
                 }
                 break;
-            // case 'card-hovered':
-            //     if (reducer.activeContent) {
-            //         setPrevCamPos(camera.position.clone());
-            //         const { isClicked } = reducer.activeContent;
-
-            //         positionCameraToCard(
-            //             controlsRef,
-            //             reducer.activeContent,
-            //             reducer.isMobile,
-            //             isClicked
-            //         );
-            //     }
-            //     break;
         }
     }, [viewMode, reducer.activeContent, size]);
 
@@ -286,20 +161,27 @@ export function Scene({ SETTINGS, size }) {
      * if the URL contains a card ID -
      */
     useEffect(() => {
+        if (
+            !menuRef.current ||
+            !controlsRef.current ||
+            !params['*']?.includes('projets') ||
+            !id ||
+            reducer.activeContent
+        ) {
+            return;
+        }
+
         const initialDelay = 500;
 
-        const activateCardByURL = () => {
-            if (
-                !menuRef.current ||
-                !controlsRef.current ||
-                !params['*']?.includes('projets') ||
-                !id ||
-                reducer.activeContent
-            ) {
-                return;
-            }
-            console.log('je suis dans le useEffect de la scene');
+        // !! IMPORTANT !! Set the camera to the carousel position
+        // before activating the card to fix a camera bug
+        setViewMode('carousel');
+        const timers = setTimeout(() => {
+            setViewMode('card-detail');
+            return () => clearTimeout(timers);
+        }, 50);
 
+        const activateCardByURL = () => {
             // Card exists ?
             const targetCard = reducer.showElements.find(
                 (element) => element.id === id
@@ -308,6 +190,7 @@ export function Scene({ SETTINGS, size }) {
             if (targetCard) {
                 // !! IMPORTANT !! Activate card to focus
                 reducer.activateElement(targetCard, true);
+                // Camera turns to the active card
                 setTimeout(() => {
                     if (!targetCard.ref?.current) {
                         // Retry
@@ -324,19 +207,19 @@ export function Scene({ SETTINGS, size }) {
                         1.0
                     );
 
+                    // Opening card animation
                     setTimeout(() => {
                         // Expand the card
                         reducer.clickElement(targetCard);
 
                         setTimeout(() => {
-                            // Réajuster si nécessaire après que tout soit stable
                             camera.fov = reducer.isMobile ? 19 : 20;
                             camera.updateProjectionMatrix();
                         }, 300);
-                    }, 600); // Délai suffisant pour que l'animation de caméra ait commencé
-                }, 300); // Délai pour laisser activateElement prendre effet
+                    }, 600);
+                }, 300);
             } else {
-                // Attendre que les éléments soient chargés puis réessayer
+                // Retry
                 if (reducer.showElements.length > 0) {
                     // Si nous avons déjà des cartes mais pas celle demandée, rediriger
                     setTimeout(() => {
@@ -357,13 +240,12 @@ export function Scene({ SETTINGS, size }) {
             }
         };
 
-        // Lancer l'activation après un délai initial
+        // init animations
         const timer = setTimeout(activateCardByURL, initialDelay);
 
         return () => clearTimeout(timer);
     }, [reducer.showElements]);
 
-    // console.log('je crer la Scene');
     return (
         // <div
         //     id="canvas-container"
@@ -401,7 +283,9 @@ export function Scene({ SETTINGS, size }) {
                     </p>
                 </div>
             </HtmlContainer> */}
-            <Home controlsRef={controlsRef} reducer={reducer} />
+            <group ref={homeRef}>
+                <Home force={forceMeasure} />
+            </group>
             {/* <Html
                 ref={menuRef}
                 // style={{ position: 'relative', height: '100%', width: '100%' }}
