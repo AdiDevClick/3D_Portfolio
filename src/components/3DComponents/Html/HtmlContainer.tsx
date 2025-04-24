@@ -40,12 +40,11 @@ export function HtmlContainer({
     // });
     // const htmlRef = mergeRefs(html, observer);
 
-    useFrame((state) => {
+    useFrame(() => {
         if (done || !htmlRef.current) return;
         frameCountRef.current += 1;
         // Update every 50 frames
         if (frameCountRef.current % 50 === 0) {
-            console.log('je fais la mesure');
             measure(htmlRef.current, {
                 scaleRatio,
                 setScaleRatio,
