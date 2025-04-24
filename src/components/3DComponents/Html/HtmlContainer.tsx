@@ -1,9 +1,8 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
-import { useMeasureCalculation } from '@/hooks/useMeasureCalculation.tsx';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { ReactNode, use, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 type HtmlContainerTypes = {
     width?: number;
@@ -44,8 +43,8 @@ export function HtmlContainer({
     useFrame((state) => {
         if (done || !htmlRef.current) return;
         frameCountRef.current += 1;
-        // Update every 5 frames
-        if (frameCountRef.current % 30 === 0) {
+        // Update every 50 frames
+        if (frameCountRef.current % 50 === 0) {
             console.log('je fais la mesure');
             measure(htmlRef.current, {
                 scaleRatio,
@@ -54,36 +53,14 @@ export function HtmlContainer({
                 setDone,
             });
         }
-
-        // if (forceMeasure && done) {
-        //     console.log('je force la mesure');
-        //     setDone(false);
-        // }
     });
 
-    // const { scaleRatio } = useMeasureCalculation(
-    //     htmlRef,
-    //     dynamicContent,
-    //     children
-    // );
     /**
      * In & Out animation for the HTML element
      * when out of the canvas -
      */
-    // useEffect(() => {
-    //     if (dynamicContent) {
-    //         setDone(false);
-    //         frameCountRef.current = 0;
-    //     }
-    // }, [children]);
     useEffect(() => {
         if (dynamicContent || forceMeasure) {
-            console.log(
-                'je force la mesure: ',
-                forceMeasure,
-                'dyanamicContent',
-                dynamicContent
-            );
             htmlRef.current?.removeAttribute('style');
             setDone(false);
             frameCountRef.current = 0;
