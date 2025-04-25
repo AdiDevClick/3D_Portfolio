@@ -1,4 +1,5 @@
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
+import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx';
 import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
@@ -50,68 +51,77 @@ const handleObserver = (mutationsList, observer) => {
     });
 };
 
-export function Home({ force = false }) {
+export function Home() {
     const pageRef = useRef(null);
-    const groupRef = useRef<Group>(null);
-    const location = useLocation();
+    // const groupRef = useRef<Group>(null);
+    // const location = useLocation();
 
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [activeURL, setActiveURL] = useState(false);
+    // const [isLoaded, setIsLoaded] = useState(false);
+    // const [activeURL, setActiveURL] = useState(false);
 
-    /**
-     * Activate page URL and content loaded
-     */
-    useEffect(() => {
-        if (!pageRef.current) return;
-        setIsLoaded(true);
-        !location.pathname.includes('projets')
-            ? setActiveURL(true)
-            : setActiveURL(false);
-    }, [pageRef.current, location]);
+    // /**
+    //  * Activate page URL and content loaded
+    //  */
+    // useEffect(() => {
+    //     if (!pageRef.current) return;
+    //     setIsLoaded(true);
+    //     location.pathname === '/' ? setActiveURL(true) : setActiveURL(false);
+    // }, [pageRef.current, location]);
 
-    /**
-     * POSITIONING IF URL IS ACTIVE / NON ACTIVE -
-     */
-    useFrame((state, delta) => {
-        if (groupRef.current && isLoaded) {
-            easing.damp3(
-                groupRef.current.position,
-                activeURL
-                    ? ACTIVE_PROJECTS_POSITION_SETTINGS
-                    : DEFAULT_PROJECTS_POSITION_SETTINGS,
-                0.3,
-                delta
-            );
-        }
-    });
+    // /**
+    //  * POSITIONING IF URL IS ACTIVE / NON ACTIVE -
+    //  */
+    // useFrame((_, delta) => {
+    //     if (groupRef.current && isLoaded) {
+    //         easing.damp3(
+    //             groupRef.current.position,
+    //             activeURL
+    //                 ? ACTIVE_PROJECTS_POSITION_SETTINGS
+    //                 : DEFAULT_PROJECTS_POSITION_SETTINGS,
+    //             0.3,
+    //             delta
+    //         );
+    //     }
+    // });
 
     return (
-        <Billboard
-            ref={groupRef}
-            follow={true}
-            lockX={false}
-            lockY={false}
-            lockZ={false}
-        >
-            <HtmlContainer
-                key={'home'}
-                className="html-container"
-                forceMeasure={force}
-            >
-                <HomeContent
-                    ref={pageRef}
-                    style={{
-                        opacity: isLoaded ? 1 : 0,
-                        transform: 'translate(-50%)',
-                        transition:
-                            'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
-                        height: '500px',
-                        width: 'clamp(min(52%, 100%), 100%, 52vw)',
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        zIndex: 0,
-                    }}
-                />
-            </HtmlContainer>
-        </Billboard>
+        <PageContainer pageName={'/'}>
+            <HomeContent
+                ref={pageRef}
+                style={{
+                    // opacity: isLoaded ? 1 : 0,
+                    transform: 'translate(-50%)',
+                    transition:
+                        'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
+                    height: '500px',
+                    width: 'clamp(min(52%, 100%), 100%, 52vw)',
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    zIndex: 0,
+                }}
+            />
+        </PageContainer>
+        // <Billboard
+        //     ref={groupRef}
+        //     follow={true}
+        //     lockX={false}
+        //     lockY={false}
+        //     lockZ={false}
+        // >
+        //     <HtmlContainer key={'home'} className="html-container">
+        //         <HomeContent
+        //             ref={pageRef}
+        //             style={{
+        //                 opacity: isLoaded ? 1 : 0,
+        //                 transform: 'translate(-50%)',
+        //                 transition:
+        //                     'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
+        //                 height: '500px',
+        //                 width: 'clamp(min(52%, 100%), 100%, 52vw)',
+        //                 background: 'rgba(255, 255, 255, 0.95)',
+        //                 zIndex: 0,
+        //             }}
+        //         />
+        //     </HtmlContainer>
+        // </Billboard>
     );
 }
