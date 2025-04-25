@@ -18,6 +18,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
 import { Home } from '@/pages/Home/Home.tsx';
+import { About } from '@/pages/About/About.tsx';
 
 const initialCameraFov = 20;
 let minAngle = -Infinity;
@@ -32,7 +33,7 @@ export function Scene({ SETTINGS, size }) {
 
     const controlsRef = useRef(null!);
     const menuRef = useRef(null!);
-    const homeRef = useRef(null!);
+    // const homeRef = useRef(null!);
 
     const [viewMode, setViewMode] = useState('home');
     const [forceMeasure, setForceMeasure] = useState(false);
@@ -56,6 +57,7 @@ export function Scene({ SETTINGS, size }) {
             fov: initialCameraFov,
         },
     };
+
     // General Store
     const reducer = useCarousel();
 
@@ -84,7 +86,10 @@ export function Scene({ SETTINGS, size }) {
      * @description : Sets the camera position on route change
      */
     useEffect(() => {
-        if (location.pathname === '/') {
+        if (
+            location.pathname === '/' ||
+            location.pathname.includes('a-propos')
+        ) {
             setViewMode('home');
         } else if (
             location.pathname.includes('projets') &&
@@ -94,6 +99,8 @@ export function Scene({ SETTINGS, size }) {
             setViewMode('carousel');
         } else if (id || reducer.activeContent) {
             setViewMode('card-detail');
+            // } else if (location.pathname.includes('a-propos')) {
+            //     setViewMode('about');
         }
     }, [location, id, reducer.activeContent, viewMode]);
 
@@ -161,6 +168,8 @@ export function Scene({ SETTINGS, size }) {
      * if the URL contains a card ID -
      */
     useEffect(() => {
+        // setViewMode('carousel');
+
         if (
             !menuRef.current ||
             !controlsRef.current ||
@@ -176,10 +185,10 @@ export function Scene({ SETTINGS, size }) {
         // !! IMPORTANT !! Set the camera to the carousel position
         // before activating the card to fix a camera bug
         setViewMode('carousel');
-        const timers = setTimeout(() => {
-            setViewMode('card-detail');
-            return () => clearTimeout(timers);
-        }, 50);
+        // const timers = setTimeout(() => {
+        //     setViewMode('card-detail');
+        //     return () => clearTimeout(timers);
+        // }, 50);
 
         const activateCardByURL = () => {
             // Card exists ?
@@ -244,7 +253,7 @@ export function Scene({ SETTINGS, size }) {
         const timer = setTimeout(activateCardByURL, initialDelay);
 
         return () => clearTimeout(timer);
-    }, [reducer.showElements]);
+    }, [reducer.showElements, viewMode]);
 
     return (
         // <div
@@ -261,6 +270,21 @@ export function Scene({ SETTINGS, size }) {
             dpr={window.devicePixelRatio}
             // camera={{ position: [0, 0, 5], fov: 70 }}
         >
+            <CameraControls
+                // makeDefault
+                // no Y-axis
+                polarRotateSpeed={0}
+                // no zoom
+                dollySpeed={0}
+                // Max angle on active is given by the camera
+                maxAzimuthAngle={maxAngle}
+                // Min angle on active is given by the camera
+                minAzimuthAngle={minAngle}
+                ref={controlsRef}
+                onStart={(e) =>
+                    onControlStart(e, reducer.activeContent?.isClicked)
+                }
+            />
             {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
             {/* <HtmlContainer
                 reducer={reducer}
@@ -283,9 +307,10 @@ export function Scene({ SETTINGS, size }) {
                     </p>
                 </div>
             </HtmlContainer> */}
-            <group ref={homeRef}>
-                <Home force={forceMeasure} />
-            </group>
+            {/* <group ref={homeRef}> */}
+            <Home />
+            <About />
+            {/* </group> */}
             {/* <Html
                 ref={menuRef}
                 // style={{ position: 'relative', height: '100%', width: '100%' }}
@@ -312,21 +337,6 @@ export function Scene({ SETTINGS, size }) {
             </Html> */}
 
             <color attach="background" args={['#191920']} />
-            <CameraControls
-                // makeDefault
-                // no Y-axis
-                polarRotateSpeed={0}
-                // no zoom
-                dollySpeed={0}
-                // Max angle on active is given by the camera
-                maxAzimuthAngle={maxAngle}
-                // Min angle on active is given by the camera
-                minAzimuthAngle={minAngle}
-                ref={controlsRef}
-                onStart={(e) =>
-                    onControlStart(e, reducer.activeContent?.isClicked)
-                }
-            />
 
             {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
             {/* <ScrollControls pages={4} infinite> */}
