@@ -1,4 +1,4 @@
-import { Button } from '@/components/button/Button.tsx';
+import { Button } from '@/components/HTML/button/Button';
 import { NavLink } from 'react-router';
 import '@css/NavHeader.scss';
 import { MouseEvent, RefObject, useEffect, useRef, useState } from 'react';

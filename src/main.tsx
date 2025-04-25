@@ -9,7 +9,7 @@ import { Scene } from './components/3DComponents/Scene/Scene.tsx';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
-import { Header } from '@/components/header/Header.tsx';
+import { Header } from '@/components/HTML/header/Header.js';
 import { useSettings } from '@/hooks/useSettings.tsx';
 import useResize from '@/hooks/useResize.tsx';
 import JSONDatas from '@data/exemples.json';

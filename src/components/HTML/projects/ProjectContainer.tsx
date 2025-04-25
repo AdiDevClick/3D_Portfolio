@@ -1,4 +1,4 @@
-import { ProjectContent } from '@/components/projects/ProjectContent.tsx';
+import { ProjectContent } from '@/components/HTML/projects/ProjectContent';
 import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
 import { WheelEvent } from 'react';
 import '@css/Card.scss';

@@ -1,5 +1,5 @@
-import { Tags } from '@/components/tags/Tags.tsx';
-import { TagsContainer } from '@/components/tags/TagsContainer.tsx';
+import { Tags } from '@/components/HTML/tags/Tags';
+import { TagsContainer } from '@/components/HTML/tags/TagsContainer';
 import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
 import { useId } from 'react';
 

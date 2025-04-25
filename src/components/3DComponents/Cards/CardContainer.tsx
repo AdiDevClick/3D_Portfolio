@@ -2,7 +2,7 @@ import Card from '@/components/3DComponents/Cards/Card.tsx';
 import { CardMainTitle } from '@/components/3DComponents/Cards/CardMainTitle.tsx';
 import { onClickHandler } from '@/components/3DComponents/Carousel/Functions.ts';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
-import { ProjectContainer } from '@/components/projects/ProjectContainer.tsx';
+import { ProjectContainer } from '@/components/HTML/projects/ProjectContainer';
 import {
     DESKTOP_HTML_CONTAINER_DEPTH,
     DESKTOP_HTML_CONTAINER_ROTATION,
