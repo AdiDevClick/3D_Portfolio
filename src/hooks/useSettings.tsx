@@ -5,7 +5,7 @@ import {
     presenceSettings,
 } from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
-import { useControls, folder, useStoreContext } from 'leva';
+import { useControls, folder } from 'leva';
 import { useMemo } from 'react';
 
 /**
@@ -13,10 +13,10 @@ import { useMemo } from 'react';
  * Version optimisée pour éviter les re-créations multiples
  */
 export function useSettings(datas: []): SettingsType {
-    // Utiliser useMemo pour ne calculer la configuration qu'une seule fois
-    // lorsque datas.length change
     const settingsConfig = useMemo(() => {
-        // Préparation des paramétrages du carousel adaptés au nombre d'éléments
+        // !! IMPORTANT !!
+        // CARDS_COUNT.value will be replaced by the datas array
+        // All values above are default/generic values
         const carouselSettings = {
             ...carouselGeneralSettings,
             CARDS_COUNT: {
@@ -25,9 +25,8 @@ export function useSettings(datas: []): SettingsType {
             },
         };
 
-        // Configuration regroupée pour Leva avec tous les dossiers
         return {
-            // Dossier "Carousel Settings"
+            // Folder "Carousel Settings"
             CarouselSettings: folder(
                 {
                     ...carouselSettings,
@@ -35,7 +34,7 @@ export function useSettings(datas: []): SettingsType {
                 { collapsed: true }
             ),
 
-            // Dossier "Card Rules"
+            // Folder "Card Rules"
             CardRules: folder(
                 {
                     ...cardsSettings,
@@ -43,7 +42,7 @@ export function useSettings(datas: []): SettingsType {
                 { collapsed: true }
             ),
 
-            // Dossier "Boundaries"
+            // Folder "Boundaries"
             Boundaries: folder(
                 {
                     ...boundariesOptions,
@@ -51,7 +50,7 @@ export function useSettings(datas: []): SettingsType {
                 { collapsed: true }
             ),
 
-            // Dossier "Presence Area"
+            // Folder "Presence Area"
             PresenceArea: folder(
                 {
                     ...presenceSettings,
@@ -61,6 +60,7 @@ export function useSettings(datas: []): SettingsType {
         };
     }, [datas.length]);
 
+    // Adding a setter to the settings
     const [{ ...allSettings }, set] = useControls(
         'Carousel',
         () => settingsConfig
