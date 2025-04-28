@@ -1,19 +1,23 @@
 .about {
     display: grid;
-    grid-template-columns: 0.5fr 4fr 0.5fr;
+    grid-template-columns: 0.3fr 4fr 0.3fr;
     overflow: auto;
     gap: var(--grid-gap);
-    width: clamp(min(52%, 100%), 100%, 52vw);
-    max-height: 100vh;
+    width: clamp(min(60%, 100%), 100%, 52vw);
+    max-height: calc(100vh - 2 * var(--grid-gap));
+    border-radius: 5px;
     background: rgba(255, 255, 255, 0.95);
-    color: var(--color-white);
-
+    color: var(--dark-bg-color);
 
     transform: translate(-50%);
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 
+    &>* {
+        grid-column: 2
+    }
+
     &__title {
-        font-size: var(--fs-big);
+        font-size: var(--fs-bigger-intermediate);
         font-weight: var(--font-weight-large);
         text-align: center;
     }
