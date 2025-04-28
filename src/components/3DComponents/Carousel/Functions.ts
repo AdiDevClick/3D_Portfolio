@@ -10,14 +10,11 @@ import { DEFAULT_CARD_POSITION, TWO_PI } from '@/configs/3DCarousel.config.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { isNeighbor } from '@/functions/collisions.ts';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
-import { Loader, useCursor } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
-import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
 import { easing } from 'maath';
-import { Navigate, useNavigate } from 'react-router';
+import { WheelEvent } from 'react';
 import { Euler, Vector3 } from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
-import { element } from 'three/tsl';
 
 /**
  * Définit les propriétés qui seront intégrées aux cartes.
@@ -245,6 +242,21 @@ export function handleCollisions(
         console.log('There is collision between some cards');
     }
 }
+
+/**
+ * Réactive le scrolling des contenu 3D
+ * quand ils sont ouverts -
+ */
+export function onScrollHandler(e: WheelEvent) {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (
+        (scrollTop + e.deltaY > 0 && e.deltaY < 0) ||
+        (scrollHeight - (scrollTop + e.deltaY) > clientHeight && e.deltaY > 0)
+    ) {
+        e.stopPropagation();
+    }
+}
+
 // const animateItem = {
 //     function: easing.damp,
 //     property: projectsRef.current.scale,
