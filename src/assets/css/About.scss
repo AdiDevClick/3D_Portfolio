@@ -1,0 +1,26 @@
+.about {
+    display: grid;
+    grid-template-columns: 0.5fr 4fr 0.5fr;
+    overflow: auto;
+    gap: var(--grid-gap);
+    width: clamp(min(52%, 100%), 100%, 52vw);
+    max-height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--color-white);
+
+
+    transform: translate(-50%);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+
+    &__title {
+        font-size: var(--fs-big);
+        font-weight: var(--font-weight-large);
+        text-align: center;
+    }
+
+    &__text {
+        font-size: var(--fs-medium);
+        font-weight: var(--font-weight-medium);
+        line-height: 1.5;
+    }
+}
