@@ -1,4 +1,4 @@
-$borderRadius: 0 50px 50px 0;
+// $borderRadius: 0 5px 5px 0;
 
 header {
     display: grid;
@@ -10,7 +10,7 @@ header {
     background-color: #333333e1;
     text-align: center;
     align-content: center;
-    border-radius: $borderRadius;
+    // border-radius: $borderRadius;
     overflow: hidden;
     transform: translate(0);
     transition: max-width 0.3s;
