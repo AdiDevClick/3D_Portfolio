@@ -62,13 +62,13 @@ export default defineConfig({
             },
         ],
     },
-    // assetsInclude: [
-    //     '**/*.gltf',
-    //     '**/*.glb',
-    //     '**/*.mtl',
-    //     '**/*.obj',
-    //     '**/*.fbx',
-    // ],
+    assetsInclude: [
+        '**/*.gltf',
+        '**/*.glb',
+        '**/*.mtl',
+        '**/*.obj',
+        '**/*.fbx',
+    ],
 });
 
 // export default defineConfig({
