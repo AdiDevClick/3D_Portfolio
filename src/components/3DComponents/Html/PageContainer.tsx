@@ -3,6 +3,7 @@ import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
+import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -17,16 +18,26 @@ export function PageContainer({ children, pageName }: PageContainerTypes) {
     const location = useLocation();
 
     const [activeURL, setActiveURL] = useState(false);
+    // const { lookAtSmooth } = useLookAtSmooth();
 
     /**
      * Activate page URL and content loaded
      */
     useEffect(() => {
         if (!groupRef.current) return;
+        console.log(location.pathname === pageName);
         location.pathname === pageName
             ? setActiveURL(true)
             : setActiveURL(false);
     }, [location]);
+
+    // useEffect(() => {
+    // if (!groupRef.current || !activeURL) return;
+    // const timer = setTimeout(() => {
+    // lookAtSmooth(groupRef.current.position);
+    // return () => clearTimeout(timer);
+    // }, 100);
+    // }, [activeURL]);
 
     /**
      * POSITIONING IF URL IS ACTIVE / NON ACTIVE -
