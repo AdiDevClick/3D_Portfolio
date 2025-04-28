@@ -188,8 +188,7 @@ export default function Carousel({
                 const breathingEffect =
                     Math.sin(state.clock.elapsedTime * 2) * 0.002;
                 const targetScale = 1 + breathingEffect;
-                // On insert, the card will be in the center of the screen
-                // and very wide giving the illusion of a 3D effect
+                // On insert, the card will be very wide giving the illusion of a 3D effect
                 easing.damp3(
                     projectsRef.current.scale,
                     activeURL
@@ -203,7 +202,7 @@ export default function Carousel({
             if (activeURL) {
                 // Rotating effect of the carousel
                 const rotationTarget = isAnimatingIn
-                    ? -animationProgress * Math.PI * 1.5
+                    ? animationProgress * Math.PI * 1.5
                     : 0;
 
                 easing.damp(
