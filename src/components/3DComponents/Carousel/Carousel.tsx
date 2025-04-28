@@ -218,6 +218,7 @@ export default function Carousel({
         }
 
         if (isAnimatingIn) {
+            // !! IMPORTANT !! Disable collisions during animation
             SETTINGS.set({ COLLISIONS: false });
 
             const animationSpeed = 0.22;
