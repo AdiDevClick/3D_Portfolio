@@ -7,7 +7,7 @@ import linkedIn from '@icons/linkedin.svg';
 export function AboutContent({ ...props }) {
     return (
         <div {...props}>
-            <h1 style={{ color: 'black' }}>A propos de moi</h1>
+            {/* <h1 style={{ color: 'black' }}>A propos de moi</h1> */}
             <h2 className="about__title" style={{ color: 'black' }}>
                 Du laboratoire au code : mon parcours
             </h2>
