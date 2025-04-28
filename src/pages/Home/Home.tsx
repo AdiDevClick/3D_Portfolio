@@ -1,3 +1,4 @@
+import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
 import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx';
 import { HomeContent } from '@/pages/Home/HomeContent.tsx';
 
@@ -44,6 +45,7 @@ export function Home() {
     return (
         <PageContainer pageName={'/'}>
             <HomeContent
+                onWheel={onScrollHandler}
                 className="home"
                 style={{
                     // opacity: isLoaded ? 1 : 0,
