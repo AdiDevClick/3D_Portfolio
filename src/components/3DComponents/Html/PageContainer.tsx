@@ -3,7 +3,6 @@ import {
     DEFAULT_HTML_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
-import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
 import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
