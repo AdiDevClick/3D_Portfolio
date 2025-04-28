@@ -1,3 +1,4 @@
+import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
 import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx';
 import { ContactContent } from '@/pages/Contact/ContactContent.tsx';
 
@@ -5,6 +6,7 @@ export function Contact() {
     return (
         <PageContainer pageName={'/contact'}>
             <ContactContent
+                onWheel={onScrollHandler}
                 className="contact"
                 style={{
                     // opacity: isLoaded ? 1 : 0,
