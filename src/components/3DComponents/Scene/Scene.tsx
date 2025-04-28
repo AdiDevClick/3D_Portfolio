@@ -19,6 +19,8 @@ import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
 import { Home } from '@/pages/Home/Home.tsx';
 import { About } from '@/pages/About/About.tsx';
+import { Contact } from '@/pages/Contact/Contact.tsx';
+import { Leva } from 'leva';
 
 const initialCameraFov = 20;
 let minAngle = -Infinity;
@@ -33,7 +35,6 @@ export function Scene({ SETTINGS, size }) {
 
     const controlsRef = useRef(null!);
     const menuRef = useRef(null!);
-    // const homeRef = useRef(null!);
 
     const [viewMode, setViewMode] = useState('home');
     const [forceMeasure, setForceMeasure] = useState(false);
@@ -72,7 +73,7 @@ export function Scene({ SETTINGS, size }) {
         z: SETTINGS.z,
     };
 
-    // Hook for camera positioning
+    // Hook for camera positioning on hovered/clicked card
     const { positionCameraToCard } = useCameraPositioning();
 
     // const compensationRatio = size[0] / size[1];
@@ -88,7 +89,8 @@ export function Scene({ SETTINGS, size }) {
     useEffect(() => {
         if (
             location.pathname === '/' ||
-            location.pathname.includes('a-propos')
+            location.pathname.includes('a-propos') ||
+            location.pathname.includes('contact')
         ) {
             setViewMode('home');
         } else if (
@@ -165,11 +167,9 @@ export function Scene({ SETTINGS, size }) {
     /**
      * Camera positioning on URL loading -
      * @description : Camera is positionned on the active card
-     * if the URL contains a card ID -
+     * if the URLparams contains a card ID -
      */
     useEffect(() => {
-        // setViewMode('carousel');
-
         if (
             !menuRef.current ||
             !controlsRef.current ||
@@ -182,13 +182,9 @@ export function Scene({ SETTINGS, size }) {
 
         const initialDelay = 500;
 
-        // !! IMPORTANT !! Set the camera to the carousel position
+        // !! IMPORTANT !! Sets the camera to the carousel position
         // before activating the card to fix a camera bug
         setViewMode('carousel');
-        // const timers = setTimeout(() => {
-        //     setViewMode('card-detail');
-        //     return () => clearTimeout(timers);
-        // }, 50);
 
         const activateCardByURL = () => {
             // Card exists ?
@@ -270,6 +266,7 @@ export function Scene({ SETTINGS, size }) {
             dpr={window.devicePixelRatio}
             // camera={{ position: [0, 0, 5], fov: 70 }}
         >
+            <Leva hidden={true} />
             <CameraControls
                 // makeDefault
                 // no Y-axis
@@ -310,6 +307,7 @@ export function Scene({ SETTINGS, size }) {
             {/* <group ref={homeRef}> */}
             <Home />
             <About />
+            <Contact />
             {/* </group> */}
             {/* <Html
                 ref={menuRef}
