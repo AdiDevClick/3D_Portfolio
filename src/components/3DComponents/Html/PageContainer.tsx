@@ -1,6 +1,6 @@
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
 import {
-    ACTIVE_PROJECTS_POSITION_SETTINGS,
+    DEFAULT_HTML_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
 import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
@@ -25,7 +25,6 @@ export function PageContainer({ children, pageName }: PageContainerTypes) {
      */
     useEffect(() => {
         if (!groupRef.current) return;
-        console.log(location.pathname === pageName);
         location.pathname === pageName
             ? setActiveURL(true)
             : setActiveURL(false);
@@ -47,7 +46,7 @@ export function PageContainer({ children, pageName }: PageContainerTypes) {
             easing.damp3(
                 groupRef.current.position,
                 activeURL
-                    ? ACTIVE_PROJECTS_POSITION_SETTINGS
+                    ? DEFAULT_HTML_POSITION_SETTINGS
                     : DEFAULT_PROJECTS_POSITION_SETTINGS,
                 0.3,
                 delta
