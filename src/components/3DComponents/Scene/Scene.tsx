@@ -126,6 +126,7 @@ export function Scene({ SETTINGS, size }) {
         if (!controlsRef.current) return;
 
         const { camera } = controlsRef.current;
+        // reducer.contentSizes = size;
 
         switch (viewMode) {
             case 'home':
@@ -171,7 +172,7 @@ export function Scene({ SETTINGS, size }) {
                 }
                 break;
         }
-    }, [viewMode, reducer.activeContent, size]);
+    }, [viewMode, reducer.activeContent]);
 
     /**
      * Camera positioning on URL loading -
@@ -180,7 +181,7 @@ export function Scene({ SETTINGS, size }) {
      */
     useEffect(() => {
         if (
-            !menuRef.current ||
+            // !menuRef.current ||
             !controlsRef.current ||
             !params['*']?.includes('projets') ||
             !id ||
@@ -188,7 +189,6 @@ export function Scene({ SETTINGS, size }) {
         ) {
             return;
         }
-
         const initialDelay = 500;
 
         // !! IMPORTANT !! Sets the camera to the carousel position
@@ -267,6 +267,7 @@ export function Scene({ SETTINGS, size }) {
         // >
         <>
             <Leva hidden={true} />
+
             <Canvas
                 // frameloop="demand"
                 // style={{ position: 'relative', height: '90vh', width: '100%' }}
