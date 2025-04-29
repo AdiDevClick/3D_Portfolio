@@ -7,10 +7,10 @@ import linkedIn from '@icons/linkedin.svg';
 export function AboutContent({ ...props }) {
     return (
         <div {...props}>
-            <h2 className="about__title" style={{ color: 'black' }}>
+            <h2 className="about__title">
                 Du laboratoire au code : mon parcours
             </h2>
-            <p className="about__text" style={{ color: 'black' }}>
+            <p className="about__text">
                 J'ai débuté comme prothésiste dentaire, façonnant des pièces
                 avec précision et minutie. <br />
                 Cette rigueur reste au cœur de ma pratique aujourd'hui. <br />
@@ -18,10 +18,8 @@ export function AboutContent({ ...props }) {
                 réparation de matériel informatique, concrétisant ma passion de
                 longue date pour la technologie.
             </p>
-            <h2 className="about__title" style={{ color: 'black' }}>
-                Expertise technique et humaine
-            </h2>
-            <p className="about__text" style={{ color: 'black' }}>
+            <h2 className="about__title">Expertise technique et humaine</h2>
+            <p className="about__text">
                 Ma stack technique s'articule autour de React, Three.js,
                 TypeScript, VanillaJS, PHP et Node.js. Ce qui enrichit vraiment
                 mon approche, c'est l'expérience client acquise pendant mes
