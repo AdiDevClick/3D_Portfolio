@@ -248,13 +248,43 @@ export function handleCollisions(
  * quand ils sont ouverts -
  */
 export function onScrollHandler(e: WheelEvent) {
+    console.log(e);
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (
         (scrollTop + e.deltaY > 0 && e.deltaY < 0) ||
         (scrollHeight - (scrollTop + e.deltaY) > clientHeight && e.deltaY > 0)
     ) {
         e.stopPropagation();
+        // return;
     }
+    // Ne bloquer le scroll que si nécessaire pour le contenu HTML
+
+    // Si on est au début/fin du contenu et qu'on essaie de défiler plus loin
+    //     if (
+    //         (scrollTop === 0 && e.deltaY < 0) || // Haut du contenu + scroll vers le haut
+    //         (scrollTop + clientHeight >= scrollHeight && e.deltaY > 0) // Bas du contenu + scroll vers le bas
+    //     ) {
+    //         // Laisser l'événement se propager au canvas pour le scroll global
+    //         return;
+    //     }
+
+    //     // Sinon, garder le scroll dans le contenu HTML
+    //     e.stopPropagation();
+    // Ne pas bloquer le scroll du canvas
+    // e.stopPropagation(); <- Supprimez cette ligne
+
+    // Pour le contenu HTML qui a son propre scroll
+    // const target = e.currentTarget as HTMLElement;
+
+    // // Permettre au canvas de scroller quand le contenu HTML est au début ou à la fin
+    // const isAtTop = scrollTop === 0 && e.deltaY < 0;
+    // const isAtBottom =
+    //     Math.abs(scrollHeight - clientHeight - scrollTop) < 1 && e.deltaY > 0;
+
+    // if (!isAtTop && !isAtBottom) {
+    //     // Uniquement pour le scroll interne du contenu, pas pour le canvas
+    //     // e.stopPropagation();
+    // }
 }
 
 // const animateItem = {
