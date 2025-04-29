@@ -48,8 +48,9 @@ body,
 
 canvas {
     opacity: 0;
-    touch-action: none;
+    // touch-action: none;
     animation: fade-in 5s ease 1.1s forwards;
+    // overflow-y: auto;
 }
 
 h1 {
