@@ -2,20 +2,37 @@ import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts
 import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx';
 import { AboutContent } from '@/pages/About/AboutContent.tsx';
 import '@css/About.scss';
-import { Center, Float, Text3D, useCursor } from '@react-three/drei';
+import {
+    Center,
+    Float,
+    Html,
+    Scroll,
+    Text,
+    Text3D,
+    useScroll,
+} from '@react-three/drei';
 import montserrat from '@assets/fonts/Montserrat_Thin_Regular.json';
-import linkedIn from '@icons/linkedin.svg';
-import { GitHubIcon } from '@/components/3DComponents/3DIcons/GitHubIcon.tsx';
-import { use, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Group } from 'three/examples/jsm/libs/tween.module.js';
 import { useLocation } from 'react-router';
 import { useFrame, useThree } from '@react-three/fiber';
 import { folder, useControls } from 'leva';
 import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/SpherePresence.tsx';
-import { LinkedInIcon } from '@/components/3DComponents/3DIcons/LinkedInIcon.tsx';
 import GitIcon from '@models/github_model.glb';
 import LinkedIn from '@models/linkedin_model.glb';
-import { Icons } from '@/components/3DComponents/3DIcons/Icons.tsx';
+import {
+    Icons,
+    preloadIcon,
+} from '@/components/3DComponents/3DIcons/Icons.tsx';
+import {
+    DEFAULT_HTML_POSITION_SETTINGS,
+    DEFAULT_PROJECTS_POSITION_SETTINGS,
+    DESKTOP_HTML_CONTAINER_ROTATION,
+    DESKTOP_HTML_TITLE_POSITION_SETTINGS,
+} from '@/configs/3DCarousel.config.ts';
+import { easing } from 'maath';
+
+preloadIcon([GitIcon, LinkedIn]);
 
 export function About({ margin = 0.5 }) {
     const frameCountRef = useRef(0);
@@ -24,6 +41,8 @@ export function About({ margin = 0.5 }) {
     const iconsRef = useRef<Group>(null);
     const groupRef = useRef<Group>(null);
 
+    const scroll = useScroll();
+    const [hovered, setHovered] = useState(false);
     const { width, height } = useThree((state) => state.viewport);
 
     const refs = [contentRef.current, titleRef.current, iconsRef.current];
@@ -50,13 +69,6 @@ export function About({ margin = 0.5 }) {
         () => settingsConfig
     );
 
-    // const { SETTINGS } = useControls({
-    //     SETTINGS: {
-    //         PRESENCE_CIRCLE: true,
-    //         PRESENCE_RADIUS: 0.5,
-    //         CONTAINER_SCALE: 1,
-    //     },
-    // });
     const floatOptions = useMemo(
         () => ({
             autoInvalidate: true,
@@ -68,12 +80,25 @@ export function About({ margin = 0.5 }) {
         []
     );
 
-    useCursor(true, 'pointer', 'auto');
-
-    useFrame(() => {
+    useFrame((_, delta) => {
         if (groupRef.current) {
-            if (isActive && frameCountRef.current % 10 === 0) {
-                // console.log(refs);
+            if (frameCountRef.current % 50 === 0) {
+                easing.damp3(
+                    titleRef.current?.position,
+                    isActive
+                        ? DESKTOP_HTML_TITLE_POSITION_SETTINGS(height, margin)
+                        : DEFAULT_PROJECTS_POSITION_SETTINGS,
+                    0.3,
+                    delta
+                );
+                easing.damp3(
+                    contentRef.current?.position,
+                    isActive
+                        ? [0, 0 - margin, 0]
+                        : DEFAULT_PROJECTS_POSITION_SETTINGS,
+                    0.3,
+                    delta
+                );
                 // console.log(groupRef.current.children);
                 groupRef.current.children.forEach((element, index) => {
                     // console.log(element);
@@ -100,91 +125,145 @@ export function About({ margin = 0.5 }) {
     return (
         <group ref={groupRef}>
             {/* <Center rotation={[0, 3.22, 0]} front position={[0, 3.8, 0]}> */}
-            <Center
-                // ref={titleRef}
-                rotation={[0, 3.164, 0]}
-                front
-                bottom
-                // position={[2 / width, height / 2 + margin, 0]}
-                position={[0, height / 2 + margin, 0]}
-                // position={[0, 3.8, 0]}
-                scale={HTMLSETTINGS.SCALE}
-            >
-                <Text3D
-                    castShadow
-                    bevelEnabled
-                    curveSegments={32}
-                    bevelSegments={5}
-                    bevelThickness={1}
-                    bevelSize={1}
-                    bevelOffset={0}
-                    scale={0.01}
-                    size={30}
-                    height={1}
-                    smooth={1}
-                    font={montserrat}
-                    as={'H1'}
+            {/* <Scroll> */}
+            <Float {...floatOptions}>
+                <Center
+                    ref={titleRef}
+                    rotation={[0, 3.164, 0]}
+                    front
+                    bottom
+                    // position={[2 / width, height / 2 + margin, 0]}
+                    // position={[0, height / 2 + margin, 0]}
+                    // position={[0, 3.8, 0]}
+                    scale={HTMLSETTINGS.SCALE}
                 >
-                    A propos de moi
-                    <meshNormalMaterial />
-                </Text3D>
-                <SpherePresenceHelper
-                    visible={HTMLSETTINGS.PRESENCE_CIRCLE}
-                    radius={[
-                        0.01 * 30,
-                        // SETTINGS.PRESENCE_RADIUS * titleRef.current?.scale,
-                        32,
-                    ]}
-                    position={[1.5, 0.1, 0]}
-                    color={'red'}
-                />
-            </Center>
-            <Center>
-                <group ref={contentRef}>
-                    <PageContainer pageName={'/a-propos'}>
-                        <AboutContent
-                            onWheel={onScrollHandler}
-                            className="about"
-                        />
-                    </PageContainer>
-                    <SpherePresenceHelper
+                    <Text3D
+                        castShadow
+                        bevelEnabled
+                        curveSegments={32}
+                        bevelSegments={5}
+                        bevelThickness={1}
+                        bevelSize={1}
+                        bevelOffset={0}
+                        scale={0.01}
+                        size={30}
+                        height={1}
+                        smooth={1}
+                        font={montserrat}
+                        as={'H1'}
+                    >
+                        A propos de moi
+                        <meshNormalMaterial />
+                    </Text3D>
+                    {/* <SpherePresenceHelper
                         visible={HTMLSETTINGS.PRESENCE_CIRCLE}
                         radius={[
-                            0.7 * 4.184922103794956,
+                            0.01 * 30,
+                            // SETTINGS.PRESENCE_RADIUS * titleRef.current?.scale,
+                            32,
+                        ]}
+                        position={[1.5, 0.1, 0]}
+                        color={'red'}
+                    /> */}
+                </Center>
+            </Float>
+            {/* </Scroll> */}
+            <Center ref={contentRef}>
+                <PageContainer pageName={'/a-propos'}>
+                    <AboutContent onWheel={onScrollHandler} className="about" />
+                </PageContainer>
+                {/* <Text fontSize={0.2} anchorY="bottom" color={'black'}>
+                    test
+                </Text> */}
+                {/* <SpherePresenceHelper
+                        // position={[0, -10, 0]}
+                        // position={[0, 0.8, 0]}
+                        visible={HTMLSETTINGS.PRESENCE_CIRCLE}
+                        radius={[
+                            0.7 * 4.168184893509044,
                             // SETTINGS.PRESENCE_RADIUS * titleRef.current?.scale,
                             32,
                         ]}
                         color={'red'}
-                    />
-                </group>
+                    /> */}
             </Center>
-
+            {/* <Scroll> */}
             <Center
                 position={[width / 2 - margin * 2.5, -height / 2 - margin, 0]}
             >
                 {/* <Center bottom right position={[2, -4.19, 0]}> */}
                 {/* <group ref={iconsRef} position={[2, -4.19, 0]}> */}
                 <Float {...floatOptions}>
-                    {/* <GitHubIcon scale={70} position={[0, 0, 0]} /> */}
-                    <Icons model={GitIcon} position={[0, 0, 0]} />
+                    {/* {hovered && (
+                        <Text
+                            fontSize={0.1}
+                            color="black"
+                            anchorX="left"
+                            rotation={[0, 3, 0]}
+                            position={[0, 0.6, 0]}
+                        >
+                            Visiter GitHub
+                        </Text>
+                    )} */}
+                    <Icons
+                        model={GitIcon}
+                        rotation={[0, 3, 0]}
+                        position={[0, 0, 0]}
+                        // onPointerOver={() => setHovered(true)}
+                        // onPointerOut={() => setHovered(false)}
+                    />
                 </Float>
                 <Float {...floatOptions}>
+                    {/* {hovered && (
+                        // <Text
+                        //     fontSize={0.1}
+                        //     color="black"
+                        //     anchorX="left"
+                        //     rotation={[0, 3, 0]}
+                        //     position={[-0.6, 0.6, 0]}
+                        // >
+                        //     Visiter Linked In
+                        // </Text>
+                        <Html
+                            position={[0, -1.8, 0]}
+                            // center
+                            pointerEvents="none"
+                        >
+                            <div
+                                style={{
+                                    background: 'rgba(0,0,0,0.7)',
+                                    color: 'white',
+                                    padding: '4px 8px',
+                                    borderRadius: '3px',
+                                    fontSize: '12px',
+                                    whiteSpace: 'nowrap',
+                                    // transform: 'translateY(-120%)',
+                                    fontFamily: 'sans-serif',
+                                }}
+                            >
+                                {'linkInfo.name'}
+                            </div>
+                        </Html>
+                    )} */}
                     <Icons
                         model={LinkedIn}
                         rotation={[0, 3, 0]}
-                        position={[-0.3, 0, 0]}
+                        position={[-0.6, 0, 0]}
+                        // onPointerOver={() => setHovered(true)}
+                        // onPointerOut={() => setHovered(false)}
                     />
                 </Float>
 
-                <SpherePresenceHelper
+                {/* <SpherePresenceHelper
                     visible={HTMLSETTINGS.PRESENCE_CIRCLE}
                     radius={[
                         HTMLSETTINGS.PRESENCE_RADIUS * HTMLSETTINGS.SCALE,
                         32,
                     ]}
                     color={'red'}
-                />
+                /> */}
             </Center>
+            {/* </Scroll> */}
         </group>
     );
 }
