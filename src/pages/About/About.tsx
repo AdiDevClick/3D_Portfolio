@@ -17,25 +17,47 @@ import {
 } from '@/components/3DComponents/3DIcons/Icons.tsx';
 import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
+    DESKTOP_HTML_ICONS_POSITION_SETTINGS,
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
 import { easing } from 'maath';
 
 preloadIcon([GitIcon, LinkedIn]);
+let titlePosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
+let iconsPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
+let contentPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
 
-export function About({ margin = 0.5 }) {
+export function About({ reducer, margin = 0.5 }) {
     const frameCountRef = useRef(0);
     const contentRef = useRef<Group>(null);
     const titleRef = useRef<Group>(null);
     const iconsRef = useRef<Group>(null);
     const groupRef = useRef<Group>(null);
 
-    const { width, height } = useThree((state) => state.viewport);
+    const { contentWidth, contentHeight } = reducer;
 
+    // const dimensionsRef = useRef({ width, height });
     const refs = [contentRef.current, titleRef.current, iconsRef.current];
 
     const location = useLocation();
     const isActive = location.pathname === '/a-propos';
+
+    if (isActive) {
+        titlePosition = DESKTOP_HTML_TITLE_POSITION_SETTINGS(
+            contentHeight,
+            margin
+        );
+        contentPosition = [0, 0 - margin, 0];
+        iconsPosition = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
+            contentHeight,
+            contentWidth,
+            margin
+        );
+    } else {
+        titlePosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
+        contentPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
+        iconsPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
+    }
 
     const settingsConfig = useMemo(() => {
         return {
@@ -68,25 +90,23 @@ export function About({ margin = 0.5 }) {
     );
 
     useFrame((_, delta) => {
-        if (!groupRef.current || !titleRef.current || !contentRef.current)
+        frameCountRef.current += 1;
+        if (
+            !groupRef.current ||
+            !titleRef.current ||
+            !contentRef.current ||
+            !iconsRef.current
+        )
             return;
-        if (frameCountRef.current % 50 === 0) {
-            easing.damp3(
-                titleRef.current?.position,
-                isActive
-                    ? DESKTOP_HTML_TITLE_POSITION_SETTINGS(height, margin)
-                    : DEFAULT_PROJECTS_POSITION_SETTINGS,
-                0.3,
-                delta
-            );
+        if (frameCountRef.current % (isActive ? 1 : 2) === 0) {
+            easing.damp3(titleRef.current.position, titlePosition, 0.3, delta);
             easing.damp3(
                 contentRef.current.position,
-                isActive
-                    ? [0, 0 - margin, 0]
-                    : DEFAULT_PROJECTS_POSITION_SETTINGS,
+                contentPosition,
                 0.3,
                 delta
             );
+            easing.damp3(iconsRef.current.position, iconsPosition, 0.3, delta);
             groupRef.current.children.forEach((element, index) => {
                 // console.log(element);
                 // if (index === i) return;
@@ -164,9 +184,7 @@ export function About({ margin = 0.5 }) {
                         color={'red'}
                     /> */}
             </Center>
-            <Center
-                position={[width / 2 - margin * 2.5, -height / 2 - margin, 0]}
-            >
+            <Center ref={iconsRef}>
                 <Float {...floatOptions}>
                     <Icons
                         model={GitIcon}
