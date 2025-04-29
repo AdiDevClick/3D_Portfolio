@@ -10,7 +10,10 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Group } from 'three';
 
-type PageContainerTypes = { children: ReactNode; pageName: string };
+type PageContainerTypes = {
+    children: ReactNode;
+    pageName: string;
+};
 
 export function PageContainer({ children, pageName }: PageContainerTypes) {
     const groupRef = useRef<Group>(null);
