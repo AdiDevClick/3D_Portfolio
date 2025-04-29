@@ -50,32 +50,25 @@ export default function Card({
     const cardRef = useRef<Mesh>(null!);
     const navigate = useNavigate();
     const location = useLocation();
-    // const urlParams = useParams()
-    // const locationRef = useRef((location.pathname = '/projets/' + card.id));
-    // Optimisation mobile
-    const segments = reducer.isMobile ? 10 : 20;
-    const textureQuality = reducer.isMobile ? 512 : 1024;
-
-    const id = useId();
 
     // Local bendin state
     const [bending, setBending] = useState(SETTINGS.BENDING);
     // For ZoomBouncing effect
     const [width, setWidth] = useState(card.baseScale);
 
-    // Références pour l'animation (pour éviter de re-render)
-    // Facteur d'animation (t de 0 à 1)
-    const animationProgressRef = useRef(0);
-    const startPositionRef = useRef<Vector3>(null!);
+    // mobile Optimisations
+    const segments = reducer.isMobile ? 10 : 20;
+    const textureQuality = reducer.isMobile ? 512 : 1024;
+
+    const id = useId();
 
     const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
-    const cardHoverRadius = card.isActive ? 0.25 : 0.1;
+    const cardHoverRadius = card.isActive ? 0.15 : 0.05;
     const cardHoverZoom = card.isActive ? 1 : 1.5;
 
-    // location.pathname = '/projets/' + card.id;
-
     useCursor(card.isActive);
-    useFrame((state, delta) => {
+
+    useFrame((_, delta) => {
         if (!cardRef.current) return;
         const { material, scale, rotation } = cardRef.current;
         const props = { bending, setBending, setWidth, delta, scale, width };
@@ -121,14 +114,6 @@ export default function Card({
                 presenceRadius: SETTINGS.presenceRadius,
                 spacePositions: getSidesPositions(card, cardRef),
             });
-            // Supposons que la hauteur de la carte se trouve dans la géométrie (par exemple, boxGeometry)
-            // const geomParams = cardRef.current.geometry.parameters;
-            // if (geomParams && geomParams.height) {
-            //     // On déplace le mesh vers le bas de façon que le haut du mesh
-            //     // soit aligné avec l'origin du groupe
-            //     cardRef.current.position.y = -geomParams.height / 2;
-            // }
-            // console.log(card);
         }
         return () => {
             // Cleanup textures and geometries
@@ -142,21 +127,6 @@ export default function Card({
             reducer.updateWidth(card, width);
         }
     }, [width]);
-
-    // useEffect(() => {
-    //     if (cardRef.current) {
-    //         if (
-    //             location.pathname === '/projets/' + card.id &&
-    //             reducer.activeContent?.id === undefined &&
-    //             !card.isClicked
-    //         ) {
-    //             console.log('jactive mon contenu');
-    //             reducer.activateElement(card, true);
-    //             reducer.clickElement(card);
-    //             console.log(card);
-    //         }
-    //     }
-    // }, [card.isClicked, card.isActive, reducer.activeContent]);
 
     return (
         <group
