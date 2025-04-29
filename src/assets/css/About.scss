@@ -8,6 +8,8 @@
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.95);
     color: var(--dark-bg-color);
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
 
     transform: translate(-50%);
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -26,5 +28,16 @@
         font-size: var(--fs-medium);
         font-weight: var(--font-weight-medium);
         line-height: 1.5;
+    }
+
+    &__tooltip {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+        white-space: nowrap;
+        transform: translateY(850%);
+        font-family: sans-serif;
     }
 }
