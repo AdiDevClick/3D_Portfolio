@@ -81,7 +81,7 @@ export function AboutContent({ ...props }) {
                 Cette curiosité insatiable me pousse à constamment repousser les
                 limites de ce que je peux créer.
             </p>
-            <ul className="icons">
+            {/* <ul className="icons">
                 <li className="icon">
                     <a
                         href="https://www.github.com/AdiDevClick/"
@@ -102,7 +102,7 @@ export function AboutContent({ ...props }) {
                         <img src={linkedIn} alt="LinkedIn" />
                     </a>
                 </li>
-            </ul>
+            </ul> */}
         </div>
     );
 }
