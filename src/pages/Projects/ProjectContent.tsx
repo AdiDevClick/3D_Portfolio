@@ -8,20 +8,19 @@ type cardType = {
 };
 
 /**
- * Le contenu des projets
+ * Project content component.
+ * @param card - Card data.
  */
 export function ProjectContent({ card }: cardType) {
     Array.isArray(card.stack) ? card.stack : [card.stack];
     return (
         <>
             <span className="card__close"></span>
-            {/* <img src={card.url} alt="Preview Project" /> */}
             <h2 className="card__title">{card.title}</h2>
-            {/* <button>Lien GitHub</button>
-            <button>Lien Website</button> */}
             <TagsContainer>
                 {card.links.map((element) => {
                     const id = useId();
+                    console.log(element);
                     return (
                         <a
                             key={id}
@@ -33,15 +32,6 @@ export function ProjectContent({ card }: cardType) {
                         </a>
                     );
                 })}
-                {/* {Object.entries([card.links]).map((link, index) => {
-                    console.log(link.name);
-                    const id = useId();
-                    return (
-                        <Link key={id} to={link.link} target="_blank">
-                            <Tags logo={link.logo}>{link.name}</Tags>
-                        </Link>
-                    );
-                })} */}
             </TagsContainer>
             <p className="card__description">{card.description}</p>
             <ul className="card__content">
@@ -63,7 +53,7 @@ export function ProjectContent({ card }: cardType) {
                 {Object.entries(card.stack).map(([text, logoUrl]) => {
                     const id = useId();
                     return (
-                        <Tags key={id} logo={logoUrl}>
+                        <Tags key={id} logo={logoUrl as string}>
                             {text}
                         </Tags>
                     );
