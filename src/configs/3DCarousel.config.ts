@@ -89,6 +89,12 @@ export const DESKTOP_HTML_TITLE_POSITION_SETTINGS = (
     height: number,
     margin: number
 ) => new Vector3(0, height / 2 + margin - 1, 0);
+/** Position des icônes des pages */
+export const DESKTOP_HTML_ICONS_POSITION_SETTINGS = (
+    height: number,
+    width: number,
+    margin: number
+) => new Vector3(width / 2 - margin * 2.5, -height / 2 - margin, 0);
 
 /**
  * DEFAULTS POSITIONNINGS -
