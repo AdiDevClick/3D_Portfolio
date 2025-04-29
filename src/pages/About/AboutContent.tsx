@@ -1,6 +1,3 @@
-import gitIcon from '@icons/github.svg';
-import linkedIn from '@icons/linkedin.svg';
-
 /**
  * Contenu HTML de la page d'à propos
  */
