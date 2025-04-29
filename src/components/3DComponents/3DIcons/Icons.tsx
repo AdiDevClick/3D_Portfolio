@@ -47,7 +47,7 @@ export function Icons({ model, ...props }: IconsTypes) {
                 );
             })}
             {hovered && (
-                <Html center>
+                <Html>
                     <div className="about__tooltip">{getServiceName()}</div>
                 </Html>
             )}
