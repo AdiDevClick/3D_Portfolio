@@ -1,32 +1,24 @@
 import { ProjectContent } from '@/pages/Projects/ProjectContent';
 import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
-import { WheelEvent } from 'react';
 import '@css/Card.scss';
+import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
 
 type ProjectContainerTypes = {
     onClick: () => void;
     card: ElementType;
 };
 
+/**
+ * Contains the project content/informations.
+ * @param onClick - Clic function from the card.
+ * @param card - Card data.
+ * @param props - Additional props.
+ */
 export function ProjectContainer({
     onClick,
     card,
     ...props
 }: ProjectContainerTypes) {
-    /**
-     * Réactive le scrolling quand le contenu est ouvert
-     */
-    const onScrollHandler = (e: WheelEvent) => {
-        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-        if (
-            (scrollTop + e.deltaY > 0 && e.deltaY < 0) ||
-            (scrollHeight - (scrollTop + e.deltaY) > clientHeight &&
-                e.deltaY > 0)
-        ) {
-            e.stopPropagation();
-        }
-    };
-
     return (
         <div
             className="card"
