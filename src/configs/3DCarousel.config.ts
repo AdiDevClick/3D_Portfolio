@@ -84,6 +84,11 @@ export const DESKTOP_TITLE_POSITION = [0, 1.1, 0.15];
 export const DESKTOP_HTML_CONTAINER_DEPTH = 0.05;
 /** Rotation du conteneur HTML */
 export const DESKTOP_HTML_CONTAINER_ROTATION = [0, 0, 0];
+/** Position du titre HTML des pages */
+export const DESKTOP_HTML_TITLE_POSITION_SETTINGS = (
+    height: number,
+    margin: number
+) => new Vector3(0, height / 2 + margin - 1, 0);
 
 /**
  * DEFAULTS POSITIONNINGS -
@@ -96,7 +101,7 @@ export const DEFAULT_PROJECTS_POSITION_SETTINGS = new Vector3(0, -100, 0);
 export const ACTIVE_PROJECTS_POSITION_SETTINGS = new Vector3(0, 0.15, 0);
 // export const ACTIVE_PROJECTS_POSITION = new Vector3(0, 0.15, 0);
 /** Default HTML positions */
-export const DEFAULT_HTML_POSITION_SETTINGS = new Vector3(0, 0, 0);
+export const DEFAULT_HTML_POSITION_SETTINGS = new Vector3(0, -0.8, 0);
 
 /** Default camera position on loading page */
 export const DEFAULT_CAMERA_POSITION = new Vector3(0, 0, -20);
