@@ -68,6 +68,15 @@ export function Scene({ SETTINGS, size }) {
     reducer.isMobile = size[0] < 768;
     reducer.isTablet = size[0] < 1024;
 
+    const aspectRatio = size[0] / size[1];
+    const vFov = (initialCameraFov * Math.PI) / 180;
+    const height = 2 * Math.tan(vFov / 2) * 20; // 14 = distance caméra
+    const width = height * aspectRatio;
+
+    reducer.contentSizes = size;
+    reducer.contentWidth = width;
+    reducer.contentHeight = height;
+
     const scaleX = Math.max(0.5, size[0] / 1920);
     const scaleY = Math.max(0.5, size[1] / 1080);
     const responsiveBoundaries = {
@@ -117,9 +126,6 @@ export function Scene({ SETTINGS, size }) {
         if (!controlsRef.current) return;
 
         const { camera } = controlsRef.current;
-
-        // camera.updateProjectionMatrix();
-        reducer.contentSizes = size;
 
         switch (viewMode) {
             case 'home':
@@ -327,11 +333,11 @@ export function Scene({ SETTINGS, size }) {
                 </div>
             </HtmlContainer> */}
                 {/* <group ref={homeRef}> */}
-                <ScrollControls pages={1.15} distance={0.3} damping={0.5}>
+                <ScrollControls pages={1.3} distance={0.3} damping={0.5}>
                     {/* <ScrollControls pages={1.15} distance={0.3} damping={0.5}> */}
                     <Scroll>
                         {/* <Home /> */}
-                        <About />
+                        <About reducer={reducer} />
                         {/* <Contact /> */}
                     </Scroll>
                     {/* <Scroll html>
