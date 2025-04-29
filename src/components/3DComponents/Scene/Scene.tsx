@@ -4,6 +4,8 @@ import {
     useScroll,
     useTexture,
     CameraControls,
+    ScrollControls,
+    Scroll,
 } from '@react-three/drei';
 import { useEffect, useRef, useState } from 'react';
 import '../../../utils/util.tsx';
@@ -21,6 +23,7 @@ import { Home } from '@/pages/Home/Home.tsx';
 import { About } from '@/pages/About/About.tsx';
 import { Contact } from '@/pages/Contact/Contact.tsx';
 import { Leva } from 'leva';
+import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
 
 const initialCameraFov = 20;
 let minAngle = -Infinity;
@@ -256,34 +259,53 @@ export function Scene({ SETTINGS, size }) {
         //     id="canvas-container"
         //     style={{ height: '100%', minHeight: 'min-content' }}
         // >
-        <Canvas
-            // frameloop="demand"
-            style={{ position: 'relative', height: '100%', width: '100%' }}
-            id="canva"
-            camera={{ position: [0, 0, -14], fov: 50 }}
-            // camera={{ position: [0, 0, -20], fov: 20 }}
-            // dpr={[1, 1]}
-            dpr={window.devicePixelRatio}
-            // camera={{ position: [0, 0, 5], fov: 70 }}
-        >
+        <>
             <Leva hidden={true} />
-            <CameraControls
-                // makeDefault
-                // no Y-axis
-                polarRotateSpeed={0}
-                // no zoom
-                dollySpeed={0}
-                // Max angle on active is given by the camera
-                maxAzimuthAngle={maxAngle}
-                // Min angle on active is given by the camera
-                minAzimuthAngle={minAngle}
-                ref={controlsRef}
-                onStart={(e) =>
-                    onControlStart(e, reducer.activeContent?.isClicked)
-                }
-            />
-            {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
-            {/* <HtmlContainer
+            <Canvas
+                // frameloop="demand"
+                // style={{ position: 'relative', height: '90vh', width: '100%' }}
+                style={{ position: 'relative', height: '100%', width: '100%' }}
+                id="canva"
+                camera={{ position: [0, 0, -14], fov: 50 }}
+                // camera={{ position: [0, 0, -20], fov: 20 }}
+                // dpr={[1, 1]}
+                dpr={window.devicePixelRatio}
+                // onScroll={(e) => e.stopPropagation()}
+                // onWheel={onScrollHandler}
+                // camera={{ position: [0, 0, 5], fov: 70 }}
+            >
+                <color attach="background" args={['#191920']} />
+                {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
+                {/* <fog attach="fog" args={['black', 8.5, 12]} /> */}
+
+                <CameraControls
+                    // makeDefault
+                    // no Y-axis
+                    polarRotateSpeed={0}
+                    // no zoom
+                    dollySpeed={0}
+                    // Max angle on active is given by the camera
+                    maxAzimuthAngle={maxAngle}
+                    // Min angle on active is given by the camera
+                    minAzimuthAngle={minAngle}
+                    ref={controlsRef}
+                    mouseButtons={{
+                        left: 1, // Rotation de caméra avec le clic gauche uniquement
+                        middle: 0, // Désactive le clic milieu
+                        right: 0, // Désactive le clic droit
+                        wheel: 0, // IMPORTANT: Désactive la molette pour la caméra
+                    }}
+                    touches={{
+                        one: 1, // Un doigt pour rotation
+                        two: 0, // Désactive le zoom à deux doigts
+                        three: 0, // Désactive trois doigts
+                    }}
+                    onStart={(e) =>
+                        onControlStart(e, reducer.activeContent?.isClicked)
+                    }
+                />
+                {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
+                {/* <HtmlContainer
                 reducer={reducer}
                 // position={[0, 0, 0]}
                 className="html-container"
@@ -304,12 +326,45 @@ export function Scene({ SETTINGS, size }) {
                     </p>
                 </div>
             </HtmlContainer> */}
-            {/* <group ref={homeRef}> */}
-            <Home />
-            <About />
-            <Contact />
-            {/* </group> */}
-            {/* <Html
+                {/* <group ref={homeRef}> */}
+                <ScrollControls pages={1.15} distance={0.3} damping={0.5}>
+                    {/* <ScrollControls pages={1.15} distance={0.3} damping={0.5}> */}
+                    <Scroll>
+                        {/* <Home /> */}
+                        <About />
+                        {/* <Contact /> */}
+                    </Scroll>
+                    {/* <Scroll html>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            bottom: '20px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: 'white',
+                        }}
+                    >
+                        ↓ Scroll pour explorer
+                    </div>
+                </Scroll> */}
+                </ScrollControls>
+
+                {/* <div
+                        style={{
+                            position: 'absolute',
+                            transform: 'translate(-50%) rotateY(180deg)',
+                            top: '10px',
+                            right: '10px',
+                            color: 'white',
+                            height: '100vh',
+                            width: '200vw',
+                            background: 'rgba(0, 0, 0, 0.5)',
+                        }}
+                    >
+                        Navigation fixe HTML
+                    </div> */}
+                {/* </group> */}
+                {/* <Html
                 ref={menuRef}
                 // style={{ position: 'relative', height: '100%', width: '100%' }}
                 // fullscreen
@@ -334,11 +389,8 @@ export function Scene({ SETTINGS, size }) {
                 ></aside>
             </Html> */}
 
-            <color attach="background" args={['#191920']} />
-
-            {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
-            {/* <ScrollControls pages={4} infinite> */}
-            {/* </group> 
+                {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
+                {/* </group> 
             // ref={projectsRef}
             // position={
             //     id === 'projets'
@@ -364,12 +416,10 @@ export function Scene({ SETTINGS, size }) {
             >
                 {/* <Banner position={[0, -0.15, 0]} /> */}
 
-            {/* <Rig> */}
-            {/* <Rig rotation={[0, 0, 0.15]}> */}
+                {/* <Rig> */}
+                {/* <Rig rotation={[0, 0, 0.15]}> */}
 
-            {/* </Rig> */}
-
-            {/* <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                {/* <mesh rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[50, 50]} />
                     <MeshReflectorMaterial
                         blur={[300, 100]}
@@ -384,9 +434,10 @@ export function Scene({ SETTINGS, size }) {
                         metalness={0.5}
                     />
                 </mesh> */}
-            {/* </group> */}
-            {/* <SceneContext.Provider value={sceneContext}> */}
-            <group ref={menuRef}>
+
+                {/* </group> */}
+                {/* <SceneContext.Provider value={sceneContext}> */}
+                {/* <group ref={menuRef}> */}
                 <Carousel
                     reducer={reducer}
                     boundaries={responsiveBoundaries}
@@ -395,16 +446,18 @@ export function Scene({ SETTINGS, size }) {
                     // isActive={isCarouselActive}
                     // updateFrequency={isCarouselActive ? 1 : 100}
                 />
-            </group>
+                {/* </group> */}
+                {/* </Rig> */}
 
-            {/* {children} */}
-            {/* </SceneContext.Provider> */}
-            {/* <Banner position={[0, -0.15, 0]} /> */}
-            {/* </ScrollControls> */}
-            <Environment preset="dawn" background blur={0.5} />
-            {/* <ambientLight />
+                {/* {children} */}
+                {/* </SceneContext.Provider> */}
+                {/* <Banner position={[0, -0.15, 0]} /> */}
+                <Environment preset="dawn" background blur={0.5} />
+                {/* <ambientLight />
             <Experience /> */}
-        </Canvas>
+            </Canvas>
+        </>
+
         // </div>
     );
 }
