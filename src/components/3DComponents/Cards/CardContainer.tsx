@@ -5,12 +5,10 @@ import { ProjectContainer } from '@/pages/Projects/ProjectContainer';
 import {
     DESKTOP_HTML_CONTAINER_DEPTH,
     DESKTOP_HTML_CONTAINER_ROTATION,
-    DESKTOP_TITLE_POSITION,
     MOBILE_HTML_CONTAINER_POSITION,
     MOBILE_HTML_CONTAINER_ROTATION,
-    MOBILE_TITLE_POSITION,
 } from '@/configs/3DCarousel.config.ts';
-import { useId } from 'react';
+import { useId, useRef } from 'react';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/SpherePresence.tsx';
@@ -22,6 +20,9 @@ type CardContainerTypes = {
     SETTINGS: SettingsType;
 };
 
+// let titlePosition = [0, 0, 0] as [number, number, number];
+let htmlContentRotation = [0, 0, 0] as [number, number, number];
+
 /**
  * Conteneur pour les Cards et ses dépendances -
  * Il contient les cartes et les éléments HTML -
@@ -31,86 +32,84 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    return reducer.showElements.map((card, i) => (
-        <Card
-            key={id + i}
-            card={card}
-            presenceRadius={SETTINGS.PRESENCE_RADIUS * card.baseScale}
-            reducer={reducer}
-            {...SETTINGS}
-        >
-            <SpherePresenceHelper
-                visible={SETTINGS.PRESENCE_CIRCLE}
-                radius={[SETTINGS.PRESENCE_RADIUS * card.baseScale, 32]}
-                color={'red'}
-            />
-            {card.ref?.current && (
-                <Title
-                    position={
-                        reducer.isMobile
-                            ? (MOBILE_TITLE_POSITION as [
-                                  number,
-                                  number,
-                                  number
-                              ])
-                            : (DESKTOP_TITLE_POSITION as [
-                                  number,
-                                  number,
-                                  number
-                              ])
-                    }
-                    size={10}
-                >
-                    {card.cardTitle ? card.cardTitle : 'test'}
-                </Title>
-            )}
-            {card.isClicked && (
-                <HtmlContainer
-                    reducer={reducer}
-                    className="html-container"
-                    position={
-                        reducer.isMobile
-                            ? (MOBILE_HTML_CONTAINER_POSITION as [
-                                  number,
-                                  number,
-                                  number
-                              ])
-                            : ([
-                                  card.currentWidth / 2,
-                                  0,
-                                  DESKTOP_HTML_CONTAINER_DEPTH,
-                              ] as [number, number, number])
-                    }
-                    rotation={
-                        reducer.isMobile
-                            ? (MOBILE_HTML_CONTAINER_ROTATION as [
-                                  number,
-                                  number,
-                                  number
-                              ])
-                            : (DESKTOP_HTML_CONTAINER_ROTATION as [
-                                  number,
-                                  number,
-                                  number
-                              ])
-                    }
-                    dynamicContent={true}
-                >
-                    <ProjectContainer
-                        onClick={(e) =>
-                            onClickHandler(e, card, reducer, location, navigate)
-                        }
-                        card={card}
-                    />
-                </HtmlContainer>
-            )}
-            {SETTINGS.CARD_WIREFRAME && (
-                <meshBasicMaterial
-                    visible={SETTINGS.CARD_WIREFRAME}
-                    wireframe
-                    // side={DoubleSide}
+    const titleRef = useRef<HTMLDivElement>(null);
+    const cardRef = useRef(null);
+
+    if (reducer.isMobile) {
+        // titlePosition = MOBILE_TITLE_POSITION;
+        htmlContentRotation = MOBILE_HTML_CONTAINER_ROTATION;
+    } else {
+        // titlePosition = DESKTOP_TITLE_POSITION;
+        htmlContentRotation = DESKTOP_HTML_CONTAINER_ROTATION;
+    }
+
+    return reducer.showElements.map((card, i) => {
+        card.isClicked ? (cardRef.current = card) : null;
+        return (
+            <Card
+                key={id + i}
+                card={card}
+                presenceRadius={SETTINGS.PRESENCE_RADIUS * card.baseScale}
+                reducer={reducer}
+                {...SETTINGS}
+            >
+                <SpherePresenceHelper
+                    name="spherePresenceHelper"
+                    visible={SETTINGS.PRESENCE_CIRCLE}
+                    radius={[SETTINGS.PRESENCE_RADIUS * card.baseScale, 32]}
+                    color={'red'}
                 />
-            )}
-        </Card>
-    ));
+                {card.ref?.current && (
+                    <Title
+                        ref={titleRef}
+                        name="title"
+                        // position={titlePosition}
+                        size={10}
+                        card={card}
+                    >
+                        {card.cardTitle ? card.cardTitle : 'test'}
+                    </Title>
+                )}
+                {card.isClicked && (
+                    <group name="htmlContainer">
+                        <HtmlContainer
+                            reducer={reducer}
+                            className="html-container"
+                            position={
+                                reducer.isMobile
+                                    ? MOBILE_HTML_CONTAINER_POSITION
+                                    : [
+                                          card.currentWidth / 2,
+                                          0,
+                                          DESKTOP_HTML_CONTAINER_DEPTH,
+                                      ]
+                            }
+                            rotation={htmlContentRotation}
+                            dynamicContent={true}
+                        >
+                            <ProjectContainer
+                                onClick={(e) =>
+                                    onClickHandler(
+                                        e,
+                                        card,
+                                        reducer,
+                                        location,
+                                        navigate
+                                    )
+                                }
+                                card={card}
+                            />
+                        </HtmlContainer>
+                    </group>
+                )}
+                {SETTINGS.CARD_WIREFRAME && (
+                    <meshBasicMaterial
+                        visible={SETTINGS.CARD_WIREFRAME}
+                        wireframe
+                        // side={DoubleSide}
+                    />
+                )}
+            </Card>
+        );
+    });
 }
