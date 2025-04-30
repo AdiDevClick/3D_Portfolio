@@ -1,23 +1,28 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Html } from '@react-three/drei';
+import { HtmlProps } from '@react-three/drei/web/Html';
 import { useFrame } from '@react-three/fiber';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
 type HtmlContainerTypes = {
-    width?: number;
     reducer?: ReducerType;
     children: ReactNode;
     dynamicContent?: boolean;
-    className?: string;
-    position?: [number, number, number];
     forceMeasure?: boolean;
     distanceFactor?: number;
-};
+} & Omit<HtmlProps, 'ref'>;
 
 /**
  * Contient un <group /> qui sera transformé en élément 3D par défaut -
  * Il faut lui passer un children contenant les éléments voulus -
+ *
+ * @param children - HTML content to display
+ * @param reducer - Reducer type for the carousel
+ * @param dynamicContent - If true, the content will be measured on each frame
+ * @param forceMeasure - If true, will force the measure/re-measure scaling of the content
+ * @param distanceFactor - Distance factor for the HTML element (default = 1)
+ * @param props - Other HTML properties
  */
 export function HtmlContainer({
     children,
@@ -30,15 +35,8 @@ export function HtmlContainer({
     const [scaleRatio, setScaleRatio] = useState(1);
     const [done, setDone] = useState(false);
 
-    const htmlRef = useRef<HTMLElement>(null);
+    const htmlRef = useRef<HTMLDivElement>(null);
     const frameCountRef = useRef(0);
-    // const observer = useMutationObserver(handleObserver, measure, {
-    //     scaleRatio,
-    //     setScaleRatio,
-    //     done,
-    //     setDone,
-    // });
-    // const htmlRef = mergeRefs(html, observer);
 
     useFrame(() => {
         if (done || !htmlRef.current) return;
@@ -72,49 +70,10 @@ export function HtmlContainer({
             transform
             distanceFactor={distanceFactor}
             scale={0.7}
-            style={{ '--data-custom-scale': scaleRatio }}
+            style={{ ['--data-custom-scale' as string]: scaleRatio }}
             {...props}
         >
             {children}
         </Html>
     );
 }
-
-const handleObserver = (mutationsList, observer) => {
-    console.log(observer);
-    mutationsList.forEach((mutation) => {
-        if (mutation.addedNodes.length > 0) {
-            console.log('object');
-            const addedNodes = mutation.addedNodes[0].children;
-            for (const node of addedNodes) {
-                // if (this.#inputsToListen.includes(node.type)) {
-                // Setting which input can be empty
-                // setObjectPropertyTo(
-                //     this.options.whichInputCanBeEmpty,
-                //     node,
-                //     node.name,
-                //     'canBeEmpty',
-                //     true
-                // );
-                // Setting which input can accept special char
-                // setObjectPropertyTo(
-                //     this.options.whichInputAllowSpecialCharacters,
-                //     node,
-                //     node.name,
-                //     'allowSpecialCharacters',
-                //     true
-                // );
-                // Creating valid / invalid icon for each inputs
-                // this.#createIconContainer(node);
-                // // Main dynamic checker
-                // node.addEventListener(
-                //     'input',
-                //     debounce((e) => {
-                //         this.#dynamicCheck(e.target);
-                //     }, this.debounceDelay)
-                // );
-                // }
-            }
-        }
-    });
-};
