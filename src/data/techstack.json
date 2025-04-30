@@ -1,0 +1,94 @@
+[
+    {
+        "name": "GitHub",
+        "url": "../src/3DModels/github_model.glb"
+    },
+    {
+        "name": "GitLab",
+        "url": "../src/3DModels/gitlab_model.glb"
+    },
+    {
+        "name": "Git",
+        "url": "../src/3DModels/git_model.glb"
+    },
+    {
+        "name": "HTML5",
+        "url": "../src/3DModels/html_model.glb"
+    },
+    {
+        "name": "CSS3",
+        "url": "../src/3DModels/css_model.glb"
+    },
+    {
+        "name": "React",
+        "url": "../src/3DModels/react_model.glb"
+    },
+    {
+        "name": "Three.js",
+        "url": "../src/3DModels/three_model.glb"
+    },
+    {
+        "name": "JavaScript",
+        "url": "../src/3DModels/js_model.glb"
+    },
+    {
+        "name": "TypeScript",
+        "url": "../src/3DModels/ts_model.glb"
+    },
+    {
+        "name": "Node.js",
+        "url": "../src/3DModels/node_model.glb"
+    },
+    {
+        "name": "Express.js",
+        "url": "../src/3DModels/express_model.glb"
+    },
+    {
+        "name": "MySQL",
+        "url": "../src/3DModels/mysql_model.glb"
+    },
+    {
+        "name": "MongoDB",
+        "url": "../src/3DModels/mongodb_model.glb"
+    },
+    {
+        "name": "Mongoose",
+        "url": "../src/3DModels/mongoose_model.glb"
+    },
+    {
+        "name": "Bootstrap",
+        "url": "../src/3DModels/bootsrap_model.glb"
+    },
+    {
+        "name": "Sass",
+        "url": "../src/3DModels/sass_model.glb"
+    },
+    {
+        "name": "Figma",
+        "url": "../src/3DModels/figma_model.glb"
+    },
+    {
+        "name": "Docker",
+        "url": "../src/3DModels/docker_model.glb"
+    },
+    {
+        "name": "Postman",
+        "url": "../src/3DModels/postman_model.glb"
+    },
+    {
+        "name": "Vite",
+        "url": "../src/3DModels/vite_model.glb"
+    },
+    {
+        "name": "PHP",
+        "url": "../src/3DModels/php_model.glb"
+    },
+    {
+        "name": "Symfony",
+        "url": "../src/3DModels/symfony_model.glb"
+    },
+    {
+        "name": "WordPress",
+        "url": "../src/3DModels/wordpress_model.glb"
+    }
+]
