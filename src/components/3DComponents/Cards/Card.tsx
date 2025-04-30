@@ -74,8 +74,9 @@ export default function Card({
     useCursor(card.isActive);
 
     useFrame((_, delta) => {
-        if (!cardRef.current) return;
-        const title = card.ref?.current.getObjectByName('title');
+        const title = cardRef.current.getObjectByName('title');
+        if (!cardRef.current || !title) return;
+
         const { material, scale, rotation } = cardRef.current;
         const props = { bending, setBending, setWidth, delta, scale, width };
 
