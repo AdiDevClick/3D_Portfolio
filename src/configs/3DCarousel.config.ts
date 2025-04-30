@@ -66,11 +66,23 @@ export const presenceSettings = {
  ***********/
 
 /** Position du titre 3D */
-export const MOBILE_TITLE_POSITION = [0, -1.2, 0.05];
+export const MOBILE_TITLE_POSITION = [0, -1.2, 0.05] as [
+    number,
+    number,
+    number
+];
 /** Position du conteneur HTML */
-export const MOBILE_HTML_CONTAINER_POSITION = [0, -1.5, 0.05];
+export const MOBILE_HTML_CONTAINER_POSITION = [0, -1.5, 0.05] as [
+    number,
+    number,
+    number
+];
 /** Rotation du conteneur HTML */
-export const MOBILE_HTML_CONTAINER_ROTATION = [0, 0.1, 0];
+export const MOBILE_HTML_CONTAINER_ROTATION = [0, 0.1, 0] as [
+    number,
+    number,
+    number
+];
 
 /*****************
  * DESKTOP
@@ -79,11 +91,19 @@ export const MOBILE_HTML_CONTAINER_ROTATION = [0, 0.1, 0];
  ***********/
 
 /** Position du titre 3D */
-export const DESKTOP_TITLE_POSITION = [0, 1.1, 0.15];
+export const DESKTOP_TITLE_POSITION = [0, 1.1, 0.15] as [
+    number,
+    number,
+    number
+];
 /** Depth du conteneur HTML */
 export const DESKTOP_HTML_CONTAINER_DEPTH = 0.05;
 /** Rotation du conteneur HTML */
-export const DESKTOP_HTML_CONTAINER_ROTATION = [0, 0, 0];
+export const DESKTOP_HTML_CONTAINER_ROTATION = [0, 0, 0] as [
+    number,
+    number,
+    number
+];
 /** Position du titre HTML des pages */
 export const DESKTOP_HTML_TITLE_POSITION_SETTINGS = (
     height: number,
