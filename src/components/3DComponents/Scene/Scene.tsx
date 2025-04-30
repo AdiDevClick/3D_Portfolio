@@ -28,7 +28,6 @@ import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts
 const initialCameraFov = 20;
 let minAngle = -Infinity;
 let maxAngle = Infinity;
-
 export function Scene({ SETTINGS, size }) {
     const params = useParams();
     const navigate = useNavigate();
@@ -41,6 +40,7 @@ export function Scene({ SETTINGS, size }) {
 
     const [viewMode, setViewMode] = useState('home');
     const [forceMeasure, setForceMeasure] = useState(false);
+    const [virtualPageCount, setVirtualPageCount] = useState(0);
 
     // Default camera position if no controlsRef
     const [prevCamPos, setPrevCamPos] = useState(() =>
@@ -79,6 +79,9 @@ export function Scene({ SETTINGS, size }) {
 
     const scaleX = Math.max(0.5, size[0] / 1920);
     const scaleY = Math.max(0.5, size[1] / 1080);
+
+    reducer.generalScaleX = scaleX;
+
     const responsiveBoundaries = {
         x: SETTINGS.x * scaleX,
         y: SETTINGS.y * scaleY,
@@ -105,12 +108,16 @@ export function Scene({ SETTINGS, size }) {
             location.pathname.includes('contact')
         ) {
             setViewMode('home');
+            if (location.pathname.includes('a-propos'))
+                setVirtualPageCount(1.3);
+            if (location.pathname === '/') setVirtualPageCount(5);
         } else if (
             location.pathname.includes('projets') &&
             !id &&
             !reducer.activeContent
         ) {
             setViewMode('carousel');
+            setVirtualPageCount(0);
         } else if (id || reducer.activeContent) {
             setViewMode('card-detail');
             // } else if (location.pathname.includes('a-propos')) {
@@ -263,19 +270,19 @@ export function Scene({ SETTINGS, size }) {
      * Disable scrolling on the page -
      * @description : Only when the card is clicked
      */
-    useEffect(() => {
-        const handleWheel = (e: WheelEvent) => {
-            if (reducer.activeContent?.isClicked) {
-                e.preventDefault();
-            }
-        };
+    // useEffect(() => {
+    //     const handleWheel = (e: WheelEvent) => {
+    //         if (reducer.activeContent?.isClicked) {
+    //             e.preventDefault();
+    //         }
+    //     };
 
-        window.addEventListener('wheel', handleWheel, { passive: false });
+    //     window.addEventListener('wheel', handleWheel, { passive: false });
 
-        return () => {
-            window.removeEventListener('wheel', handleWheel);
-        };
-    }, [reducer.activeContent]);
+    //     return () => {
+    //         window.removeEventListener('wheel', handleWheel);
+    //     };
+    // }, [reducer.activeContent]);
 
     return (
         // <div
@@ -355,10 +362,14 @@ export function Scene({ SETTINGS, size }) {
                 </div>
             </HtmlContainer> */}
                 {/* <group ref={homeRef}> */}
-                <ScrollControls pages={1.3} distance={0.3} damping={0.5}>
+                <ScrollControls
+                    pages={virtualPageCount}
+                    distance={0.3}
+                    damping={0.5}
+                >
                     {/* <ScrollControls pages={1.15} distance={0.3} damping={0.5}> */}
                     <Scroll>
-                        <Home />
+                        <Home reducer={reducer} scalar={scaleX} />
                         <About reducer={reducer} />
                         {/* <Contact /> */}
                     </Scroll>
@@ -480,7 +491,7 @@ export function Scene({ SETTINGS, size }) {
                 {/* {children} */}
                 {/* </SceneContext.Provider> */}
                 {/* <Banner position={[0, -0.15, 0]} /> */}
-                <Environment preset="dawn" background blur={0.5} />
+                <Environment preset="park" background blur={0.5} />
                 {/* <ambientLight />
             <Experience /> */}
             </Canvas>
