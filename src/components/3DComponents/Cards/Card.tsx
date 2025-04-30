@@ -63,7 +63,7 @@ export default function Card({
     const id = useId();
 
     const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
-    const cardHoverRadius = card.isActive ? 0.15 : 0.05;
+    const cardHoverRadius = card.isActive ? 0.1 : 0.05;
     const cardHoverZoom = card.isActive ? 1 : 1.5;
 
     useCursor(card.isActive);
@@ -148,7 +148,6 @@ export default function Card({
                         ? [card.currentWidth - 0.1, card.currentWidth]
                         : card.baseScale
                 }
-                // scale={(card.currentWidth - 0.1, card.currentWidth)}
                 // generateMipmaps={!reducer.isMobile}
                 // args={[textureQuality, textureQuality]}
             >
