@@ -2,9 +2,9 @@ import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts
 import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx';
 import { AboutContent } from '@/pages/About/AboutContent.tsx';
 import '@css/About.scss';
-import { Center, Float, Text3D } from '@react-three/drei';
+import { Center, Float } from '@react-three/drei';
 import { useMemo, useRef } from 'react';
-import { Group } from 'three';
+import { Group, Vector3 } from 'three';
 import { useLocation } from 'react-router';
 import { useFrame } from '@react-three/fiber';
 import { folder, useControls } from 'leva';
@@ -12,7 +12,7 @@ import GitIcon from '@models/github_model.glb';
 import LinkedIn from '@models/linkedin_model.glb';
 import {
     Icons,
-    preloadIcon,
+    preloadIcons,
 } from '@/components/3DComponents/3DIcons/Icons.tsx';
 import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
@@ -21,13 +21,27 @@ import {
 } from '@/configs/3DCarousel.config.ts';
 import { easing } from 'maath';
 import { Title } from '@/components/3DComponents/Title/Title.tsx';
+import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 
-preloadIcon([GitIcon, LinkedIn]);
+preloadIcons([GitIcon, LinkedIn]);
+
 let titlePosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
 let iconsPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
 let contentPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
 
-export function About({ reducer, margin = 0.5 }) {
+type AboutTypes = {
+    reducer: ReducerType;
+    /** @defaultValue 0.5 */
+    margin?: number;
+};
+
+/**
+ * Contains the about page content/informations.
+ *
+ * @param reducer - Reducer type for the carousel
+ * @param margin **@default=0.5** - Margin between the elements
+ */
+export function About({ reducer, margin = 0.5 }: AboutTypes) {
     const frameCountRef = useRef(0);
     const contentRef = useRef<Group>(null);
     const titleRef = useRef<Group>(null);
@@ -44,13 +58,13 @@ export function About({ reducer, margin = 0.5 }) {
 
     if (isActive) {
         titlePosition = DESKTOP_HTML_TITLE_POSITION_SETTINGS(
-            contentHeight,
+            contentHeight ?? 0,
             margin
         );
-        contentPosition = [0, 0 - margin, 0];
+        contentPosition = new Vector3(0, 0 - margin, 0);
         iconsPosition = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
-            contentHeight,
-            contentWidth,
+            contentHeight ?? 0,
+            contentWidth ?? 0,
             margin
         );
     } else {
