@@ -41,36 +41,76 @@ export function useCameraPositioning() {
             const { camera } = controlsRef.current;
             const { cardAngles, ref, containerScale } = cardProps;
 
-            // Position offset
+            // Retrieve the current camera angle
+            const currentCameraAngle = Math.atan2(
+                camera.position.x,
+                camera.position.z
+            );
+
+            const effectiveLerpFactor = isClicked
+                ? Math.min(0.85, lerpFactor * 1.5)
+                : lerpFactor;
+
+            // Final position offsets
             const activeForwardOffset = 10.5;
             const extraPullback = isMobile ? 5.5 : 3.5;
-            const desiredAngle = cardAngles.active + Math.PI / 28;
+            const CAMERA_ANGLE_OFFSET = Math.PI / 28;
+            const CAMERA_SAFETY_MARGIN = 8;
+            const desiredAngle = cardAngles.active + CAMERA_ANGLE_OFFSET;
+
+            let angleDelta = desiredAngle - currentCameraAngle;
+
+            // Normalize the angle delta to be within -PI to PI
+            // This ensures that the camera rotates in the shortest direction
+            // from on half to the other
+            while (angleDelta > Math.PI) angleDelta -= 2 * Math.PI;
+            while (angleDelta < -Math.PI) angleDelta += 2 * Math.PI;
 
             // Camera position from the center of the circle
             const finalDesiredRadius =
                 containerScale + activeForwardOffset + extraPullback;
+            // const finalDesiredRadius = Math.max(
+            //     containerScale + activeForwardOffset + extraPullback,
+            //     // Minimum radius to avoid camera clipping
+            //     14
+            // );
 
             const camTargetPos = ref.current.position.clone();
 
-            // Calculate offset from object size
+            // Calculate offset from object size for vertical centering
             const bbox = new Box3().setFromObject(ref.current);
             const sizeObj = new Vector3();
             bbox.getSize(sizeObj);
             const verticalCenterOffset = sizeObj.y / 5;
 
+            // const newAngle = currentCameraAngle + angleDelta * lerpFactor;
+            const newAngle = isClicked
+                ? desiredAngle // Aller directement à l'angle voulu
+                : currentCameraAngle + angleDelta * effectiveLerpFactor;
+
             const camPos = new Vector3(
-                Math.sin(desiredAngle) * finalDesiredRadius,
+                Math.sin(newAngle) * finalDesiredRadius,
                 camTargetPos.y + verticalCenterOffset,
-                Math.cos(desiredAngle) * finalDesiredRadius
+                Math.cos(newAngle) * finalDesiredRadius
             );
+            // const camPos = new Vector3(
+            //     Math.sin(desiredAngle) * finalDesiredRadius,
+            //     camTargetPos.y + verticalCenterOffset,
+            //     Math.cos(desiredAngle) * finalDesiredRadius
+            // );
 
             // Adding interpolation to the camera position
-            const newCamPos = camera.position.clone().lerp(camPos, lerpFactor);
+            // const newCamPos = camera.position.clone().lerp(camPos, lerpFactor);
+            const newCamPos = isClicked
+                ? // Exactly the same position as the card
+                  camPos.clone()
+                : camera.position.clone().lerp(camPos, effectiveLerpFactor);
             const newTarget = camTargetPos.clone();
 
             // Adding a small offset to the target position (if clicked and not mobile)
             const rightVector = new Vector3(1, 0, 0);
             rightVector.applyQuaternion(ref.current.quaternion);
+
             const offsetDistance = !isMobile && isClicked ? 2 : 0;
             const rightOffset = rightVector.multiplyScalar(offsetDistance);
 
@@ -80,6 +120,18 @@ export function useCameraPositioning() {
             // !! IMPORTANT !! Modify FOV if mobile
             camera.fov = isMobile ? 19 : 20;
 
+            const distanceToCenter = Math.sqrt(
+                newCamPos.x * newCamPos.x + newCamPos.z * newCamPos.z
+            );
+
+            // Too close? Scale the camera position
+            const minDistanceToCenter = containerScale + CAMERA_SAFETY_MARGIN;
+            if (distanceToCenter < minDistanceToCenter) {
+                const scale = minDistanceToCenter / distanceToCenter;
+                newCamPos.x *= scale;
+                newCamPos.z *= scale;
+            }
+
             controlsRef.current.setLookAt(
                 newCamPos.x,
                 newCamPos.y,
@@ -87,7 +139,8 @@ export function useCameraPositioning() {
                 shiftedTarget.x,
                 isClicked && isMobile ? shiftedTarget.y - 1.5 : shiftedTarget.y,
                 shiftedTarget.z,
-                true // Animation ?
+                // Animation ?
+                true
             );
 
             camera.updateProjectionMatrix();
