@@ -11,6 +11,8 @@ export function useCarousel(): ReducerType {
     });
     let activeContent = null;
     let contentSizes = null;
+    let contentWidth = null;
+    let contentHeight = null;
 
     if (state.elements.length > 0) {
         activeContent = state.elements.find(
@@ -20,6 +22,8 @@ export function useCarousel(): ReducerType {
     return {
         isMobile: false,
         contentSizes: contentSizes,
+        contentWidth: contentWidth,
+        contentHeight: contentHeight,
         activeContent: activeContent,
         showElements: state.elements,
         updateElements: useCallback((element) => {
