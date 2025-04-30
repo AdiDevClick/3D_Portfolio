@@ -3,7 +3,6 @@ import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx'
 import { AboutContent } from '@/pages/About/AboutContent.tsx';
 import '@css/About.scss';
 import { Center, Float, Text3D } from '@react-three/drei';
-import montserrat from '@assets/fonts/Montserrat_Thin_Regular.json';
 import { useMemo, useRef } from 'react';
 import { Group } from 'three';
 import { useLocation } from 'react-router';
