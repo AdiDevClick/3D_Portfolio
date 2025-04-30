@@ -65,7 +65,10 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                         name="title"
                         // position={titlePosition}
                         size={10}
-                        card={card}
+                        textProps={{
+                            scale: 0.01 * reducer.generalScaleX,
+                            bevelSize: 1,
+                        }}
                     >
                         {card.cardTitle ? card.cardTitle : 'test'}
                     </Title>
