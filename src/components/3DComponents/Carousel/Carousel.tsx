@@ -8,6 +8,7 @@ import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
+    DESKTOP_HTML_TITLE_POSITION_SETTINGS,
     TWO_PI,
 } from '@/configs/3DCarousel.config.ts';
 import {
@@ -18,6 +19,8 @@ import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.tsx
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { useLocation } from 'react-router';
 import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
+import { Title } from '@/components/3DComponents/Title/Title.tsx';
+import { Float } from '@react-three/drei';
 
 const collision = new Vector3();
 
@@ -51,6 +54,7 @@ export default function Carousel({
     const targetPosRef = useRef(new Vector3());
     const midPointRef = useRef(new Vector3());
     const bezierPosRef = useRef(new Vector3());
+    const titleRef = useRef(null);
 
     const location = useLocation();
     const id = useId();
@@ -176,6 +180,17 @@ export default function Carousel({
                 delta
             );
 
+            easing.damp3(
+                titleRef.current?.position,
+                activeURL
+                    ? DESKTOP_HTML_TITLE_POSITION_SETTINGS(
+                          reducer.contentHeight,
+                          -0.4
+                      )
+                    : DEFAULT_PROJECTS_POSITION_SETTINGS,
+                0.2,
+                delta
+            );
             // easing.damp3(
             //     state.camera.position,
             //     ACTIVE_PROJECTS_POSITION_SETTINGS,
@@ -469,6 +484,12 @@ export default function Carousel({
                     side={DoubleSide}
                 />
             </mesh>
+            <Float>
+                <Title ref={titleRef} rotation={[0, 3.164, 0]}>
+                    Mes Projets
+                </Title>
+            </Float>
+
             <CardContainer reducer={reducer} SETTINGS={SETTINGS} />
         </group>
     );
