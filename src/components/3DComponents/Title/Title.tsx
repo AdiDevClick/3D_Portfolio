@@ -25,12 +25,14 @@ type TitleTypes = {
  *
  * @param children - Text to display
  * @param size - Text size (default = 30)
+ * @param isMobile - If true, will use mobile settings (default = false)
  * @param textProps - Text3D properties
  * @param props - Center properties
  */
 export function Title({
     children,
     size = 30,
+    isMobile = false,
     textProps = {},
     ...props
 }: TitleTypes) {
@@ -39,10 +41,10 @@ export function Title({
             <Text3D
                 castShadow
                 bevelEnabled
-                curveSegments={32}
-                bevelSegments={5}
+                curveSegments={isMobile ? 12 : 32}
+                bevelSegments={3}
                 bevelThickness={1}
-                bevelSize={1}
+                bevelSize={2}
                 bevelOffset={0}
                 scale={0.01}
                 size={size}
@@ -52,7 +54,17 @@ export function Title({
                 {...textProps}
             >
                 {children}
-                <meshNormalMaterial />
+                {/* <meshNormalMaterial /> */}
+                {/* <MeshTransmissionMaterial
+                    clearcoat={1}
+                    samples={isMobile ? 1 : 8}
+                    thickness={40}
+                    chromaticAberration={isMobile ? 0.05 : 0.25}
+                    anisotropy={isMobile ? 0 : 0.4}
+                    resolution={isMobile ? 256 : 2048}
+                    distortion={0}
+                /> */}
+                <meshLambertMaterial />
             </Text3D>
         </Center>
     );
