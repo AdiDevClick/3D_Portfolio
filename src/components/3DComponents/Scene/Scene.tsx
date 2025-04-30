@@ -259,6 +259,24 @@ export function Scene({ SETTINGS, size }) {
         return () => clearTimeout(timer);
     }, [reducer.showElements, viewMode]);
 
+    /**
+     * Disable scrolling on the page -
+     * @description : Only when the card is clicked
+     */
+    useEffect(() => {
+        const handleWheel = (e: WheelEvent) => {
+            if (reducer.activeContent?.isClicked) {
+                e.preventDefault();
+            }
+        };
+
+        window.addEventListener('wheel', handleWheel, { passive: false });
+
+        return () => {
+            window.removeEventListener('wheel', handleWheel);
+        };
+    }, [reducer.activeContent]);
+
     return (
         // <div
         //     id="canvas-container"
@@ -296,15 +314,19 @@ export function Scene({ SETTINGS, size }) {
                     minAzimuthAngle={minAngle}
                     ref={controlsRef}
                     mouseButtons={{
-                        left: 1, // Rotation de caméra avec le clic gauche uniquement
-                        middle: 0, // Désactive le clic milieu
-                        right: 0, // Désactive le clic droit
-                        wheel: 0, // IMPORTANT: Désactive la molette pour la caméra
+                        // Activate left click for rotation
+                        left: 1,
+                        middle: 0,
+                        right: 0,
+                        // !! IMPORTANT !! DISABLE SCROLL WHEEL for camera
+                        // to activate the scroll on the page
+                        wheel: 0,
                     }}
                     touches={{
-                        one: 1, // Un doigt pour rotation
-                        two: 0, // Désactive le zoom à deux doigts
-                        three: 0, // Désactive trois doigts
+                        // Allows 1 finger touch for rotation
+                        one: 1,
+                        two: 0,
+                        three: 0,
                     }}
                     onStart={(e) =>
                         onControlStart(e, reducer.activeContent?.isClicked)
