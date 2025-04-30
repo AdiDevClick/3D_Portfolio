@@ -101,7 +101,7 @@ function IconMesh({
  * Allow to preload the icon models
  * @param modelPaths - Array of model paths to preload
  */
-export function preloadIcon(modelPaths: string[]) {
+export function preloadIcons(modelPaths: string[]) {
     const paths = Array.isArray(modelPaths) ? modelPaths : [modelPaths];
     paths.forEach((path) => {
         useGLTF.preload(path);
