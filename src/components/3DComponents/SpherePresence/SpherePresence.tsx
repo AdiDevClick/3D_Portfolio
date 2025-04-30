@@ -14,9 +14,10 @@ export function SpherePresenceHelper({
     radius,
     color,
     visible = false,
+    ...props
 }: SpherePresenceTypes) {
     return (
-        <mesh position={position} visible={visible}>
+        <mesh position={position} visible={visible} {...props}>
             <sphereGeometry args={radius} />
             <meshStandardMaterial
                 color={color}
