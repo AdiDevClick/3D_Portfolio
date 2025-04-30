@@ -1,19 +1,21 @@
 import Card from '@/components/3DComponents/Cards/Card.tsx';
-import { CardMainTitle } from '@/components/3DComponents/Cards/CardMainTitle.tsx';
 import { onClickHandler } from '@/components/3DComponents/Carousel/Functions.ts';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
 import { ProjectContainer } from '@/pages/Projects/ProjectContainer';
 import {
     DESKTOP_HTML_CONTAINER_DEPTH,
     DESKTOP_HTML_CONTAINER_ROTATION,
+    DESKTOP_TITLE_POSITION,
     MOBILE_HTML_CONTAINER_POSITION,
     MOBILE_HTML_CONTAINER_ROTATION,
+    MOBILE_TITLE_POSITION,
 } from '@/configs/3DCarousel.config.ts';
 import { useId } from 'react';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/SpherePresence.tsx';
 import { useLocation, useNavigate } from 'react-router';
+import { Title } from '@/components/3DComponents/Title/Title.tsx';
 
 type CardContainerTypes = {
     reducer: ReducerType;
@@ -43,7 +45,24 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                 color={'red'}
             />
             {card.ref?.current && (
-                <CardMainTitle reducer={reducer} card={card} />
+                <Title
+                    position={
+                        reducer.isMobile
+                            ? (MOBILE_TITLE_POSITION as [
+                                  number,
+                                  number,
+                                  number
+                              ])
+                            : (DESKTOP_TITLE_POSITION as [
+                                  number,
+                                  number,
+                                  number
+                              ])
+                    }
+                    size={10}
+                >
+                    {card.cardTitle ? card.cardTitle : 'test'}
+                </Title>
             )}
             {card.isClicked && (
                 <HtmlContainer
@@ -51,17 +70,29 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                     className="html-container"
                     position={
                         reducer.isMobile
-                            ? MOBILE_HTML_CONTAINER_POSITION
-                            : [
+                            ? (MOBILE_HTML_CONTAINER_POSITION as [
+                                  number,
+                                  number,
+                                  number
+                              ])
+                            : ([
                                   card.currentWidth / 2,
                                   0,
                                   DESKTOP_HTML_CONTAINER_DEPTH,
-                              ]
+                              ] as [number, number, number])
                     }
                     rotation={
                         reducer.isMobile
-                            ? MOBILE_HTML_CONTAINER_ROTATION
-                            : DESKTOP_HTML_CONTAINER_ROTATION
+                            ? (MOBILE_HTML_CONTAINER_ROTATION as [
+                                  number,
+                                  number,
+                                  number
+                              ])
+                            : (DESKTOP_HTML_CONTAINER_ROTATION as [
+                                  number,
+                                  number,
+                                  number
+                              ])
                     }
                     dynamicContent={true}
                 >
