@@ -255,9 +255,43 @@ export default function Carousel({
             let targetRotationY = 0;
             let dampingFactor = 0.15;
 
+            let wasActive;
+            let isFlipping;
+            let flipProgress;
+            let initialRotation;
+            let finalRotation;
+
             // Recalculate circle formation
             if (activeCard !== -1) {
                 if (i === activeCard) {
+                    // wasActive = true;
+                    // flipProgress = 0;
+                    // isFlipping = true;
+                    // initialRotation = rotation.y;
+                    // finalRotation = targetRotationY;
+
+                    // if (isFlipping) {
+                    //     // Vitesse du flip
+                    //     flipProgress += delta;
+
+                    //     // Créer un effet de rotation complète (flip à 360°)
+                    //     const flipAmount = Math.PI * 2;
+
+                    //     // Rotation progressive avec effet d'accélération
+                    //     rotation.y =
+                    //         initialRotation +
+                    //         customEasing.backOut(Math.min(1, flipProgress)) *
+                    //             flipAmount;
+
+                    //     // Terminer l'animation
+                    //     if (flipProgress >= 1) {
+                    //         isFlipping = false;
+                    //         rotation.y = finalRotation;
+                    //     }
+
+                    //     // On ne prend pas la position normale pendant le flip
+                    //     return;
+                    // }
                     // Finding initial angle position
                     // It should be : [sin(angle)*R, 0, cos(angle)*R]
                     const targetRadius =
@@ -265,6 +299,8 @@ export default function Carousel({
                     positions = MathPos(active, targetRadius);
                     targetRotationY = active;
                 } else {
+                    // wasActive = false;
+                    // isFlipping = false;
                     const relativeIndex = i < activeCard ? i : i - 1;
                     const angleStep =
                         TWO_PI / (reducer.showElements.length - 1);
@@ -346,15 +382,17 @@ export default function Carousel({
 
                 // Curvature of the animation
                 midPoint.set(
-                    positions[0] + (i % 2 === 0 ? 10 : -10), // Amplitude horizontale encore plus large
-                    positions[1] - 1, // Presque à la hauteur finale
-                    positions[2] + (i % 2 === 0 ? -5 : 5) // Plus de profondeur
+                    // Horizontally larger
+                    positions[0] + (i % 2 === 0 ? 10 : -10),
+                    // Higher Y-axis position
+                    positions[1] - 1,
+                    // Deeper Z-axis position
+                    positions[2] + (i % 2 === 0 ? -5 : 5)
                 );
 
-                // Calculer la position le long de la courbe
+                // Position along the curvature
                 if (cardProgress < 0.5) {
                     // startPos to midPoint
-                    // 0-0.5 → 0-1
                     const subProgress = cardProgress * 2;
                     bezierPos.lerpVectors(startPos, midPoint, subProgress);
 
@@ -362,7 +400,6 @@ export default function Carousel({
                     bezierPos.y += Math.sin(subProgress * Math.PI) * 4;
                 } else {
                     // midPoint to targetPos
-                    // 0.5-1 → 0-1
                     const subProgress = (cardProgress - 0.5) * 2;
                     bezierPos.lerpVectors(midPoint, targetPos, subProgress);
 
