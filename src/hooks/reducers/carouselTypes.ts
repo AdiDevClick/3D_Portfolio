@@ -87,8 +87,12 @@ export interface ReducerType {
     showElements: ElementType[];
     /** Store the current hovered/clicked element */
     activeContent: ElementType | null | undefined;
-    /** Store the viewport width and height */
+    /** Store the viewport width and height in pixels*/
     contentSizes: number[] | null | undefined;
+    /** Store the viewport normalized height for content calculations */
+    contentHeight: number[] | null | undefined;
+    /** Store the viewport normalized width  for content calculations */
+    contentWidth: number[] | null | undefined;
     /** Store the boolean value of a mobile device or not mobile */
     isMobile: boolean;
 }
