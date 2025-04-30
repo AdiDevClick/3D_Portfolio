@@ -1,7 +1,7 @@
+import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh.tsx';
 import { Html, useCursor, useGLTF } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
 import { JSX, useState } from 'react';
-import { Object3D } from 'three';
 
 type IconsTypes = {
     model: string;
@@ -35,10 +35,10 @@ export function Icons({ model, ...props }: IconsTypes) {
             dispose={null}
             {...props}
         >
-            {nodes.Scene.children.map((node, index) => {
+            {nodes.Scene.children.map((node) => {
                 return (
                     <IconMesh
-                        key={index}
+                        key={node.uuid}
                         data={node}
                         iconColor={'#000000'}
                         curveSegments={32}
@@ -67,34 +67,6 @@ function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>, icon: string) {
     } else if (icon.includes('linkedin')) {
         window.open('https://www.github.com/AdiDevClick');
     }
-}
-
-/**
- * Creates a 3D icon mesh component
- * @param iconColor - Color of the icon
- * @param data - Mesh data to be used
- */
-function IconMesh({
-    data,
-    iconColor,
-    hovered,
-    curveSegments,
-    ...props
-}: {
-    data: Object3D;
-    iconColor: string;
-    hovered?: boolean;
-    curveSegments?: number;
-}) {
-    return (
-        <mesh {...data} {...props}>
-            <meshStandardMaterial
-                color={hovered ? '#4285F4' : iconColor}
-                emissive={hovered ? '#4285F4' : '#000000'}
-                emissiveIntensity={hovered ? 0.3 : 0}
-            />
-        </mesh>
-    );
 }
 
 /**
