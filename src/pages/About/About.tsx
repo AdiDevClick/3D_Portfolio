@@ -7,7 +7,7 @@ import montserrat from '@assets/fonts/Montserrat_Thin_Regular.json';
 import { useMemo, useRef } from 'react';
 import { Group } from 'three';
 import { useLocation } from 'react-router';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { folder, useControls } from 'leva';
 import GitIcon from '@models/github_model.glb';
 import LinkedIn from '@models/linkedin_model.glb';
@@ -21,6 +21,7 @@ import {
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config.ts';
 import { easing } from 'maath';
+import { Title } from '@/components/3DComponents/Title/Title.tsx';
 
 preloadIcon([GitIcon, LinkedIn]);
 let titlePosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
@@ -131,42 +132,14 @@ export function About({ reducer, margin = 0.5 }) {
     return (
         <group ref={groupRef}>
             <Float {...floatOptions}>
-                <Center
+                <Title
                     ref={titleRef}
                     rotation={[0, 3.164, 0]}
-                    front
                     bottom
                     scale={HTMLSETTINGS.SCALE}
                 >
-                    <Text3D
-                        castShadow
-                        bevelEnabled
-                        curveSegments={32}
-                        bevelSegments={5}
-                        bevelThickness={1}
-                        bevelSize={1}
-                        bevelOffset={0}
-                        scale={0.01}
-                        size={30}
-                        height={1}
-                        smooth={1}
-                        font={montserrat}
-                        as={'H1'}
-                    >
-                        A propos de moi
-                        <meshNormalMaterial />
-                    </Text3D>
-                    {/* <SpherePresenceHelper
-                        visible={HTMLSETTINGS.PRESENCE_CIRCLE}
-                        radius={[
-                            0.01 * 30,
-                            // SETTINGS.PRESENCE_RADIUS * titleRef.current?.scale,
-                            32,
-                        ]}
-                        position={[1.5, 0.1, 0]}
-                        color={'red'}
-                    /> */}
-                </Center>
+                    A propos de moi
+                </Title>
             </Float>
             <Center ref={contentRef}>
                 <PageContainer pageName={'/a-propos'}>
