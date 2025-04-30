@@ -248,15 +248,15 @@ export function handleCollisions(
  * quand ils sont ouverts -
  */
 export function onScrollHandler(e: WheelEvent) {
-    console.log(e);
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (
         (scrollTop + e.deltaY > 0 && e.deltaY < 0) ||
         (scrollHeight - (scrollTop + e.deltaY) > clientHeight && e.deltaY > 0)
     ) {
         e.stopPropagation();
-        // return;
     }
+    // e.stopPropagation();
+    // e.preventDefault();
     // Ne bloquer le scroll que si nécessaire pour le contenu HTML
 
     // Si on est au début/fin du contenu et qu'on essaie de défiler plus loin
