@@ -8,7 +8,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { DoubleSide, Mesh, Vector3 } from 'three';
+import { DoubleSide, Mesh } from 'three';
 import {
     ElementType,
     ReducerType,
@@ -23,7 +23,12 @@ import {
     onHover,
     onPointerOut,
 } from '@/components/3DComponents/Carousel/Functions.js';
-import { CARD_HOVER_SCALE } from '@/configs/3DCarousel.config.js';
+import {
+    CARD_HOVER_SCALE,
+    DESKTOP_TITLE_POSITION,
+    MOBILE_TITLE_POSITION,
+} from '@/configs/3DCarousel.config.js';
+import { easing } from 'maath';
 
 interface AdditionalProps {
     visibleWireframe?: boolean;
@@ -70,10 +75,20 @@ export default function Card({
 
     useFrame((_, delta) => {
         if (!cardRef.current) return;
+        const title = card.ref?.current.getObjectByName('title');
         const { material, scale, rotation } = cardRef.current;
         const props = { bending, setBending, setWidth, delta, scale, width };
 
         if (!card.isClicked) {
+            easing.damp3(
+                title.position,
+                reducer.isMobile
+                    ? MOBILE_TITLE_POSITION
+                    : DESKTOP_TITLE_POSITION,
+                0.2,
+                delta
+            );
+
             handleNormalAnimation(
                 material,
                 rotation,
@@ -91,6 +106,12 @@ export default function Card({
             }
         } else {
             handleClickedCardEffects(card.baseScale, props);
+            easing.damp3(
+                title.position,
+                [0, -SETTINGS.y_HEIGHT / 2, 0.1],
+                0.2,
+                delta
+            );
         }
     });
 
