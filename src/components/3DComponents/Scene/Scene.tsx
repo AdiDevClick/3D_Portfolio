@@ -126,7 +126,6 @@ export function Scene({ SETTINGS, size }) {
         if (!controlsRef.current) return;
 
         const { camera } = controlsRef.current;
-        // reducer.contentSizes = size;
 
         switch (viewMode) {
             case 'home':
