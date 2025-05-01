@@ -24,6 +24,8 @@ export function useCarousel(): ReducerType {
         contentSizes: contentSizes,
         contentWidth: contentWidth,
         contentHeight: contentHeight,
+        generalScaleX: 1,
+        generalScaleY: 1,
         activeContent: activeContent,
         showElements: state.elements,
         updateElements: useCallback((element) => {
