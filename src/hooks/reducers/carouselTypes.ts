@@ -88,11 +88,15 @@ export interface ReducerType {
     /** Store the current hovered/clicked element */
     activeContent: ElementType | null | undefined;
     /** Store the viewport width and height in pixels*/
-    contentSizes: number[] | null | undefined;
+    contentSizes: number[] | null;
     /** Store the viewport normalized height for content calculations */
-    contentHeight: number | null | undefined;
+    contentHeight: number | null;
     /** Store the viewport normalized width  for content calculations */
-    contentWidth: number | null | undefined;
+    contentWidth: number | null;
+    /** Store the calculated X-axis Scalar value to fit on all devices */
+    generalScaleX: number;
+    /** Store the calculated Y-axis Scalar value to fit on all devices */
+    generalScaleY: number;
     /** Store the boolean value of a mobile device or not mobile */
     isMobile: boolean;
 }
