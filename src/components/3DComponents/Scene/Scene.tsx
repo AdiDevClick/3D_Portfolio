@@ -369,7 +369,7 @@ export function Scene({ SETTINGS, size }) {
                 >
                     {/* <ScrollControls pages={1.15} distance={0.3} damping={0.5}> */}
                     <Scroll>
-                        <Home reducer={reducer} scalar={scaleX} />
+                        <Home reducer={reducer} />
                         <About reducer={reducer} />
                         {/* <Contact /> */}
                     </Scroll>
