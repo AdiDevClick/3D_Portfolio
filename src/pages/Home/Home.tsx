@@ -19,20 +19,19 @@ import iconsWithText from '@data/techstacktest.json';
 
 type HomeTypes = {
     reducer: ReducerType;
-    scalar: number;
 };
 
 let titlePosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
 let stackPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
 
-export function Home({ reducer, scalar, margin = 0.5 }: HomeTypes) {
+export function Home({ reducer, margin = 0.5 }: HomeTypes) {
     const frameCountRef = useRef(0);
     const titleRef = useRef<CenterProps>(null);
     const groupRef = useRef<Group>(null);
     const stackRef = useRef<Group>(null);
 
     const isActive = location.pathname === '/';
-    const { contentWidth, contentHeight } = reducer;
+    const { contentWidth, contentHeight, isMobile, generalScaleX } = reducer;
 
     const floatOptions = useMemo(
         () => ({
@@ -49,7 +48,7 @@ export function Home({ reducer, scalar, margin = 0.5 }: HomeTypes) {
         titlePosition = new Vector3(0, 0, 0);
         stackPosition = new Vector3(
             0,
-            -reducer.contentHeight * scalar + margin,
+            -contentHeight * generalScaleX + margin,
             0
         );
     } else {
@@ -70,33 +69,33 @@ export function Home({ reducer, scalar, margin = 0.5 }: HomeTypes) {
     return (
         <group ref={groupRef} renderOrder={-100}>
             <group ref={titleRef}>
-                <Float position-y={1 * scalar} {...floatOptions}>
+                <Float position-y={1 * generalScaleX} {...floatOptions}>
                     <Title
                         rotation={[0, 3.164, 0]}
                         size={80}
-                        textProps={{ height: 40, scale: 0.01 * scalar }}
+                        textProps={{ height: 40, scale: 0.01 * generalScaleX }}
                     >
                         Bienvenue
                     </Title>
                 </Float>
 
-                <Float position-y={0 * scalar} {...floatOptions}>
+                <Float position-y={0 * generalScaleX} {...floatOptions}>
                     <Title
                         rotation={[0, 3.164, 0]}
                         size={60}
                         back
-                        textProps={{ height: 40, scale: 0.01 * scalar }}
+                        textProps={{ height: 40, scale: 0.01 * generalScaleX }}
                     >
                         sur mon
                     </Title>
                 </Float>
 
-                <Float position-y={-1 * scalar} {...floatOptions}>
+                <Float position-y={-1 * generalScaleX} {...floatOptions}>
                     <Title
                         rotation={[0, 3.164, 0]}
                         size={80}
                         back
-                        textProps={{ height: 40, scale: 0.01 * scalar }}
+                        textProps={{ height: 40, scale: 0.01 * generalScaleX }}
                     >
                         Portfolio !
                     </Title>
@@ -126,8 +125,8 @@ export function Home({ reducer, scalar, margin = 0.5 }: HomeTypes) {
                     <Title
                         rotation={[0, 3.164, 0]}
                         size={30}
-                        isMobile={reducer.isMobile}
-                        textProps={{ height: 20, scale: 0.01 * scalar }}
+                        isMobile={isMobile}
+                        textProps={{ height: 20, scale: 0.01 * generalScaleX }}
                     >
                         Ma stack technique
                     </Title>
@@ -135,7 +134,7 @@ export function Home({ reducer, scalar, margin = 0.5 }: HomeTypes) {
                 <IconsContainer
                     rotation={[0, 3.164, 0]}
                     icons={iconsWithText}
-                    scalar={scalar}
+                    scalar={generalScaleX}
                 />
             </group>
         </group>
