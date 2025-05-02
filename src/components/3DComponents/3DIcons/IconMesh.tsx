@@ -13,18 +13,17 @@ import {
  */
 export function IconMesh({
     data,
-    iconColor,
     hovered,
     curveSegments,
+    iconColor,
     ...props
 }: {
     data: Object3D;
-    iconColor: string;
     hovered?: boolean;
     curveSegments?: number;
+    iconColor?: string;
 } & JSX.IntrinsicElements['mesh']) {
     const clonedDataMemo = useMemo(() => data.clone(), [data]);
-
     /**
      * Applies material changes to the first Mesh
      */
@@ -47,7 +46,7 @@ export function IconMesh({
 function applyMaterialChanges(
     object: Object3D,
     hovered: boolean | undefined,
-    iconColor: string
+    iconColor?: string
 ) {
     const mesh = object as Mesh;
 
