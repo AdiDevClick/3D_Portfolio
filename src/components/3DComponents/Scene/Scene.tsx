@@ -24,6 +24,8 @@ import { About } from '@/pages/About/About.tsx';
 import { Contact } from '@/pages/Contact/Contact.tsx';
 import { Leva } from 'leva';
 import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
+import { PageScoller } from '@/components/3DComponents/Html/PageScroller.tsx';
 
 const initialCameraFov = 20;
 let minAngle = -Infinity;
@@ -308,7 +310,13 @@ export function Scene({ SETTINGS, size }) {
                 <color attach="background" args={['#191920']} />
                 {/* <fog attach="fog" args={['#a79', 8.5, 12]} /> */}
                 {/* <fog attach="fog" args={['black', 8.5, 12]} /> */}
-
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} intensity={1} />
+                <pointLight
+                    position={[-10, -10, -10]}
+                    intensity={0.5}
+                    // color="#0066ff"
+                />
                 <CameraControls
                     // makeDefault
                     // no Y-axis
@@ -369,6 +377,7 @@ export function Scene({ SETTINGS, size }) {
                 >
                     {/* <ScrollControls pages={1.15} distance={0.3} damping={0.5}> */}
                     <Scroll>
+                        <PageScoller />
                         <Home reducer={reducer} />
                         <About reducer={reducer} />
                         {/* <Contact /> */}
