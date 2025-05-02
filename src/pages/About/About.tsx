@@ -155,11 +155,15 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
                     A propos de moi
                 </Title>
             </Float>
-            <Center ref={contentRef}>
-                <PageContainer pageName={'/a-propos'}>
-                    <AboutContent onWheel={onScrollHandler} className="about" />
-                </PageContainer>
-                {/* <SpherePresenceHelper
+            <group ref={contentRef}>
+                <Center>
+                    <PageContainer pageName={'/a-propos'}>
+                        <AboutContent
+                            onWheel={onScrollHandler}
+                            className="about"
+                        />
+                    </PageContainer>
+                    {/* <SpherePresenceHelper
                         // position={[0, -10, 0]}
                         // position={[0, 0.8, 0]}
                         visible={HTMLSETTINGS.PRESENCE_CIRCLE}
@@ -170,24 +174,27 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
                         ]}
                         color={'red'}
                     /> */}
-            </Center>
-            <Center ref={iconsRef}>
-                <Float {...floatOptions}>
-                    <Icons
-                        model={GitIcon}
-                        rotation={[0, 3, 0]}
-                        position={[0, 0, 0]}
-                    />
-                </Float>
-                <Float {...floatOptions}>
-                    <Icons
-                        model={LinkedIn}
-                        rotation={[0, 3, 0]}
-                        position={[-0.6, 0, 0]}
-                    />
-                </Float>
+                </Center>
+            </group>
 
-                {/* <SpherePresenceHelper
+            <group ref={iconsRef}>
+                <Center>
+                    <Float {...floatOptions}>
+                        <Icons
+                            model={GitIcon}
+                            rotation={[0, 3, 0]}
+                            position={[0, 0, 0]}
+                        />
+                    </Float>
+                    <Float {...floatOptions}>
+                        <Icons
+                            model={LinkedIn}
+                            rotation={[0, 3, 0]}
+                            position={[-0.6, 0, 0]}
+                        />
+                    </Float>
+
+                    {/* <SpherePresenceHelper
                     visible={HTMLSETTINGS.PRESENCE_CIRCLE}
                     radius={[
                         HTMLSETTINGS.PRESENCE_RADIUS * HTMLSETTINGS.SCALE,
@@ -195,7 +202,8 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
                     ]}
                     color={'red'}
                 /> */}
-            </Center>
+                </Center>
+            </group>
         </group>
     );
 }
