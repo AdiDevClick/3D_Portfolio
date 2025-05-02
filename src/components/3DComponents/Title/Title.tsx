@@ -31,31 +31,33 @@ type TitleTypes = {
  */
 export function Title({
     children,
+    ref,
     size = 30,
     isMobile = false,
     textProps = {},
     ...props
 }: TitleTypes) {
     return (
-        <Center front {...props}>
-            <Text3D
-                castShadow
-                bevelEnabled
-                curveSegments={isMobile ? 12 : 32}
-                bevelSegments={3}
-                bevelThickness={1}
-                bevelSize={2}
-                bevelOffset={0}
-                scale={0.01}
-                size={size}
-                height={1}
-                smooth={1}
-                font={typedMontserratFont}
-                {...textProps}
-            >
-                {children}
-                {/* <meshNormalMaterial /> */}
-                {/* <MeshTransmissionMaterial
+        <group ref={ref}>
+            <Center front {...props}>
+                <Text3D
+                    castShadow
+                    bevelEnabled
+                    curveSegments={isMobile ? 12 : 32}
+                    bevelSegments={3}
+                    bevelThickness={1}
+                    bevelSize={2}
+                    bevelOffset={0}
+                    scale={0.01}
+                    size={size}
+                    height={1}
+                    smooth={1}
+                    font={typedMontserratFont}
+                    {...textProps}
+                >
+                    {children}
+                    {/* <meshNormalMaterial /> */}
+                    {/* <MeshTransmissionMaterial
                     clearcoat={1}
                     samples={isMobile ? 1 : 8}
                     thickness={40}
@@ -64,8 +66,9 @@ export function Title({
                     resolution={isMobile ? 256 : 2048}
                     distortion={0}
                 /> */}
-                <meshLambertMaterial />
-            </Text3D>
-        </Center>
+                    <meshLambertMaterial />
+                </Text3D>
+            </Center>
+        </group>
     );
 }
