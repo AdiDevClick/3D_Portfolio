@@ -1,28 +1,16 @@
 import { Scroll } from '@react-three/drei';
 import '@css/PageScroller.scss';
 
+/**
+ * PageScroller component - !! IMPORTANT !!
+ *
+ * @description This component is used to create a scrollable area in the 3D scene.
+ * @returns PageScroller component
+ */
 export function PageScoller() {
     return (
-        <Scroll
-            html
-            // id="scroll-container"
-            // style={{ width: '100vw', height: '100vh' }}
-        >
-            <div
-                id="scroll-container"
-                className="scroll-container"
-                // style={{
-                //     height: '1000vh',
-                //     width: '100vw',
-                //     overflow: 'auto',
-                //     WebkitOverflowScrolling: 'touch', // Important pour iOS
-                //     position: 'relative',
-                //     // pointerEvents: reducer.activeContent?.isClicked
-                //     //     ? 'none'
-                //     //     : 'auto',
-                //     backgroundColor: 'black',
-                // }}
-            ></div>
+        <Scroll html>
+            <div id="scroll-container" className="scroll-container"></div>
         </Scroll>
     );
 }
