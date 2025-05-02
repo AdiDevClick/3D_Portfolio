@@ -1,0 +1,13 @@
+/*
+ * PageScroller.scss
+ * This file contains the styles for the PageScroller component.
+ * Mendatory for the components to work properly.
+ */
+.scroll-container {
+    height: 1000vh;
+    width: 100vw;
+    overflow: auto;
+    position: relative;
+    // Old iOS Safari
+    -webkit-overflow-scrolling: touch;
+}
