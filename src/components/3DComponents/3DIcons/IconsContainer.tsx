@@ -55,12 +55,18 @@ export function IconsContainer({
         </Center>
     );
 }
+
+/**
+ * Resolves the path of the alias to the actual path.
+ *
+ * @param aliasPath - The alias path to resolve
+ */
 function resolvePath(aliasPath: string) {
-    const aliasMap = {
+    const aliasMap: Record<string, string> = {
         '@models': '/src/3DModels',
     };
     const [alias, ...rest] = aliasPath.split('/');
-    if (aliasMap[alias]) {
+    if (alias in aliasMap) {
         return new URL(`${aliasMap[alias]}/${rest.join('/')}`, import.meta.url)
             .href;
     }
