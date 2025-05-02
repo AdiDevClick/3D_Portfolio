@@ -61,7 +61,8 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
             contentHeight ?? 0,
             margin
         );
-        contentPosition = new Vector3(0, 0 - margin, 0);
+        contentPosition = [0, 0 - margin, 0];
+        // contentPosition = new Vector3(0, 0 - margin, 0);
         iconsPosition = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
             contentHeight ?? 0,
             contentWidth ?? 0,
