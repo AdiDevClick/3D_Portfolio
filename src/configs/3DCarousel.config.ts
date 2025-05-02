@@ -140,10 +140,22 @@ export const DEFAULT_CAMERA_POSITION = new Vector3(0, 0, -20);
 
 /*****************
  * GENERAL SETTINGS
- ***********/
+ *
+ * @description : General settings for the carousel
+ **/
 
 /** On Hover card scale */
 export const CARD_HOVER_SCALE = 1.15;
 
 /** Double PI for common purposes */
 export const TWO_PI = Math.PI * 2;
+
+/*****************
+ * 3D ICONS -
+ *
+ * @description : 3D Icons settings
+ **/
+/** Hover Color */
+export const hoveredIconColor = '#4285F4';
+/** Emissive Light intensity on Hover */
+export const emissiveIntensity = 0.8;
