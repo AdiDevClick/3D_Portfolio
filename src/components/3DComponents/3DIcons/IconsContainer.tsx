@@ -21,6 +21,7 @@ const gridOptions = {
 };
 export function IconsContainer({
     width,
+    ref,
     icons,
     scalar,
     margin = 0.5,
@@ -29,30 +30,32 @@ export function IconsContainer({
     const groupRef = useRef<Group>(null!);
 
     return (
-        <Center bottom ref={groupRef as any} {...props}>
-            {icons.map((icon, index) => (
-                <GridLayout
-                    width={width}
-                    key={index}
-                    name={icon.name}
-                    length={icons.length}
-                    index={index}
-                    scalar={scalar}
-                    options={gridOptions}
-                >
-                    <IconWithText
-                        scalar={0.8 * scalar}
-                        model={resolvePath(`@models/${icon.url}`)}
-                        text={icon.name}
+        <group ref={groupRef}>
+            <Center bottom {...props}>
+                {icons.map((icon, index) => (
+                    <GridLayout
+                        width={width}
+                        key={index}
+                        name={icon.name}
+                        length={icons.length}
                         index={index}
-                    />
+                        scalar={scalar}
+                        options={gridOptions}
+                    >
+                        <IconWithText
+                            scalar={0.8 * scalar}
+                            model={resolvePath(`@models/${icon.url}`)}
+                            text={icon.name}
+                            index={index}
+                        />
 
-                    <Center bottom position={[0, -0.6 * scalar, 0]}>
-                        <HexCell scalar={scalar} />
-                    </Center>
-                </GridLayout>
-            ))}
-        </Center>
+                        <Center bottom position={[0, -0.6 * scalar, 0]}>
+                            <HexCell scalar={scalar} />
+                        </Center>
+                    </GridLayout>
+                ))}
+            </Center>
+        </group>
     );
 }
 
