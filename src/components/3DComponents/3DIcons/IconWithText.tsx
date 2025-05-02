@@ -1,6 +1,12 @@
 import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh.tsx';
 import { Title } from '@/components/3DComponents/Title/Title.tsx';
-import { Center, Float, useCursor, useGLTF } from '@react-three/drei';
+import {
+    Center,
+    CenterProps,
+    Float,
+    useCursor,
+    useGLTF,
+} from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { JSX, useRef, useState } from 'react';
@@ -9,7 +15,7 @@ type IconsTypes = {
     text: string;
     scalar: number;
     index: number;
-    margin: 0.5;
+    margin?: number;
 } & JSX.IntrinsicElements['group'];
 
 export function IconWithText({
@@ -17,20 +23,19 @@ export function IconWithText({
     text,
     scalar,
     index,
-    grid,
     margin = 0.5,
     ...props
 }: IconsTypes) {
     const [hovered, set] = useState(false);
     const { nodes } = useGLTF(model);
 
-    const groupRef = useRef(null);
+    const groupRef = useRef<CenterProps>(null);
     const iconRef = useRef(null);
     const titleRef = useRef(null);
 
     useCursor(hovered);
 
-    useFrame(({ delta }) => {
+    useFrame((_, delta) => {
         if (!groupRef.current) return;
         easing.damp3(groupRef.current.scale, hovered ? 1.2 : 1, 0.2, delta);
     });
@@ -52,18 +57,21 @@ export function IconWithText({
             {...props}
         >
             <Float>
-                <Center back left position={[-0.2 * scalar, 0, 0]}>
+                <Center back left position={[-0.15 * scalar, 0, 0]}>
                     {nodes.Scene.children.map((node) => {
+                        // console.log(node);
                         return (
                             <IconMesh
                                 name="icons-Container__icon"
                                 ref={iconRef}
                                 key={node.uuid}
                                 data={node}
-                                iconColor={'#000000'}
+                                // iconColor={'#000000'}
                                 curveSegments={32}
                                 hovered={hovered}
-                                scale={70}
+                                scale={100 * scalar}
+                                castShadow
+                                receiveShadow
                                 // position-y={(-0.5 * index + margin) * scalar}
                                 // position-x={-0.1 * scalar}
                             />
@@ -82,10 +90,9 @@ export function IconWithText({
                     {text}
                 </Title>
             </Float>
-
-            <Center bottom right position={[0, -0.6 * scalar, 0]}>
+            {/* <Center bottom position={[0, -0.6 * scalar, 0]}>
                 <HexCell scalar={scalar} />
-            </Center>
+            </Center> */}
         </Center>
     );
 }
