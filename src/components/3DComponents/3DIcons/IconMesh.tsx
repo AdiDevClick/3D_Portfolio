@@ -22,7 +22,7 @@ export function IconMesh({
     return (
         <mesh {...data} {...props}>
             <meshStandardMaterial
-                color={hovered ? '#4285F4' : iconColor}
+                // color={hovered ? '#4285F4' : iconColor}
                 emissive={hovered ? '#4285F4' : '#000000'}
                 emissiveIntensity={hovered ? 0.3 : 0}
             />
