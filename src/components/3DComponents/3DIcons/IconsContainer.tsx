@@ -1,4 +1,5 @@
 import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText.tsx';
+import { HexCell } from '@/components/3DComponents/Forms/HexCell.tsx';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout.tsx';
 import { Center } from '@react-three/drei';
 import { JSX, useRef } from 'react';
@@ -54,31 +55,6 @@ export function IconsContainer({
         </Center>
     );
 }
-
-function HexCell({ scalar }) {
-    return (
-        <mesh>
-            <cylinderGeometry
-                args={[scalar * 0.6, scalar * 0.6, 0.05 * scalar, 6]}
-            />
-            <meshStandardMaterial
-                color="#2a2a2a"
-                roughness={0.7}
-                metalness={0.3}
-            />
-        </mesh>
-    );
-}
-
-// function HexCell({ scalar }) {
-//     return (
-//         <mesh position={[0, 0, -0.1]}>
-//             <cylinderGeometry args={[scalar * 0.85, scalar * 0.85, 0.05, 6]} />
-//             <meshStandardMaterial color="#2a2a2a" />
-//         </mesh>
-//     );
-// }
-// <IconWithText key={index} model={icon} text={icon} />
 function resolvePath(aliasPath: string) {
     const aliasMap = {
         '@models': '/src/3DModels',
