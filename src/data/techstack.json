@@ -5,15 +5,15 @@
     },
     {
         "name": "GitLab",
-        "url": "../src/3DModels/gitlab_model.glb"
+        "url": "../src/3DModels/Gitlab_model.glb"
     },
     {
         "name": "Git",
-        "url": "../src/3DModels/git_model.glb"
+        "url": "../src/3DModels/Git_model.glb"
     },
     {
         "name": "HTML5",
-        "url": "../src/3DModels/html_model.glb"
+        "url": "../src/3DModels/Html_model.glb"
     },
     {
         "name": "CSS3",
@@ -21,63 +21,63 @@
     },
     {
         "name": "React",
-        "url": "../src/3DModels/react_model.glb"
+        "url": "../src/3DModels/React2_model.glb"
     },
     {
         "name": "Three.js",
-        "url": "../src/3DModels/three_model.glb"
+        "url": "../src/3DModels/Threejs_model.glb"
     },
     {
         "name": "JavaScript",
-        "url": "../src/3DModels/js_model.glb"
+        "url": "../src/3DModels/Javascript_model.glb"
     },
     {
         "name": "TypeScript",
-        "url": "../src/3DModels/ts_model.glb"
+        "url": "../src/3DModels/Typescript_model.glb"
     },
     {
         "name": "Node.js",
-        "url": "../src/3DModels/node_model.glb"
+        "url": "../src/3DModels/Nodejs_model.glb"
     },
     {
         "name": "Express.js",
-        "url": "../src/3DModels/express_model.glb"
+        "url": "../src/3DModels/Express_model.glb"
     },
     {
         "name": "MySQL",
-        "url": "../src/3DModels/mysql_model.glb"
+        "url": "../src/3DModels/Mysql_model.glb"
     },
     {
         "name": "MongoDB",
-        "url": "../src/3DModels/mongodb_model.glb"
+        "url": "../src/3DModels/Mongodb_model.glb"
     },
     {
         "name": "Mongoose",
-        "url": "../src/3DModels/mongoose_model.glb"
+        "url": "../src/3DModels/Mongoose_model.glb"
     },
     {
         "name": "Bootstrap",
-        "url": "../src/3DModels/bootsrap_model.glb"
+        "url": "../src/3DModels/Bootsrap_model.glb"
     },
     {
         "name": "Sass",
-        "url": "../src/3DModels/sass_model.glb"
+        "url": "../src/3DModels/Sass_model.glb"
     },
     {
         "name": "Figma",
-        "url": "../src/3DModels/figma_model.glb"
+        "url": "../src/3DModels/Figma_model.glb"
     },
     {
         "name": "Docker",
-        "url": "../src/3DModels/docker_model.glb"
+        "url": "../src/3DModels/Docker_model.glb"
     },
     {
         "name": "Postman",
-        "url": "../src/3DModels/postman_model.glb"
+        "url": "../src/3DModels/Postman_model.glb"
     },
     {
         "name": "Vite",
-        "url": "../src/3DModels/vite_model.glb"
+        "url": "../src/3DModels/Vite_model.glb"
     },
     {
         "name": "PHP",
