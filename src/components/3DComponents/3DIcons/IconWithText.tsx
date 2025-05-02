@@ -1,13 +1,8 @@
 import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh.tsx';
 import { Title } from '@/components/3DComponents/Title/Title.tsx';
-import {
-    Center,
-    CenterProps,
-    Float,
-    useCursor,
-    useGLTF,
-} from '@react-three/drei';
+import { Center, Float, useCursor, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import { Group } from 'three';
 import { easing } from 'maath';
 import { JSX, useRef, useState } from 'react';
 type IconsTypes = {
@@ -29,7 +24,7 @@ export function IconWithText({
     const [hovered, set] = useState(false);
     const { nodes } = useGLTF(model);
 
-    const groupRef = useRef<CenterProps>(null);
+    const groupRef = useRef<Group>(null!);
     const iconRef = useRef(null);
     const titleRef = useRef(null);
 
@@ -41,71 +36,44 @@ export function IconWithText({
     });
 
     return (
-        <Center
+        <group
             ref={groupRef}
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
             dispose={null}
-            // position-y={-margin * 1.7 * index * scalar}
-            // scale={hovered ? 1.2 : 1}
-            // position-x={Math.random() * index * scalar}
-            // position={[
-            //     (grid.col - 1) * scalar,
-            //     -grid.row * scalar * 1.2,
-            //     hovered ? 0.5 : 0,
-            // ]}
             {...props}
         >
-            <Float>
-                <Center back left position={[-0.15 * scalar, 0, 0]}>
-                    {nodes.Scene.children.map((node) => {
-                        // console.log(node);
-                        return (
-                            <IconMesh
-                                name="icons-Container__icon"
-                                ref={iconRef}
-                                key={node.uuid}
-                                data={node}
-                                // iconColor={'#000000'}
-                                curveSegments={32}
-                                hovered={hovered}
-                                scale={100 * scalar}
-                                castShadow
-                                receiveShadow
-                                // position-y={(-0.5 * index + margin) * scalar}
-                                // position-x={-0.1 * scalar}
-                            />
-                        );
-                    })}
-                </Center>
+            <Center>
+                <Float>
+                    <Center back left position={[-0.15 * scalar, 0, 0]}>
+                        {nodes.Scene.children.map((node) => {
+                            return (
+                                <IconMesh
+                                    name="icons-Container__icon"
+                                    ref={iconRef}
+                                    key={node.uuid}
+                                    data={node}
+                                    // iconColor={'#000000'}
+                                    curveSegments={32}
+                                    hovered={hovered}
+                                    scale={100 * scalar}
+                                    castShadow
+                                    receiveShadow
+                                />
+                            );
+                        })}
+                    </Center>
 
-                <Title
-                    ref={titleRef}
-                    right
-                    name="icons-Container__title"
-                    // position-y={(-0.5 * index + margin) * scalar}
-                    // position-x={1 * scalar}
-                    textProps={{ scale: 0.01 * scalar }}
-                >
-                    {text}
-                </Title>
-            </Float>
-            {/* <Center bottom position={[0, -0.6 * scalar, 0]}>
-                <HexCell scalar={scalar} />
-            </Center> */}
-        </Center>
-    );
-}
-
-function HexCell({ scalar }) {
-    return (
-        <mesh>
-            <cylinderGeometry args={[scalar * 0.8, scalar * 0.8, 0.05, 6]} />
-            <meshStandardMaterial
-                color="#2a2a2a"
-                roughness={0.7}
-                metalness={0.3}
-            />
-        </mesh>
+                    <Title
+                        ref={titleRef}
+                        right
+                        name="icons-Container__title"
+                        textProps={{ scale: 0.01 * scalar }}
+                    >
+                        {text}
+                    </Title>
+                </Float>
+            </Center>
+        </group>
     );
 }
