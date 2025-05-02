@@ -1,94 +1,94 @@
 [
     {
         "name": "GitHub",
-        "url": "../src/3DModels/github_model.glb"
+        "url": "github_model.glb"
     },
     {
         "name": "GitLab",
-        "url": "../src/3DModels/Gitlab_model.glb"
+        "url": "Gitlab_model.glb"
     },
     {
         "name": "Git",
-        "url": "../src/3DModels/Git_model.glb"
+        "url": "Git_model.glb"
     },
     {
         "name": "HTML5",
-        "url": "../src/3DModels/Html_model.glb"
+        "url": "Html_model.glb"
     },
     {
         "name": "CSS3",
-        "url": "../src/3DModels/css_model.glb"
+        "url": "css_model.glb"
     },
     {
         "name": "React",
-        "url": "../src/3DModels/React2_model.glb"
+        "url": "React_model.glb"
     },
     {
         "name": "Three.js",
-        "url": "../src/3DModels/Threejs_model.glb"
+        "url": "Threejs_model.glb"
     },
     {
         "name": "JavaScript",
-        "url": "../src/3DModels/Javascript_model.glb"
+        "url": "Javascript_model.glb"
     },
     {
         "name": "TypeScript",
-        "url": "../src/3DModels/Typescript_model.glb"
+        "url": "Typescript_model.glb"
     },
     {
         "name": "Node.js",
-        "url": "../src/3DModels/Nodejs_model.glb"
+        "url": "Nodejs_model.glb"
     },
     {
         "name": "Express.js",
-        "url": "../src/3DModels/Express_model.glb"
+        "url": "Express_model.glb"
     },
     {
         "name": "MySQL",
-        "url": "../src/3DModels/Mysql_model.glb"
+        "url": "Mysql_model.glb"
     },
     {
         "name": "MongoDB",
-        "url": "../src/3DModels/Mongodb_model.glb"
+        "url": "Mongodb_model.glb"
     },
     {
         "name": "Mongoose",
-        "url": "../src/3DModels/Mongoose_model.glb"
+        "url": "Mongoose_model.glb"
     },
     {
         "name": "Bootstrap",
-        "url": "../src/3DModels/Bootsrap_model.glb"
+        "url": "Bootstrap_model.glb"
     },
     {
         "name": "Sass",
-        "url": "../src/3DModels/Sass_model.glb"
+        "url": "Sass_model.glb"
     },
     {
         "name": "Figma",
-        "url": "../src/3DModels/Figma_model.glb"
+        "url": "Figma_model.glb"
     },
     {
         "name": "Docker",
-        "url": "../src/3DModels/Docker_model.glb"
+        "url": "Docker_model.glb"
     },
     {
         "name": "Postman",
-        "url": "../src/3DModels/Postman_model.glb"
+        "url": "Postman_model.glb"
     },
     {
         "name": "Vite",
-        "url": "../src/3DModels/Vite_model.glb"
+        "url": "Vite_model.glb"
     },
     {
         "name": "PHP",
-        "url": "../src/3DModels/php_model.glb"
+        "url": "php_model.glb"
     },
     {
         "name": "Symfony",
-        "url": "../src/3DModels/symfony_model.glb"
+        "url": "symfony_model.glb"
     },
     {
         "name": "WordPress",
-        "url": "../src/3DModels/wordpress_model.glb"
+        "url": "symfony_model.glb"
     }
 ]
