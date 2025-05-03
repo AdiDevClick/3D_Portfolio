@@ -1,7 +1,7 @@
-import { JSX, ReactNode, useCallback, useState } from 'react';
+import { JSX, ReactNode, useCallback, useMemo, useState } from 'react';
 import { Box3, Vector3, Group } from 'three';
 
-type GridLayoutProps = {
+export type GridLayoutProps = {
     children: ReactNode;
     /** Width of the grid container/device window size */
     width: number;
@@ -56,28 +56,38 @@ export function GridLayout({
     },
     ...props
 }: GridLayoutProps) {
+    const { rowOffset, marginX, marginY, windowMargin } = options;
+
     const [gridSize, setGridSize] = useState({ x: 0, y: 0, z: 0 });
 
-    const { rowOffset, marginX, marginY, windowMargin } = options;
-    const columns = Math.min(
-        options.columnsNumber,
-        Math.ceil((width - windowMargin) / 2)
-    );
-    const col = index % columns;
-    const row = Math.floor(index / columns);
+    /**
+     * - Calculates the position of the grid item based on
+     * its index and the grid layout options.
+     * - The position is calculated using the number
+     * of columns, row offset, and margins.
+     */
+    const positionMemo = useMemo(() => {
+        const columns = Math.min(
+            options.columnsNumber,
+            Math.ceil((width - windowMargin) / 2)
+        );
+        const col = index % columns;
+        const row = Math.floor(index / columns);
 
-    console.log(columns, 'columns');
-    // Offset for odd rows
-    const offset = row % 2 === 0 ? 0 : rowOffset;
+        // Offset for odd rows
+        const offset = row % 2 === 0 ? 0 : rowOffset;
 
-    const spacingX = scalar * marginX;
-    // const spacingX = scalar * options.marginX + gridSize.x;
-    const spacingY = scalar * marginY;
+        const spacingX = scalar * marginX;
+        // const spacingX = scalar * options.marginX + gridSize.x;
+        const spacingY = scalar * marginY;
 
-    const x = (col + offset) * spacingX;
-    const y = row * spacingY;
+        const x = (col + offset) * spacingX;
+        const y = row * spacingY;
 
-    const centerOffsetX = ((columns - 1) * spacingX) / 2;
+        const centerOffsetX = ((columns - 1) * spacingX) / 2;
+
+        return [x - centerOffsetX, -y, 0] as [number, number, number];
+    }, [width, index, scalar]);
 
     const itemRef = useCallback((item: Group) => {
         if (!item) return;
@@ -92,7 +102,7 @@ export function GridLayout({
     return (
         <group
             ref={itemRef}
-            position={[x - centerOffsetX, -y, 0]}
+            position={positionMemo}
             rotation={[0, 3.164, 0]}
             {...props}
         >
