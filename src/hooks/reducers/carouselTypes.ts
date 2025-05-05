@@ -76,7 +76,11 @@ export interface ElementType extends CardContentType {
     isClicked?: boolean;
     /** The 3D object reference of the card */
     ref?: RefObject<Mesh>;
-    animation?: string;
+    animation?:
+        | string
+        | string[]
+        | { value: string; options: string[] }
+        | undefined;
     /** Current container Scale */
     containerScale: number;
     /** Stores the side positions of the object (for collisions) */
