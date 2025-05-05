@@ -1,4 +1,5 @@
-import { Mesh } from 'three';
+import { RefObject } from 'react';
+import { Mesh, Object3D } from 'three';
 
 type sidesPositions = {
     bottom: number;
@@ -12,17 +13,22 @@ type sidesPositions = {
 type recuderTypes = {
     position: { x: number; y: number; z: number };
 };
+
+type ObjectType = Object3D & {
+    geometry: any;
+    material: any;
+};
 /**
  * Retourne un objet contenant les différentes
  * positions d'un objet en fonction de son centre -
  */
 export function getSidesPositions(
-    reducerObject: recuderTypes,
-    refObject: Mesh
+    _: recuderTypes,
+    refObject: RefObject<ObjectType>
 ): sidesPositions {
-    if (!refObject.current) return null;
+    if (!refObject.current || !refObject.current.geometry) return null;
 
-    const { height, width, depth } = refObject.current.geometry.parameters;
+    const { height, width, depth = 0 } = refObject.current.geometry.parameters;
     const { x, y, z } = refObject.current.position;
 
     const bottom = y - height / 2;
