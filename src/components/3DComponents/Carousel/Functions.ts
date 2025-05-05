@@ -20,9 +20,8 @@ import { MathPos } from '@/functions/positionning.ts';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { RootState, ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
-import { WheelEvent } from 'react';
-import { Euler, Vector3 } from 'three';
-import { Group } from 'three/examples/jsm/libs/tween.module.js';
+import { RefObject, WheelEvent } from 'react';
+import { Euler, Group, Vector3 } from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
 
 type commonParamsTypes = {
@@ -262,7 +261,7 @@ export function handleCardCollisions(
  * Updates the carousel container position and scale
  */
 export function updateCarouselContainer(
-    projectsRef: React.RefObject<Group>,
+    projectsRef: RefObject<Group>,
     isAnimatingIn: boolean,
     activeURL: boolean,
     activeContent: ReducerType['activeContent'],
