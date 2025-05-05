@@ -76,6 +76,15 @@ export function carouselReducer(
                         : el
                 ),
             };
+        case 'UPDATE_ELEMENT_BENDING':
+            return {
+                ...state,
+                elements: state.elements.map((el) =>
+                    el.id === action.payload.element.id
+                        ? { ...el, bending: action.payload.property }
+                        : el
+                ),
+            };
         // return {
         //     ...state,
         //     elements:
