@@ -46,7 +46,6 @@ export function IconWithText({
 
     const groupRef = useRef<Group>(null!);
     const iconRef = useRef(null);
-    const titleRef = useRef(null);
 
     useCursor(hovered);
 
@@ -64,41 +63,37 @@ export function IconWithText({
             {...props}
         >
             <Center>
-                <group>
-                    <Float>
-                        <group position={[-0.15 * scalar, 0, 0]}>
-                            <Center back left>
-                                {nodes.Scene.children.map((node) => {
-                                    return (
-                                        <IconMesh
-                                            name="icons-Container__icon"
-                                            ref={iconRef}
-                                            key={node.uuid}
-                                            data={node}
-                                            // iconColor={'#000000'}
-                                            curveSegments={32}
-                                            hovered={hovered}
-                                            scale={100 * scalar}
-                                            castShadow
-                                            receiveShadow
-                                        />
-                                    );
-                                })}
-                            </Center>
-                        </group>
-                        <group ref={titleRef}>
-                            <Suspense fallback={null}>
-                                <Title
-                                    right
-                                    name="icons-Container__title"
-                                    textProps={{ scale: 0.01 * scalar }}
-                                >
-                                    {text}
-                                </Title>
-                            </Suspense>
-                        </group>
-                    </Float>
-                </group>
+                <Float>
+                    <group position={[-0.15 * scalar, 0, 0]}>
+                        <Center back left>
+                            {nodes.Scene.children.map((node) => {
+                                return (
+                                    <IconMesh
+                                        name="icons-Container__icon"
+                                        ref={iconRef}
+                                        key={node.uuid}
+                                        data={node}
+                                        // iconColor={'#000000'}
+                                        curveSegments={32}
+                                        hovered={hovered}
+                                        scale={100 * scalar}
+                                        castShadow
+                                        receiveShadow
+                                    />
+                                );
+                            })}
+                        </Center>
+                    </group>
+                    <Suspense fallback={null}>
+                        <Title
+                            right
+                            name="icons-Container__title"
+                            textProps={{ scale: 0.01 * scalar }}
+                        >
+                            {text}
+                        </Title>
+                    </Suspense>
+                </Float>
             </Center>
         </group>
     );
