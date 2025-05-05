@@ -81,6 +81,14 @@ export function useCarousel(): ReducerType {
                 }),
             []
         ),
+        updateBending: useCallback(
+            (element, property) =>
+                dispatch({
+                    type: 'UPDATE_ELEMENT_BENDING',
+                    payload: { element, property },
+                }),
+            []
+        ),
         deleteElements: useCallback(
             (element) =>
                 dispatch({ type: 'DELETE_ELEMENTS', payload: element }),
