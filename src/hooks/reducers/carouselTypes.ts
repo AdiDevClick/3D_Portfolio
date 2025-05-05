@@ -105,6 +105,8 @@ export interface ReducerType {
     updateScale: (element: ElementType, number: number) => void;
     /** Update the card Width */
     updateWidth: (element: ElementType, number: number) => void;
+    /** Update the card bending */
+    updateBending: (element: ElementType, number: number) => void;
     /** Add some new properties to the element - Avoid using it */
     updateElements: (element: ElementType) => void;
     /** Delete an element based on it's ID */
