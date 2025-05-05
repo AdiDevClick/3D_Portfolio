@@ -1,18 +1,22 @@
 import { useCallback, useReducer } from 'react';
-import { ReducerType } from './carouselTypes.ts';
+import { CarouselState, ReducerType } from './carouselTypes.ts';
 import { carouselReducer } from '@/hooks/reducers/carouselReducer.tsx';
+
+// Initial state
+const initialState: CarouselState = {
+    elements: [],
+};
 
 /**
  * Reducer pour le Carousel
  */
 export function useCarousel(): ReducerType {
-    const [state, dispatch] = useReducer(carouselReducer, {
-        elements: [],
-    });
+    const [state, dispatch] = useReducer(carouselReducer, initialState);
     let activeContent = null;
     let contentSizes = null;
     let contentWidth = null;
     let contentHeight = null;
+    let visible = null;
 
     if (state.elements.length > 0) {
         activeContent = state.elements.find(
@@ -20,7 +24,9 @@ export function useCarousel(): ReducerType {
         );
     }
     return {
+        visible: visible,
         isMobile: false,
+        isTablet: false,
         contentSizes: contentSizes,
         contentWidth: contentWidth,
         contentHeight: contentHeight,
@@ -54,7 +60,7 @@ export function useCarousel(): ReducerType {
         animate: useCallback(
             (element, property) =>
                 dispatch({
-                    type: 'START_ANIMATION',
+                    type: 'ANIMATE_ELEMENT',
                     payload: { element, property },
                 }),
             []
