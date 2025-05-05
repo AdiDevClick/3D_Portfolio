@@ -91,6 +91,7 @@ export interface ElementType extends CardContentType {
     currentWidth: number;
     /** Cover image for the card */
     cover?: string;
+    bending?: number;
 }
 
 export interface ReducerType {
