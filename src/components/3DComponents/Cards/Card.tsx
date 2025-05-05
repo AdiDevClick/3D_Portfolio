@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import {
     PropsWithChildren,
     ReactNode,
+    Suspense,
     useEffect,
     useId,
     useRef,
@@ -61,8 +62,14 @@ export default function Card({
     // For ZoomBouncing effect
     const [width, setWidth] = useState(card.baseScale);
 
+    // const texture = useTexture(card.url, (texture) => {
+    //     texture.minFilter = LinearFilter;
+    //     texture.needsUpdate = true;
+    // });
+
     // mobile Optimisations
-    const segments = reducer.isMobile ? 10 : 20;
+    const segments = reducer.isMobile ? 8 : 12;
+    // const segments = reducer.isMobile ? 10 : 20;
     const textureQuality = reducer.isMobile ? 512 : 1024;
 
     const id = useId();
@@ -73,11 +80,30 @@ export default function Card({
 
     useCursor(card.isActive);
 
-    useFrame((_, delta) => {
+    useFrame((state, delta) => {
+        if (
+            !cardRef.current ||
+            (!reducer.visible?.includes('carousel') &&
+                !reducer.visible?.includes('card'))
+        )
+            return;
         const title = cardRef.current.getObjectByName('title');
-        if (!cardRef.current || !title) return;
+        if (!title) return;
 
         const { material, scale, rotation } = cardRef.current;
+        if (!cardRef.current) return;
+
+        // // From Camera to Card
+        // const distance = cardRef.current.position.distanceTo(
+        //     state.camera.position
+        // );
+
+        // // Too far ?
+        // if (distance > 50) {
+        //     console.log('object too far away, hiding it');
+        //     reducer.visible = 'home';
+        // }
+
         const props = { bending, setBending, setWidth, delta, scale, width };
 
         if (!card.isClicked) {
@@ -123,7 +149,7 @@ export default function Card({
      */
     useEffect(() => {
         if (cardRef.current) {
-            // Force calculated default position
+            // // Force calculated default position
             cardRef.current.position.set(
                 card.position.x,
                 card.position.y,
@@ -139,7 +165,7 @@ export default function Card({
         }
         return () => {
             // Cleanup textures and geometries
-            cardRef.current?.material.dispose();
+            // cardRef.current?.material.dispose();
             cardRef.current?.geometry.dispose();
         };
     }, []);
@@ -170,42 +196,23 @@ export default function Card({
                         ? [card.currentWidth - 0.1, card.currentWidth]
                         : card.baseScale
                 }
+                // generateMipmaps={false}
+                // texture={texture}
                 // generateMipmaps={!reducer.isMobile}
                 // args={[textureQuality, textureQuality]}
             >
                 {children}
-
-                <bentPlaneGeometry
-                    args={[
-                        card.isActive ? bending : SETTINGS.BENDING,
-                        card.isActive ? card.currentWidth : card.baseScale,
-                        SETTINGS.y_HEIGHT,
-                        segments,
-                    ]}
-                />
+                <Suspense fallback={null}>
+                    <bentPlaneGeometry
+                        args={[
+                            card.isActive ? bending : SETTINGS.BENDING,
+                            card.isActive ? card.currentWidth : card.baseScale,
+                            SETTINGS.y_HEIGHT,
+                            segments,
+                        ]}
+                    />
+                </Suspense>
             </Image>
         </group>
     );
-}
-
-function Rig(props) {
-    const ref = useRef(null);
-    const scroll = useScroll();
-    useFrame((state, delta) => {
-        // console.log(scroll);
-        // ref.current.lookAt(1, 0.5, 0); // Look at center
-        // ref.current.position.y = 1; // Rotate contents
-        // ref.current.rotation.y = -scroll.offset * 2; // Rotate contents
-        // ref.current.rotation.y = -scroll.offset * (Math.PI * 2); // Rotate contents
-        // state.events.update(); // Raycasts every frame rather than on pointer-move
-        // Move camera
-        // easing.damp3(
-        //     state.camera.position,
-        //     [-state.pointer.x * 2, state.pointer.y + 1.5, 10],
-        //     0.3,
-        //     delta
-        // );
-        // state.camera.lookAt(0, 0, 0); // Look at center
-    });
-    return <group ref={ref} {...props} />;
 }
