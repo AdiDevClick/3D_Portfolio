@@ -3,15 +3,14 @@
  * @author Adrien Quijo
  */
 
+import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Vector3 } from 'three';
 
 export interface CardProps {
-    bending: number;
-    setBending: (fn: (prev: number) => number) => void;
-    setWidth: (fn: (prev: number) => number) => void;
+    reducer: ReducerType;
     delta: number;
     scale: Vector3;
-    width: number;
+    card: ElementType;
 }
 
 export interface CollisionConfig {
