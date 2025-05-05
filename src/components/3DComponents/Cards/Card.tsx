@@ -78,16 +78,16 @@ export default function Card({
     const cardHoverRadius = card.isActive ? 0.1 : 0.05;
     const cardHoverZoom = card.isActive ? 1 : 1.5;
 
-    useCursor(card.isActive);
+    useCursor(card.isActive || false);
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         if (
             !cardRef.current ||
             (!reducer.visible?.includes('carousel') &&
                 !reducer.visible?.includes('card'))
         )
             return;
-        const title = cardRef.current.getObjectByName('title');
+        const title = cardRef.current.getObjectByName('card__title');
         if (!title) return;
 
         const { material, scale, rotation } = cardRef.current;
