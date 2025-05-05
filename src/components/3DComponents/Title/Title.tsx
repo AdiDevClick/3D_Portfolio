@@ -6,8 +6,8 @@ import {
     Text3DProps,
 } from '@react-three/drei';
 import montserratFont from '@assets/fonts/Montserrat_Thin_Regular.json';
-import { ReactNode } from 'react';
-import { Vector3 } from 'three';
+import { ReactNode, useRef } from 'react';
+import { Group, Vector3 } from 'three';
 
 const typedMontserratFont = montserratFont as unknown as FontData;
 // const montserratFont = 'src/assets/fonts/Montserrat_Thin_Regular.json';
@@ -32,43 +32,55 @@ type TitleTypes = {
 export function Title({
     children,
     ref,
+    position,
+    rotation,
+    name,
     size = 30,
     isMobile = false,
     textProps = {},
     ...props
 }: TitleTypes) {
+    const localRef = useRef<Group>(null!);
+
     return (
-        <group ref={ref}>
-            <Center front {...props}>
-                <Text3D
-                    castShadow
-                    bevelEnabled
-                    curveSegments={isMobile ? 12 : 32}
-                    bevelSegments={3}
-                    bevelThickness={1}
-                    bevelSize={2}
-                    bevelOffset={0}
-                    scale={0.01}
-                    size={size}
-                    height={1}
-                    smooth={1}
-                    font={typedMontserratFont}
-                    {...textProps}
-                >
-                    {children}
-                    {/* <meshNormalMaterial /> */}
-                    {/* <MeshTransmissionMaterial
-                    clearcoat={1}
-                    samples={isMobile ? 1 : 8}
-                    thickness={40}
-                    chromaticAberration={isMobile ? 0.05 : 0.25}
-                    anisotropy={isMobile ? 0 : 0.4}
-                    resolution={isMobile ? 256 : 2048}
-                    distortion={0}
-                /> */}
-                    <meshLambertMaterial />
-                </Text3D>
-            </Center>
+        <group
+            ref={ref ? ref : (ref = localRef)}
+            position={position}
+            rotation={rotation}
+            name={name}
+        >
+            {ref.current && (
+                <Center front {...props}>
+                    <Text3D
+                        castShadow
+                        bevelEnabled
+                        curveSegments={isMobile ? 12 : 32}
+                        bevelSegments={3}
+                        bevelThickness={1}
+                        bevelSize={2}
+                        bevelOffset={0}
+                        scale={0.01}
+                        size={size}
+                        height={1}
+                        smooth={1}
+                        font={typedMontserratFont}
+                        {...textProps}
+                    >
+                        {children}
+                        {/* <meshNormalMaterial /> */}
+                        {/* <MeshTransmissionMaterial
+                        clearcoat={1}
+                        samples={isMobile ? 1 : 8}
+                        thickness={40}
+                        chromaticAberration={isMobile ? 0.05 : 0.25}
+                        anisotropy={isMobile ? 0 : 0.4}
+                        resolution={isMobile ? 256 : 2048}
+                        distortion={0}
+                    /> */}
+                        <meshLambertMaterial />
+                    </Text3D>
+                </Center>
+            )}
         </group>
     );
 }
