@@ -9,7 +9,9 @@ type IconsContainerTypes = {
     width: number;
     icons: { name: string; url: string }[];
     scalar: number;
+    /** @DefaultValue 5 */
     margin?: number;
+    isMobile: boolean;
 } & JSX.IntrinsicElements['group'];
 
 const gridOptions = {
@@ -19,19 +21,32 @@ const gridOptions = {
     marginY: 1.5,
     windowMargin: 1,
 };
+
+/**
+ * IconsContainer component that displays a grid of icons with text.
+ * @description It uses the GridLayout component to arrange icons in a grid format.
+ *
+ * @param width - Width of the container
+ * @param icons - Array of icons to display
+ * @param scalar - Scalar value for scaling the icons depending on the screen size
+ * @param margin - Margin between icons (default = 0.5)
+ * @param isMobile - Indicating if the device is mobile
+ * @param props - Additional properties for the 3D group element
+ * @returns JSX.Element
+ */
 export function IconsContainer({
     width,
-    ref,
     icons,
     scalar,
     margin = 0.5,
+    isMobile,
     ...props
 }: IconsContainerTypes) {
     const groupRef = useRef<Group>(null!);
 
     return (
-        <group ref={groupRef}>
-            <Center bottom {...props}>
+        <group ref={groupRef} {...props}>
+            <Center bottom>
                 {icons.map((icon, index) => (
                     <GridLayout
                         width={width}
@@ -44,14 +59,23 @@ export function IconsContainer({
                     >
                         <IconWithText
                             scalar={0.8 * scalar}
-                            model={resolvePath(`@models/${icon.url}`)}
+                            model={resolvePath(
+                                `@models/${
+                                    isMobile
+                                        ? `/mobile/${icon.url}`
+                                        : `/optimized/${icon.url}`
+                                }`
+                            )}
                             text={icon.name}
                             index={index}
+                            isMobile={isMobile}
                         />
 
-                        <Center bottom position={[0, -0.6 * scalar, 0]}>
-                            <HexCell scalar={scalar} />
-                        </Center>
+                        <group position={[0, -0.6 * scalar, 0]}>
+                            <Center bottom>
+                                <HexCell scalar={scalar} />
+                            </Center>
+                        </group>
                     </GridLayout>
                 ))}
             </Center>
