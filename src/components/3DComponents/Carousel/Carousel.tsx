@@ -84,6 +84,8 @@ export default function Carousel({
         SETTINGS.CARD_SCALE,
         SETTINGS.CONTAINER_SCALE,
         SETTINGS.THREED,
+        id,
+        datas,
     ]);
 
     /**
@@ -255,15 +257,17 @@ export default function Carousel({
                     />
                 </mesh>
             </Suspense>
-            <group ref={titleRef} rotation={[0, 3.164, 0]}>
-                <Suspense fallback={<PlaceholderIcon />}>
-                    {titleRef.current && (
-                        <Float>
-                            <Title>Mes Projets</Title>
-                        </Float>
-                    )}
-                </Suspense>
-            </group>
+            <Suspense fallback={<PlaceholderIcon />}>
+                <Float>
+                    <Title
+                        name={'carousel__title'}
+                        ref={titleRef}
+                        rotation={[0, 3.164, 0]}
+                    >
+                        Mes Projets
+                    </Title>
+                </Float>
+            </Suspense>
 
             <CardContainer reducer={reducer} SETTINGS={SETTINGS} />
         </group>
