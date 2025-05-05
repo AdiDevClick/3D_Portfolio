@@ -57,11 +57,6 @@ export default function Card({
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Local bendin state
-    const [bending, setBending] = useState(SETTINGS.BENDING);
-    // For ZoomBouncing effect
-    const [width, setWidth] = useState(card.baseScale);
-
     // const texture = useTexture(card.url, (texture) => {
     //     texture.minFilter = LinearFilter;
     //     texture.needsUpdate = true;
@@ -71,8 +66,6 @@ export default function Card({
     const segments = reducer.isMobile ? 8 : 12;
     // const segments = reducer.isMobile ? 10 : 20;
     const textureQuality = reducer.isMobile ? 512 : 1024;
-
-    const id = useId();
 
     const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
     const cardHoverRadius = card.isActive ? 0.1 : 0.05;
@@ -104,7 +97,12 @@ export default function Card({
         //     reducer.visible = 'home';
         // }
 
-        const props = { bending, setBending, setWidth, delta, scale, width };
+        const props = {
+            delta,
+            scale,
+            reducer,
+            card,
+        };
 
         if (!card.isClicked) {
             easing.damp3(
@@ -122,8 +120,6 @@ export default function Card({
                 cardHoverScale,
                 cardHoverRadius,
                 cardHoverZoom,
-                card.isActive,
-                card.baseScale,
                 SETTINGS.BENDING,
                 props
             );
@@ -156,70 +152,60 @@ export default function Card({
                 card.position.z
             );
 
+            const positions = getSidesPositions(card, cardRef);
             reducer.updateElements({
                 ...card,
                 ref: cardRef,
                 presenceRadius: SETTINGS.presenceRadius,
-                spacePositions: getSidesPositions(card, cardRef),
+                spacePositions: positions || undefined,
             });
         }
         return () => {
             // Cleanup textures and geometries
-            // cardRef.current?.material.dispose();
-            cardRef.current?.geometry.dispose();
+            if (cardRef.current) {
+                if (Array.isArray(cardRef.current.material)) {
+                    cardRef.current.material.forEach((mat) => mat.dispose());
+                } else {
+                    cardRef.current.material.dispose();
+                }
+                cardRef.current.geometry.dispose();
+            }
         };
     }, []);
 
-    useEffect(() => {
-        if (cardRef.current) {
-            reducer.updateWidth(card, width);
-        }
-    }, [width]);
-
     return (
-        <group
-            key={id}
+        <Image
+            ref={cardRef}
             onPointerOver={(e) => onHover(e, card, reducer)}
             onPointerOut={(e) => onPointerOut(e, card, reducer, navigate)}
             onClick={(e) =>
                 onClickHandler(e, card, reducer, location, navigate)
             }
+            url={card.url}
+            transparent
+            side={DoubleSide}
+            rotation={[card.rotation[0], card.rotation[1], card.rotation[2]]}
+            scale={
+                card.isActive
+                    ? [card.currentWidth - 0.1, card.currentWidth]
+                    : card.baseScale
+            }
+            // generateMipmaps={false}
+            // texture={texture}
+            // generateMipmaps={!reducer.isMobile}
+            // args={[textureQuality, textureQuality]}
         >
-            <Image
-                ref={cardRef}
-                url={card.url}
-                transparent
-                side={DoubleSide}
-                rotation={[
-                    card.rotation[0],
-                    card.rotation[1],
-                    card.rotation[2],
-                ]}
-                scale={
-                    card.isActive
-                        ? [
-                              (card.currentWidth ?? card.baseScale) - 0.1,
-                              card.currentWidth ?? card.baseScale,
-                          ]
-                        : card.baseScale
-                }
-                // generateMipmaps={false}
-                // texture={texture}
-                // generateMipmaps={!reducer.isMobile}
-                // args={[textureQuality, textureQuality]}
-            >
-                {children}
-                <Suspense fallback={null}>
-                    <bentPlaneGeometry
-                        args={[
-                            card.isActive ? bending : SETTINGS.BENDING,
-                            card.isActive ? card.currentWidth : card.baseScale,
-                            SETTINGS.y_HEIGHT,
-                            segments,
-                        ]}
-                    />
-                </Suspense>
-            </Image>
-        </group>
+            {children}
+            <Suspense fallback={null}>
+                <bentPlaneGeometry
+                    args={[
+                        card.isActive ? card.bending : SETTINGS.BENDING,
+                        card.isActive ? card.currentWidth : card.baseScale,
+                        SETTINGS.y_HEIGHT,
+                        segments,
+                    ]}
+                />
+            </Suspense>
+        </Image>
     );
 }
