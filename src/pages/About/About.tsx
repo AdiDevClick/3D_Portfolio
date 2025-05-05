@@ -3,13 +3,13 @@ import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx'
 import { AboutContent } from '@/pages/About/AboutContent.tsx';
 import '@css/About.scss';
 import { Center, Float } from '@react-three/drei';
-import { useMemo, useRef } from 'react';
-import { Group, Vector3 } from 'three';
+import { Suspense, useMemo, useRef } from 'react';
+import { Group } from 'three';
 import { useLocation } from 'react-router';
 import { useFrame } from '@react-three/fiber';
 import { folder, useControls } from 'leva';
-import GitIcon from '@models/github_model.glb';
-import LinkedIn from '@models/linkedin_model.glb';
+import GitIcon from '@models/optimized/github_model.glb';
+import LinkedIn from '@models/optimized/linkedin_model.glb';
 import {
     Icons,
     preloadIcons,
@@ -22,6 +22,7 @@ import {
 import { easing } from 'maath';
 import { Title } from '@/components/3DComponents/Title/Title.tsx';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
 
 preloadIcons([GitIcon, LinkedIn]);
 
@@ -74,6 +75,27 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
         iconsPosition = DEFAULT_PROJECTS_POSITION_SETTINGS;
     }
 
+    // useEffect(() => {
+    //     if (!titleRef.current || !contentRef.current || !iconsRef.current)
+    //         return;
+    //     if (isActive) return;
+    //     titleRef.current.position.set(
+    //         titlePosition[0],
+    //         titlePosition[1],
+    //         titlePosition[2]
+    //     );
+    //     contentRef.current.position.set(
+    //         contentPosition[0],
+    //         contentPosition[1],
+    //         contentPosition[2]
+    //     );
+    //     iconsRef.current.position.set(
+    //         iconsPosition[0],
+    //         iconsPosition[1],
+    //         iconsPosition[2]
+    //     );
+    // }, [isActive]);
+
     const settingsConfig = useMemo(() => {
         return {
             HTMLSettings: folder(
@@ -105,7 +127,6 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
     );
 
     useFrame((_, delta) => {
-        frameCountRef.current += 1;
         if (
             !groupRef.current ||
             !titleRef.current ||
@@ -113,6 +134,8 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
             !iconsRef.current
         )
             return;
+        frameCountRef.current += 1;
+
         if (frameCountRef.current % (isActive ? 1 : 2) === 0) {
             easing.damp3(titleRef.current.position, titlePosition, 0.3, delta);
             easing.damp3(
@@ -145,25 +168,31 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
 
     return (
         <group ref={groupRef}>
-            <Float {...floatOptions}>
-                <Title
-                    ref={titleRef}
-                    rotation={[0, 3.164, 0]}
-                    bottom
-                    scale={HTMLSETTINGS.SCALE}
-                >
-                    A propos de moi
-                </Title>
-            </Float>
-            <group ref={contentRef}>
-                <Center>
-                    <PageContainer pageName={'/a-propos'}>
-                        <AboutContent
-                            onWheel={onScrollHandler}
-                            className="about"
-                        />
-                    </PageContainer>
-                    {/* <SpherePresenceHelper
+            <Suspense fallback={null}>
+                <group>
+                    <Float {...floatOptions}>
+                        <Title
+                            ref={titleRef}
+                            rotation={[0, 3.164, 0]}
+                            bottom
+                            scale={HTMLSETTINGS.SCALE}
+                        >
+                            A propos de moi
+                        </Title>
+                    </Float>
+                </group>
+            </Suspense>
+
+            <Suspense fallback={null}>
+                <group ref={contentRef}>
+                    <Center>
+                        <PageContainer pageName={'/a-propos'}>
+                            <AboutContent
+                                onWheel={onScrollHandler}
+                                className="about"
+                            />
+                        </PageContainer>
+                        {/* <SpherePresenceHelper
                         // position={[0, -10, 0]}
                         // position={[0, 0.8, 0]}
                         visible={HTMLSETTINGS.PRESENCE_CIRCLE}
@@ -174,27 +203,37 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
                         ]}
                         color={'red'}
                     /> */}
-                </Center>
-            </group>
+                    </Center>
+                </group>
+            </Suspense>
 
-            <group ref={iconsRef}>
-                <Center>
-                    <Float {...floatOptions}>
-                        <Icons
-                            model={GitIcon}
-                            rotation={[0, 3, 0]}
-                            position={[0, 0, 0]}
-                        />
-                    </Float>
-                    <Float {...floatOptions}>
-                        <Icons
-                            model={LinkedIn}
-                            rotation={[0, 3, 0]}
-                            position={[-0.6, 0, 0]}
-                        />
-                    </Float>
+            <Suspense fallback={<PlaceholderIcon />}>
+                <group ref={iconsRef}>
+                    <Center>
+                        <Suspense fallback={null}>
+                            <group>
+                                <Float {...floatOptions}>
+                                    <Icons
+                                        model={GitIcon}
+                                        rotation={[0, 3, 0]}
+                                        position={[0, 0, 0]}
+                                    />
+                                </Float>
+                            </group>
+                        </Suspense>
+                        <Suspense fallback={null}>
+                            <group>
+                                <Float {...floatOptions}>
+                                    <Icons
+                                        model={LinkedIn}
+                                        rotation={[0, 3, 0]}
+                                        position={[-0.6, 0, 0]}
+                                    />
+                                </Float>
+                            </group>
+                        </Suspense>
 
-                    {/* <SpherePresenceHelper
+                        {/* <SpherePresenceHelper
                     visible={HTMLSETTINGS.PRESENCE_CIRCLE}
                     radius={[
                         HTMLSETTINGS.PRESENCE_RADIUS * HTMLSETTINGS.SCALE,
@@ -202,8 +241,9 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
                     ]}
                     color={'red'}
                 /> */}
-                </Center>
-            </group>
+                    </Center>
+                </group>
+            </Suspense>
         </group>
     );
 }
