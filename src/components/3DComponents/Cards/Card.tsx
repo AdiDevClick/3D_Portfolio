@@ -190,10 +190,17 @@ export default function Card({
                 url={card.url}
                 transparent
                 side={DoubleSide}
-                rotation={card.rotation}
+                rotation={[
+                    card.rotation[0],
+                    card.rotation[1],
+                    card.rotation[2],
+                ]}
                 scale={
                     card.isActive
-                        ? [card.currentWidth - 0.1, card.currentWidth]
+                        ? [
+                              (card.currentWidth ?? card.baseScale) - 0.1,
+                              card.currentWidth ?? card.baseScale,
+                          ]
                         : card.baseScale
                 }
                 // generateMipmaps={false}
