@@ -1,23 +1,24 @@
+import { JSX } from 'react';
+
 type SpherePresenceTypes = {
-    position: [number, number, number];
+    // position: [number, number, number];
     radius: [number, number];
     color: string;
     /** @defaultValue true */
     visible?: boolean;
-};
+} & JSX.IntrinsicElements['mesh'];
 
 /**
  * Wireframe sphere presence Helper -
  */
 export function SpherePresenceHelper({
-    position,
     radius,
     color,
     visible = false,
     ...props
 }: SpherePresenceTypes) {
     return (
-        <mesh position={position} visible={visible} {...props}>
+        <mesh visible={visible} {...props}>
             <sphereGeometry args={radius} />
             <meshStandardMaterial
                 color={color}
