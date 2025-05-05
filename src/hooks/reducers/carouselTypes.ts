@@ -16,6 +16,7 @@ export type PayloadTypes = {
     ANIMATE_ELEMENT: { id: string };
     UPDATE_ELEMENT_SCALE: { element: ElementType; property: number };
     UPDATE_ELEMENT_WIDTH: { element: ElementType; property: number };
+    UPDATE_ELEMENT_BENDING: { element: ElementType; property: number };
 };
 
 // Generate action types from payload types
