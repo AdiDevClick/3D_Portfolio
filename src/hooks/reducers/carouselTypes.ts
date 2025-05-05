@@ -6,6 +6,26 @@ export interface CarouselState {
     elements: ElementType[];
 }
 
+// Define payload types based on the function signatures
+export type PayloadTypes = {
+    UPDATE_ELEMENTS: ElementType;
+    ADD_ELEMENTS: ElementType;
+    DELETE_ELEMENTS: ElementType[];
+    CLICK_ELEMENT: ElementType;
+    ACTIVATE_ELEMENT: { element: ElementType; property: boolean };
+    ANIMATE_ELEMENT: { id: string };
+    UPDATE_ELEMENT_SCALE: { element: ElementType; property: number };
+    UPDATE_ELEMENT_WIDTH: { element: ElementType; property: number };
+};
+
+// Generate action types from payload types
+export type CarouselActions = {
+    [K in keyof PayloadTypes]: {
+        type: K;
+        payload: PayloadTypes[K];
+    };
+}[keyof PayloadTypes];
+
 type sidesPositions = {
     /** Bottom side of the element */
     bottom: number;
@@ -47,7 +67,7 @@ export interface ElementType extends CardContentType {
      * This will create a navigation effect
      */
     position: Vector3;
-    rotation: [number, number, number];
+    rotation: number[];
     /** Activate the wireframe helper ? */
     visibleWireframe?: boolean;
     presenceRadius?: number;
@@ -64,6 +84,8 @@ export interface ElementType extends CardContentType {
     /** Stores the angle of the card in order to reattribute it after movement */
     cardAngles: typeAngles;
     currentWidth: number;
+    /** Cover image for the card */
+    cover?: string;
 }
 
 export interface ReducerType {
@@ -82,7 +104,7 @@ export interface ReducerType {
     /** Add some new properties to the element - Avoid using it */
     updateElements: (element: ElementType) => void;
     /** Delete an element based on it's ID */
-    deleteElements: (element: ElementType) => void;
+    deleteElements: (element: ElementType[]) => void;
     /** Display all the elements in the State */
     showElements: ElementType[];
     /** Store the current hovered/clicked element */
@@ -97,6 +119,10 @@ export interface ReducerType {
     generalScaleX: number;
     /** Store the calculated Y-axis Scalar value to fit on all devices */
     generalScaleY: number;
-    /** Store the boolean value of a mobile device or not mobile */
+    /** Store the boolean value of a mobile device or not */
     isMobile: boolean;
+    /** Store the boolean value of a tablet device or not */
+    isTablet: boolean;
+    /** Store active page in order to reduce loading data */
+    visible: string | null;
 }
