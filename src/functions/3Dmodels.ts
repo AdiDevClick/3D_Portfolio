@@ -1,5 +1,5 @@
 import { RefObject } from 'react';
-import { Mesh, Object3D } from 'three';
+import { Box3, Mesh, Object3D, Vector3 } from 'three';
 
 type sidesPositions = {
     bottom: number;
@@ -66,4 +66,33 @@ export function getSidesPositions2(refObject: Mesh): sidesPositions {
     const back = z - depth / 2;
 
     return { bottom, top, left, right, front, back };
+}
+
+/**
+ * Returns the sides positions of an object
+ *
+ * @description It creates a bounding box around the object and returns the sides positions
+ *
+ * @param refObject - Object3D ref
+ */
+export function getSidesPositionsUniversal(
+    refObject: RefObject<Object3D>
+): sidesPositions {
+    if (!refObject.current) return null;
+
+    const bbox = new Box3().setFromObject(refObject.current);
+    const size = new Vector3();
+    const center = new Vector3();
+
+    bbox.getSize(size);
+    bbox.getCenter(center);
+
+    return {
+        bottom: center.y - size.y / 2,
+        top: center.y + size.y / 2,
+        left: center.x - size.x / 2,
+        right: center.x + size.x / 2,
+        front: center.z + size.z / 2,
+        back: center.z - size.z / 2,
+    };
 }
