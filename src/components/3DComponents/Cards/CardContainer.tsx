@@ -8,7 +8,7 @@ import {
     MOBILE_HTML_CONTAINER_POSITION,
     MOBILE_HTML_CONTAINER_ROTATION,
 } from '@/configs/3DCarousel.config.ts';
-import { useId, useRef } from 'react';
+import { Suspense } from 'react';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/SpherePresence.tsx';
@@ -20,7 +20,6 @@ type CardContainerTypes = {
     SETTINGS: SettingsType;
 };
 
-// let titlePosition = [0, 0, 0] as [number, number, number];
 let htmlContentRotation = [0, 0, 0] as [number, number, number];
 
 /**
@@ -28,42 +27,35 @@ let htmlContentRotation = [0, 0, 0] as [number, number, number];
  * Il contient les cartes et les éléments HTML -
  */
 export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
-    const id = useId();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const titleRef = useRef<HTMLDivElement>(null);
-    const cardRef = useRef(null);
-
     if (reducer.isMobile) {
-        // titlePosition = MOBILE_TITLE_POSITION;
         htmlContentRotation = MOBILE_HTML_CONTAINER_ROTATION;
     } else {
-        // titlePosition = DESKTOP_TITLE_POSITION;
         htmlContentRotation = DESKTOP_HTML_CONTAINER_ROTATION;
     }
 
-    return reducer.showElements.map((card, i) => {
-        card.isClicked ? (cardRef.current = card) : null;
+    return reducer.showElements.map((card) => {
         return (
             <Card
-                key={id + i}
                 card={card}
                 presenceRadius={SETTINGS.PRESENCE_RADIUS * card.baseScale}
                 reducer={reducer}
                 {...SETTINGS}
             >
-                <SpherePresenceHelper
-                    name="spherePresenceHelper"
-                    visible={SETTINGS.PRESENCE_CIRCLE}
-                    radius={[SETTINGS.PRESENCE_RADIUS * card.baseScale, 32]}
-                    color={'red'}
-                />
-                {card.ref?.current && (
+                <Suspense fallback={null}>
+                    <SpherePresenceHelper
+                        name="card__spherePresenceHelper"
+                        visible={SETTINGS.PRESENCE_CIRCLE}
+                        radius={[SETTINGS.PRESENCE_RADIUS * card.baseScale, 32]}
+                        color={'red'}
+                    />
+                </Suspense>
+
+                <Suspense fallback={null}>
                     <Title
-                        ref={titleRef}
-                        name="title"
-                        // position={titlePosition}
+                        name="card__title"
                         size={10}
                         textProps={{
                             scale: 0.01 * reducer.generalScaleX,
@@ -72,7 +64,7 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                     >
                         {card.cardTitle ? card.cardTitle : 'test'}
                     </Title>
-                )}
+                </Suspense>
                 {card.isClicked && (
                     <group name="htmlContainer">
                         <HtmlContainer
@@ -82,7 +74,7 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                                 reducer.isMobile
                                     ? MOBILE_HTML_CONTAINER_POSITION
                                     : [
-                                          card.currentWidth / 2,
+                                          (card.currentWidth ?? 0) / 2,
                                           0,
                                           DESKTOP_HTML_CONTAINER_DEPTH,
                                       ]
@@ -109,7 +101,6 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                     <meshBasicMaterial
                         visible={SETTINGS.CARD_WIREFRAME}
                         wireframe
-                        // side={DoubleSide}
                     />
                 )}
             </Card>
