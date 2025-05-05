@@ -124,18 +124,19 @@ export const DESKTOP_HTML_ICONS_POSITION_SETTINGS = (
 
 /** Default carousel position on loading page */
 // export const DEFAULT_CARD_POSITION = new Vector3(0, 0, 0);
-export const DEFAULT_CARD_POSITION = [0, -100, 0];
+// export const DEFAULT_CARD_POSITION = [0, -100, 0];
 // export const DEFAULT_CARD_POSITION = new Vector3(0, -100, 0);
-// export const DEFAULT_CARD_POSITION = new Vector3(500, -100, -500);
-export const DEFAULT_PROJECTS_POSITION_SETTINGS = [0, -100, 0];
-// export const DEFAULT_PROJECTS_POSITION_SETTINGS = new Vector3(0, -100, 0);
-export const ACTIVE_PROJECTS_POSITION_SETTINGS = [0, 0.15, 0];
-// export const ACTIVE_PROJECTS_POSITION = new Vector3(0, 0.15, 0);
+export const DEFAULT_CARD_POSITION = new Vector3(500, -1000, -500);
+// export const DEFAULT_PROJECTS_POSITION_SETTINGS = [0, -100, 0];
+export const DEFAULT_PROJECTS_POSITION_SETTINGS = new Vector3(0, -100, 0);
+// export const ACTIVE_PROJECTS_POSITION_SETTINGS = [0, 0.15, 0];
+export const ACTIVE_PROJECTS_POSITION_SETTINGS = new Vector3(0, 0.15, 0);
 /** Default HTML positions */
 export const DEFAULT_HTML_POSITION_SETTINGS = [0, -0.8, 0];
 // export const DEFAULT_HTML_POSITION_SETTINGS = new Vector3(0, -0.8, 0);
 
 /** Default camera position on loading page */
+// export const DEFAULT_CAMERA_POSITION = [0, 0, -20];
 export const DEFAULT_CAMERA_POSITION = new Vector3(0, 0, -20);
 
 /*****************
@@ -149,6 +150,9 @@ export const CARD_HOVER_SCALE = 1.15;
 
 /** Double PI for common purposes */
 export const TWO_PI = Math.PI * 2;
+
+/** PI and Half for common purposes */
+export const PI_AND_HALF = Math.PI * 1.5;
 
 /*****************
  * 3D ICONS -
