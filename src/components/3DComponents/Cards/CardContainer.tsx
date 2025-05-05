@@ -36,9 +36,10 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
         htmlContentRotation = DESKTOP_HTML_CONTAINER_ROTATION;
     }
 
-    return reducer.showElements.map((card) => {
+    return reducer.showElements.map((card, i) => {
         return (
             <Card
+                key={i}
                 card={card}
                 presenceRadius={SETTINGS.PRESENCE_RADIUS * card.baseScale}
                 reducer={reducer}
