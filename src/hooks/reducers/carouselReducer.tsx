@@ -1,9 +1,10 @@
-import { CarouselState } from './carouselTypes.ts';
+import { CarouselActions, CarouselState } from './carouselTypes.ts';
 
 /* eslint-disable indent */
+
 export function carouselReducer(
     state: CarouselState,
-    action: object
+    action: CarouselActions
 ): CarouselState {
     switch (action.type) {
         case 'UPDATE_ELEMENTS':
@@ -26,8 +27,8 @@ export function carouselReducer(
                 elements: state.elements.some(
                     (element) => element.id === action.payload.id
                 )
-                    ? state.elements // Ne rien ajouter si l'objet existe déjà
-                    : [...state.elements, action.payload], // Ajouter l'objet s'il est unique
+                    ? state.elements
+                    : [...state.elements, action.payload],
             };
         case 'ACTIVATE_ELEMENT':
             return {
@@ -91,6 +92,8 @@ export function carouselReducer(
             };
 
         default:
-            throw Error('Action non reconnue: ' + action.type);
+            throw Error(
+                'Action non reconnue: ' + (action as { type: string }).type
+            );
     }
 }
