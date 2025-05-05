@@ -2,9 +2,13 @@ import { ProjectContent } from '@/pages/Projects/ProjectContent';
 import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
 import '@css/Card.scss';
 import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
+import { ThreeEvent } from '@react-three/fiber';
+import { MouseEvent } from 'react';
 
 type ProjectContainerTypes = {
-    onClick: () => void;
+    onClick: (
+        e: PointerEvent & ThreeEvent<MouseEvent> & MouseEvent<HTMLDivElement>
+    ) => void;
     card: ElementType;
 };
 
