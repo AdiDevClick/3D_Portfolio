@@ -301,8 +301,6 @@ export function updateCarouselContainer(
             animationProgress,
             delta
         );
-        // return projectsRef.current.rotation; // Return for use in animation function
-        // return projectsRef.current.rotation; // Return for use in animation function
     } else {
         easing.damp3(projectsRef.current.scale, [1, 1, 1], 0.3, delta);
     }
@@ -318,13 +316,9 @@ export function updateTitlePosition(
     delta: number
 ) {
     if (!titleRef.current) return;
-    // console.log(titleRef.current);
     const titlePosition = activeURL
-        ? DESKTOP_HTML_TITLE_POSITION_SETTINGS(contentHeight, -0.4)
-        : DEFAULT_PROJECTS_POSITION_SETTINGS;
-    // const titlePosition = activeURL
-    //     ? DESKTOP_HTML_TITLE_POSITION_SETTINGS(contentHeight || 0, -0.4)
-    //     : DEFAULT_PROJECTS_POSITION_SETTINGS;
+        ? DESKTOP_HTML_TITLE_POSITION_SETTINGS(contentHeight, -0.4).clone()
+        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
     easing.damp3(titleRef.current.position, titlePosition, 0.2, delta);
 }
