@@ -21,7 +21,15 @@ import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { RootState, ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
 import { RefObject, WheelEvent } from 'react';
-import { Euler, Group, Vector3 } from 'three';
+import {
+    Cache,
+    Euler,
+    Group,
+    LinearFilter,
+    LinearMipmapLinearFilter,
+    TextureLoader,
+    Vector3,
+} from 'three';
 import { randFloat } from 'three/src/math/MathUtils.js';
 
 type commonParamsTypes = {
@@ -42,8 +50,19 @@ export function createCardProperties(
     datas: ElementType[],
     i: number,
     self: ElementType[],
-    id: string
+    id: string,
+    isMobile: boolean
 ) {
+    if (!window._textureCache) {
+        window._textureCache = {};
+        window._textureCacheStats = {
+            hits: 0,
+            misses: 0,
+            totalLoaded: 0,
+            savedLoadTime: 0,
+        };
+    }
+
     const defaultContent = {
         title: 'title',
         cardTitle: 'cardTitle',
@@ -56,11 +75,62 @@ export function createCardProperties(
         ],
     };
 
+    const texturePath = datas[i]?.cover || defaultContent.url;
+
+    let texture;
+    // let startTime;
+
+    Cache.enabled = true;
+
+    // Utiliser une texture en cache si disponible
+    if (window._textureCache[texturePath]) {
+        texture = window._textureCache[texturePath];
+        // window._textureCacheStats.hits++;
+        // console.log(`✅ Texture CACHE HIT: ${texturePath}`);
+    } else {
+        // Sinon charger avec des paramètres optimisés
+        const textureLoader = new TextureLoader();
+
+        // Réduire la taille des textures pour mobile
+        const url = isMobile
+            ? texturePath.replace('.png', '-small.png')
+            : texturePath;
+
+        // Mesurer le temps de chargement
+        // startTime = performance.now();
+        // window._textureCacheStats.misses++;
+        // console.log(`🔄 Loading texture: ${texturePath}`);
+
+        texture = textureLoader.load(texturePath, (loadedTexture) => {
+            // Optimiser
+            loadedTexture.generateMipmaps = !isMobile;
+            loadedTexture.minFilter = isMobile
+                ? LinearFilter
+                : LinearMipmapLinearFilter;
+            loadedTexture.anisotropy = isMobile ? 1 : 4;
+
+            // Stocker dans le cache
+            window._textureCache[texturePath] = loadedTexture;
+
+            // Statistiques
+            // const loadTime = performance.now() - startTime;
+            // window._textureCacheStats.totalLoaded++;
+            // window._textureCacheStats.savedLoadTime += loadTime;
+            // console.log(
+            //     `✅ Texture loaded in ${loadTime.toFixed(2)}ms: ${texturePath}`
+            // );
+        });
+    }
+
+    // Optimiser la texture
+    // texture.generateMipmaps = !isMobile;
+    // texture.minFilter = isMobile ? LinearFilter : LinearMipmapLinearFilter;
+    // texture.anisotropy = 4;
+
     const angle = (i / SETTINGS.CARDS_COUNT) * TWO_PI;
     const position = SETTINGS.THREED
         ? DEFAULT_CARD_POSITION
         : DEFAULT_CARD_POSITION;
-    // const position = SETTINGS.THREED ? DEFAULT_CARD_POSITION : new Vector3();
     const rotation = [0, angle, 0];
 
     const cardAngles = {
@@ -85,7 +155,7 @@ export function createCardProperties(
         wander: randFloat(0, TWO_PI),
         animation: SETTINGS.CARD_ANIMATION,
         baseScale: SETTINGS.CARD_SCALE,
-        active: SETTINGS.ACTIVE_CARD,
+        loaded: SETTINGS.ACTIVE_CARD,
         id: datas[i]?.id || `${id}${i}`,
         containerScale: SETTINGS.CONTAINER_SCALE,
         cardAngles,
@@ -93,6 +163,7 @@ export function createCardProperties(
         currentWidth: 1,
         currentScale: 1,
         bending: SETTINGS.BENDING,
+        texture,
     };
 }
 
@@ -270,27 +341,32 @@ export function updateCarouselContainer(
 ) {
     if (!projectsRef.current) return;
 
-    // Position the carousel
-    easing.damp3(
-        projectsRef.current.position,
-        activeURL
-            ? ACTIVE_PROJECTS_POSITION_SETTINGS.clone()
-            : DEFAULT_PROJECTS_POSITION_SETTINGS.clone(),
-        0.2,
-        delta
-    );
-
-    // Breathing effect when inactive
-    if (!activeContent) {
-        const breathingEffect = Math.sin(state.clock.elapsedTime * 2) * 0.002;
-        const targetScale = 1 + breathingEffect;
-
+    if (projectsRef.current.visible || activeURL) {
+        // Position the carousel
         easing.damp3(
-            projectsRef.current.scale,
-            activeURL ? [targetScale, targetScale, targetScale] : [40, 40, 40],
-            0.3,
+            projectsRef.current.position,
+            activeURL
+                ? ACTIVE_PROJECTS_POSITION_SETTINGS.clone()
+                : DEFAULT_PROJECTS_POSITION_SETTINGS.clone(),
+            0.2,
             delta
         );
+
+        // Breathing effect when inactive
+        if (!activeContent) {
+            const breathingEffect =
+                Math.sin(state.clock.elapsedTime * 2) * 0.002;
+            const targetScale = 1 + breathingEffect;
+
+            easing.damp3(
+                projectsRef.current.scale,
+                activeURL
+                    ? [targetScale, targetScale, targetScale]
+                    : [40, 40, 40],
+                0.3,
+                delta
+            );
+        }
     }
 
     // Rotation effect
@@ -302,6 +378,7 @@ export function updateCarouselContainer(
             delta
         );
     } else {
+        if (!projectsRef.current.visible) return;
         easing.damp3(projectsRef.current.scale, [1, 1, 1], 0.3, delta);
     }
 }
@@ -310,17 +387,23 @@ export function updateCarouselContainer(
  * Updates the title position
  */
 export function updateTitlePosition(
-    titleRef: React.RefObject<Group>,
-    activeURL: boolean,
+    titleRef: RefObject<Group>,
     contentHeight: number,
     delta: number
 ) {
     if (!titleRef.current) return;
-    const titlePosition = activeURL
-        ? DESKTOP_HTML_TITLE_POSITION_SETTINGS(contentHeight, -0.4).clone()
-        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-
-    easing.damp3(titleRef.current.position, titlePosition, 0.2, delta);
+    if (titleRef.current.visible) {
+        const titlePosition = DESKTOP_HTML_TITLE_POSITION_SETTINGS(
+            contentHeight,
+            -0.4
+        );
+        easing.damp3(
+            titleRef.current.position,
+            titlePosition as [number, number, number],
+            0.2,
+            delta
+        );
+    }
 }
 
 /**
@@ -342,6 +425,9 @@ export function handleCarouselRotation(
     );
 }
 
+let positions;
+let targetRotationY = 0;
+
 /**
  * Calculates card positions for the circular arrangement
  */
@@ -355,8 +441,6 @@ export function calculateCardPositions(
     threed: boolean
 ) {
     const { active, onHold } = item.cardAngles;
-    let positions;
-    let targetRotationY = 0;
 
     if (activeCard !== -1) {
         if (index === activeCard) {
@@ -392,7 +476,6 @@ export function animateCardEntry(
     card: any,
     index: number,
     totalCards: number,
-    isInitialLoading: boolean,
     targetRotationY: number,
     { animationProgress, delta }: commonParamsTypes,
     {
@@ -410,14 +493,6 @@ export function animateCardEntry(
     }
 ) {
     const { position, rotation } = card.ref.current;
-
-    /**
-     * Simplified loading animation
-     */
-    if (isInitialLoading) {
-        position.lerp(targetPos, Math.min(1, delta * 5));
-        return true;
-    }
 
     /**
      * Complex animation logic for the cards entering
