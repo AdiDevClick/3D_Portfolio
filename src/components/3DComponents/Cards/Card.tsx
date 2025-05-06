@@ -1,14 +1,6 @@
 import { Image, useCursor } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import {
-    PropsWithChildren,
-    ReactNode,
-    Suspense,
-    useEffect,
-    useId,
-    useRef,
-    useState,
-} from 'react';
+import { PropsWithChildren, ReactNode, useEffect, useRef } from 'react';
 import { DoubleSide, Mesh } from 'three';
 import {
     ElementType,
@@ -54,18 +46,11 @@ export default function Card({
     ...SETTINGS
 }: PropsWithChildren<CardProps>) {
     const cardRef = useRef<Mesh>(null!);
+
     const navigate = useNavigate();
     const location = useLocation();
-
-    // const texture = useTexture(card.url, (texture) => {
-    //     texture.minFilter = LinearFilter;
-    //     texture.needsUpdate = true;
-    // });
-
     // mobile Optimisations
     const segments = reducer.isMobile ? 8 : 12;
-    // const segments = reducer.isMobile ? 10 : 20;
-    const textureQuality = reducer.isMobile ? 512 : 1024;
 
     const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
     const cardHoverRadius = card.isActive ? 0.1 : 0.05;
@@ -80,22 +65,11 @@ export default function Card({
                 !reducer.visible?.includes('card'))
         )
             return;
+
         const title = cardRef.current.getObjectByName('card__title');
         if (!title) return;
-
         const { material, scale, rotation } = cardRef.current;
         if (!cardRef.current) return;
-
-        // // From Camera to Card
-        // const distance = cardRef.current.position.distanceTo(
-        //     state.camera.position
-        // );
-
-        // // Too far ?
-        // if (distance > 50) {
-        //     console.log('object too far away, hiding it');
-        //     reducer.visible = 'home';
-        // }
 
         const props = {
             delta,
@@ -103,17 +77,15 @@ export default function Card({
             reducer,
             card,
         };
-
         if (!card.isClicked) {
             easing.damp3(
                 title.position,
                 reducer.isMobile
                     ? MOBILE_TITLE_POSITION
                     : DESKTOP_TITLE_POSITION,
-                0.2,
+                0.1,
                 delta
             );
-
             handleNormalAnimation(
                 material,
                 rotation,
@@ -132,7 +104,7 @@ export default function Card({
             easing.damp3(
                 title.position,
                 [0, -SETTINGS.y_HEIGHT / 2, 0.1],
-                0.2,
+                0.1,
                 delta
             );
         }
@@ -145,13 +117,6 @@ export default function Card({
      */
     useEffect(() => {
         if (cardRef.current) {
-            // // Force calculated default position
-            cardRef.current.position.set(
-                card.position.x,
-                card.position.y,
-                card.position.z
-            );
-
             const positions = getSidesPositions(card, cardRef);
             reducer.updateElements({
                 ...card,
@@ -159,6 +124,9 @@ export default function Card({
                 presenceRadius: SETTINGS.presenceRadius,
                 spacePositions: positions || undefined,
             });
+
+            // Update the card's loaded state
+            reducer.updateLoadCount(1);
         }
         return () => {
             // Cleanup textures and geometries
@@ -181,7 +149,9 @@ export default function Card({
             onClick={(e) =>
                 onClickHandler(e, card, reducer, location, navigate)
             }
+            position={card.position}
             url={card.url}
+            // texture={card.texture}
             transparent
             side={DoubleSide}
             rotation={[card.rotation[0], card.rotation[1], card.rotation[2]]}
@@ -190,22 +160,17 @@ export default function Card({
                     ? [card.currentWidth - 0.1, card.currentWidth]
                     : card.baseScale
             }
-            // generateMipmaps={false}
-            // texture={texture}
-            // generateMipmaps={!reducer.isMobile}
             // args={[textureQuality, textureQuality]}
         >
             {children}
-            <Suspense fallback={null}>
-                <bentPlaneGeometry
-                    args={[
-                        card.isActive ? card.bending : SETTINGS.BENDING,
-                        card.isActive ? card.currentWidth : card.baseScale,
-                        SETTINGS.y_HEIGHT,
-                        segments,
-                    ]}
-                />
-            </Suspense>
+            <bentPlaneGeometry
+                args={[
+                    card.isActive ? card.bending : SETTINGS.BENDING,
+                    card.isActive ? card.currentWidth : card.baseScale,
+                    SETTINGS.y_HEIGHT,
+                    segments,
+                ]}
+            />
         </Image>
     );
 }
