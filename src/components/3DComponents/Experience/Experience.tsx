@@ -1,13 +1,15 @@
 import { onControlStart } from '@/components/3DComponents/Scene/Scene.tsx';
+import { SimpleEnvironment } from '@/components/Loaders/Loader.tsx';
 import { CameraControls, Environment } from '@react-three/drei';
+import { Suspense } from 'react';
 
 let minAngle = -Infinity;
 let maxAngle = Infinity;
 
-export function Experience({ reducer, controlsRef }) {
+export function Experience() {
     return (
         <>
-            <CameraControls
+            {/* <CameraControls
                 // makeDefault
                 // no Y-axis
                 polarRotateSpeed={0}
@@ -17,7 +19,7 @@ export function Experience({ reducer, controlsRef }) {
                 maxAzimuthAngle={maxAngle}
                 // Min angle on active is given by the camera
                 minAzimuthAngle={minAngle}
-                ref={controlsRef}
+                ref={ref}
                 mouseButtons={{
                     // Activate left click for rotation
                     left: 1,
@@ -33,10 +35,10 @@ export function Experience({ reducer, controlsRef }) {
                     two: 0,
                     three: 0,
                 }}
-                onStart={(e) =>
-                    onControlStart(e, reducer.activeContent?.isClicked)
-                }
-            />
+                // onStart={(e) =>
+                //     onControlStart(e, reducer.activeContent?.isClicked)
+                // }
+            /> */}
             <color attach="background" args={['#191920']} />
             <ambientLight intensity={0.1} />
             <pointLight position={[10, 10, 10]} intensity={1} />
@@ -45,7 +47,14 @@ export function Experience({ reducer, controlsRef }) {
                 intensity={0.5}
                 // color="#0066ff"
             />
-            <Environment preset="park" background blur={0.5} />
+            <Suspense
+                fallback={
+                    <SimpleEnvironment />
+                    // <Environment preset="city" background={false} />
+                }
+            >
+                <Environment preset="park" background blur={0.5} />
+            </Suspense>
         </>
     );
 }
