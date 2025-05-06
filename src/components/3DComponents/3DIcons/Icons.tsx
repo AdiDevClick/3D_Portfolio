@@ -21,8 +21,10 @@ export function Icons({ model, ...props }: IconsTypes) {
     useCursor(hovered);
 
     const getServiceName = () => {
-        if (model.includes('github')) return 'GitHub';
-        if (model.includes('linkedin')) return 'LinkedIn';
+        if (model.includes('github') || model.includes('Github'))
+            return 'GitHub';
+        if (model.includes('linkedin') || model.includes('Linkedin'))
+            return 'LinkedIn';
         return 'Lien';
     };
 
@@ -62,9 +64,9 @@ export function Icons({ model, ...props }: IconsTypes) {
  */
 function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>, icon: string) {
     e.stopPropagation();
-    if (icon.includes('github')) {
+    if (icon.includes('github') || icon.includes('GitHub')) {
         window.open('https://www.github.com/AdiDevClick');
-    } else if (icon.includes('linkedin')) {
+    } else if (icon.includes('linkedin') || icon.includes('LinkedIn')) {
         window.open('https://www.github.com/AdiDevClick');
     }
 }
