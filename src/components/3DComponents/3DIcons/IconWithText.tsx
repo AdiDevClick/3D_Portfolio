@@ -4,11 +4,11 @@ import { Center, Float, useCursor } from '@react-three/drei';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { Group } from 'three';
 import { easing } from 'maath';
-import { JSX, Suspense, useRef, useState } from 'react';
-import { GLTFLoader } from 'three-stdlib';
+import { JSX, useRef, useState } from 'react';
+import { DRACOLoader, GLTFLoader } from 'three-stdlib';
 type IconsTypes = {
     model: string;
-    text: string;
+    datas: { name: string; text: string };
     scalar: number;
     index: number;
     /** @defaultValue 0.5 */
@@ -32,26 +32,49 @@ type IconsTypes = {
  */
 export function IconWithText({
     model,
-    text,
     scalar,
     index,
+    datas,
     isMobile,
     margin = 0.5,
     ...props
 }: IconsTypes) {
     const [hovered, set] = useState(false);
 
-    const { nodes } = useLoader(GLTFLoader, model);
-    // const { nodes } = useGLTF(model);
+    const { nodes } = useLoader(GLTFLoader, model, (loader) => {
+        const gltfLoader = loader as GLTFLoader;
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath(
+            'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+        );
+        gltfLoader.setDRACOLoader(dracoLoader);
+    });
 
     const groupRef = useRef<Group>(null!);
     const iconRef = useRef(null);
+    const titleRef = useRef(null);
+    const frameCountRef = useRef(0);
 
     useCursor(hovered);
 
+    /**
+     * Checks if the icon is in the camera's frustum
+     * and enables/disables the scaling ease.
+     */
     useFrame((_, delta) => {
         if (!groupRef.current) return;
-        easing.damp3(groupRef.current.scale, hovered ? 1.2 : 1, 0.2, delta);
+        frameCountRef.current += 1;
+        if (frameCountRef.current % 4 === 0) {
+            const contentGrid = groupRef.current.getObjectByName(datas.name)
+                ?.parent?.parent;
+            if (contentGrid?.visible)
+                easing.damp3(
+                    groupRef.current.scale,
+                    hovered ? 1.2 : 1,
+                    0.2,
+                    delta
+                );
+        }
     });
 
     return (
@@ -62,10 +85,10 @@ export function IconWithText({
             dispose={null}
             {...props}
         >
-            <Center>
-                <Float>
-                    <group position={[-0.15 * scalar, 0, 0]}>
-                        <Center back left>
+            <Center name={datas.name}>
+                <group ref={titleRef} position={[-0.15 * scalar, 0, 0]}>
+                    <Float>
+                        <Center back left position={[-0.15 * scalar, 0, 0]}>
                             {nodes.Scene.children.map((node) => {
                                 return (
                                     <IconMesh
@@ -74,7 +97,7 @@ export function IconWithText({
                                         key={node.uuid}
                                         data={node}
                                         // iconColor={'#000000'}
-                                        curveSegments={32}
+                                        // curveSegments={isMobile ? 4 : 32}
                                         hovered={hovered}
                                         scale={100 * scalar}
                                         castShadow
@@ -83,17 +106,15 @@ export function IconWithText({
                                 );
                             })}
                         </Center>
-                    </group>
-                    <Suspense fallback={null}>
                         <Title
                             right
                             name="icons-Container__title"
                             textProps={{ scale: 0.01 * scalar }}
                         >
-                            {text}
+                            {datas.text}
                         </Title>
-                    </Suspense>
-                </Float>
+                    </Float>
+                </group>
             </Center>
         </group>
     );
