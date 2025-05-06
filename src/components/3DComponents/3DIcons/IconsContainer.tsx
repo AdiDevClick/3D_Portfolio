@@ -1,13 +1,22 @@
 import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText.tsx';
 import { HexCell } from '@/components/3DComponents/Forms/HexCell.tsx';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout.tsx';
+import { frustumChecker } from '@/utils/frustrumChecker.ts';
 import { Center } from '@react-three/drei';
-import { JSX, useRef } from 'react';
-import { Group } from 'three';
+import { useFrame } from '@react-three/fiber';
+import { JSX, Suspense, useRef } from 'react';
+import { Box3, Group } from 'three';
+
+// Extend Object3D to include boundingbox property
+declare module 'three' {
+    interface Object3D {
+        boundingbox?: Box3;
+    }
+}
 
 type IconsContainerTypes = {
     width: number;
-    icons: { name: string; url: string }[];
+    icons: { name: string; optimized: string; mobile: string }[];
     scalar: number;
     /** @DefaultValue 5 */
     margin?: number;
@@ -43,34 +52,58 @@ export function IconsContainer({
     ...props
 }: IconsContainerTypes) {
     const groupRef = useRef<Group>(null!);
+    const frameCountRef = useRef(0);
+
+    /**
+     * This function is called on each frame to update
+     * the visibility of the icons based on the camera's frustum.
+     *
+     * @description It checks every 5 frames on desktop and 20 on mobiles.
+     */
+    useFrame((state) => {
+        if (!groupRef.current) return;
+
+        frameCountRef.current += 1;
+
+        frustumChecker(
+            groupRef.current,
+            state,
+            frameCountRef.current,
+            isMobile,
+            { mobileTime: 20, desktopTime: 5, name: '-grid' },
+            true
+        );
+    });
 
     return (
         <group ref={groupRef} {...props}>
-            <Center bottom>
+            <Center name="icon__center-container" bottom>
                 {icons.map((icon, index) => (
                     <GridLayout
                         width={width}
                         key={index}
-                        name={icon.name}
+                        name={icon.name + '-grid'}
                         length={icons.length}
                         index={index}
                         scalar={scalar}
                         options={gridOptions}
                     >
-                        <IconWithText
-                            scalar={0.8 * scalar}
-                            model={resolvePath(
-                                `@models/${
-                                    isMobile
-                                        ? `/mobile/${icon.url}`
-                                        : `/optimized/${icon.url}`
-                                }`
-                            )}
-                            text={icon.name}
-                            index={index}
-                            isMobile={isMobile}
-                        />
-
+                        <Suspense fallback={null}>
+                            <IconWithText
+                                scalar={0.8 * scalar}
+                                model={resolvePath(
+                                    `@models/${
+                                        isMobile
+                                            ? `mobile/${icon.mobile}`
+                                            : `optimized/${icon.optimized}`
+                                    }`
+                                )}
+                                index={index}
+                                isMobile={isMobile}
+                                datas={{ text: icon.name, name: icon.name }}
+                                name={'icon__content'}
+                            />
+                        </Suspense>
                         <group position={[0, -0.6 * scalar, 0]}>
                             <Center bottom>
                                 <HexCell scalar={scalar} />
