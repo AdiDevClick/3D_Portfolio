@@ -1,9 +1,10 @@
 import { RefObject } from 'react';
-import { Mesh, Vector3 } from 'three';
+import { Mesh, Texture, Vector3 } from 'three';
 
 export interface CarouselState {
     /** Tableau des cards */
     elements: ElementType[];
+    loadedCount: number;
 }
 
 // Define payload types based on the function signatures
@@ -17,6 +18,7 @@ export type PayloadTypes = {
     UPDATE_ELEMENT_SCALE: { element: ElementType; property: number };
     UPDATE_ELEMENT_WIDTH: { element: ElementType; property: number };
     UPDATE_ELEMENT_BENDING: { element: ElementType; property: number };
+    UPDATE_LOAD_COUNT: number;
 };
 
 // Generate action types from payload types
@@ -92,6 +94,7 @@ export interface ElementType extends CardContentType {
     /** Cover image for the card */
     cover?: string;
     bending: number;
+    texture?: Texture;
 }
 
 export interface ReducerType {
@@ -113,6 +116,8 @@ export interface ReducerType {
     updateElements: (element: ElementType) => void;
     /** Delete an element based on it's ID */
     deleteElements: (element: ElementType[]) => void;
+    /** Store the current loaded count of elements */
+    updateLoadCount: (increment: number) => void;
     /** Display all the elements in the State */
     showElements: ElementType[];
     /** Store the current hovered/clicked element */
@@ -133,4 +138,6 @@ export interface ReducerType {
     isTablet: boolean;
     /** Store active page in order to reduce loading data */
     visible: string | null;
+    /** Store the current loaded count of elements in Carousel */
+    loadedCount: number;
 }
