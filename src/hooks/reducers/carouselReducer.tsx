@@ -99,6 +99,11 @@ export function carouselReducer(
                     action.payload.some((card) => card.id === el.id)
                 ),
             };
+        case 'UPDATE_LOAD_COUNT':
+            return {
+                ...state,
+                loadedCount: state.loadedCount + action.payload,
+            };
 
         default:
             throw Error(
