@@ -17,6 +17,7 @@ import { useLocation } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title.tsx';
 import { Float } from '@react-three/drei';
 import { Group } from 'three';
+import { frustumChecker } from '@/utils/frustrumChecker.ts';
 
 const activeForwardOffset = 0.5;
 const animationSpeed = 0.22;
@@ -164,9 +165,16 @@ export default function Carousel({
     }, [activeURL, isInitialLoading]);
 
     useFrame((state, delta) => {
-        if (!projectsRef.current || !projectsRef.current.visible) return;
+        if (!projectsRef.current) return;
 
         frameCountRef += 1;
+
+        frustumChecker(
+            [projectsRef.current, titleRef.current],
+            state,
+            frameCountRef,
+            isMobile
+        );
 
         const commonParams = { animationProgress, delta };
 
@@ -181,7 +189,7 @@ export default function Carousel({
         );
 
         // Update title position
-        updateTitlePosition(titleRef, activeURL, contentHeight ?? 0, delta);
+        updateTitlePosition(titleRef, contentHeight ?? 0, delta);
         // Handle animation progress
 
         if (isAnimatingIn) {
@@ -208,12 +216,15 @@ export default function Carousel({
             //     );
             // }
         }
-
         // Find active card
         const { itemPositions, activeCard } = cardPositionsMemo;
-
         showElements.forEach((item, i) => {
-            if (!item.ref?.current || !itemPositions[item.id]) return;
+            if (
+                !item.ref?.current ||
+                !itemPositions[item.id] ||
+                !projectsRef.current.visible
+            )
+                return;
 
             // Calculate positions for this card
             const { positions, targetRotationY } = itemPositions[item.id];
@@ -245,9 +256,7 @@ export default function Carousel({
                 );
             }
             if (!activeURL) return;
-
             const { position, rotation } = item.ref.current;
-
             easing.damp3(
                 position,
                 positions as [number, number, number],
