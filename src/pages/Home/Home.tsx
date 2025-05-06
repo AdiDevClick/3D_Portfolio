@@ -63,7 +63,7 @@ export function Home({ reducer, margin = 0.5 }: HomeTypes) {
             isMobile
         );
 
-        if (stackRef.current.visible) {
+        if (stackRef.current.visible || isActive) {
             easing.damp3(stackRef.current.position, stackPosition, 0.3, delta);
         }
         if (titleRef.current.visible || isActive) {
