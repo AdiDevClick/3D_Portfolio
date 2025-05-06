@@ -45,27 +45,23 @@ export function CardContainer({ reducer, SETTINGS }: CardContainerTypes) {
                 reducer={reducer}
                 {...SETTINGS}
             >
-                <Suspense fallback={null}>
-                    <SpherePresenceHelper
-                        name="card__spherePresenceHelper"
-                        visible={SETTINGS.PRESENCE_CIRCLE}
-                        radius={[SETTINGS.PRESENCE_RADIUS * card.baseScale, 32]}
-                        color={'red'}
-                    />
-                </Suspense>
+                <SpherePresenceHelper
+                    name="card__spherePresenceHelper"
+                    visible={SETTINGS.PRESENCE_CIRCLE}
+                    radius={[SETTINGS.PRESENCE_RADIUS * card.baseScale, 32]}
+                    color={'red'}
+                />
 
-                <Suspense fallback={null}>
-                    <Title
-                        name="card__title"
-                        size={10}
-                        textProps={{
-                            scale: 0.01 * reducer.generalScaleX,
-                            bevelSize: 1,
-                        }}
-                    >
-                        {card.cardTitle ? card.cardTitle : 'test'}
-                    </Title>
-                </Suspense>
+                <Title
+                    name="card__title"
+                    size={10}
+                    textProps={{
+                        scale: 0.01 * reducer.generalScaleX,
+                        bevelSize: 1,
+                    }}
+                >
+                    {card.cardTitle ? card.cardTitle : 'test'}
+                </Title>
                 {card.isClicked && (
                     <group name="htmlContainer">
                         <HtmlContainer
