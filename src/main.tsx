@@ -4,15 +4,11 @@ import '@css/index.css';
 import '@css/Main.scss';
 import '@css/reset.css';
 import App from './App2.tsx';
-// import App from './App.tsx';
-import { Scene } from './components/3DComponents/Scene/Scene.tsx';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
 import { Header } from '@/components/HTML/header/Header.js';
-import { useSettings } from '@/hooks/useSettings.tsx';
 import useResize from '@/hooks/useResize.tsx';
-import JSONDatas from '@data/exemples.json';
 
 const router = createBrowserRouter([
     {
@@ -21,8 +17,14 @@ const router = createBrowserRouter([
         errorElement: <Root contentType={'error'} />,
         children: [
             // {
-            //     index: true,
+            //     path: '*',
             //     element: <Scene />,
+            //     // element: <Scene SETTINGS={SETTINGS} size={size} />,
+            // },
+            // {
+            // index: true,
+            // element: <Home />,
+            // element: <Scene SETTINGS={SETTINGS} size={size} />,
             // },
             // {
             //     path: 'a-propos',
@@ -36,16 +38,17 @@ const router = createBrowserRouter([
             // },
             // {
             //     path: 'projets',
-            //     // element: <Scene />,
-            //     element: <CarouselActivator />,
+            //     element: <Carousel />,
             // },
         ],
     },
 ]);
 
-createRoot(document.getElementById('root')).render(
+const rootElement = createRoot(document.getElementById('root') as HTMLElement);
+rootElement.render(
     <React.StrictMode>
-        <RouterProvider router={router} future={{ v7_startTransition: true }} />
+        <RouterProvider router={router} />
+        {/* <RouterProvider router={router} future={{ v7_startTransition: true }} /> */}
     </React.StrictMode>
 );
 
@@ -54,32 +57,16 @@ createRoot(document.getElementById('root')).render(
  * App.JSX est le <main> container et est utilisé pour matérialiser le Outlet -
  * Si une erreur est trouvée, il sera remplacé par l'erreur -
  */
-export function Root(contentType) {
+export function Root(contentType: { contentType?: string }) {
     const errorContent = contentType.contentType === 'error';
-    // General Store
-    // const reducer = useCarousel();
-
-    // // Boundaries Settings
-    const SETTINGS = useSettings(JSONDatas);
-    // // Specify boundaries & responsive boundaries
     const { size } = useResize(100);
-    // reducer.isMobile = size[0] < 768;
     const isTouchDevice = size[0] < 968;
+
+    console.log('je render le root');
     return (
         <>
             <Header isTouchDevice={isTouchDevice} />
-            {/* <App>{errorContent ? <PageError /> : <Outlet />}</App> */}
-            <App>
-                {errorContent ? (
-                    <PageError />
-                ) : (
-                    <Scene SETTINGS={SETTINGS} size={size} />
-                    // <Outlet />
-                )}
-            </App>
+            <App size={size}>{errorContent ? <PageError /> : <Outlet />}</App>
         </>
     );
-}
-{
-    /* <Outlet context={contextProps} /> */
 }
