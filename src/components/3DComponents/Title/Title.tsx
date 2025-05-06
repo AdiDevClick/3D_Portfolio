@@ -49,38 +49,36 @@ export function Title({
             rotation={rotation}
             name={name}
         >
-            {ref.current && (
-                <Center front {...props}>
-                    <Text3D
-                        castShadow
-                        bevelEnabled
-                        curveSegments={isMobile ? 12 : 32}
-                        bevelSegments={3}
-                        bevelThickness={1}
-                        bevelSize={2}
-                        bevelOffset={0}
-                        scale={0.01}
-                        size={size}
-                        height={1}
-                        smooth={1}
-                        font={typedMontserratFont}
-                        {...textProps}
-                    >
-                        {children}
-                        {/* <meshNormalMaterial /> */}
-                        {/* <MeshTransmissionMaterial
-                        clearcoat={1}
-                        samples={isMobile ? 1 : 8}
-                        thickness={40}
-                        chromaticAberration={isMobile ? 0.05 : 0.25}
-                        anisotropy={isMobile ? 0 : 0.4}
-                        resolution={isMobile ? 256 : 2048}
-                        distortion={0}
-                    /> */}
-                        <meshLambertMaterial />
-                    </Text3D>
-                </Center>
-            )}
+            <Center front {...props}>
+                <Text3D
+                    castShadow
+                    bevelEnabled={true}
+                    curveSegments={isMobile ? 1 : 32}
+                    bevelSegments={isMobile ? 1 : 3}
+                    bevelThickness={1}
+                    bevelSize={2}
+                    bevelOffset={0}
+                    scale={0.01}
+                    size={size}
+                    height={1}
+                    smooth={1}
+                    font={typedMontserratFont}
+                    {...textProps}
+                >
+                    {children}
+                    {/* <meshNormalMaterial /> */}
+                    {/* <MeshTransmissionMaterial
+                            clearcoat={1}
+                            samples={isMobile ? 1 : 8}
+                            thickness={40}
+                            chromaticAberration={isMobile ? 0.05 : 0.25}
+                            anisotropy={isMobile ? 0 : 0.4}
+                            resolution={isMobile ? 256 : 2048}
+                            distortion={0}
+                        /> */}
+                    <meshLambertMaterial />
+                </Text3D>
+            </Center>
         </group>
     );
 }
