@@ -51,13 +51,7 @@ export function Home({ reducer, margin = 0.5 }: HomeTypes) {
     }
 
     useFrame((state, delta) => {
-        if (
-            !groupRef.current ||
-            !titleRef.current ||
-            !stackRef.current ||
-            !groupRef.current.visible
-        )
-            return;
+        if (!groupRef.current || !titleRef.current || !stackRef.current) return;
 
         frameCountRef.current += 1;
 
@@ -69,10 +63,12 @@ export function Home({ reducer, margin = 0.5 }: HomeTypes) {
             isMobile
         );
 
-        if (stackRef.current.visible)
+        if (stackRef.current.visible) {
             easing.damp3(stackRef.current.position, stackPosition, 0.3, delta);
-        if (titleRef.current.visible)
+        }
+        if (titleRef.current.visible || isActive) {
             easing.damp3(titleRef.current.position, titlePosition, 0.3, delta);
+        }
     });
 
     return (
