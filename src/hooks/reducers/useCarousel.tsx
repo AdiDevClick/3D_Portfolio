@@ -5,6 +5,7 @@ import { carouselReducer } from '@/hooks/reducers/carouselReducer.tsx';
 // Initial state
 const initialState: CarouselState = {
     elements: [],
+    loadedCount: 0,
 };
 
 /**
@@ -24,6 +25,7 @@ export function useCarousel(): ReducerType {
         );
     }
     return {
+        loadedCount: state.loadedCount,
         visible: visible,
         isMobile: false,
         isTablet: false,
@@ -92,6 +94,14 @@ export function useCarousel(): ReducerType {
         deleteElements: useCallback(
             (element) =>
                 dispatch({ type: 'DELETE_ELEMENTS', payload: element }),
+            []
+        ),
+        updateLoadCount: useCallback(
+            (increment = 1) =>
+                dispatch({
+                    type: 'UPDATE_LOAD_COUNT',
+                    payload: increment,
+                }),
             []
         ),
     };
