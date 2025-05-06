@@ -5,10 +5,10 @@ import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Float } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { Suspense, useRef } from 'react';
+import { useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
+import { frustumChecker } from '@/utils/frustrumChecker.ts';
 
 type HomeTypes = {
     reducer: ReducerType;
@@ -50,51 +50,62 @@ export function Home({ reducer, margin = 0.5 }: HomeTypes) {
         stackPosition.set(0, -100, 0);
     }
 
-    useFrame((_, delta) => {
-        frameCountRef.current += 1;
-        if (!groupRef.current || !titleRef.current || !stackRef.current) return;
+    useFrame((state, delta) => {
+        if (
+            !groupRef.current ||
+            !titleRef.current ||
+            !stackRef.current ||
+            !groupRef.current.visible
+        )
+            return;
 
-        if (frameCountRef.current % (isActive ? 1 : 2) === 0) {
-            easing.damp3(titleRef.current.position, titlePosition, 0.3, delta);
+        frameCountRef.current += 1;
+
+        // Check if the objects are in the frustum
+        frustumChecker(
+            [stackRef.current, titleRef.current],
+            state,
+            frameCountRef.current,
+            isMobile
+        );
+
+        if (stackRef.current.visible)
             easing.damp3(stackRef.current.position, stackPosition, 0.3, delta);
-        }
+        if (titleRef.current.visible)
+            easing.damp3(titleRef.current.position, titlePosition, 0.3, delta);
     });
 
     return (
-        <group ref={groupRef}>
+        <group visible={isActive} ref={groupRef}>
             <group ref={titleRef}>
                 <group position-y={1 * generalScaleX}>
                     <Float {...floatOptions}>
-                        <Suspense fallback={null}>
-                            <Title
-                                rotation={[0, 3.164, 0]}
-                                size={80}
-                                textProps={{
-                                    height: 40,
-                                    scale: 0.01 * generalScaleX,
-                                }}
-                            >
-                                Bienvenue
-                            </Title>
-                        </Suspense>
+                        <Title
+                            rotation={[0, 3.164, 0]}
+                            size={80}
+                            textProps={{
+                                height: 40,
+                                scale: 0.01 * generalScaleX,
+                            }}
+                        >
+                            Bienvenue
+                        </Title>
                     </Float>
                 </group>
 
                 <group position-y={0 * generalScaleX}>
                     <Float {...floatOptions}>
-                        <Suspense fallback={null}>
-                            <Title
-                                rotation={[0, 3.164, 0]}
-                                size={60}
-                                back
-                                textProps={{
-                                    height: 40,
-                                    scale: 0.01 * generalScaleX,
-                                }}
-                            >
-                                sur mon
-                            </Title>
-                        </Suspense>
+                        <Title
+                            rotation={[0, 3.164, 0]}
+                            size={60}
+                            back
+                            textProps={{
+                                height: 40,
+                                scale: 0.01 * generalScaleX,
+                            }}
+                        >
+                            sur mon
+                        </Title>
                     </Float>
                 </group>
 
@@ -115,57 +126,37 @@ export function Home({ reducer, margin = 0.5 }: HomeTypes) {
                 </group>
             </group>
 
-            {/* <Center>
-                <PageContainer pageName={'/'}>
-                    <HomeContent
-                        onWheel={onScrollHandler}
-                        className="home"
-                        style={{
-                            // opacity: isLoaded ? 1 : 0,
-                            transform: 'translate(-50%)',
-                            transition:
-                                'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
-                            height: '500px',
-                            width: 'clamp(min(52%, 100%), 100%, 52vw)',
-                            background: 'rgba(255, 255, 255, 0.95)',
-                            zIndex: 0,
-                        }}
-                    />
-                </PageContainer>
-            </Center> */}
-            <group ref={stackRef} renderOrder={-100}>
+            <group ref={stackRef}>
                 <group>
                     <Float {...floatOptions}>
-                        <Suspense fallback={null}>
-                            <Title
-                                rotation={[0, 3.164, 0]}
-                                size={30}
-                                isMobile={isMobile}
-                                textProps={{
-                                    height: 20,
-                                    scale: 0.01 * generalScaleX,
-                                }}
-                            >
-                                Ma stack technique
-                            </Title>
-                        </Suspense>
+                        <Title
+                            rotation={[0, 3.164, 0]}
+                            size={30}
+                            isMobile={isMobile}
+                            textProps={{
+                                height: 20,
+                                scale: 0.01 * generalScaleX,
+                            }}
+                        >
+                            Ma stack technique
+                        </Title>
                     </Float>
                 </group>
-                <Suspense
+                {/* <Suspense
                     fallback={
                         <PlaceholderIcon
                             position-y={-1 * generalScaleX - margin}
                         />
                     }
-                >
-                    <IconsContainer
-                        width={contentWidth ?? 1}
-                        icons={iconsWithText}
-                        scalar={generalScaleX}
-                        position-y={-1 * generalScaleX - margin}
-                        isMobile={isMobile}
-                    />
-                </Suspense>
+                > */}
+                <IconsContainer
+                    width={contentWidth ?? 1}
+                    icons={iconsWithText}
+                    scalar={generalScaleX}
+                    position-y={-1 * generalScaleX - margin}
+                    isMobile={isMobile}
+                />
+                {/* </Suspense> */}
             </group>
         </group>
     );
