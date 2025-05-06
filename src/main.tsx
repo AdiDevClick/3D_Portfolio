@@ -17,28 +17,8 @@ const router = createBrowserRouter([
         errorElement: <Root contentType={'error'} />,
         children: [
             // {
-            //     path: '*',
-            //     element: <Scene />,
-            //     // element: <Scene SETTINGS={SETTINGS} size={size} />,
-            // },
-            // {
-            // index: true,
-            // element: <Home />,
-            // element: <Scene SETTINGS={SETTINGS} size={size} />,
-            // },
-            // {
-            //     path: 'a-propos',
-            //     element: <Scene />,
-            //     // element: (
-            //     //     <Canvas camera={{ position: [0, 0, 0] }}>
-            //     //         {/* <ambientLight /> */}
-            //     //         <Experience />
-            //     //     </Canvas>
-            //     // ),
-            // },
-            // {
-            //     path: 'projets',
-            //     element: <Carousel />,
+            //     path: 'error',
+            //     element: <ErroPage />,
             // },
         ],
     },
