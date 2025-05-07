@@ -73,7 +73,6 @@ export function About({
                 contentHeight,
                 margin
             );
-            console.log(titlePos);
             titlePositionRef.current.set(titlePos[0], titlePos[1], titlePos[2]);
             contentPositionRef.current.set(0, 0 - margin, 0);
 
