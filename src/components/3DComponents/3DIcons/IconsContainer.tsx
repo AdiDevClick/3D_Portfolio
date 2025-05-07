@@ -1,4 +1,5 @@
 import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText.tsx';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
 import { HexCell } from '@/components/3DComponents/Forms/HexCell.tsx';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout.tsx';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
@@ -88,7 +89,7 @@ export function IconsContainer({
                         scalar={scalar}
                         options={gridOptions}
                     >
-                        <Suspense fallback={null}>
+                        <Suspense fallback={<PlaceholderIcon />}>
                             <IconWithText
                                 scalar={0.8 * scalar}
                                 model={resolvePath(
@@ -100,7 +101,10 @@ export function IconsContainer({
                                 )}
                                 index={index}
                                 isMobile={isMobile}
-                                datas={{ text: icon.name, name: icon.name }}
+                                datas={{
+                                    text: icon.name,
+                                    name: icon.name,
+                                }}
                                 name={'icon__content'}
                             />
                         </Suspense>
