@@ -1,4 +1,4 @@
-import { JSX, ReactNode, useCallback, useMemo, useState } from 'react';
+import { JSX, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Box3, Vector3, Group } from 'three';
 
 export type GridLayoutProps = {
@@ -57,8 +57,9 @@ export function GridLayout({
     ...props
 }: GridLayoutProps) {
     const { rowOffset, marginX, marginY, windowMargin } = options;
-
-    const [gridSize, setGridSize] = useState({ x: 0, y: 0, z: 0 });
+    const [position, setPosition] = useState<[number, number, number]>([
+        0, 0, 0,
+    ]);
 
     /**
      * - Calculates the position of the grid item based on
@@ -66,7 +67,7 @@ export function GridLayout({
      * - The position is calculated using the number
      * of columns, row offset, and margins.
      */
-    const positionMemo = useMemo(() => {
+    useEffect(() => {
         const columns = Math.min(
             options.columnsNumber,
             Math.ceil((width - windowMargin) / 2)
@@ -78,16 +79,25 @@ export function GridLayout({
         const offset = row % 2 === 0 ? 0 : rowOffset;
 
         const spacingX = scalar * marginX;
-        // const spacingX = scalar * options.marginX + gridSize.x;
+        // const spacingX = scalar * marginX + gridSize.x;
         const spacingY = scalar * marginY;
 
         const x = (col + offset) * spacingX;
         const y = row * spacingY;
 
-        const centerOffsetX = ((columns - 1) * spacingX) / 2;
-
-        return [x - centerOffsetX, -y, 0] as [number, number, number];
-    }, [width, index, scalar]);
+        const centerOffsetX =
+            ((columns - 1) * spacingX + rowOffset * spacingX) / 2;
+        setPosition([x - centerOffsetX, -y, 0]);
+    }, [
+        index,
+        width,
+        scalar,
+        options.columnsNumber,
+        windowMargin,
+        rowOffset,
+        marginX,
+        marginY,
+    ]);
 
     const itemRef = useCallback((item: Group) => {
         if (!item) return;
@@ -95,14 +105,12 @@ export function GridLayout({
         const size = new Vector3();
         box.getSize(size);
         item.userData.size = size;
-
-        setGridSize({ ...size });
     }, []);
 
     return (
         <group
             ref={itemRef}
-            position={positionMemo}
+            position={position}
             rotation={[0, 3.164, 0]}
             {...props}
         >
