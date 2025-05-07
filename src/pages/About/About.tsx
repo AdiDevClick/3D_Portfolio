@@ -3,7 +3,7 @@ import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx'
 import { AboutContent } from '@/pages/About/AboutContent.tsx';
 import '@css/About.scss';
 import { Center, Float } from '@react-three/drei';
-import { useEffect, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Group } from 'three';
 import { useLocation } from 'react-router';
 import { useFrame } from '@react-three/fiber';
@@ -35,7 +35,8 @@ const floatOptions = {
 };
 
 type AboutTypes = {
-    reducer: ReducerType;
+    contentWidth: ReducerType['contentWidth'];
+    contentHeight: ReducerType['contentHeight'];
     /** @defaultValue 0.5 */
     margin?: number;
 };
@@ -46,7 +47,11 @@ type AboutTypes = {
  * @param reducer - Reducer type for the carousel
  * @param margin **@default=0.5** - Margin between the elements
  */
-export function About({ reducer, margin = 0.5 }: AboutTypes) {
+export function About({
+    contentWidth,
+    contentHeight,
+    margin = 0.5,
+}: AboutTypes) {
     const frameCountRef = useRef(0);
     const contentRef = useRef<Group>(null);
     const titleRef = useRef<Group>(null);
@@ -59,30 +64,8 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
         DEFAULT_PROJECTS_POSITION_SETTINGS.clone()
     );
 
-    const { contentWidth, contentHeight } = reducer;
-
     const location = useLocation();
     const isActive = location.pathname === '/a-propos';
-
-    // if (isActive) {
-    //     const titlePos = DESKTOP_HTML_TITLE_POSITION_SETTINGS(
-    //         contentHeight ?? 0,
-    //         margin
-    //     );
-
-    //     titlePosition.set(titlePos[0], titlePos[1], titlePos[2]);
-    //     contentPosition.set(0, 0 - margin, 0);
-    //     const iconPos = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
-    //         contentHeight ?? 0,
-    //         contentWidth ?? 0,
-    //         margin
-    //     );
-    //     iconsPosition.set(iconPos[0], iconPos[1], iconPos[2]);
-    // } else {
-    //     titlePosition = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-    //     contentPosition = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-    //     iconsPosition = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-    // }
 
     useEffect(() => {
         if (isActive && contentHeight && contentWidth) {
@@ -90,7 +73,7 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
                 contentHeight,
                 margin
             );
-
+            console.log(titlePos);
             titlePositionRef.current.set(titlePos[0], titlePos[1], titlePos[2]);
             contentPositionRef.current.set(0, 0 - margin, 0);
 
@@ -105,26 +88,26 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
             contentPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             iconsPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
         }
-    }, [isActive, contentWidth, contentHeight]);
+    }, [location.pathname, isActive, contentWidth, contentHeight]);
 
-    const settingsConfig = useMemo(() => {
-        return {
-            HTMLSettings: folder(
-                {
-                    SCALE: { value: 1, min: 0, max: 10, step: 0.1 },
-                    PRESENCE_CIRCLE: true,
-                    PRESENCE_RADIUS: { value: 0.5, min: 0, max: 10, step: 0.1 },
-                    COLLISIONS: true,
-                },
-                { collapsed: true }
-            ),
-        };
-    }, []);
+    // const settingsConfig = useMemo(() => {
+    //     return {
+    //         HTMLSettings: folder(
+    //             {
+    //                 SCALE: { value: 1, min: 0, max: 10, step: 0.1 },
+    //                 PRESENCE_CIRCLE: true,
+    //                 PRESENCE_RADIUS: { value: 0.5, min: 0, max: 10, step: 0.1 },
+    //                 COLLISIONS: true,
+    //             },
+    //             { collapsed: true }
+    //         ),
+    //     };
+    // }, []);
 
-    const [{ ...HTMLSETTINGS }, set] = useControls(
-        'HTML SETTINGS',
-        () => settingsConfig
-    );
+    // const [{ ...HTMLSETTINGS }, set] = useControls(
+    //     'HTML SETTINGS',
+    //     () => settingsConfig
+    // );
 
     useFrame((state, delta) => {
         if (
@@ -174,7 +157,7 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
             }
         }
     });
-
+    console.log('Je load le about container');
     return (
         <group visible={isActive} ref={groupRef}>
             <Float {...floatOptions}>
@@ -182,7 +165,7 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
                     ref={titleRef}
                     rotation={[0, 3.164, 0]}
                     bottom
-                    scale={HTMLSETTINGS.SCALE}
+                    // scale={HTMLSETTINGS.SCALE}
                 >
                     A propos de moi
                 </Title>
@@ -222,3 +205,5 @@ export function About({ reducer, margin = 0.5 }: AboutTypes) {
         </group>
     );
 }
+
+// export default MemoizedAbout;
