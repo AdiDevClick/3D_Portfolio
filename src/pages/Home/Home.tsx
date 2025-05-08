@@ -3,7 +3,7 @@ import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config.
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { memo, RefObject, Suspense, useEffect, useRef } from 'react';
+import { memo, RefObject, Suspense, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
@@ -20,6 +20,9 @@ type HomeTypes = {
     /** @defaultValue 0.5 */
     margin?: number;
 };
+
+let currentTitlePos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+let currentStackPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
 /**
  * Home page component.
@@ -38,6 +41,7 @@ const MemoizedHome = memo(function Home({
     margin = 0.5,
 }: HomeTypes) {
     const frameCountRef = useRef(0);
+    const yPosition = -(contentHeight ?? 10) * generalScaleX - margin;
 
     const location = useLocation();
     const isActive = location.pathname === '/';
@@ -46,22 +50,12 @@ const MemoizedHome = memo(function Home({
     const groupRef = useRef<Group>(null);
     const stackRef = useRef<Group>(null);
 
-    const titlePositionRef = useRef(DEFAULT_PROJECTS_POSITION_SETTINGS.clone());
-    const stackPositionRef = useRef(DEFAULT_PROJECTS_POSITION_SETTINGS.clone());
-
-    useEffect(() => {
-        if (isActive) {
-            titlePositionRef.current.set(0, 0, 0);
-            stackPositionRef.current.set(
-                0,
-                -(contentHeight ?? 1) * generalScaleX + margin,
-                0
-            );
-        } else {
-            titlePositionRef.current.set(0, -100, 0);
-            stackPositionRef.current.set(0, -100, 0);
-        }
-    }, [location.pathname, isActive]);
+    currentTitlePos = isActive
+        ? currentTitlePos.set(0, 0, 0)
+        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+    currentStackPos = isActive
+        ? currentStackPos.set(0, yPosition, 0)
+        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
     useFrame((state, delta) => {
         if (!groupRef.current || !titleRef.current || !stackRef.current) return;
@@ -78,16 +72,16 @@ const MemoizedHome = memo(function Home({
         if (stackRef.current.visible || isActive) {
             easing.damp3(
                 stackRef.current.position,
-                stackPositionRef.current,
-                0.3,
+                currentStackPos,
+                0.2,
                 delta
             );
         }
         if (titleRef.current.visible || isActive) {
             easing.damp3(
                 titleRef.current.position,
-                titlePositionRef.current,
-                0.3,
+                currentTitlePos,
+                0.2,
                 delta
             );
         }
@@ -100,11 +94,11 @@ const MemoizedHome = memo(function Home({
                 ref={titleRef as RefObject<Group>}
                 scale={generalScaleX}
             />
+
             <group ref={stackRef}>
                 <FloatingTitle
                     scale={generalScaleX}
                     size={30}
-                    yPosition={0}
                     isMobile={isMobile}
                     textProps={{
                         height: 20,
