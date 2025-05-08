@@ -37,9 +37,13 @@ const floatOptions = {
 type AboutTypes = {
     contentWidth: ReducerType['contentWidth'];
     contentHeight: ReducerType['contentHeight'];
+    generalScaleX: ReducerType['generalScaleX'];
+    visible: ReducerType['visible'];
     /** @defaultValue 0.5 */
     margin?: number;
 };
+
+let isActive = false;
 
 /**
  * Contains the about page content/informations.
@@ -50,6 +54,8 @@ type AboutTypes = {
 const MemoizedAbout = memo(function About({
     contentWidth,
     contentHeight,
+    generalScaleX,
+    visible,
     margin = 0.5,
 }: AboutTypes) {
     const frameCountRef = useRef(0);
@@ -64,8 +70,7 @@ const MemoizedAbout = memo(function About({
         DEFAULT_PROJECTS_POSITION_SETTINGS.clone()
     );
 
-    const location = useLocation();
-    const isActive = location.pathname === '/a-propos';
+    isActive = visible === 'about';
 
     useEffect(() => {
         if (isActive && contentHeight && contentWidth) {
@@ -87,7 +92,7 @@ const MemoizedAbout = memo(function About({
             contentPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             iconsPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
         }
-    }, [location.pathname, isActive, contentWidth, contentHeight]);
+    }, [contentWidth, contentHeight, visible]);
 
     // const settingsConfig = useMemo(() => {
     //     return {
@@ -164,7 +169,7 @@ const MemoizedAbout = memo(function About({
                     ref={titleRef}
                     rotation={[0, 3.164, 0]}
                     bottom
-                    // scale={HTMLSETTINGS.SCALE}
+                    scale={generalScaleX}
                 >
                     A propos de moi
                 </Title>
