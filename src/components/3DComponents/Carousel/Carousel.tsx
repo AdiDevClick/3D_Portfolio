@@ -293,6 +293,7 @@ export default function Carousel({
             <Suspense fallback={<PlaceholderIcon />}>
                 <Float>
                     <Title
+                        scale={reducer.generalScaleX}
                         name={'carousel__title'}
                         ref={titleRef}
                         rotation={[0, 3.164, 0]}
