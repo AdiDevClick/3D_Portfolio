@@ -1,6 +1,6 @@
 import { Image, useCursor } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { PropsWithChildren, ReactNode, useEffect, useRef } from 'react';
+import { PropsWithChildren, useEffect, useRef } from 'react';
 import { DoubleSide, Mesh } from 'three';
 import {
     ElementType,
@@ -22,19 +22,15 @@ import {
     MOBILE_TITLE_POSITION,
 } from '@/configs/3DCarousel.config.js';
 import { easing } from 'maath';
-
-interface AdditionalProps {
-    visibleWireframe?: boolean;
-    presenceRadius?: number;
-    BENDING: number;
-    y_HEIGHT: number;
-    children: ReactNode;
-}
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes.js';
 
 type CardProps = {
     reducer: ReducerType;
     card: ElementType;
-} & AdditionalProps;
+    SETTINGS: SettingsType;
+    presenceRadius?: number;
+    children?: React.ReactNode;
+};
 
 /**
  * Composant Conteneur de cartes
@@ -43,12 +39,12 @@ export default function Card({
     reducer,
     card,
     children,
-    ...SETTINGS
+    SETTINGS,
 }: PropsWithChildren<CardProps>) {
     const cardRef = useRef<Mesh>(null!);
-
     const navigate = useNavigate();
     const location = useLocation();
+
     // mobile Optimisations
     const segments = reducer.isMobile ? 8 : 12;
 
@@ -65,7 +61,6 @@ export default function Card({
                 !reducer.visible?.includes('card'))
         )
             return;
-
         const title = cardRef.current.getObjectByName('card__title');
         if (!title) return;
         const { material, scale, rotation } = cardRef.current;
@@ -77,6 +72,7 @@ export default function Card({
             reducer,
             card,
         };
+
         if (!card.isClicked) {
             easing.damp3(
                 title.position,
@@ -97,10 +93,10 @@ export default function Card({
             );
 
             if (card.isActive) {
-                handleActiveCardEffects(card.baseScale, props);
+                handleActiveCardEffects(card.baseScale, props, cardHoverScale);
             }
         } else {
-            handleClickedCardEffects(card.baseScale, props);
+            handleClickedCardEffects(card.baseScale, props, cardHoverScale);
             easing.damp3(
                 title.position,
                 [0, -SETTINGS.y_HEIGHT / 2, 0.1],
@@ -121,13 +117,14 @@ export default function Card({
             reducer.updateElements({
                 ...card,
                 ref: cardRef,
-                presenceRadius: SETTINGS.presenceRadius,
+                presenceRadius: SETTINGS.PRESENCE_RADIUS,
                 spacePositions: positions || undefined,
             });
 
             // Update the card's loaded state
             reducer.updateLoadCount(1);
         }
+
         return () => {
             // Cleanup textures and geometries
             if (cardRef.current) {
@@ -141,6 +138,7 @@ export default function Card({
         };
     }, []);
 
+    // console.log('Je load la carte');
     return (
         <Image
             ref={cardRef}
@@ -155,11 +153,11 @@ export default function Card({
             transparent
             side={DoubleSide}
             rotation={[card.rotation[0], card.rotation[1], card.rotation[2]]}
-            scale={
-                card.isActive
-                    ? [card.currentWidth - 0.1, card.currentWidth]
-                    : card.baseScale
-            }
+            // scale={
+            //     card.isActive
+            //         ? [card.currentWidth - 0.1, card.currentWidth]
+            //         : card.baseScale
+            // }
             // args={[textureQuality, textureQuality]}
         >
             {children}
