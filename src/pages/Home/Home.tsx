@@ -96,7 +96,10 @@ const MemoizedHome = memo(function Home({
     console.log('Je render le home');
     return (
         <group visible={isActive} ref={groupRef}>
-            <HomePageTitle ref={titleRef as RefObject<Group>} />
+            <HomePageTitle
+                ref={titleRef as RefObject<Group>}
+                scale={generalScaleX}
+            />
             <group ref={stackRef}>
                 <FloatingTitle
                     scale={generalScaleX}
