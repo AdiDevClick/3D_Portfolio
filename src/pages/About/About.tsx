@@ -47,7 +47,7 @@ type AboutTypes = {
  * @param reducer - Reducer type for the carousel
  * @param margin **@default=0.5** - Margin between the elements
  */
-export function About({
+const MemoizedAbout = memo(function About({
     contentWidth,
     contentHeight,
     margin = 0.5,
@@ -203,6 +203,6 @@ export function About({
             </group>
         </group>
     );
-}
+});
 
-// export default MemoizedAbout;
+export default MemoizedAbout;
