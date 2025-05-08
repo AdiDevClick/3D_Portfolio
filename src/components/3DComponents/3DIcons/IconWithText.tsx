@@ -51,7 +51,6 @@ export function IconWithText({
     });
 
     const groupRef = useRef<Group>(null!);
-    const iconRef = useRef(null);
     const titleRef = useRef(null);
     const frameCountRef = useRef(0);
 
@@ -88,12 +87,16 @@ export function IconWithText({
             <Center name={datas.name}>
                 <group ref={titleRef} position={[-0.15 * scalar, 0, 0]}>
                     <Float>
-                        <Center back left position={[-0.15 * scalar, 0, 0]}>
+                        <Center
+                            key={datas.name}
+                            back
+                            left
+                            position={[-0.15 * scalar, 0, 0]}
+                        >
                             {nodes.Scene.children.map((node) => {
                                 return (
                                     <IconMesh
                                         name="icons-Container__icon"
-                                        ref={iconRef}
                                         key={node.uuid}
                                         data={node}
                                         // iconColor={'#000000'}
