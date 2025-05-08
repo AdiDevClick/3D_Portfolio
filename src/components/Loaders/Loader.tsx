@@ -6,16 +6,22 @@ export function LoadingScene() {
 
     return (
         <>
-            {[...Array(5)].map((_, i) => (
+            {/* {[...Array(5)].map((_, i) => (
                 <mesh
                     key={i}
+                    // position={[i * 2, 0, 0]}
                     position={[(i - 2) * 2, 0, 0]}
-                    scale={[1.5, 2, 0.01]}
+                    // scale={[1.5, 2, 0.01]}
+                    scale={[1, 1, 0.01]}
                 >
-                    <planeGeometry />
-                    <meshStandardMaterial color="#444" />
+                    <planeGeometry args={[0.5, 8, 8]} />
+                    <meshStandardMaterial wireframe color="#444" />
                 </mesh>
-            ))}
+            ))} */}
+            <mesh position={[0, 0, 0]}>
+                <sphereGeometry args={[0.5, 8, 8]} />
+                <meshBasicMaterial color="white" wireframe />
+            </mesh>
 
             <Html center>
                 <div
