@@ -23,8 +23,6 @@ export function IconMesh({
     curveSegments?: number;
     iconColor?: string;
 } & JSX.IntrinsicElements['mesh']) {
-    const ref = useRef<Mesh>(null!);
-
     /**
      * Retrieves the original color of the material.
      *
@@ -45,7 +43,7 @@ export function IconMesh({
     }, [data, iconColor]);
 
     return (
-        <mesh ref={ref} {...data} {...props}>
+        <mesh {...data} {...props}>
             <meshStandardMaterial
                 color={hovered ? hoveredIconColor : originalColor}
                 emissive={hovered ? hoveredIconColor : '#000000'}
