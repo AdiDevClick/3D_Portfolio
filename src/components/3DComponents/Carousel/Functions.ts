@@ -182,7 +182,6 @@ export function onClickHandler(
     if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
         return;
     }
-
     navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
         replace: true,
     });
@@ -230,7 +229,7 @@ export function handleNormalAnimation(
     { reducer, delta, card, scale }: CardProps
 ) {
     // // Scale the card size up
-    easing.damp3(scale, cardHoverScale, 0.15, delta);
+    easing.damp3(scale, cardHoverScale, 0.2, delta);
     // Modify card radius to be rounder
     easing.damp(material, 'radius', cardHoverRadius, 0.2, delta);
     // Scale the zoom inside the plane mesh
@@ -252,19 +251,27 @@ export function handleNormalAnimation(
  */
 export function handleClickedCardEffects(
     baseScale: number,
-    { delta, scale, card, reducer }: CardProps
+    { delta, scale, card, reducer }: CardProps,
+    cardHoverScale: number
 ) {
     // Scale up animation
     const targetScale = new Vector3(1.5, 1.5, 1.5);
     easing.damp3(scale, targetScale, 0.15, delta);
-    scale.lerp(targetScale, 0.1);
+    // scale.lerp(targetScale, 0.15);
 
     // Bending effect disabled
     if (card.bending > 0) reducer.updateBending(card, card.bending - delta);
+    const targetWidth = baseScale + 0.4;
+    const threshold = targetWidth * 0.05;
 
-    // Zoom Bounce effect
-    if (card.currentWidth < baseScale + 0.4) {
-        reducer.updateWidth(card, card.currentWidth + delta);
+    if (
+        card.currentWidth < targetWidth &&
+        targetWidth - card.currentWidth > threshold
+    ) {
+        // Zoom Bounce effect
+        // reducer.updateWidth(card, baseScale + 0.4);
+        reducer.updateWidth(card, cardHoverScale + 0.4);
+        // reducer.updateWidth(card, card.currentWidth + delta);
     }
 }
 
@@ -273,17 +280,26 @@ export function handleClickedCardEffects(
  */
 export function handleActiveCardEffects(
     baseScale: number,
-    { card, delta, reducer }: CardProps
+    { card, delta, reducer, scale }: CardProps,
+    cardHoverScale: number
 ): void {
     // Remove bending effect
     if (card.bending > 0) {
         reducer.updateBending(card, card.bending - delta);
     }
+
+    const targetWidth = baseScale + 0.2;
+    // !! IMPORTANT !! It can cause a bug if the card is not clicked
+    const threshold = targetWidth * 0.05;
     // Increase width with bounce effect
-    if (card.currentWidth < baseScale + 0.2) {
-        reducer.updateWidth(card, card.currentWidth + delta);
+    if (
+        card.currentWidth < targetWidth &&
+        targetWidth - card.currentWidth > threshold
+    ) {
+        reducer.updateWidth(card, cardHoverScale + 0.2);
+        // reducer.updateWidth(card, card.currentWidth + delta);
         // Boucing effect
-        // easing.damp3(props.scale, 0.5, 0.15, props.delta);
+        // easing.damp3(scale, 0.5, 0.15, delta);
     }
 }
 
