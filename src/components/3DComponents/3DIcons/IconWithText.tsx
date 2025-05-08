@@ -85,14 +85,9 @@ export function IconWithText({
             {...props}
         >
             <Center name={datas.name}>
-                <group ref={titleRef} position={[-0.15 * scalar, 0, 0]}>
+                <group ref={titleRef} position={[-0.25 * scalar, 0, 0]}>
                     <Float>
-                        <Center
-                            key={datas.name}
-                            back
-                            left
-                            position={[-0.15 * scalar, 0, 0]}
-                        >
+                        <Center key={datas.name} back left position-x={0}>
                             {nodes.Scene.children.map((node) => {
                                 return (
                                     <IconMesh
@@ -112,6 +107,7 @@ export function IconWithText({
                         <Title
                             right
                             name="icons-Container__title"
+                            position-x={0.3 * scalar}
                             textProps={{ scale: 0.01 * scalar }}
                         >
                             {datas.text}
