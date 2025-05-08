@@ -7,9 +7,15 @@ export function carouselReducer(
     action: CarouselActions
 ): CarouselState {
     switch (action.type) {
+        case 'BATCH_UPDATE':
+            // Update the reducer state with many properties at once
+            return {
+                ...state,
+                ...action.payload,
+            };
         case 'UPDATE_ELEMENTS':
             // Update the state with the new dropdown data
-            // console.log('Action Payload:', action.payload);
+            // for cards in the carousel
             return {
                 ...state,
                 elements: state.elements.map((element) => {
@@ -103,6 +109,46 @@ export function carouselReducer(
             return {
                 ...state,
                 loadedCount: state.loadedCount + action.payload,
+            };
+
+        case 'SET_MOBILE':
+            return { ...state, isMobile: action.payload };
+        case 'SET_TABLET':
+            return { ...state, isTablet: action.payload };
+        case 'SET_CONTENT_SIZES':
+            return {
+                ...state,
+                contentSizes: action.payload,
+            };
+        case 'SET_CONTENT_WIDTH':
+            return {
+                ...state,
+                contentWidth: action.payload,
+            };
+        case 'SET_CONTENT_HEIGHT':
+            return {
+                ...state,
+                contentHeight: action.payload,
+            };
+        case 'SET_GENERAL_SCALEX':
+            return {
+                ...state,
+                generalScaleX: action.payload,
+            };
+        case 'SET_GENERAL_SCALEY':
+            return {
+                ...state,
+                generalScaleY: action.payload,
+            };
+        // case 'SET_GENERAL_SCALES':
+        //     return {
+        //         ...state,
+        //         generalScales: { ...generalScales, ...action.payload },
+        //     };
+        case 'SET_VIEW_MODE':
+            return {
+                ...state,
+                visible: action.payload,
             };
 
         default:
