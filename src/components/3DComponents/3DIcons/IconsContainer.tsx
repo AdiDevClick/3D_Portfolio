@@ -5,7 +5,7 @@ import { GridLayout } from '@/components/3DComponents/Grid/GridLayout.tsx';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
 import { Center } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { JSX, Suspense, useRef } from 'react';
+import { JSX, memo, Suspense, useRef } from 'react';
 import { Box3, Group } from 'three';
 
 // Extend Object3D to include boundingbox property
@@ -44,7 +44,7 @@ const gridOptions = {
  * @param props - Additional properties for the 3D group element
  * @returns JSX.Element
  */
-export function IconsContainer({
+const MemoizedIconsContainer = memo(function IconsContainer({
     width,
     icons,
     scalar,
@@ -75,7 +75,7 @@ export function IconsContainer({
             true
         );
     });
-
+    console.log('je suis reconstruit tout le temps');
     return (
         <group ref={groupRef} {...props}>
             <Center name="icon__center-container" bottom>
@@ -91,6 +91,7 @@ export function IconsContainer({
                     >
                         <Suspense fallback={<PlaceholderIcon />}>
                             <IconWithText
+                                key={index + icon.name}
                                 scalar={0.8 * scalar}
                                 model={resolvePath(
                                     `@models/${
@@ -118,7 +119,8 @@ export function IconsContainer({
             </Center>
         </group>
     );
-}
+});
+export default MemoizedIconsContainer;
 
 /**
  * Resolves the path of the alias to the actual path.
