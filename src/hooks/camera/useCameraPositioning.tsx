@@ -101,9 +101,9 @@ export function useCameraPositioning() {
 
             // Adding interpolation to the camera position
             // const newCamPos = camera.position.clone().lerp(camPos, lerpFactor);
+            // Exactly the same position as the card
             const newCamPos = isClicked
-                ? // Exactly the same position as the card
-                  camPos.clone()
+                ? camPos.clone()
                 : camera.position.clone().lerp(camPos, effectiveLerpFactor);
             const newTarget = camTargetPos.clone();
 
