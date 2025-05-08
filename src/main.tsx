@@ -9,6 +9,8 @@ import { createBrowserRouter, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
 import { Header } from '@/components/HTML/header/Header.js';
 import useResize from '@/hooks/useResize.tsx';
+import JSONDatas from '@data/exemples.json';
+import { useSettings } from '@/hooks/useSettings.tsx';
 
 const router = createBrowserRouter([
     {
@@ -32,6 +34,9 @@ rootElement.render(
     </React.StrictMode>
 );
 
+const initialCameraFov = 20;
+const vFov = (initialCameraFov * Math.PI) / 180;
+const height = 2 * Math.tan(vFov / 2) * 20;
 /**
  * Layout de la page -
  * App.JSX est le <main> container et est utilisé pour matérialiser le Outlet -
@@ -41,12 +46,35 @@ export function Root(contentType: { contentType?: string }) {
     const errorContent = contentType.contentType === 'error';
     const { size } = useResize(100);
     const isTouchDevice = size[0] < 968;
+    const SETTINGS = useSettings(JSONDatas);
+
+    // // Specify boundaries & responsive boundaries
+    const aspectRatio = size[0] / size[1];
+    const width = height * aspectRatio;
+
+    const scaleX = Math.max(0.5, size[0] / 1920);
+    const scaleY = Math.max(0.5, size[1] / 1080);
+
+    const responsiveBoundaries = {
+        x: SETTINGS.x * scaleX,
+        y: SETTINGS.y * scaleY,
+        z: SETTINGS.z,
+    };
 
     console.log('je render le root');
     return (
         <>
             <Header isTouchDevice={isTouchDevice} />
-            <App size={size}>{errorContent ? <PageError /> : <Outlet />}</App>
+            <App
+                width={width}
+                SETTINGS={SETTINGS}
+                size={size}
+                boundaries={responsiveBoundaries}
+                scaleX={scaleX}
+                scaleY={scaleY}
+            >
+                {errorContent ? <PageError /> : <Outlet />}
+            </App>
         </>
     );
 }
