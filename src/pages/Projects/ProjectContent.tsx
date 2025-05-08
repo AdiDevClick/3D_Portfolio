@@ -20,7 +20,6 @@ export function ProjectContent({ card }: cardType) {
             <TagsContainer>
                 {card.links.map((element) => {
                     const id = useId();
-                    console.log(element);
                     return (
                         <a
                             key={id}
