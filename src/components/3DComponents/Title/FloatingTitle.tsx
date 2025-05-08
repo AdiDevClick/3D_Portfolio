@@ -15,7 +15,6 @@ const floatOptions = {
  */
 type FloatingTitleProps = {
     children: ReactNode;
-    yPosition: number;
     size: number;
     isMobile?: boolean;
     scale: number;
@@ -23,37 +22,29 @@ type FloatingTitleProps = {
 } & JSX.IntrinsicElements['group'] & {
         [key: string]: any;
     };
+
 /**
  * FloatingTitle component.
  */
 const FloatingTitle = memo(function FloatingTitle({
     children,
-    yPosition,
-    position,
     size,
-    scale,
     isMobile,
     textProps,
     ...props
 }: FloatingTitleProps) {
     return (
-        <group position-y={yPosition * scale} position={position}>
-            <Float {...floatOptions}>
-                <Title
-                    rotation={[0, 3.164, 0]}
-                    size={size}
-                    isMobile={isMobile}
-                    textProps={{
-                        height: 40,
-                        scale: 0.01 * scale,
-                        ...textProps,
-                    }}
-                    {...props}
-                >
-                    {children}
-                </Title>
-            </Float>
-        </group>
+        <Float {...floatOptions}>
+            <Title
+                rotation={[0, 3.164, 0]}
+                size={size}
+                isMobile={isMobile}
+                textProps={textProps}
+                {...props}
+            >
+                {children}
+            </Title>
+        </Float>
     );
 });
 
