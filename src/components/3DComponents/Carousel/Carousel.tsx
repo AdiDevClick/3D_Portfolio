@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { DoubleSide, Mesh, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -11,13 +11,14 @@ import {
     updateCarouselContainer,
     updateTitlePosition,
 } from '@/components/3DComponents/Carousel/Functions.ts';
-import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.tsx';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { useLocation } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title.tsx';
 import { Float } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
+import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.tsx';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
 
 const activeForwardOffset = 0.5;
 const animationSpeed = 0.22;
@@ -273,9 +274,10 @@ export default function Carousel({
             setIsInitialLoading(false);
         }
     }, [showElements, loadedCount]);
-
+    console.log('je load le carousel');
     return (
         <group visible={activeURL} ref={projectsRef}>
+            {/* <Suspense fallback={null}> */}
             <mesh ref={boundariesRef} visible={SETTINGS.debug}>
                 <boxGeometry
                     args={[boundaries.x, boundaries.y, boundaries.z]}
@@ -287,17 +289,22 @@ export default function Carousel({
                     side={DoubleSide}
                 />
             </mesh>
-            <Float>
-                <Title
-                    name={'carousel__title'}
-                    ref={titleRef}
-                    rotation={[0, 3.164, 0]}
-                >
-                    Mes Projets
-                </Title>
-            </Float>
+            {/* </Suspense> */}
+            <Suspense fallback={<PlaceholderIcon />}>
+                <Float>
+                    <Title
+                        name={'carousel__title'}
+                        ref={titleRef}
+                        rotation={[0, 3.164, 0]}
+                    >
+                        Mes Projets
+                    </Title>
+                </Float>
+            </Suspense>
 
-            <CardContainer reducer={reducer} SETTINGS={SETTINGS} />
+            <Suspense fallback={<PlaceholderIcon />}>
+                <CardContainer reducer={reducer} SETTINGS={SETTINGS} />
+            </Suspense>
         </group>
     );
 }
