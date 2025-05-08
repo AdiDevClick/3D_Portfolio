@@ -7,14 +7,12 @@ import {
 } from '@react-three/drei';
 import montserratFont from '@assets/fonts/Montserrat_Thin_Regular.json';
 import { ReactNode, useRef } from 'react';
-import { Group, Vector3 } from 'three';
+import { Group } from 'three';
 
 const typedMontserratFont = montserratFont as unknown as FontData;
-// const montserratFont = 'src/assets/fonts/Montserrat_Thin_Regular.json';
 type TitleTypes = {
     children: string | string[] | ReactNode;
     size?: number;
-    position?: [number, number, number] | Vector3;
     textProps?: Omit<Text3DProps, 'children' | 'font' | 'size'>;
     [key: string]: any;
 } & Omit<CenterProps, 'children'>;
@@ -27,13 +25,13 @@ type TitleTypes = {
  * @param size - Text size (default = 30)
  * @param isMobile - If true, will use mobile settings (default = false)
  * @param textProps - Text3D properties
+ * @param position - Position of the Center and NOT THE TEXT
+ * @param rotation - Rotation of the Center and NOT THE TEXT
  * @param props - Center properties
  */
 export function Title({
     children,
     ref,
-    position,
-    rotation,
     name,
     size = 30,
     isMobile = false,
@@ -43,31 +41,25 @@ export function Title({
     const localRef = useRef<Group>(null!);
 
     return (
-        <group
-            ref={ref ? ref : (ref = localRef)}
-            position={position}
-            rotation={rotation}
-            name={name}
-        >
-            <Center front {...props}>
-                <Text3D
-                    castShadow
-                    bevelEnabled={true}
-                    curveSegments={isMobile ? 1 : 32}
-                    bevelSegments={isMobile ? 1 : 3}
-                    bevelThickness={1}
-                    bevelSize={2}
-                    bevelOffset={0}
-                    scale={0.01}
-                    size={size}
-                    height={1}
-                    smooth={1}
-                    font={typedMontserratFont}
-                    {...textProps}
-                >
-                    {children}
-                    {/* <meshNormalMaterial /> */}
-                    {/* <MeshTransmissionMaterial
+        <Center front ref={ref ? ref : (ref = localRef)} name={name} {...props}>
+            <Text3D
+                castShadow
+                bevelEnabled={true}
+                curveSegments={isMobile ? 1 : 32}
+                bevelSegments={isMobile ? 1 : 3}
+                bevelThickness={1}
+                bevelSize={2}
+                bevelOffset={0}
+                scale={0.01}
+                size={size}
+                height={1}
+                smooth={1}
+                font={typedMontserratFont}
+                {...textProps}
+            >
+                {children}
+                {/* <meshNormalMaterial /> */}
+                {/* <MeshTransmissionMaterial
                             clearcoat={1}
                             samples={isMobile ? 1 : 8}
                             thickness={40}
@@ -76,9 +68,8 @@ export function Title({
                             resolution={isMobile ? 256 : 2048}
                             distortion={0}
                         /> */}
-                    <meshLambertMaterial />
-                </Text3D>
-            </Center>
-        </group>
+                <meshLambertMaterial />
+            </Text3D>
+        </Center>
     );
 }
