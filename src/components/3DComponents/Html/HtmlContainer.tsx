@@ -18,7 +18,6 @@ type HtmlContainerTypes = {
  * Il faut lui passer un children contenant les éléments voulus -
  *
  * @param children - HTML content to display
- * @param reducer - Reducer type for the carousel
  * @param dynamicContent - If true, the content will be measured on each frame
  * @param forceMeasure - If true, will force the measure/re-measure scaling of the content
  * @param distanceFactor - Distance factor for the HTML element (default = 1)
@@ -26,7 +25,6 @@ type HtmlContainerTypes = {
  */
 export function HtmlContainer({
     children,
-    reducer,
     dynamicContent = false,
     forceMeasure = false,
     distanceFactor = 1,
