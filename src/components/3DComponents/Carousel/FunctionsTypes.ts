@@ -7,7 +7,8 @@ import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { Vector3 } from 'three';
 
 export interface CardProps {
-    reducer: ReducerType;
+    updateBending: ReducerType['updateBending'];
+    updateWidth: ReducerType['updateWidth'];
     delta: number;
     scale: Vector3;
     card: ElementType;
