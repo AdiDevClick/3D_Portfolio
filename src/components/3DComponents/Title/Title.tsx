@@ -6,8 +6,7 @@ import {
     Text3DProps,
 } from '@react-three/drei';
 import montserratFont from '@assets/fonts/Montserrat_Thin_Regular.json';
-import { ReactNode, useRef } from 'react';
-import { Group } from 'three';
+import { ReactNode } from 'react';
 
 const typedMontserratFont = montserratFont as unknown as FontData;
 type TitleTypes = {
@@ -36,12 +35,11 @@ export function Title({
     size = 30,
     isMobile = false,
     textProps = {},
+    scalar,
     ...props
 }: TitleTypes) {
-    const localRef = useRef<Group>(null!);
-
     return (
-        <Center front ref={ref ? ref : (ref = localRef)} name={name} {...props}>
+        <Center front ref={ref} name={name} {...props}>
             <Text3D
                 castShadow
                 bevelEnabled={true}
