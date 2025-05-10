@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import '@css/index.css';
 import '@css/Main.scss';
@@ -9,7 +9,7 @@ import { createBrowserRouter, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError.tsx';
 import { Header } from '@/components/HTML/header/Header.js';
 import useResize from '@/hooks/useResize.tsx';
-import JSONDatas from '@data/exemples.json';
+import datas from '@data/exemples.json';
 import { useSettings } from '@/hooks/useSettings.tsx';
 
 const router = createBrowserRouter([
@@ -46,7 +46,7 @@ export function Root(contentType: { contentType?: string }) {
     const errorContent = contentType.contentType === 'error';
     const { size } = useResize(100);
     const isTouchDevice = size[0] < 968;
-    const SETTINGS = useSettings(JSONDatas);
+    const SETTINGS = useSettings(datas);
 
     // // Specify boundaries & responsive boundaries
     const aspectRatio = size[0] / size[1];
@@ -61,12 +61,23 @@ export function Root(contentType: { contentType?: string }) {
         z: SETTINGS.z,
     };
 
-    console.log('je render le root');
+    /**
+     * Création des propriétés des cartes -
+     */
+    // const cardsMemo = useMemo(() => {
+    //     return new Array(SETTINGS.CARDS_COUNT)
+    //         .fill(null)
+    //         .map((_, i, self) =>
+    //             createCardProperties(SETTINGS, datas, i, self, id, isMobile)
+    //         );
+    // }, [SETTINGS.CARDS_COUNT]);
+
     return (
         <>
             <Header isTouchDevice={isTouchDevice} />
             <App
                 width={width}
+                // cards={cardsMemo}
                 SETTINGS={SETTINGS}
                 size={size}
                 boundaries={responsiveBoundaries}
