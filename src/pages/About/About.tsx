@@ -3,11 +3,9 @@ import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx'
 import { AboutContent } from '@/pages/About/AboutContent.tsx';
 import '@css/About.scss';
 import { Center, Float } from '@react-three/drei';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { Group } from 'three';
-import { useLocation } from 'react-router';
 import { useFrame } from '@react-three/fiber';
-import { folder, useControls } from 'leva';
 import GitIcon from '@models/optimized/Github_mobile_model.glb';
 import LinkedIn from '@models/optimized/Linkedin_model.glb';
 import {
@@ -161,7 +159,6 @@ const MemoizedAbout = memo(function About({
             }
         }
     });
-    console.log('Je load le about container');
     return (
         <group visible={isActive} ref={groupRef}>
             <Float {...floatOptions}>
