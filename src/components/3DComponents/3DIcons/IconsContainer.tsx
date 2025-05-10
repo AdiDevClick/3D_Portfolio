@@ -82,7 +82,7 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                 {icons.map((icon, index) => (
                     <GridLayout
                         width={width}
-                        key={index}
+                        key={icon.name + '-grid'}
                         name={icon.name + '-grid'}
                         length={icons.length}
                         index={index}
@@ -91,7 +91,7 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                     >
                         <Suspense fallback={<PlaceholderIcon />}>
                             <IconWithText
-                                key={index + icon.name}
+                                key={icon.name}
                                 scalar={0.8 * scalar}
                                 model={resolvePath(
                                     `@models/${
@@ -109,7 +109,13 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                                 name={'icon__content'}
                             />
                         </Suspense>
-                        <group position={[0, -0.6 * scalar, 0]}>
+                        <group
+                            position={
+                                isMobile
+                                    ? [-0.5 * scalar, -1.5 * scalar, 0]
+                                    : [0, -0.6 * scalar, 0]
+                            }
+                        >
                             <Center bottom>
                                 <HexCell scalar={scalar} />
                             </Center>
