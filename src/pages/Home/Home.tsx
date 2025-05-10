@@ -8,15 +8,16 @@ import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
-import { useLocation } from 'react-router';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle.tsx';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle.tsx';
+import { ContactShadows } from '@react-three/drei';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
     contentHeight: ReducerType['contentHeight'];
     isMobile: ReducerType['isMobile'];
     generalScaleX: ReducerType['generalScaleX'];
+    visible: ReducerType['visible'];
     /** @defaultValue 0.5 */
     margin?: number;
 };
@@ -32,19 +33,21 @@ let currentStackPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
  * @param isMobile - Is the device mobile
  * @param generalScaleX - General scale factor for the content from the reducer
  * @param margin - **Default=0.5** - Margin between the title and the stack.
+ * @param visible - Visibility of the current active page in the reducer
  */
 const MemoizedHome = memo(function Home({
     contentWidth,
     contentHeight,
     isMobile,
     generalScaleX,
+    visible,
+    /** @defaultValue 0.5 */
     margin = 0.5,
 }: HomeTypes) {
     const frameCountRef = useRef(0);
     const yPosition = -(contentHeight ?? 10) * generalScaleX - margin;
 
-    const location = useLocation();
-    const isActive = location.pathname === '/';
+    const isActive = visible === 'home';
 
     const titleRef = useRef<Group>(null);
     const groupRef = useRef<Group>(null);
@@ -87,9 +90,17 @@ const MemoizedHome = memo(function Home({
         }
     });
 
-    console.log('Je render le home');
     return (
         <group visible={isActive} ref={groupRef}>
+            {/* <SpotLight
+                castShadow
+                position={[-3.5, 4.5, -1.5]}
+                distance={10}
+                intensity={10}
+                angle={0.5}
+                attenuation={5}
+                anglePower={5}
+            /> */}
             <HomePageTitle
                 ref={titleRef as RefObject<Group>}
                 scale={generalScaleX}
@@ -99,7 +110,7 @@ const MemoizedHome = memo(function Home({
                 <FloatingTitle
                     scale={generalScaleX}
                     size={30}
-                    isMobile={isMobile}
+                    // isMobile={isMobile}
                     textProps={{
                         height: 20,
                     }}
@@ -122,6 +133,12 @@ const MemoizedHome = memo(function Home({
                     />
                 </Suspense>
             </group>
+            <ContactShadows
+                frames={1}
+                position={[0, -2.3, 0]}
+                blur={1}
+                opacity={0.6}
+            />
         </group>
     );
 });
