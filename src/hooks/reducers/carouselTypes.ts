@@ -95,6 +95,8 @@ export interface ElementType extends CardContentType {
     cover?: string;
     bending: number;
     texture?: Texture;
+    /** The loaded state of the card in the card container */
+    _loaded?: boolean;
 }
 
 export interface ReducerType {
