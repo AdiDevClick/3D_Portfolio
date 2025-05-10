@@ -27,6 +27,7 @@ export function HomePageTitle({
             >
                 Bienvenue
             </FloatingTitle>
+
             <FloatingTitle
                 scale={scale}
                 size={60}
