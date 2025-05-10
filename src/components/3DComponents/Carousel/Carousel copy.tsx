@@ -18,7 +18,7 @@ import {
     handleCardCollisions,
     handleNeighborCollision,
 } from '@/components/3DComponents/Carousel/Functions.ts';
-import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.tsx';
+import { CardContainer } from '@/components/3DComponents/Cards/CardsContainer';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { useLocation } from 'react-router';
 import { useLookAtSmooth } from '@/hooks/useLookAtSmooth.tsx';
