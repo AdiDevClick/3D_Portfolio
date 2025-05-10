@@ -1,23 +1,10 @@
 import { Scene } from '@/components/3DComponents/Scene/Scene.tsx';
-import { useSettings } from '@/hooks/useSettings.tsx';
 import { Canvas } from '@react-three/fiber';
 import { Leva } from 'leva';
-import {
-    createContext,
-    PropsWithChildren,
-    ReactNode,
-    Suspense,
-    use,
-    useEffect,
-    useRef,
-} from 'react';
-import JSONDatas from '@data/exemples.json';
+import { ReactNode, useEffect, useRef } from 'react';
 import { Experience } from '@/components/3DComponents/Experience/Experience.tsx';
-import { CameraControls, StatsGl } from '@react-three/drei';
-import { Perf } from 'r3f-perf';
-import { LoadingScene } from '@/components/Loaders/Loader.tsx';
+import { CameraControls, Loader } from '@react-three/drei';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
-import { SceneParams } from '@/components/3DComponents/Scene/SceneParams.tsx';
 
 const initialCameraFov = 20;
 const vFov = (initialCameraFov * Math.PI) / 180;
@@ -36,11 +23,12 @@ export default function App({
     boundaries,
     scaleX,
     scaleY,
+    cards,
 }: {
     children: ReactNode;
     size: number[];
 }) {
-    // const cameraRef = useRef<CameraControls>(null!);
+    const cameraRef = useRef<CameraControls>(null!);
     const reducer = useCarousel();
 
     useEffect(() => {
@@ -65,7 +53,6 @@ export default function App({
     //     const gltfLoader = new GLTFLoader();
     //     gltfLoader.setDRACOLoader(dracoLoader);
     // }, []);
-    console.log('je render lapp');
 
     return (
         <main className="main-container">
@@ -90,7 +77,7 @@ export default function App({
                 // camera={{ position: [0, 0, -20], fov: 20 }}
                 // dpr={[0.9, 1]}
                 dpr={window.devicePixelRatio}
-                flat={isMobile ? true : false}
+                // flat={isMobile ? true : false}
                 // dpr={
                 //     isMobile
                 //         ? window.devicePixelRatio * 0.8
@@ -116,23 +103,29 @@ export default function App({
                     {children}
                 </Scene> */}
                 {/* </Suspense> */}
+                {/* <Suspense fallback={null}>
+                    <Preload all />
+                </Suspense> */}
                 {/* <SceneParams SETTINGS={SETTINGS} size={size}> */}
-                <Experience />
-                <Suspense fallback={<LoadingScene />}>
-                    <Scene
-                        SETTINGS={SETTINGS}
-                        size={size}
-                        width={width}
-                        scaleX={scaleX}
-                        boundaries={boundaries}
-                        reducer={reducer}
-                    >
-                        {children}
-                    </Scene>
-                </Suspense>
+                {/* <Suspense fallback={<LoadingScene />}> */}
+                <Scene
+                    SETTINGS={SETTINGS}
+                    size={size}
+                    width={width}
+                    scaleX={scaleX}
+                    cards={cards}
+                    boundaries={boundaries}
+                    reducer={reducer}
+                >
+                    {children}
+                </Scene>
+                <Experience ref={cameraRef} reducer={reducer} />
+
+                {/* </Suspense> */}
                 {/* </SceneParams> */}
             </Canvas>
             {/* </Suspense> */}
+            <Loader />
         </main>
     );
 }
