@@ -6,6 +6,7 @@ import { Group } from 'three';
 import { easing } from 'maath';
 import { JSX, useRef, useState } from 'react';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
 type IconsTypes = {
     model: string;
     datas: { name: string; text: string };
@@ -104,14 +105,28 @@ export function IconWithText({
                                 );
                             })}
                         </Center>
-                        <Title
-                            right
-                            name="icons-Container__title"
-                            position-x={0.3 * scalar}
-                            textProps={{ scale: 0.01 * scalar }}
-                        >
-                            {datas.text}
-                        </Title>
+
+                        {!isMobile ? (
+                            <Title
+                                right
+                                isMobile={isMobile}
+                                name="icons-Container__title"
+                                position-x={0.3 * scalar}
+                                textProps={{ scale: 0.01 * scalar }}
+                                scalar={scalar}
+                            >
+                                {datas.text}
+                            </Title>
+                        ) : (
+                            <Center
+                                position-x={1 * scalar}
+                                position-y={1.2 * scalar}
+                                right
+                                name="icons-Container__title"
+                            >
+                                <FallbackText>{datas.text}</FallbackText>
+                            </Center>
+                        )}
                     </Float>
                 </group>
             </Center>
