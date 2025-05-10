@@ -27,13 +27,25 @@ export function useCarousel(): ReducerType {
     const [state, dispatch] = useReducer(carouselReducer, initialState);
 
     let activeContent = null;
+    let loadedCardCount = 0;
+    let allCardsLoaded = false;
 
     if (state.elements.length > 0) {
         activeContent = state.elements.find(
             (value) => value.isActive || value.isClicked
         );
+
+        loadedCardCount = state.elements.filter(
+            (value) => value._loaded === true
+        ).length;
+
+        if (loadedCardCount >= state.elements.length) {
+            allCardsLoaded = true;
+        }
     }
+
     return {
+        allCardsLoaded: allCardsLoaded,
         loadedCount: state.loadedCount,
         visible: state.visible,
         isMobile: state.isMobile,
