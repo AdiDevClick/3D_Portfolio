@@ -183,7 +183,7 @@ export function onClickHandler(
         return;
     }
     navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
-        replace: true,
+        replace: false,
     });
     reducer.activateElement(card, !card.isClicked ? true : false);
     reducer.clickElement(card);
