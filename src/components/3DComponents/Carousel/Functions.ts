@@ -226,7 +226,7 @@ export function handleNormalAnimation(
     cardHoverRadius: number,
     cardHoverZoom: number,
     maxBending: number,
-    { reducer, delta, card, scale }: CardProps
+    { updateWidth, updateBending, delta, card, scale }: CardProps
 ) {
     // // Scale the card size up
     easing.damp3(scale, cardHoverScale, 0.2, delta);
@@ -238,11 +238,11 @@ export function handleNormalAnimation(
     easing.damp(rotation, 'x', 0, 0.15, delta);
 
     if (!card.isActive && card.currentWidth > card.baseScale) {
-        reducer.updateWidth(card, card.currentWidth - delta);
+        updateWidth(card, card.currentWidth - delta);
     }
 
     if (!card.isActive && card.bending < maxBending) {
-        reducer.updateBending(card, card.bending + delta);
+        updateBending(card, card.bending + delta);
     }
 }
 
@@ -251,7 +251,7 @@ export function handleNormalAnimation(
  */
 export function handleClickedCardEffects(
     baseScale: number,
-    { delta, scale, card, reducer }: CardProps,
+    { delta, scale, card, updateWidth, updateBending }: CardProps,
     cardHoverScale: number
 ) {
     // Scale up animation
@@ -260,7 +260,7 @@ export function handleClickedCardEffects(
     // scale.lerp(targetScale, 0.15);
 
     // Bending effect disabled
-    if (card.bending > 0) reducer.updateBending(card, card.bending - delta);
+    if (card.bending > 0) updateBending(card, card.bending - delta);
     const targetWidth = baseScale + 0.4;
     const threshold = targetWidth * 0.05;
 
@@ -270,7 +270,7 @@ export function handleClickedCardEffects(
     ) {
         // Zoom Bounce effect
         // reducer.updateWidth(card, baseScale + 0.4);
-        reducer.updateWidth(card, cardHoverScale + 0.4);
+        updateWidth(card, cardHoverScale + 0.4);
         // reducer.updateWidth(card, card.currentWidth + delta);
     }
 }
@@ -280,12 +280,12 @@ export function handleClickedCardEffects(
  */
 export function handleActiveCardEffects(
     baseScale: number,
-    { card, delta, reducer, scale }: CardProps,
+    { card, delta, updateWidth, updateBending }: CardProps,
     cardHoverScale: number
 ): void {
     // Remove bending effect
     if (card.bending > 0) {
-        reducer.updateBending(card, card.bending - delta);
+        updateBending(card, card.bending - delta);
     }
 
     const targetWidth = baseScale + 0.2;
@@ -296,7 +296,7 @@ export function handleActiveCardEffects(
         card.currentWidth < targetWidth &&
         targetWidth - card.currentWidth > threshold
     ) {
-        reducer.updateWidth(card, cardHoverScale + 0.2);
+        updateWidth(card, cardHoverScale + 0.2);
         // reducer.updateWidth(card, card.currentWidth + delta);
         // Boucing effect
         // easing.damp3(scale, 0.5, 0.15, delta);
@@ -347,7 +347,7 @@ export function handleCardCollisions(
 /**
  * Updates the carousel container position and scale
  */
-export function updateCarouselContainer(
+export function animateCarouselContainer(
     projectsRef: RefObject<Group>,
     isAnimatingIn: boolean,
     activeURL: boolean,
