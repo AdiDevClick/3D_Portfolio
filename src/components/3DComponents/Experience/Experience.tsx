@@ -1,11 +1,16 @@
 import { SimpleEnvironment } from '@/components/Loaders/Loader.tsx';
 import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.ts';
+import { wait } from '@/functions/promises.js';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
 import { cameraLookAt } from '@/utils/cameraLooktAt.ts';
 import { CameraControls, Environment } from '@react-three/drei';
 import { Suspense, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { MathUtils, Vector3 } from 'three';
+
+interface ErrorWithCause extends Error {
+    cause?: { status: number };
+}
 
 let minAngle = -Infinity;
 let maxAngle = Infinity;
@@ -133,46 +138,57 @@ export function Experience({ ref, reducer }) {
             return;
         }
 
-        let attempts = 0;
-        const maxAttempts = 5;
         const initialDelay = 500;
 
-        const activateCardByURL = () => {
-            attempts++;
+        const activateCardByURL = async (retries = 5, delay = 500) => {
+            try {
+                // await wait(delay, 'Attente pour un nouvel essai');
 
-            if (attempts > maxAttempts) {
-                // Max attempts reached - redirect to carousel
-                setViewMode('carousel');
-                navigate('/projets', { replace: true });
-                return;
-            }
+                if (showElements.length === 0) {
+                    throw createHttpError('Try again', 403);
+                }
 
-            if (showElements.length === 0) {
-                // Retry
-                return setTimeout(activateCardByURL, 300);
-            }
+                const targetCard = showElements.find(
+                    (element: { id: string }) => element.id === id
+                );
 
-            const targetCard = showElements.find(
-                (element) => element.id === id
-            );
+                if (!targetCard) {
+                    throw createHttpError('No project found', 404);
+                }
 
-            if (!targetCard) {
-                // No cards ? - redirect to carousel
-                setViewMode('carousel');
-                navigate('/projets', { replace: true });
-                return;
-            }
+                // if (!targetCard.ref?.current) {
+                //     console.log(targetCard);
+                //     throw new Error('Card reference not ready', {
+                //         cause: { status: 403 },
+                //     });
+                // }
 
-            // Wait for the carousel mode to establish
-            setTimeout(() => {
+                // Wait for the carousel mode to establish
+                await wait(400);
+
                 // Activate card to focus
                 activateElement(targetCard, true);
+                navigate('/projets', { replace: false });
+                await wait(600);
 
                 // Activate click after a short delay
-                setTimeout(() => {
-                    clickElement(targetCard);
-                }, 600);
-            }, 400);
+                clickElement(targetCard);
+                navigate('/projets/' + id, { replace: false });
+            } catch (error) {
+                const typedError = error as ErrorWithCause;
+
+                if (retries > 0 && typedError.cause?.status === 403) {
+                    await wait(delay, 'Attente pour un nouvel essai');
+                    return activateCardByURL(retries - 1, delay * 2);
+                }
+
+                if (typedError.cause?.status === 404) {
+                    setViewMode('carousel');
+                    navigate('/projets', { replace: false });
+                    return navigate('/404', { replace: false });
+                }
+                console.error('Erreur non gérée :', typedError);
+            }
         };
 
         // Awaits the initialization of the elements (initialDelay)
@@ -180,7 +196,7 @@ export function Experience({ ref, reducer }) {
         const timer = setTimeout(activateCardByURL, initialDelay);
 
         return () => clearTimeout(timer);
-    }, [id, showElements, ref.current]);
+    }, [id, showElements]);
 
     return (
         <>
@@ -281,4 +297,13 @@ export function onControlStart(e, active) {
 
     // maxAngle = cardAngles.active + Math.PI / 8;
     // minAngle = cardAngles.active - Math.PI / 8;
+}
+function createHttpError(message: string, status: number): Error {
+    const error = new Error(message);
+
+    Object.defineProperty(error, 'cause', {
+        value: { status },
+        enumerable: true,
+    });
+    return error;
 }
