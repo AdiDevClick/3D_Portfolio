@@ -26,12 +26,10 @@ const cameraPositions = {
 
 export function Experience({ ref, reducer }) {
     const {
-        generalScaleX,
-        contentHeight,
-        contentWidth,
         activeContent,
         isMobile,
         showElements,
+        setViewMode,
         activateElement,
         clickElement,
         visible,
@@ -42,7 +40,6 @@ export function Experience({ ref, reducer }) {
     const id = params['*']?.split('/')[1];
 
     const location = useLocation();
-    // const [viewMode, setViewMode] = useState('home');
     const prevCamPosRef = useRef(DEFAULT_CAMERA_POSITION.clone());
     const { positionCameraToCard } = useCameraPositioning();
 
@@ -75,11 +72,10 @@ export function Experience({ ref, reducer }) {
                 );
                 break;
 
-            case 'card-hovered':
             case 'card-opened':
             case 'card-detail':
                 if (activeContent) {
-                    console.log('je suis pourtant active');
+                    console.log('JAI UN ACTIVE CONTENT');
                     prevCamPosRef.current = camera.position.clone();
 
                     positionCameraToCard(
@@ -88,6 +84,10 @@ export function Experience({ ref, reducer }) {
                         isMobile,
                         activeContent.isClicked
                     );
+                    break;
+                }
+                if (!activeContent) {
+                    // useEffect Camera positioning on URL loading will take effect
                 }
                 break;
         }
@@ -100,132 +100,24 @@ export function Experience({ ref, reducer }) {
      */
     useEffect(() => {
         if (location.pathname === '/') {
-            reducer.setViewMode('home');
-            // setVirtualPageCount(5);
-        } else if (
-            //     location.pathname.includes('projets') &&
-            //     !id &&
-            //     !activeContent
-            // ) {
-            location.pathname.includes('projets')
-        ) {
-            // setVirtualPageCount(0);
-            reducer.setViewMode('carousel');
-            console.log('je suis revenu ici');
-            if (activeContent) {
-                reducer.setViewMode('card-hovered');
-            }
-
+            if (visible !== 'home') setViewMode('home');
+        } else if (location.pathname.includes('projets')) {
             if (id) {
-                // } else if (id || activeContent) {
-                //     reducer.setViewMode('card-detail');
-                reducer.setViewMode('card-opened');
-
-                // } else if (location.pathname.includes('projets') && id) {
-                //     // } else if (id) {
-                //     reducer.setViewMode('card-opened');
-
-                // setVirtualPageCount(1.3);
+                if (visible !== 'card-detail') setViewMode('card-detail');
+            } else if (activeContent?.isActive && !activeContent?.isClicked) {
+                if (visible !== 'card-detail') setViewMode('card-detail');
+            } else {
+                if (visible !== 'carousel') setViewMode('carousel');
             }
-            // } else if (id || activeContent) {
-            //     reducer.setViewMode('card-detail');
         } else if (location.pathname.includes('a-propos')) {
-            reducer.setViewMode('about');
-            // setVirtualPageCount(1.3);
+            if (visible !== 'about') setViewMode('about');
         } else if (location.pathname.includes('contact')) {
-            reducer.setViewMode('contact');
+            if (visible !== 'contact') setViewMode('contact');
         } else {
-            reducer.setViewMode('error');
+            if (visible !== 'error') setViewMode('error');
         }
-        console.log('reducer.viewMode', reducer.visible);
-    }, [location, id, activeContent]);
+    }, [location.pathname, id, activeContent]);
 
-    // // useEffect(() => {
-    // //     reducer.setViewMode(viewMode);
-    // // }, [viewMode]);
-
-    // useEffect(() => {
-    //     if (
-    //         // !menuRef.current ||
-    //         !ref.current ||
-    //         !params['*']?.includes('projets') ||
-    //         !id ||
-    //         reducer.activeContent
-    //     ) {
-    //         return;
-    //     }
-    //     const initialDelay = 500;
-
-    //     // !! IMPORTANT !! Sets the camera to the carousel position
-    //     // before activating the card to fix a camera bug
-    //     // setViewMode('carousel');
-    //     reducer.setViewMode('carousel');
-    //     const activateCardByURL = () => {
-    //         // Card exists ?
-    //         const targetCard = reducer.showElements.find(
-    //             (element) => element.id === id
-    //         );
-
-    //         if (targetCard) {
-    //             // !! IMPORTANT !! Activate card to focus
-    //             reducer.activateElement(targetCard, true);
-    //             // Camera turns to the active card
-    //             setTimeout(() => {
-    //                 if (!targetCard.ref?.current) {
-    //                     // Retry
-    //                     return activateCardByURL();
-    //                 }
-
-    //                 const { camera } = ref.current;
-    //                 // Force camera position
-    //                 positionCameraToCard(
-    //                     ref,
-    //                     targetCard,
-    //                     reducer.isMobile,
-    //                     false,
-    //                     1.0
-    //                 );
-
-    //                 // Opening card animation
-    //                 setTimeout(() => {
-    //                     // Expand the card
-    //                     reducer.clickElement(targetCard);
-
-    //                     setTimeout(() => {
-    //                         camera.fov = reducer.isMobile ? 19 : 20;
-    //                         camera.updateProjectionMatrix();
-    //                     }, 300);
-    //                 }, 600);
-    //             }, 300);
-    //         } else {
-    //             // Retry
-    //             if (reducer.showElements.length > 0) {
-    //                 // Si nous avons déjà des cartes mais pas celle demandée, rediriger
-    //                 setTimeout(() => {
-    //                     if (
-    //                         !reducer.showElements.find(
-    //                             (element) => element.id === id
-    //                         )
-    //                     ) {
-    //                         navigate('/projets', { replace: true });
-    //                     }
-    //                 }, 1000);
-    //             } else {
-    //                 console.log(
-    //                     'Attente du chargement des cartes avant de réessayer...'
-    //                 );
-    //                 setTimeout(activateCardByURL, 300);
-    //             }
-    //         }
-    //     };
-
-    //     // init animations
-    //     const timer = setTimeout(activateCardByURL, initialDelay);
-
-    //     return () => clearTimeout(timer);
-    // }, [reducer.showElements, viewMode]);
-    // const reducer = use(ReducerContext);
-    // console.log(reducer, 'reducer');
     /**
      * Camera positioning on URL loading -
      * @description : Camera is positionned on the active card
@@ -248,12 +140,9 @@ export function Experience({ ref, reducer }) {
         const activateCardByURL = () => {
             attempts++;
 
-            // !! IMPORTANT !! Sets the camera to the carousel position
-            // reducer.setViewMode('carousel');
-
             if (attempts > maxAttempts) {
                 // Max attempts reached - redirect to carousel
-                reducer.setViewMode('carousel');
+                setViewMode('carousel');
                 navigate('/projets', { replace: true });
                 return;
             }
@@ -269,12 +158,12 @@ export function Experience({ ref, reducer }) {
 
             if (!targetCard) {
                 // No cards ? - redirect to carousel
-                reducer.setViewMode('carousel');
+                setViewMode('carousel');
                 navigate('/projets', { replace: true });
                 return;
             }
 
-            // Laisser le temps au mode carousel de s'établir
+            // Wait for the carousel mode to establish
             setTimeout(() => {
                 // Activate card to focus
                 activateElement(targetCard, true);
@@ -292,6 +181,7 @@ export function Experience({ ref, reducer }) {
 
         return () => clearTimeout(timer);
     }, [id, showElements, ref.current]);
+
     return (
         <>
             <directionalLight
@@ -334,9 +224,7 @@ export function Experience({ ref, reducer }) {
                         two: 0,
                         three: 0,
                     }}
-                    onStart={(e) =>
-                        onControlStart(e, reducer.activeContent?.isClicked)
-                    }
+                    onStart={(e) => onControlStart(e, activeContent?.isClicked)}
                 />
             </directionalLight>
 
