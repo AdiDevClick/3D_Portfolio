@@ -5,10 +5,10 @@ import { easing } from 'maath';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import {
     animateCardEntry,
+    animateCarouselContainer,
     calculateCardPositions,
     createCardProperties,
     handleCardCollisions,
-    updateCarouselContainer,
     updateTitlePosition,
 } from '@/components/3DComponents/Carousel/Functions.ts';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
@@ -17,8 +17,10 @@ import { Title } from '@/components/3DComponents/Title/Title.tsx';
 import { Float } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
-import { CardContainer } from '@/components/3DComponents/Cards/CardContainer.tsx';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
+import datas from '@data/exemples.json';
+import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer.tsx';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
 
 const activeForwardOffset = 0.5;
 const animationSpeed = 0.22;
@@ -31,6 +33,7 @@ const midPoint = new Vector3();
 const bezierPos = new Vector3();
 
 let frameCountRef = 0;
+// let isCarouselLoaded = false;
 
 interface CarouselProps {
     reducer: ReducerType;
@@ -40,7 +43,6 @@ interface CarouselProps {
 }
 export default function Carousel({
     boundaries,
-    datas,
     reducer,
     SETTINGS,
 }: CarouselProps) {
@@ -49,7 +51,13 @@ export default function Carousel({
         activeContent,
         showElements,
         isMobile,
-        loadedCount,
+        allCardsLoaded,
+        visible,
+        addElements,
+        updateElements,
+        deleteElements,
+        generalScaleX,
+        updateBending,
     } = reducer;
 
     const projectsRef = useRef<Group>(null!);
@@ -62,9 +70,10 @@ export default function Carousel({
     // États pour l'animation
     const [isAnimatingIn, setIsAnimatingIn] = useState(false);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [isCarouselLoaded, setIsCarouselLoaded] = useState(false);
 
     const activeURL = location.pathname.includes('projets');
-    const activeProject = location.pathname.split('/')[2];
+    const activeProject = activeURL && location.pathname.split('/')[2];
 
     /**
      * Création des propriétés des cartes -
@@ -75,14 +84,7 @@ export default function Carousel({
             .map((_, i, self) =>
                 createCardProperties(SETTINGS, datas, i, self, id, isMobile)
             );
-    }, [
-        SETTINGS.CARDS_COUNT,
-        SETTINGS.CARD_SCALE,
-        SETTINGS.CONTAINER_SCALE,
-        SETTINGS.THREED,
-        id,
-        datas,
-    ]);
+    }, [SETTINGS.CARDS_COUNT, SETTINGS.CARD_SCALE, SETTINGS.CONTAINER_SCALE]);
 
     const cardPositionsMemo = useMemo(() => {
         if (!showElements.length)
@@ -131,6 +133,7 @@ export default function Carousel({
      */
     useEffect(() => {
         const currentIds = showElements.map((el) => el.id);
+
         cardsMemo.forEach((card) => {
             if (!currentIds.includes(card.id)) {
                 reducer.addElements(card);
@@ -138,6 +141,7 @@ export default function Carousel({
                 reducer.updateElements(card);
             }
         });
+
         if (cardsMemo.length < showElements.length) {
             reducer.deleteElements(cardsMemo);
         }
@@ -147,23 +151,43 @@ export default function Carousel({
      * Démarre l'animation lorsque la page devient active
      */
     useEffect(() => {
-        // Turn off animations
+        // Leave the page ? - Turn off animations
         if (!activeURL) {
             if (isAnimatingIn) setIsAnimatingIn(false);
+            setIsCarouselLoaded(false);
             if (activeContent) {
                 // setShouldBreathe(activeURL);
                 activeContent.isActive = false;
                 activeContent.isClicked = false;
             }
+            return;
         }
 
         // Animations init
-        if (activeURL && !activeProject && !isInitialLoading) {
-            // setShouldBreathe(activeURL);
-            animationProgress = 0;
-            setIsAnimatingIn(true);
+        if (activeURL) {
+            // Make sure the carousel is loaded when direct URL access
+            if (activeProject && !isCarouselLoaded) {
+                setIsCarouselLoaded(true);
+                return;
+            }
+
+            if (!activeProject && !isInitialLoading && !isCarouselLoaded) {
+                // setShouldBreathe(activeURL);
+                animationProgress = 0;
+                setIsAnimatingIn(true);
+                return;
+            }
+
+            if (
+                visible === 'carousel' &&
+                activeContent?.isClicked &&
+                !activeProject
+            ) {
+                activeContent.isActive = false;
+                activeContent.isClicked = false;
+            }
         }
-    }, [activeURL, isInitialLoading]);
+    }, [activeURL, isInitialLoading, activeProject, visible]);
 
     useFrame((state, delta) => {
         if (!projectsRef.current) return;
@@ -176,11 +200,10 @@ export default function Carousel({
             frameCountRef,
             isMobile
         );
-
         const commonParams = { animationProgress, delta };
 
-        // Update carousel container
-        updateCarouselContainer(
+        // animate carousel container
+        animateCarouselContainer(
             projectsRef,
             isAnimatingIn,
             activeURL,
@@ -191,11 +214,12 @@ export default function Carousel({
 
         // Update title position
         updateTitlePosition(titleRef, contentHeight ?? 0, delta);
-        // Handle animation progress
 
+        // Handle animation progress
         if (isAnimatingIn) {
             // !! IMPORTANT !! Disable collisions during animation
             SETTINGS.set({ COLLISIONS: false });
+            if (!isCarouselLoaded) setIsCarouselLoaded(true);
 
             animationProgress = Math.min(
                 1,
@@ -219,6 +243,7 @@ export default function Carousel({
         }
         // Find active card
         const { itemPositions, activeCard } = cardPositionsMemo;
+
         showElements.forEach((item, i) => {
             if (
                 !item.ref?.current ||
@@ -257,6 +282,7 @@ export default function Carousel({
                 );
             }
             if (!activeURL) return;
+
             const { position, rotation } = item.ref.current;
             easing.damp3(
                 position,
@@ -270,14 +296,19 @@ export default function Carousel({
     });
 
     useEffect(() => {
-        if (loadedCount >= showElements.length) {
+        if (allCardsLoaded) {
             setIsInitialLoading(false);
         }
-    }, [showElements, loadedCount]);
-    console.log('je load le carousel');
+    }, [showElements, allCardsLoaded]);
+
+    // useEffect(() => {
+    //     if (loadedCount >= showElements.length) {
+    //         setIsInitialLoading(false);
+    //     }
+    // }, [showElements, loadedCount]);
+
     return (
         <group visible={activeURL} ref={projectsRef}>
-            {/* <Suspense fallback={null}> */}
             <mesh ref={boundariesRef} visible={SETTINGS.debug}>
                 <boxGeometry
                     args={[boundaries.x, boundaries.y, boundaries.z]}
@@ -289,9 +320,8 @@ export default function Carousel({
                     side={DoubleSide}
                 />
             </mesh>
-            {/* </Suspense> */}
-            <Suspense fallback={<PlaceholderIcon />}>
-                <Float>
+            <Float>
+                {isCarouselLoaded ? (
                     <Title
                         scale={reducer.generalScaleX}
                         name={'carousel__title'}
@@ -300,12 +330,73 @@ export default function Carousel({
                     >
                         Mes Projets
                     </Title>
-                </Float>
-            </Suspense>
+                ) : (
+                    <FallbackText
+                        scale={4.2 * reducer.generalScaleX}
+                        name={'carousel__title'}
+                        ref={titleRef}
+                        rotation={[0, 3.164, 0]}
+                    >
+                        Mes Projets
+                    </FallbackText>
+                )}
+            </Float>
 
             <Suspense fallback={<PlaceholderIcon />}>
-                <CardContainer reducer={reducer} SETTINGS={SETTINGS} />
+                <MemoizedCardsContainer
+                    reducer={reducer}
+                    SETTINGS={SETTINGS}
+                    isCarouselLoaded={isCarouselLoaded}
+                />
             </Suspense>
+            {/* <mesh
+                visible={activeURL}
+                position-y={-1.2}
+                rotation={[-Math.PI / 2, 0, 0]}
+            >
+                <circleGeometry args={[3, 20]} />
+                <MeshReflectorMaterial
+                    color="#878790"
+                    blur={[400, 400]}
+                    resolution={1024}
+                    mixBlur={1}
+                    mixStrength={3}
+                    depthScale={1}
+                    minDepthThreshold={0.85}
+                    metalness={0}
+                    roughness={1}
+                />
+            </mesh> */}
+
+            {/* <Suspense fallback={<PlaceholderIcon />}>
+                <CardsContainer reducer={reducer} SETTINGS={SETTINGS} />
+            </Suspense> */}
+
+            {/* <mesh
+                receiveShadow
+                position={[0, -1.2, 0]}
+                rotation={[-Math.PI / 2, 0, 0]}
+            >
+                <circleGeometry args={[50, 50]} />
+                <MeshReflectorMaterial
+                    blur={[40, 10]}
+                    resolution={1024}
+                    mixBlur={1}
+                    mixStrength={15}
+                    depthScale={1}
+                    minDepthThreshold={0.85}
+                    color="#151515"
+                    metalness={0.6}
+                    roughness={0.5}
+                />
+            </mesh> */}
+
+            {/* <ContactShadows
+                frames={1}
+                position={[0, -1, 0]}
+                blur={1}
+                opacity={0.6}
+            /> */}
         </group>
     );
 }
