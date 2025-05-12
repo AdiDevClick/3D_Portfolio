@@ -1,25 +1,35 @@
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
 import '@css/404.css';
-import { Billboard, Float, MeshTransmissionMaterial } from '@react-three/drei';
+import {
+    Billboard,
+    Float,
+    MeshTransmissionMaterial,
+    MeshTransmissionMaterialProps,
+} from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
-import { NavLink, useOutletContext } from 'react-router';
+import { useOutletContext } from 'react-router';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
 import model from '@models/Brokenglass_model.glb';
-import { Color, Object3D } from 'three';
+import { Object3D } from 'three';
+
+type ContextType = {
+    isMobile: boolean;
+    scaleX: number;
+};
 
 const floatOptions = {
     // speed: 0.1 + Math.random() * 2,
     // speed: 1.2,
     rotationIntensity: 0.3,
     floatIntensity: 0.5,
-    floatingRange: [-0.1, 0.1] as [number, number],
 };
 
 /**
  * Affiche la page 404
  */
 export function Error404() {
-    const { isMobile, scaleX } = useOutletContext();
+    const { isMobile, scaleX } = useOutletContext<ContextType>();
+
     const { nodes } = useLoader(GLTFLoader, model, (loader) => {
         const gltfLoader = loader as GLTFLoader;
         const dracoLoader = new DRACOLoader();
@@ -45,15 +55,16 @@ export function Error404() {
                 Le bouton ci-dessous te ramènera en lieux sûrs
             </FallbackText>
             <group position={[-8 * scaleX, -9 * scaleX, 0]} scale={5 * scaleX}>
-                {nodes.Scene.children.map((node) => {
-                    console.log(0.1 + Math.random() * 2);
+                {nodes.Scene.children.map((node: Object3D) => {
                     return (
-                        <Float {...floatOptions}>
+                        <Float
+                            {...floatOptions}
+                            speed={0.1 + Math.random() * 2}
+                            key={node.uuid}
+                        >
                             <GlassMesh
                                 name="glass-mesh"
-                                key={node.uuid}
                                 data={node}
-                                speed={0.1 + Math.random() * 2}
                                 isMobile={isMobile}
                             />
                         </Float>
@@ -83,7 +94,14 @@ export function Error404() {
     );
 }
 
-function GlassMesh({ data, isMobile, ...props }: { data: Object3D }) {
+function GlassMesh({
+    data,
+    isMobile,
+    ...props
+}: {
+    data: Object3D;
+    isMobile: boolean;
+} & MeshTransmissionMaterialProps) {
     return (
         <mesh {...data} {...props}>
             <MeshTransmissionMaterial
@@ -92,7 +110,7 @@ function GlassMesh({ data, isMobile, ...props }: { data: Object3D }) {
                 clearcoat={0.2}
                 samples={isMobile ? 2 : 18}
                 thickness={1}
-                chromaticAberration={0.25}
+                chromaticAberration={0.15}
                 anisotropy={isMobile ? 0 : 0.6}
                 resolution={isMobile ? 128 : 512}
                 distortion={isMobile ? 0 : 0.01}
