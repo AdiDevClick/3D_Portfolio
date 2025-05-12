@@ -8,6 +8,9 @@ import {
     useState,
 } from 'react';
 
+/**
+ * Events list with their handlers -
+ */
 const events = [
     { name: 'dragstart', eventHandler: handleDragStart },
     { name: 'touchcancel', eventHandler: endDrag },
@@ -21,13 +24,16 @@ const events = [
 
 export function useTouchEvents(
     node: RefObject<HTMLButtonElement>,
-    transitionElement: RefObject<HTMLElement>
+    transitionElement: RefObject<HTMLElement>,
+    options = {} as { onStateChange?: (isOpen: boolean) => void }
 ) {
     const [isClick, setClicked] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
     const [isMoving, setIsMoving] = useState(false);
     const [lastTranslate, setLastTranslate] = useState(null);
     const [elementSize, setElementSize] = useState(null);
+
     const activeElementRef = useRef<HTMLElement>(null!);
     const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -55,7 +61,8 @@ export function useTouchEvents(
         events.forEach((event) => {
             element.addEventListener(
                 event.name as keyof HTMLElementEventMap,
-                (e) => event.eventHandler(e, element, props),
+                (e: Event) =>
+                    event.eventHandler(e as DragEvent, element, props),
                 {
                     ...event.options,
                     signal: abortControllerRef.current?.signal,
@@ -67,14 +74,14 @@ export function useTouchEvents(
         };
     }, [origin, props]);
 
-    return { isMoving };
+    return { isMoving, setIsDrawerOpen, isDrawerOpen };
 }
 
 /**
  * Disable default drag behavior to
  * avoid conflicts -
  */
-function handleDragStart(e: DragEvent<HTMLButtonElement>) {
+function handleDragStart(e) {
     e.preventDefault();
 }
 
