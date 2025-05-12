@@ -185,7 +185,7 @@ export function Experience({ ref, reducer }) {
                 if (typedError.cause?.status === 404) {
                     setViewMode('carousel');
                     navigate('/projets', { replace: false });
-                    return navigate('/404', { replace: false });
+                    return navigate('/error', { replace: false });
                 }
                 console.error('Erreur non gérée :', typedError);
             }
