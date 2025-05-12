@@ -1,16 +1,6 @@
-import {
-    DragEvent,
-    MouseEventHandler,
-    PropsWithChildren,
-    TouchEventHandler,
-} from 'react';
+import { ButtonHTMLAttributes, DragEvent, PropsWithChildren, Ref } from 'react';
 type ButtonProps = {
-    onClick: MouseEventHandler<HTMLButtonElement>;
-    onMouseEnter: MouseEventHandler<HTMLButtonElement>;
-    onTouchStart: TouchEventHandler<HTMLButtonElement>;
-    onTouchMove: TouchEventHandler<HTMLButtonElement>;
-    onTouchEnd: TouchEventHandler<HTMLButtonElement>;
-    onTouchCancel: TouchEventHandler<HTMLButtonElement>;
+    ref: Ref<HTMLButtonElement>;
 };
 
 /**
@@ -20,14 +10,8 @@ type ButtonProps = {
 export function Button({
     children,
     ref,
-    onClick,
-    onMouseEnter,
-    onTouchStart,
-    onTouchMove,
-    onTouchEnd,
-    onTouchCancel,
     ...props
-}: PropsWithChildren<ButtonProps>) {
+}: PropsWithChildren & ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps) {
     /**
      * Disable default drag behavior to
      * avoid conflicts -
@@ -39,14 +23,7 @@ export function Button({
     return (
         <button
             ref={ref}
-            // onTouchStart={onTouchStart}
-            // onTouchMove={onTouchMove}
-            // onDragStart={handleDragStart}
-            // onTouchEnd={onTouchEnd}
-            // onTouchCancel={onTouchCancel}
-            // onMouseEnter={onClick}
-            onClick={onClick}
-            // draggable={false}
+            // onClick={props.onClick}
             {...props}
         >
             {children}
