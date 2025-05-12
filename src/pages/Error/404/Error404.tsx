@@ -1,19 +1,67 @@
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
 import '@css/404.css';
-import { NavLink } from 'react-router';
+import { Billboard, Float, MeshTransmissionMaterial } from '@react-three/drei';
+import { useLoader } from '@react-three/fiber';
+import { NavLink, useOutletContext } from 'react-router';
+import { DRACOLoader, GLTFLoader } from 'three-stdlib';
+import model from '@models/Brokenglass_model.glb';
+import { Color, Object3D } from 'three';
+
+const floatOptions = {
+    // speed: 0.1 + Math.random() * 2,
+    // speed: 1.2,
+    rotationIntensity: 0.3,
+    floatIntensity: 0.5,
+    floatingRange: [-0.1, 0.1] as [number, number],
+};
 
 /**
  * Affiche la page 404
  */
 export function Error404() {
+    const { isMobile, scaleX } = useOutletContext();
+    const { nodes } = useLoader(GLTFLoader, model, (loader) => {
+        const gltfLoader = loader as GLTFLoader;
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath(
+            'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+        );
+        gltfLoader.setDRACOLoader(dracoLoader);
+    });
+
     return (
-        <>
-            <h1 className="fourofour">404</h1>
-            <div className="cloak__wrapper">
-                <div className="cloak__container">
-                    <div className="cloak"></div>
-                </div>
-            </div>
-            <div className="info">
+        <Billboard position={[0, 1, 0]}>
+            <FallbackText fontSize={3 * scaleX} position={[0, 0, -10]}>
+                404
+            </FallbackText>
+            <FallbackText fontSize={0.5 * scaleX} position={[0, -1.5, -10]}>
+                Cette page est introuvable
+            </FallbackText>
+            <FallbackText fontSize={0.15 * scaleX} position={[0, -2, -10]}>
+                Cette page était là auparavant, peut-être pas d'ailleurs... Mais
+                il semble que tu sois parti à sa recherches !
+            </FallbackText>
+            <FallbackText fontSize={0.15 * scaleX} position={[0, -3, -10]}>
+                Le bouton ci-dessous te ramènera en lieux sûrs
+            </FallbackText>
+            <group position={[-8 * scaleX, -9 * scaleX, 0]} scale={5 * scaleX}>
+                {nodes.Scene.children.map((node) => {
+                    console.log(0.1 + Math.random() * 2);
+                    return (
+                        <Float {...floatOptions}>
+                            <GlassMesh
+                                name="glass-mesh"
+                                key={node.uuid}
+                                data={node}
+                                speed={0.1 + Math.random() * 2}
+                                isMobile={isMobile}
+                            />
+                        </Float>
+                    );
+                })}
+            </group>
+
+            {/* <div className="info">
                 <h2 className="fourofour">Cette page est introuvable</h2>
                 <p className="fourofour">
                     Cette page était là auparavant, peut-être pas d'ailleurs...
@@ -27,10 +75,29 @@ export function Error404() {
                 >
                     Accueil
                 </NavLink>
-            </div>
+            </div> */}
             {/* <NavLink className="error__link" to={'/test'}>
                 Retourner sur la page d’accueil
             </NavLink> */}
-        </>
+        </Billboard>
+    );
+}
+
+function GlassMesh({ data, isMobile, ...props }: { data: Object3D }) {
+    return (
+        <mesh {...data} {...props}>
+            <MeshTransmissionMaterial
+                roughness={0.01}
+                metalness={isMobile ? 0.1 : 0.15}
+                clearcoat={0.2}
+                samples={isMobile ? 2 : 18}
+                thickness={1}
+                chromaticAberration={0.25}
+                anisotropy={isMobile ? 0 : 0.6}
+                resolution={isMobile ? 128 : 512}
+                distortion={isMobile ? 0 : 0.01}
+                ior={isMobile ? 1.5 : 1.3}
+            />
+        </mesh>
     );
 }

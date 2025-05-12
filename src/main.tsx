@@ -1,4 +1,4 @@
-import React, { useId, useMemo } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import '@css/index.css';
 import '@css/Main.scss';
@@ -11,6 +11,7 @@ import { Header } from '@/components/HTML/header/Header.js';
 import useResize from '@/hooks/useResize.tsx';
 import datas from '@data/exemples.json';
 import { useSettings } from '@/hooks/useSettings.tsx';
+import { Error404 } from '@/pages/Error/404/Error404.tsx';
 
 const router = createBrowserRouter([
     {
@@ -18,10 +19,10 @@ const router = createBrowserRouter([
         element: <Root />,
         errorElement: <Root contentType={'error'} />,
         children: [
-            // {
-            //     path: 'error',
-            //     element: <ErroPage />,
-            // },
+            {
+                path: 'error',
+                element: <Error404 />,
+            },
         ],
     },
 ]);
@@ -46,6 +47,7 @@ export function Root(contentType: { contentType?: string }) {
     const errorContent = contentType.contentType === 'error';
     const { size } = useResize(100);
     const isTouchDevice = size[0] < 968;
+    const isMobile = size[0] < 768;
     const SETTINGS = useSettings(datas);
 
     // // Specify boundaries & responsive boundaries
@@ -59,6 +61,11 @@ export function Root(contentType: { contentType?: string }) {
         x: SETTINGS.x * scaleX,
         y: SETTINGS.y * scaleY,
         z: SETTINGS.z,
+    };
+
+    const contextProps = {
+        isMobile,
+        scaleX,
     };
 
     /**
@@ -84,7 +91,11 @@ export function Root(contentType: { contentType?: string }) {
                 scaleX={scaleX}
                 scaleY={scaleY}
             >
-                {errorContent ? <PageError /> : <Outlet />}
+                {errorContent ? (
+                    <PageError />
+                ) : (
+                    <Outlet context={contextProps} />
+                )}
             </App>
         </>
     );
