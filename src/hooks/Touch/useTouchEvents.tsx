@@ -25,10 +25,9 @@ const events = [
 export function useTouchEvents(
     node: RefObject<HTMLButtonElement>,
     transitionElement: RefObject<HTMLElement>,
-    options = {} as { onStateChange?: (isOpen: boolean) => void }
+    setIsOpen: (isOpen: boolean) => void
 ) {
-    const [isClick, setClicked] = useState(false);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isClickInProgress, setIsClickInProgress] = useState(false);
     const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
     const [isMoving, setIsMoving] = useState(false);
     const [lastTranslate, setLastTranslate] = useState(null);
@@ -39,8 +38,8 @@ export function useTouchEvents(
 
     const props = {
         transitionElement,
-        setClicked,
-        isClick,
+        isClickInProgress,
+        setIsClickInProgress,
         setOrigin,
         origin,
         setIsMoving,
@@ -51,6 +50,7 @@ export function useTouchEvents(
         setElementSize,
         activeElementRef,
         abortControllerRef,
+        setIsOpen,
     };
 
     useEffect(() => {
@@ -61,8 +61,8 @@ export function useTouchEvents(
         events.forEach((event) => {
             element.addEventListener(
                 event.name as keyof HTMLElementEventMap,
-                (e: Event) =>
-                    event.eventHandler(e as DragEvent, element, props),
+                (e: MouseEvent | TouchEventProps | Event) =>
+                    event.eventHandler(e, element, props),
                 {
                     ...event.options,
                     signal: abortControllerRef.current?.signal,
@@ -72,9 +72,17 @@ export function useTouchEvents(
         return () => {
             abortControllerRef.current?.abort();
         };
-    }, [origin, props]);
+    }, [
+        origin,
+        lastTranslate,
+        elementSize,
+        isMoving,
+        node,
+        transitionElement,
+        setIsOpen,
+    ]);
 
-    return { isMoving, setIsDrawerOpen, isDrawerOpen };
+    return { isMoving, isClickInProgress, setIsClickInProgress };
 }
 
 /**
@@ -98,44 +106,49 @@ function startDrag(
     { ...props }: TouchEventProps
 ) {
     if (props.isMoving) return;
+    console.log('Je vais comencer à bouger :', e.type);
+    // props.setIsClickInProgress(true);
+    const element = props.transitionElement.current;
     if (e.targetTouches) {
         if (e.targetTouches.length > 1) e.preventDefault();
-
         e = e.targetTouches[0];
-        const target = e.target as HTMLElement;
 
-        handleActiveElement(
-            target,
-            props.activeElementRef.current,
-            props.setClicked(true)
-        );
+        // const target = e.target as HTMLElement;
+
+        // handleActiveElement(
+        //     target,
+        //     _element,
+        //     props.setIsClickInProgress
+        //     // props.setClicked(true)
+        // );
     }
 
     props.setOrigin({ x: e.screenX, y: e.screenY });
-    disableTransition(props.transitionElement.current);
+
+    disableTransition(element);
+
     props.setElementSize({
-        width: props.transitionElement.current.offsetWidth,
-        height: props.transitionElement.current.offsetHeight,
+        width: element.offsetWidth,
+        height: element.offsetHeight,
     });
 }
 
 function handleActiveElement(
     target: HTMLElement,
-    activeElement: HTMLElement,
-    setClicked: (value: boolean) => void
+    activeElement: HTMLElement
+    // setIsClickInProgress: (value: boolean) => void
 ) {
     if (activeElement) {
         // If we touch another item
         if (target !== activeElement) {
             activeElement.classList.remove('hover');
+            // }
         } else {
             // If we touch the same item, it's a click
-            setClicked(true);
+            console.log('je click');
+            // setIsClickInProgress(true);
         }
     }
-
-    target.classList.add('hover');
-    activeElement = target;
 }
 
 /**
@@ -147,6 +160,8 @@ function handleActiveElement(
  */
 function drag(e, _element: HTMLElement, { ...props }: TouchEventProps) {
     if (!props.origin) return;
+    console.log('Je drag');
+    const element = props.transitionElement.current;
 
     const pressionPoint = e.targetTouches ? e.targetTouches[0] : e;
 
@@ -154,16 +169,32 @@ function drag(e, _element: HTMLElement, { ...props }: TouchEventProps) {
         x: pressionPoint.screenX - props.origin.x,
         y: pressionPoint.screenY - props.origin.y,
     };
-
+    // if (!props.isMoving) {
+    //     if (Math.abs(translate.x) < 5) {
+    //         return;
+    //     }
+    //     // disableTransition(props.transitionElement.current);
+    //     // props.setIsMoving(true);
+    //     props.setClicked(false);
+    // }
     if (e.targetTouches && Math.abs(translate.x) > Math.abs(translate.y)) {
         if (e.cancelable) e.preventDefault();
         e.stopPropagation();
-        props.setClicked(false);
+        // props.setClicked(false);
+        // props.setIsMoving(false);
     }
 
-    const offsets = props.transitionElement.current.getBoundingClientRect();
+    const offsets = element.getBoundingClientRect();
 
-    props.transitionElement.current.classList.add('opening');
+    element.classList.add('opening');
+
+    const buttonWidthInPercent =
+        (100 * (props.elementSize.width - _element.offsetWidth)) /
+        props.elementSize.width;
+
+    const removedButtonWidth = element.classList.contains('closed')
+        ? buttonWidthInPercent
+        : 0;
 
     props.setLastTranslate(translate);
 
@@ -173,22 +204,11 @@ function drag(e, _element: HTMLElement, { ...props }: TouchEventProps) {
         }
     }
 
-    if (props.transitionElement.current.classList.contains('active')) {
-        props.transitionElement.current.classList.remove('active');
-    }
-
-    // modifyWidth(
-    //     props.transitionElement.current,
-    //     props.elementWidth + translate.x
-    // );
-
     translateElement(
-        props.transitionElement.current,
+        element,
         0,
-        (100 * translate.x) / props.elementSize.width,
-        translate.x
+        (100 * translate.x) / props.elementSize.width - removedButtonWidth
     );
-
     props.setIsMoving(true);
 }
 
@@ -204,51 +224,56 @@ function endDrag(
     _element: HTMLElement,
     { ...props }: any
 ) {
-    if (!props.isClick) e.preventDefault();
-    if (!props.isMoving) return;
-    const element = props.transitionElement.current;
-    enableTransition(element);
+    if (!props.isMoving) {
+        props.setIsClickInProgress(true);
+        return props.setOrigin(null);
+    }
 
-    if (
-        props.isMoving &&
-        Math.abs(props.lastTranslate.x / props.elementSize.width) > 0.2
-    ) {
-        const options = {};
+    if (props.lastTranslate && props.origin) {
+        const element = props.transitionElement.current;
+        enableTransition(element);
 
-        if (element.classList.contains('closed')) {
-            element.style.left = '0';
-            element.classList.remove('closed');
-            options.animation = 'slideToRight 0.5s forwards';
-            options.class = 'opened';
+        if (Math.abs(props.lastTranslate.x / props.elementSize.width) > 0.2) {
+            console.log('Je bouge au delà de 20%');
+            if (element.classList.contains('closed')) {
+                props.setIsOpen(true);
+            } else {
+                props.setIsOpen(false);
+            }
         } else {
-            options.animation = 'slideToLeft 0.5s forwards';
-            options.class = 'closed';
+            const buttonWidthInPercent =
+                (100 * (props.elementSize.width - _element.offsetWidth)) /
+                props.elementSize.width;
+
+            const removedButtonWidth = element.classList.contains('closed')
+                ? buttonWidthInPercent
+                : 0;
+
+            console.log('else ?');
+            translateElement(
+                element,
+                0,
+                props.lastTranslate.x / props.elementSize.width -
+                    removedButtonWidth
+            );
         }
 
-        element.style.animation = options.animation;
         element.addEventListener(
-            'animationend',
+            'transitionend',
             () => {
-                element.classList.add(options.class);
-                if (element.classList.contains('opening')) {
-                    element.classList.remove('opening');
-                }
+                element.classList.remove('opening');
                 element.removeAttribute('style');
+                props.setIsMoving(false);
             },
             { once: true }
-        );
-    } else {
-        translateElement(
-            element,
-            0,
-            props.lastTranslate.x / props.elementSize.width
         );
     }
 
     props.setOrigin(null);
     props.setLastTranslate(null);
-    props.setIsMoving(false);
-    props.setClicked(false);
+    // props.setIsClickInProgress(false);
+    // props.setIsMoving(false);
+    // // props.setClicked(false);
 }
 
 /**
@@ -280,7 +305,6 @@ function modifyWidth(element: HTMLElement, width: number) {
 function enableTransition(element: HTMLElement) {
     if (!element) return;
     element.style.transition = '';
-    element.style.animation = null;
 }
 
 /**

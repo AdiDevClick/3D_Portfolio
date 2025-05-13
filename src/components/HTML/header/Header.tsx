@@ -9,25 +9,29 @@ export function Header({ isTouchDevice }) {
     const buttonRef = useRef<HTMLButtonElement>(null!);
     const [isOpen, setIsOpen] = useState(false);
 
-    const { isMoving, setDrawerState } = useTouchEvents(buttonRef, headerRef, {
-        onStateChange: (newIsOpen) => setIsOpen(newIsOpen),
-    });
-    const active = isOpen ? 'active' : 'inactive';
+    const { isMoving, isClickInProgress, setIsClickInProgress } =
+        useTouchEvents(buttonRef, headerRef, setIsOpen);
+    const active = isOpen ? 'opened' : 'closed';
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+
+        if (isMoving) return;
         setIsOpen(!isOpen);
+        setIsClickInProgress(false);
     };
 
     const handleMouseOver = (e: MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        setIsOpen(!isOpen);
+
+        if (isOpen || isMoving || isClickInProgress) return;
+        setIsOpen(true);
     };
 
     const handleMouseOut = (e: MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        if (!isOpen) return;
-        setIsOpen(!isOpen);
+        if (!isOpen || isMoving) return;
+        setIsOpen(false);
     };
 
     useEffect(() => {
@@ -41,11 +45,9 @@ export function Header({ isTouchDevice }) {
             onMouseEnter={handleMouseOver}
             onMouseLeave={handleMouseOut}
         >
-            <Button ref={buttonRef} type="button" onClick={handleClick}>
-                Open
-            </Button>
             {/* {isOpen && ( */}
-            <nav className={isOpen ? 'active' : 'inactive'}>
+            <nav className={'header__nav'}>
+                {/* <nav className={isOpen ? 'active' : 'closed'}> */}
                 {/* <Logo /> */}
                 <ul>
                     <li>
@@ -72,6 +74,10 @@ export function Header({ isTouchDevice }) {
                 </ul>
             </nav>
             {/* )} */}
+            {/* <Button ref={buttonRef} type="button"> */}
+            <Button ref={buttonRef} type="button" onClick={handleClick}>
+                {isOpen ? 'Open' : 'Close'}
+            </Button>
         </header>
     );
 }
