@@ -1,4 +1,6 @@
 // $borderRadius: 0 5px 5px 0;
+$headerWidth: 250px;
+$buttonWidth : 50px;
 
 header {
     display: grid;
@@ -12,8 +14,8 @@ header {
     align-content: center;
     // border-radius: $borderRadius;
     overflow: hidden;
-    transform: translate(0);
-    transition: max-width 0.3s;
+    // transform: translate(0);
+    transition: max-width 0.3s, transform 0.3s ease;
 
     >nav {
         transition: opacity 0.2s ease-in-out;
@@ -36,21 +38,26 @@ header {
         }
     }
 
-    &.inactive {
-        max-width: min(50px, 100%);
-
-        >nav {
-            opacity: 0;
-            transition: opacity 0.1s ease
-        }
+    &.opened {
+        transform: translate(0);
     }
 
     &.closed {
-        // animation: forwards slideToLeft 0.3s;
-        // position: fixed;
-        // transform: translate3d(calc(-100% + 50px), 0, 0);
-        left: -200px;
+        // max-width: min(50px, 100%);
+        transform: translate(calc(-100% + $buttonWidth));
+
+        // >nav {
+        //     opacity: 0;
+        //     transition: opacity 0.1s ease
+        // }
     }
+
+    // &.closed {
+    //     // animation: forwards slideToLeft 0.3s;
+    //     // position: fixed;
+    //     // transform: translate3d(calc(-100% + 50px), 0, 0);
+    //     left: -200px;
+    // }
 
     button {
         cursor: pointer;
