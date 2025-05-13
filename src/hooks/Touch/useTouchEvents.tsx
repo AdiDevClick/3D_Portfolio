@@ -22,6 +22,14 @@ const events = [
     { name: 'touchend', eventHandler: endDrag },
 ];
 
+/**
+ * Hook to handle touch events -
+ *
+ * @param node - The button element -
+ * @param transitionElement - The element to translate -
+ * @param setIsOpen Function to set the open/close state from the Component -
+ * @returns
+ */
 export function useTouchEvents(
     node: RefObject<HTMLButtonElement>,
     transitionElement: RefObject<HTMLElement>,
@@ -30,8 +38,14 @@ export function useTouchEvents(
     const [isClickInProgress, setIsClickInProgress] = useState(false);
     const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
     const [isMoving, setIsMoving] = useState(false);
-    const [lastTranslate, setLastTranslate] = useState(null);
-    const [elementSize, setElementSize] = useState(null);
+    const [lastTranslate, setLastTranslate] = useState<{
+        x: number;
+        y: number;
+    } | null>(null);
+    const [elementSize, setElementSize] = useState<{
+        width: number;
+        height: number;
+    } | null>(null);
 
     const activeElementRef = useRef<HTMLElement>(null!);
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -45,7 +59,8 @@ export function useTouchEvents(
         setIsMoving,
         isMoving,
         lastTranslate,
-        setLastTranslate,
+        setLastTranslate: (value: { x: number; y: number } | null) =>
+            setLastTranslate(value),
         elementSize,
         setElementSize,
         activeElementRef,
@@ -61,8 +76,12 @@ export function useTouchEvents(
         events.forEach((event) => {
             element.addEventListener(
                 event.name as keyof HTMLElementEventMap,
-                (e: MouseEvent | TouchEventProps | Event) =>
-                    event.eventHandler(e, element, props),
+                (e) =>
+                    event.eventHandler(
+                        e as Event & MouseEvent & TouchEvent,
+                        element,
+                        props
+                    ),
                 {
                     ...event.options,
                     signal: abortControllerRef.current?.signal,
@@ -89,7 +108,7 @@ export function useTouchEvents(
  * Disable default drag behavior to
  * avoid conflicts -
  */
-function handleDragStart(e) {
+function handleDragStart(e: Event) {
     e.preventDefault();
 }
 
@@ -101,29 +120,21 @@ function handleDragStart(e) {
  * @param param2 - All the props -
  */
 function startDrag(
-    e: MouseEvent<HTMLElement> | TouchEvent<HTMLElement>,
+    e: Event & MouseEvent & TouchEvent,
     _element: HTMLElement,
     { ...props }: TouchEventProps
 ) {
     if (props.isMoving) return;
-    console.log('Je vais comencer à bouger :', e.type);
-    // props.setIsClickInProgress(true);
     const element = props.transitionElement.current;
-    if (e.targetTouches) {
-        if (e.targetTouches.length > 1) e.preventDefault();
-        e = e.targetTouches[0];
-
-        // const target = e.target as HTMLElement;
-
-        // handleActiveElement(
-        //     target,
-        //     _element,
-        //     props.setIsClickInProgress
-        //     // props.setClicked(true)
-        // );
+    let eventPoint: { screenX: number; screenY: number };
+    if ('targetTouches' in e) {
+        if (e.targetTouches.length > 1 && e.cancelable) e.preventDefault();
+        eventPoint = e.targetTouches[0];
+    } else {
+        eventPoint = e;
     }
 
-    props.setOrigin({ x: e.screenX, y: e.screenY });
+    props.setOrigin({ x: eventPoint.screenX, y: eventPoint.screenY });
 
     disableTransition(element);
 
@@ -158,30 +169,27 @@ function handleActiveElement(
  * @param _element  - Not used -
  * @param param2 - All the props -
  */
-function drag(e, _element: HTMLElement, { ...props }: TouchEventProps) {
-    if (!props.origin) return;
-    console.log('Je drag');
+function drag(
+    e: Event & MouseEvent & TouchEvent,
+    _element: HTMLElement,
+    { ...props }: TouchEventProps
+) {
+    if (!props.origin || !props.elementSize) return;
     const element = props.transitionElement.current;
 
-    const pressionPoint = e.targetTouches ? e.targetTouches[0] : e;
+    const pressionPoint =
+        'targetTouches' in e
+            ? (e as TouchEvent).targetTouches[0]
+            : (e as MouseEvent);
 
     const translate = {
         x: pressionPoint.screenX - props.origin.x,
         y: pressionPoint.screenY - props.origin.y,
     };
-    // if (!props.isMoving) {
-    //     if (Math.abs(translate.x) < 5) {
-    //         return;
-    //     }
-    //     // disableTransition(props.transitionElement.current);
-    //     // props.setIsMoving(true);
-    //     props.setClicked(false);
-    // }
-    if (e.targetTouches && Math.abs(translate.x) > Math.abs(translate.y)) {
+
+    if ('targetTouches' in e && Math.abs(translate.x) > Math.abs(translate.y)) {
         if (e.cancelable) e.preventDefault();
         e.stopPropagation();
-        // props.setClicked(false);
-        // props.setIsMoving(false);
     }
 
     const offsets = element.getBoundingClientRect();
@@ -220,21 +228,20 @@ function drag(e, _element: HTMLElement, { ...props }: TouchEventProps) {
  * @param param2 - All the props -
  */
 function endDrag(
-    e: TouchEvent<HTMLButtonElement>,
+    _: Event & MouseEvent & TouchEvent,
     _element: HTMLElement,
-    { ...props }: any
+    { ...props }: TouchEventProps
 ) {
     if (!props.isMoving) {
         props.setIsClickInProgress(true);
         return props.setOrigin(null);
     }
 
-    if (props.lastTranslate && props.origin) {
+    if (props.elementSize && props.lastTranslate && props.origin) {
         const element = props.transitionElement.current;
         enableTransition(element);
 
         if (Math.abs(props.lastTranslate.x / props.elementSize.width) > 0.2) {
-            console.log('Je bouge au delà de 20%');
             if (element.classList.contains('closed')) {
                 props.setIsOpen(true);
             } else {
@@ -249,7 +256,6 @@ function endDrag(
                 ? buttonWidthInPercent
                 : 0;
 
-            console.log('else ?');
             translateElement(
                 element,
                 0,
@@ -271,9 +277,6 @@ function endDrag(
 
     props.setOrigin(null);
     props.setLastTranslate(null);
-    // props.setIsClickInProgress(false);
-    // props.setIsMoving(false);
-    // // props.setClicked(false);
 }
 
 /**
