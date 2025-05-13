@@ -4,7 +4,7 @@ import '@css/NavHeader.scss';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useTouchEvents } from '@/hooks/Touch/useTouchEvents';
 
-export function Header({ isTouchDevice }) {
+export function Header() {
     const headerRef = useRef<HTMLElement>(null!);
     const buttonRef = useRef<HTMLButtonElement>(null!);
     const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,6 @@ export function Header({ isTouchDevice }) {
 
     const handleMouseOver = (e: MouseEvent<HTMLElement>) => {
         e.preventDefault();
-
         if (isOpen || isMoving || isClickInProgress) return;
         setIsOpen(true);
     };
@@ -80,12 +79,4 @@ export function Header({ isTouchDevice }) {
             </Button>
         </header>
     );
-}
-
-/**
- * Disables the transition of an element -
- */
-function disableTransition(element: HTMLElement) {
-    if (!element) return;
-    element.style.transition = 'none';
 }
