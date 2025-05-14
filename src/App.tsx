@@ -11,11 +11,11 @@ import {
     useFBX,
     useProgress,
 } from '@react-three/drei';
-import Poimandres from './3DModels/Poimandres.tsx';
+import Poimandres from './assets/3DModels/Poimandres.js';
 import { useTexture, Image } from '@react-three/drei';
 import { TextureLoader } from 'three';
 
-import { Suzanne } from './3DModels/Suzanne.tsx';
+import { Suzanne } from './assets/3DModels/Suzanne.js';
 import { easing, geometry } from 'maath';
 import img from '@images/work.png';
 

@@ -20,7 +20,7 @@
         "@css/*": ["src/assets/css/*"],
         "@images/*": ["src/assets/images/*"],
         "@icons/*": ["src/assets/icons/*"],
-        "@models/*": ["src/3DModels/*"],
+        "@models/*": ["src/assets/3DModels/*"],
         "@data/*": ["src/data/*"],
         "@utils/*": ["src/utils/*"],
         "@hooks/*": ["src/hooks/*"]

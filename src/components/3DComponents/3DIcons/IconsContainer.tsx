@@ -132,7 +132,7 @@ export default MemoizedIconsContainer;
  */
 function resolvePath(aliasPath: string) {
     const aliasMap: Record<string, string> = {
-        '@models': '/src/3DModels',
+        '@models': '/src/assets/3DModels',
     };
     const [alias, ...rest] = aliasPath.split('/');
     if (alias in aliasMap) {

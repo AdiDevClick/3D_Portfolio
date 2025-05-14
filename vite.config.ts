@@ -46,7 +46,7 @@ export default defineConfig({
             },
             {
                 find: '@models',
-                replacement: resolve(__dirname, 'src/3DModels'),
+                replacement: resolve(__dirname, 'src/assets/3DModels'),
             },
             {
                 find: '@data',
