@@ -18,8 +18,8 @@ export function FallbackText({ children, ...props }: FallbackTextTypes) {
             font={normalMontFont}
             fontSize={0.1}
             color="black"
-            anchorX="center"
-            anchorY="middle"
+            // anchorX="center"
+            // anchorY="middle"
             outlineWidth={0.004}
             {...props}
         >
