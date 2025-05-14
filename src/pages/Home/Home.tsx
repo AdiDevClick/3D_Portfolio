@@ -101,6 +101,25 @@ const MemoizedHome = memo(function Home({
                 attenuation={5}
                 anglePower={5}
             /> */}
+
+            {/* <Stars
+                radius={100}
+                depth={100}
+                count={4000}
+                factor={4}
+                saturation={0}
+                fade
+                speed={0.2}
+            /> */}
+            {/* <Sparkles
+                count={300}
+                size={3}
+                speed={0.02}
+                opacity={1}
+                scale={10}
+                color="#fff3b0"
+            /> */}
+
             <HomePageTitle
                 ref={titleRef as RefObject<Group>}
                 scale={generalScaleX}
@@ -128,7 +147,11 @@ const MemoizedHome = memo(function Home({
                         width={contentWidth ?? 1}
                         icons={iconsWithText}
                         scalar={generalScaleX}
-                        position-y={-1 * generalScaleX - margin}
+                        position-y={
+                            isMobile
+                                ? -2 * generalScaleX - margin
+                                : -2.5 * generalScaleX - margin
+                        }
                         isMobile={isMobile}
                     />
                 </Suspense>
