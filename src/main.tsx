@@ -12,6 +12,7 @@ import useResize from '@/hooks/useResize.tsx';
 import datas from '@data/exemples.json';
 import { useSettings } from '@/hooks/useSettings.tsx';
 import { Error404 } from '@/pages/Error/404/Error404.tsx';
+import { Contact } from '@/pages/Contact/Contact.tsx';
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
             {
                 path: 'error',
                 element: <Error404 />,
+            },
+            {
+                path: 'contact',
+                element: <Contact />,
             },
         ],
     },
