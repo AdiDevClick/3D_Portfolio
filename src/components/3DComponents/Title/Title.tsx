@@ -67,6 +67,7 @@ export function Title({
                             distortion={0}
                         /> */}
                 <meshLambertMaterial />
+                {/* <meshMatcapMaterial color={'black'} /> */}
             </Text3D>
         </Center>
     );
