@@ -75,7 +75,7 @@ const MemoizedIconsContainer = memo(function IconsContainer({
             true
         );
     });
-    console.log('je suis reconstruit tout le temps');
+
     return (
         <group ref={groupRef} {...props}>
             <Center name="icon__center-container" bottom>
@@ -107,19 +107,16 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                                     name: icon.name,
                                 }}
                                 name={'icon__content'}
+                                position={
+                                    isMobile
+                                        ? [0.5 * scalar, 1.45 * scalar, 0]
+                                        : [-0.4 * scalar, 0.5 * scalar, 0]
+                                }
                             />
                         </Suspense>
-                        <group
-                            position={
-                                isMobile
-                                    ? [-0.5 * scalar, -1.5 * scalar, 0]
-                                    : [0, -0.6 * scalar, 0]
-                            }
-                        >
-                            <Center bottom>
-                                <HexCell scalar={scalar} />
-                            </Center>
-                        </group>
+                        <Center bottom>
+                            <HexCell scalar={scalar} />
+                        </Center>
                     </GridLayout>
                 ))}
             </Center>
