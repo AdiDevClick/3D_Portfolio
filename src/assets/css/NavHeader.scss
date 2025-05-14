@@ -44,26 +44,16 @@ header {
         transform: translate(calc(-100% + $buttonWidth));
     }
 
-    // &.closed {
-    //     // animation: forwards slideToLeft 0.3s;
-    //     // position: fixed;
-    //     // transform: translate3d(calc(-100% + 50px), 0, 0);
-    //     left: -200px;
-    // }
-
     button {
         cursor: pointer;
         height: 100%;
         width: 50px;
         position: absolute;
         place-self: end;
-        // background-color: #333333e1;
         color: transparent;
         border: none;
-        // padding: 10px 20px;
         font-size: 16px;
         transition: background-color 0.3s ease;
-        // border-radius: $borderRadius;
 
         &:hover {
             background-color: #555555e1;

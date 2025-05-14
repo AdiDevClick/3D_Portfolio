@@ -64,7 +64,6 @@ export function Icons({ model, ...props }: IconsTypes) {
  */
 function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>, icon: string) {
     e.stopPropagation();
-    console.log(icon.includes('Github'), icon);
     if (
         icon.includes('github') ||
         icon.includes('GitHub') ||
