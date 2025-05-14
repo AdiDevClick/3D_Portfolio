@@ -4,27 +4,34 @@ import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle.tsx';
 import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config.ts';
 import { ContactContent } from '@/pages/Contact/ContactContent.tsx';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
-import { useFrame } from '@react-three/fiber';
+import { Html, useCursor } from '@react-three/drei';
+import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useOutletContext } from 'react-router';
 import { Group } from 'three';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-export function Contact({
-    generalScaleX,
-    isMobile,
-    visible,
-}: {
+export function Contact({}: // scaleX,
+// isMobile,
+// visible,
+{
     generalScaleX: number;
 }) {
+    const { isMobile, scaleX } = useOutletContext();
     const groupRef = useRef<Group>(null);
     const frameCountRef = useRef(0);
 
-    const isActive = visible === 'home';
+    const [hovered, setHovered] = useState(false);
+    const scale = hovered ? 1.2 : 1;
 
-    currentGroupPos = isActive
-        ? currentGroupPos.set(0, 0, 0)
-        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+    useCursor(hovered);
+
+    // const isActive = visible === 'home';
+
+    // currentGroupPos = isActive
+    //     ? currentGroupPos.set(0, 0, 0)
+    //     : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
     useFrame((state, delta) => {
         if (!groupRef.current) return;
         frameCountRef.current += 1;
@@ -37,28 +44,35 @@ export function Contact({
             isMobile
         );
 
-        if (groupRef.current.visible || isActive) {
-            easing.damp3(
-                groupRef.current.position,
-                currentGroupPos,
-                0.2,
-                delta
-            );
+        if (groupRef.current.visible) {
+            // if (groupRef.current.visible || isActive) {
+            easing.damp3(groupRef.current.position, [0, 0, 0], 0.2, delta);
+            easing.damp3(groupRef.current.scale, scale, 0.2, delta);
         }
     });
     return (
-        <group ref={groupRef} visible={isActive}>
+        <group
+            ref={groupRef}
+            onPointerOver={() => setHovered(true)}
+            onPointerOut={() => setHovered(false)}
+            onClick={onClickHandler}
+        >
+            {/* <group ref={groupRef} visible={isActive}> */}
             <FloatingTitle
-                scale={generalScaleX}
+                scale={scaleX}
                 size={30}
-                // isMobile={isMobile}
                 textProps={{
                     height: 20,
                 }}
             >
-                Ma stack technique
+                Me contacter
             </FloatingTitle>
-            <PageContainer pageName={'/contact'}>
+            {hovered && (
+                <Html position={[0, 2, 0]}>
+                    <div className="about__tooltip">Visitez mon LinkedIn</div>
+                </Html>
+            )}
+            {/* <PageContainer pageName={'/contact'}>
                 <ContactContent
                     onWheel={onScrollHandler}
                     className="contact"
@@ -73,7 +87,16 @@ export function Contact({
                         zIndex: 0,
                     }}
                 />
-            </PageContainer>
+            </PageContainer> */}
         </group>
     );
+}
+
+function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>) {
+    e.stopPropagation();
+    // if (model.includes('github') || model.includes('GitHub')) {
+    window.open('https://www.linkedin.com/in/adrien-quijo');
+    // } else if (model.includes('linkedin') || model.includes('LinkedIn')) {
+    // window.open('https://www.github.com/AdiDevClick');
+    // }
 }
