@@ -115,7 +115,7 @@ const MemoizedHome = memo(function Home({
                         height: 20,
                     }}
                 >
-                    Me contacter
+                    Ma stack technique
                 </FloatingTitle>
                 <Suspense
                     fallback={
