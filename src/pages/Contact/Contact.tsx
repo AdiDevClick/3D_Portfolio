@@ -1,25 +1,31 @@
-import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
-import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle.tsx';
-import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config.ts';
-import { ContactContent } from '@/pages/Contact/ContactContent.tsx';
+import {
+    DEFAULT_PROJECTS_POSITION_SETTINGS,
+    DESKTOP_HTML_ICONS_POSITION_SETTINGS,
+} from '@/configs/3DCarousel.config.ts';
 import { frustumChecker } from '@/utils/frustrumChecker.ts';
-import { Html, useCursor } from '@react-three/drei';
+import { Html, Sparkles, Stars, useCursor } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { useRef, useState } from 'react';
 import { useOutletContext } from 'react-router';
 import { Group } from 'three';
+// import GitIcon from '@models/optimized/Github_mobile_model.glb';
+// import LinkedIn from '@models/optimized/Linkedin_model.glb';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-export function Contact({}: // scaleX,
-// isMobile,
-// visible,
-{
-    generalScaleX: number;
-}) {
+// const floatOptions = {
+//     autoInvalidate: true,
+//     speed: 1.5,
+//     rotationIntensity: 0.5,
+//     floatIntensity: 0.5,
+//     floatingRange: [-0.1, 0.1] as [number, number],
+// };
+
+export function Contact() {
     const { isMobile, scaleX } = useOutletContext();
     const groupRef = useRef<Group>(null);
+    // const iconsRef = useRef<Group>(null);
     const frameCountRef = useRef(0);
 
     const [hovered, setHovered] = useState(false);
@@ -48,6 +54,19 @@ export function Contact({}: // scaleX,
             // if (groupRef.current.visible || isActive) {
             easing.damp3(groupRef.current.position, [0, 0, 0], 0.2, delta);
             easing.damp3(groupRef.current.scale, scale, 0.2, delta);
+
+            // if (iconsRef.current.visible || groupRef.current.visible) {
+            //     easing.damp3(
+            //         iconsRef.current.position,
+            //         DESKTOP_HTML_ICONS_POSITION_SETTINGS(
+            //                         contentHeight,
+            //                         contentWidth,
+            //                         margin
+            //                     );,
+            //         0.3,
+            //         delta
+            //     );
+            // }
         }
     });
     return (
@@ -63,9 +82,10 @@ export function Contact({}: // scaleX,
                 size={30}
                 textProps={{
                     height: 20,
+                    color: hovered ? '#fffff' : '#000000',
                 }}
             >
-                Me contacter
+                Me contacter sur LinkedIn
             </FloatingTitle>
             {hovered && (
                 <Html position={[0, 2, 0]}>
@@ -88,6 +108,34 @@ export function Contact({}: // scaleX,
                     }}
                 />
             </PageContainer> */}
+            {/* <group ref={iconsRef}>
+                <Center>
+                    <Float {...floatOptions}>
+                        <Icons
+                            model={GitIcon}
+                            rotation={[0, 3, 0]}
+                            position={[0, 0, 0]}
+                        />
+                    </Float>
+                    <Float {...floatOptions}>
+                        <Icons
+                            model={LinkedIn}
+                            rotation={[0, 3, 0]}
+                            position={[-0.6, 0, 0]}
+                        />
+                    </Float>
+                </Center>
+            </group> */}
+            <Sparkles count={30} size={6} speed={0.4} color={'blue'} />
+            <Stars
+                radius={100}
+                depth={50}
+                count={5000}
+                factor={4}
+                saturation={0}
+                fade
+                speed={1}
+            />
         </group>
     );
 }
