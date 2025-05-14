@@ -52,7 +52,6 @@ export function IconWithText({
     });
 
     const groupRef = useRef<Group>(null!);
-    const titleRef = useRef(null);
     const frameCountRef = useRef(0);
 
     useCursor(hovered);
@@ -82,54 +81,52 @@ export function IconWithText({
             ref={groupRef}
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
-            dispose={null}
+            // dispose={null}
+            name={datas.name}
             {...props}
         >
-            <Center name={datas.name}>
-                <group ref={titleRef} position={[-0.25 * scalar, 0, 0]}>
-                    <Float>
-                        <Center key={datas.name} back left position-x={0}>
-                            {nodes.Scene.children.map((node) => {
-                                return (
-                                    <IconMesh
-                                        name="icons-Container__icon"
-                                        key={node.uuid}
-                                        data={node}
-                                        // iconColor={'#000000'}
-                                        // curveSegments={isMobile ? 4 : 32}
-                                        hovered={hovered}
-                                        scale={100 * scalar}
-                                        castShadow
-                                        receiveShadow
-                                    />
-                                );
-                            })}
-                        </Center>
+            <Float>
+                <Center
+                    position-y={isMobile ? -0.8 * scalar : 0}
+                    position-x={isMobile ? 0.1 * scalar : 0}
+                    back
+                    left
+                    bottom={isMobile ? true : false}
+                >
+                    {nodes.Scene.children.map((node) => {
+                        return (
+                            <IconMesh
+                                name="icons-Container__icon"
+                                key={node.uuid}
+                                data={node}
+                                // iconColor={'#000000'}
+                                // curveSegments={isMobile ? 4 : 32}
+                                hovered={hovered}
+                                scale={100 * scalar}
+                                castShadow
+                                receiveShadow
+                            />
+                        );
+                    })}
+                </Center>
 
-                        {!isMobile ? (
-                            <Title
-                                right
-                                isMobile={isMobile}
-                                name="icons-Container__title"
-                                position-x={0.3 * scalar}
-                                textProps={{ scale: 0.01 * scalar }}
-                                scalar={scalar}
-                            >
-                                {datas.text}
-                            </Title>
-                        ) : (
-                            <Center
-                                position-x={1 * scalar}
-                                position-y={1.2 * scalar}
-                                right
-                                name="icons-Container__title"
-                            >
-                                <FallbackText>{datas.text}</FallbackText>
-                            </Center>
-                        )}
-                    </Float>
-                </group>
-            </Center>
+                {!isMobile ? (
+                    <Title
+                        right
+                        isMobile={isMobile}
+                        name="icons-Container__title"
+                        position-x={0.2 * scalar}
+                        textProps={{ scale: 0.01 * scalar }}
+                        scalar={scalar}
+                    >
+                        {datas.text}
+                    </Title>
+                ) : (
+                    <Center name="icons-Container__title">
+                        <FallbackText>{datas.text}</FallbackText>
+                    </Center>
+                )}
+            </Float>
         </group>
     );
 }
