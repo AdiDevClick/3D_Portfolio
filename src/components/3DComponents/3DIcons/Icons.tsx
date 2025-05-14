@@ -64,10 +64,19 @@ export function Icons({ model, ...props }: IconsTypes) {
  */
 function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>, icon: string) {
     e.stopPropagation();
-    if (icon.includes('github') || icon.includes('GitHub')) {
+    console.log(icon.includes('Github'), icon);
+    if (
+        icon.includes('github') ||
+        icon.includes('GitHub') ||
+        icon.includes('Github')
+    ) {
         window.open('https://www.github.com/AdiDevClick');
-    } else if (icon.includes('linkedin') || icon.includes('LinkedIn')) {
-        window.open('https://www.github.com/AdiDevClick');
+    } else if (
+        icon.includes('linkedin') ||
+        icon.includes('LinkedIn') ||
+        icon.includes('Linkedin')
+    ) {
+        window.open('https://www.linkedin.com/in/adrien-quijo');
     }
 }
 
