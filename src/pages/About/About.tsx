@@ -46,7 +46,10 @@ let isActive = false;
 /**
  * Contains the about page content/informations.
  *
- * @param reducer - Reducer type for the carousel
+ * @param visible - Current active page in the reducer
+ * @param contentWidth - Width of the viewport
+ * @param generalScaleX - General scale factor of the viewport scale from the reducer
+ * @param contentHeight - Height of the viewport
  * @param margin **@default=0.5** - Margin between the elements
  */
 const MemoizedAbout = memo(function About({
