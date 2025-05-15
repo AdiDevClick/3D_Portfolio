@@ -48,7 +48,7 @@ export default function App({
             generalScaleX: scaleX,
             generalScaleY: scaleY,
         });
-    }, [size?.[0]]);
+    }, [size[0]]);
 
     // Global Draco config
     // useEffect(() => {
