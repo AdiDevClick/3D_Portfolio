@@ -1,32 +1,21 @@
+import { PagesTypes } from '@/components/3DComponents/Scene/Scene';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
-import { PagesTypes } from '@/pages/About/About';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { Html, Sparkles, Stars, useCursor } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { memo, useRef, useState } from 'react';
 import { Group } from 'three';
-// import GitIcon from '@models/optimized/Github_mobile_model.glb';
-// import LinkedIn from '@models/optimized/Linkedin_model.glb';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-// const floatOptions = {
-//     autoInvalidate: true,
-//     speed: 1.5,
-//     rotationIntensity: 0.5,
-//     floatIntensity: 0.5,
-//     floatingRange: [-0.1, 0.1] as [number, number],
-// };
 
 const MemoizedContact = memo(function Contact({
     isMobile,
     generalScaleX,
     visible,
 }: PagesTypes) {
-    // const { isMobile, scaleX } = useOutletContext();
     const groupRef = useRef<Group>(null);
-    // const iconsRef = useRef<Group>(null);
     const frameCountRef = useRef(0);
 
     const [hovered, setHovered] = useState(false);
@@ -34,8 +23,6 @@ const MemoizedContact = memo(function Contact({
 
     const isActive = visible === 'contact';
     useCursor(hovered);
-
-    // const isActive = visible === 'home';
 
     currentGroupPos = isActive
         ? currentGroupPos.set(0, 0, 0)
@@ -82,8 +69,8 @@ const MemoizedContact = memo(function Contact({
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
             onClick={onClickHandler}
+            visible={isActive}
         >
-            {/* <group ref={groupRef} visible={isActive}> */}
             <FloatingTitle
                 scale={generalScaleX}
                 size={30}
@@ -99,22 +86,6 @@ const MemoizedContact = memo(function Contact({
                     <div className="about__tooltip">Visitez mon LinkedIn</div>
                 </Html>
             )}
-            {/* <PageContainer pageName={'/contact'}>
-                <ContactContent
-                    onWheel={onScrollHandler}
-                    className="contact"
-                    style={{
-                        // opacity: isLoaded ? 1 : 0,
-                        transform: 'translate(-50%)',
-                        transition:
-                            'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
-                        height: '500px',
-                        width: 'clamp(min(52%, 100%), 100%, 52vw)',
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        zIndex: 0,
-                    }}
-                />
-            </PageContainer> */}
             {/* <group ref={iconsRef}>
                 <Center>
                     <Float {...floatOptions}>
