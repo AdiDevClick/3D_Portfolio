@@ -1,5 +1,14 @@
-import { sharedMatrices } from '@/utils/matrices.ts';
-import { Object3D, Camera } from 'three';
+import { sharedMatrices } from '@/utils/matrices';
+import { Object3D, Camera, Box3 } from 'three';
+
+// Extend the Object3D type to include boundingbox property
+declare global {
+    namespace THREE {
+        interface Object3D {
+            boundingbox?: Box3;
+        }
+    }
+}
 
 interface FrustumState {
     camera: Camera;

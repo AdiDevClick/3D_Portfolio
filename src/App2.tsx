@@ -5,6 +5,17 @@ import { ReactNode, useEffect, useRef } from 'react';
 import { Experience } from '@/components/3DComponents/Experience/Experience.tsx';
 import { CameraControls, Loader } from '@react-three/drei';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes.js';
+
+interface AppProps {
+    children: ReactNode;
+    size: number[];
+    width?: number;
+    SETTINGS?: SettingsType;
+    boundaries?: { x: number; y: number; z: number };
+    scaleX?: number;
+    scaleY?: number;
+}
 
 const initialCameraFov = 20;
 const vFov = (initialCameraFov * Math.PI) / 180;
@@ -23,11 +34,7 @@ export default function App({
     boundaries,
     scaleX,
     scaleY,
-    cards,
-}: {
-    children: ReactNode;
-    size: number[];
-}) {
+}: AppProps) {
     const cameraRef = useRef<CameraControls>(null!);
     const reducer = useCarousel();
 
@@ -110,10 +117,10 @@ export default function App({
                 {/* <Suspense fallback={<LoadingScene />}> */}
                 <Scene
                     SETTINGS={SETTINGS}
-                    size={size}
-                    width={width}
-                    scaleX={scaleX}
-                    cards={cards}
+                    // size={size}
+                    // width={width}
+                    // scaleX={scaleX}
+                    // cards={cards}
                     boundaries={boundaries}
                     reducer={reducer}
                 >

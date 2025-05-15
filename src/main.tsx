@@ -86,7 +86,7 @@ export function Root(contentType: { contentType?: string }) {
 
     return (
         <>
-            <Header isTouchDevice={isTouchDevice} />
+            <Header />
             <App
                 width={width}
                 // cards={cardsMemo}

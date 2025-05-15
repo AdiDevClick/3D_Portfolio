@@ -3,8 +3,8 @@ import {
     cardsSettings,
     carouselGeneralSettings,
     presenceSettings,
-} from '@/configs/3DCarousel.config.ts';
-import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
+} from '@/configs/3DCarousel.config';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
 import { useControls, folder } from 'leva';
 import { useMemo } from 'react';
 
@@ -12,7 +12,7 @@ import { useMemo } from 'react';
  * Ajoute un panel de contrôle contenant différentes sections.
  * Version optimisée pour éviter les re-créations multiples
  */
-export function useSettings(datas: []): SettingsType {
+export function useSettings(datas: any[]): SettingsType {
     const settingsConfig = useMemo(() => {
         // !! IMPORTANT !!
         // CARDS_COUNT.value will be replaced by the datas array

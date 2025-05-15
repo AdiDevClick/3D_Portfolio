@@ -5,10 +5,27 @@ export interface CarouselState {
     /** Tableau des cards */
     elements: ElementType[];
     loadedCount: number;
+    /** Indique si l'appareil est un mobile */
+    isMobile: boolean;
+    /** Indique si l'appareil est une tablette */
+    isTablet: boolean;
+    /** Tailles du contenu (tableau de largeur et hauteur) */
+    contentSizes: number[] | null;
+    /** Largeur du contenu normalisée */
+    contentWidth: number | null;
+    /** Hauteur du contenu normalisée */
+    contentHeight: number | null;
+    /** Facteur d'échelle sur l'axe X pour adapter à tous les appareils */
+    generalScaleX: number;
+    /** Facteur d'échelle sur l'axe Y pour adapter à tous les appareils */
+    generalScaleY: number;
+    /** Mode de vue actuel ('home', 'carousel', etc.) */
+    visible: string | null;
 }
 
 // Define payload types based on the function signatures
 export type PayloadTypes = {
+    BATCH_UPDATE: Partial<CarouselState>;
     UPDATE_ELEMENTS: ElementType;
     ADD_ELEMENTS: ElementType;
     DELETE_ELEMENTS: ElementType[];
@@ -19,6 +36,14 @@ export type PayloadTypes = {
     UPDATE_ELEMENT_WIDTH: { element: ElementType; property: number };
     UPDATE_ELEMENT_BENDING: { element: ElementType; property: number };
     UPDATE_LOAD_COUNT: number;
+    SET_MOBILE: boolean;
+    SET_TABLET: boolean;
+    SET_CONTENT_SIZES: number[] | null;
+    SET_CONTENT_WIDTH: number | null;
+    SET_CONTENT_HEIGHT: number | null;
+    SET_GENERAL_SCALEX: number;
+    SET_GENERAL_SCALEY: number;
+    SET_VIEW_MODE: string | null;
 };
 
 // Generate action types from payload types
@@ -120,6 +145,35 @@ export interface ReducerType {
     deleteElements: (element: ElementType[]) => void;
     /** Store the current loaded count of elements */
     updateLoadCount: (increment: number) => void;
+    /** Met à jour plusieurs propriétés d'état en une seule action */
+    batchUpdate: (updates: Partial<CarouselState>) => void;
+
+    /** Définit les dimensions du contenu */
+    setContentSizes: (sizes: number[] | null) => void;
+
+    /** Définit la largeur du contenu normalisée */
+    setContentWidth: (width: number | null) => void;
+
+    /** Définit la hauteur du contenu normalisée */
+    setContentHeight: (height: number | null) => void;
+
+    /** Définit le facteur d'échelle sur l'axe X */
+    setGeneralScaleX: (scale: number) => void;
+
+    /** Définit le facteur d'échelle sur l'axe Y */
+    setGeneralScaleY: (scale: number) => void;
+
+    /** Définit le mode de vue actuel */
+    setViewMode: (viewMode: string | null) => void;
+
+    /** Définit si l'appareil est une tablette */
+    setTablet: (isTablet: boolean) => void;
+
+    /** Définit si l'appareil est un mobile */
+    setMobile: (isMobile: boolean) => void;
+
+    /** Indique si toutes les cartes sont chargées */
+    allCardsLoaded: boolean;
     /** Display all the elements in the State */
     showElements: ElementType[];
     /** Store the current hovered/clicked element */

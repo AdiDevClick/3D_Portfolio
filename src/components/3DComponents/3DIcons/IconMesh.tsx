@@ -1,9 +1,9 @@
 import { Object3D, Mesh, MeshStandardMaterial } from 'three';
-import { JSX, useMemo, useRef } from 'react';
+import { JSX, useMemo } from 'react';
 import {
     emissiveIntensity,
     hoveredIconColor,
-} from '@/configs/3DCarousel.config.ts';
+} from '@/configs/3DCarousel.config';
 
 /**
  * Creates a 3D icon mesh component

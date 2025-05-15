@@ -1,3 +1,12 @@
+interface DocumentTouch {}
+
+// Extend Window interface to include DocumentTouch
+declare global {
+    interface Window {
+        DocumentTouch?: any;
+    }
+}
+
 const userAgent = navigator.userAgent;
 
 /**
@@ -5,7 +14,7 @@ const userAgent = navigator.userAgent;
  * @param maxVersion - Le numéro de version iOS à tester
  * @returns
  */
-export function isIPadWithiOSVersion(maxVersion) {
+export function isIPadWithiOSVersion(maxVersion: number) {
     // Vérifiez si c'est un iPad
     const isIPadBrowser = /iPad/.test(userAgent);
     const isIPadDevice = /Macintosh/i.test(navigator.userAgent);
@@ -39,10 +48,7 @@ export function isTouchDevice() {
         return true;
     }
 
-    if (
-        'ontouchstart' in window ||
-        (window.DocumentTouch && document instanceof DocumentTouch)
-    ) {
+    if ('ontouchstart' in window || window.DocumentTouch) {
         return true;
     }
 
