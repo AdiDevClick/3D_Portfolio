@@ -3,16 +3,16 @@ import { createRoot } from 'react-dom/client';
 import '@css/index.css';
 import '@css/Main.scss';
 import '@css/reset.css';
-import App from './App2.tsx';
+import App from './App2';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, Outlet } from 'react-router';
-import { PageError } from './pages/Error/PageError.tsx';
+import { PageError } from './pages/Error/PageError';
 import { Header } from '@/components/HTML/header/Header.js';
-import useResize from '@/hooks/useResize.tsx';
+import useResize from '@/hooks/useResize';
 import datas from '@data/exemples.json';
-import { useSettings } from '@/hooks/useSettings.tsx';
-import { Error404 } from '@/pages/Error/404/Error404.tsx';
-import { Contact } from '@/pages/Contact/Contact.tsx';
+import { useSettings } from '@/hooks/useSettings';
+import { Error404 } from '@/pages/Error/404/Error404';
+import { Contact } from '@/pages/Contact/Contact';
 
 const router = createBrowserRouter([
     {
