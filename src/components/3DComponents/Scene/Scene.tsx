@@ -14,15 +14,34 @@ import {
     useState,
 } from 'react';
 import '../../../utils/util.tsx';
-import Carousel from '@/components/3DComponents/Carousel/Carousel.tsx';
-import MemoizedAbout from '@/pages/About/About.tsx';
-import { PageScroller } from '@/components/3DComponents/Html/PageScroller.tsx';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
-import MemoizedHome from '@/pages/Home/Home.tsx';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
-import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
+import Carousel from '@/components/3DComponents/Carousel/Carousel';
+import MemoizedAbout from '@/pages/About/About';
+import { PageScroller } from '@/components/3DComponents/Html/PageScroller';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
+import MemoizedHome from '@/pages/Home/Home';
+import { ReducerType } from '@/hooks/reducers/carouselTypes';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
+import MemoizedContact from '@/pages/Contact/Contact';
 
-// export function Scene() {
+export type PagesTypes = {
+    contentWidth: ReducerType['contentWidth'];
+    contentHeight: ReducerType['contentHeight'];
+    generalScaleX: ReducerType['generalScaleX'];
+    visible: ReducerType['visible'];
+    isMobile: ReducerType['isMobile'];
+};
+
+/**
+ * Scene component
+ * @description : Depending on the page, it will create virtual pages
+ * so the user can scroll the contents.
+ *
+ * @param SETTINGS - Settings defined in the 3DCarouselSettingsTypes.tsx
+ * @param boundaries - Boundaries of the carousel
+ * @param reducer - ReducerType
+ * @param children - Children to be rendered if used in the Router
+ * @returns
+ */
 export function Scene({
     children,
     SETTINGS,
@@ -85,26 +104,6 @@ export function Scene({
         [contentWidth, contentHeight, isMobile, generalScaleX, visible]
     );
 
-    // const carouselMemoProps = useMemo(
-    //     () => ({
-    //         // contentHeight: contentHeight,
-    //         activeContent: activeContent,
-    //         showElements: showElements,
-    //         // isMobile: isMobile,
-    //         allCardsLoaded: allCardsLoaded,
-    //         addElements: addElements,
-    //         updateElements: updateElements,
-    //         deleteElements: deleteElements,
-    //         // generalScaleX: generalScaleX,
-    //         activateElement: activateElement,
-    //         clickElement: clickElement,
-    //         updateBending: updateBending,
-    //         updateWidth: updateWidth,
-    //         ...pagesMemoProps,
-    //     }),
-    //     [showElements]
-    // );
-
     return (
         <>
             {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
@@ -123,7 +122,7 @@ export function Scene({
                     {/* <Suspense fallback={<PlaceholderIcon />}> */}
                     <MemoizedAbout {...pagesMemoProps} />
                     {/* </Suspense> */}
-                    {/* <Contact /> */}
+                    <MemoizedContact {...pagesMemoProps} />
                     {/* </Suspense> */}
                 </Scroll>
                 {/* <PageScroller /> */}
@@ -155,9 +154,6 @@ export function Scene({
                     reducer={reducer}
                     boundaries={boundaries}
                     SETTINGS={SETTINGS}
-                    // {...carouselMemoProps}
-                    // isActive={isCarouselActive}
-                    // updateFrequency={isCarouselActive ? 1 : 100}
                 />
             </Suspense>
 
@@ -170,25 +166,25 @@ export function Scene({
     );
 }
 
-function Rig(props) {
-    const ref = useRef(null);
-    const scroll = useScroll();
-    useFrame((state, delta) => {
-        // ref.current.lookAt(1, 0, -1); // Look at center
+// function Rig(props) {
+//     const ref = useRef(null);
+//     const scroll = useScroll();
+//     useFrame((state, delta) => {
+//         // ref.current.lookAt(1, 0, -1); // Look at center
 
-        ref.current.rotation.y = -scroll.offset * (Math.PI * 2); // Rotate contents
-        state.events.update(); // Raycasts every frame rather than on pointer-move
-        // Move camera
-        // easing.damp3(
-        //     state.camera.position,
-        //     [-state.pointer.x * 2, state.pointer.y + 1.5, 10],
-        //     0.3,
-        //     delta
-        // );
-        // state.camera.lookAt(0, 0, 0); // Look at center
-    });
-    return <group ref={ref} {...props} />;
-}
+//         ref.current.rotation.y = -scroll.offset * (Math.PI * 2); // Rotate contents
+//         state.events.update(); // Raycasts every frame rather than on pointer-move
+//         // Move camera
+//         // easing.damp3(
+//         //     state.camera.position,
+//         //     [-state.pointer.x * 2, state.pointer.y + 1.5, 10],
+//         //     0.3,
+//         //     delta
+//         // );
+//         // state.camera.lookAt(0, 0, 0); // Look at center
+//     });
+//     return <group ref={ref} {...props} />;
+// }
 
 {
     /* {hovered && (
@@ -213,25 +209,25 @@ function Rig(props) {
             )} */
 }
 
-function Banner(props) {
-    const ref = useRef();
-    const texture = useTexture('../images/work_.png');
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    const scroll = useScroll();
-    useFrame((state, delta) => {
-        ref.current.material.time.value += Math.abs(scroll.delta) * 4;
-        ref.current.material.map.offset.x += delta / 2;
-    });
-    return (
-        <mesh ref={ref} {...props}>
-            <cylinderGeometry args={[1.6, 1.6, 0.14, 128, 16, true]} />
-            <meshSineMaterial
-                map={texture}
-                map-anisotropy={16}
-                map-repeat={[30, 1]}
-                side={THREE.DoubleSide}
-                toneMapped={false}
-            />
-        </mesh>
-    );
-}
+// function Banner(props) {
+//     const ref = useRef();
+//     const texture = useTexture('../images/work_.png');
+//     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+//     const scroll = useScroll();
+//     useFrame((state, delta) => {
+//         ref.current.material.time.value += Math.abs(scroll.delta) * 4;
+//         ref.current.material.map.offset.x += delta / 2;
+//     });
+//     return (
+//         <mesh ref={ref} {...props}>
+//             <cylinderGeometry args={[1.6, 1.6, 0.14, 128, 16, true]} />
+//             <meshSineMaterial
+//                 map={texture}
+//                 map-anisotropy={16}
+//                 map-repeat={[30, 1]}
+//                 side={THREE.DoubleSide}
+//                 toneMapped={false}
+//             />
+//         </mesh>
+//     );
+// }
