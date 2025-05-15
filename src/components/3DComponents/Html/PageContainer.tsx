@@ -1,8 +1,8 @@
-import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer';
 import {
     DEFAULT_HTML_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
-} from '@/configs/3DCarousel.config.ts';
+} from '@/configs/3DCarousel.config';
 import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -27,7 +27,7 @@ export function PageContainer({ children, pageName }: PageContainerTypes) {
      */
     useEffect(() => {
         if (!groupRef.current) return;
-        location.pathname === pageName
+        location.pathname === import.meta.env.BASE_URL + pageName
             ? setActiveURL(true)
             : setActiveURL(false);
     }, [location]);
