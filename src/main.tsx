@@ -7,30 +7,34 @@ import App from './App2';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError';
-import { Header } from '@/components/HTML/header/Header.js';
+import { Header } from '@/components/HTML/header/Header';
 import useResize from '@/hooks/useResize';
 import datas from '@data/exemples.json';
 import { useSettings } from '@/hooks/useSettings';
 import { Error404 } from '@/pages/Error/404/Error404';
-import { Contact } from '@/pages/Contact/Contact';
 
-const router = createBrowserRouter([
-    {
-        path: '*',
-        element: <Root />,
-        errorElement: <Root contentType={'error'} />,
-        children: [
-            {
-                path: 'error',
-                element: <Error404 />,
-            },
-            {
-                path: 'contact',
-                element: <Contact />,
-            },
-        ],
-    },
-]);
+const baseUrl = import.meta.env.BASE_URL;
+
+const router = createBrowserRouter(
+    [
+        {
+            path: '*',
+            element: <Root />,
+            errorElement: <Root contentType={'error'} />,
+            children: [
+                {
+                    path: 'error',
+                    element: <Error404 />,
+                },
+                // {
+                //     path: 'contact',
+                //     element: <Contact />,
+                // },
+            ],
+        },
+    ],
+    { basename: baseUrl }
+);
 
 const rootElement = createRoot(document.getElementById('root') as HTMLElement);
 rootElement.render(
