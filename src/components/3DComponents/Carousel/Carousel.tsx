@@ -2,7 +2,7 @@ import { Suspense, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { DoubleSide, Mesh, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
 import {
     animateCardEntry,
     animateCarouselContainer,
@@ -10,17 +10,17 @@ import {
     createCardProperties,
     handleCardCollisions,
     updateTitlePosition,
-} from '@/components/3DComponents/Carousel/Functions.ts';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+} from '@/components/3DComponents/Carousel/Functions';
+import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useLocation } from 'react-router';
-import { Title } from '@/components/3DComponents/Title/Title.tsx';
+import { Title } from '@/components/3DComponents/Title/Title';
 import { Float } from '@react-three/drei';
 import { Group } from 'three';
-import { frustumChecker } from '@/utils/frustrumChecker.ts';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
+import { frustumChecker } from '@/utils/frustrumChecker';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import datas from '@data/exemples.json';
-import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer.tsx';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
+import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 
 const activeForwardOffset = 0.5;
 const animationSpeed = 0.22;

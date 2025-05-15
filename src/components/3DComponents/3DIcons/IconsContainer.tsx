@@ -93,13 +93,18 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                             <IconWithText
                                 key={icon.name}
                                 scalar={0.8 * scalar}
-                                model={resolvePath(
-                                    `@models/${
-                                        isMobile
-                                            ? `mobile/${icon.mobile}`
-                                            : `optimized/${icon.optimized}`
-                                    }`
-                                )}
+                                model={`../assets/models/${
+                                    isMobile
+                                        ? `mobile/${icon.mobile}`
+                                        : `optimized/${icon.optimized}`
+                                }`}
+                                // model={resolvePath(
+                                //     `@models/${
+                                //         isMobile
+                                //             ? `mobile/${icon.mobile}`
+                                //             : `optimized/${icon.optimized}`
+                                //     }`
+                                // )}
                                 index={index}
                                 isMobile={isMobile}
                                 datas={{

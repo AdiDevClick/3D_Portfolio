@@ -14,13 +14,19 @@ export default defineConfig({
         sourcemap: false,
         chunkSizeWarningLimit: 2000,
         // rollupOptions: {
-        //     output: {
-        //         manualChunks: {
-        //             'three-vendor': ['three'],
-        //             'react-drei': ['@react-three/drei'],
-        //             'react-fiber': ['@react-three/fiber'],
-        //         },
-        //     },
+        //     // output: {
+        //     //     manualChunks: {
+        //     //         'three-vendor': ['three'],
+        //     //         'react-drei': ['@react-three/drei'],
+        //     //         'react-fiber': ['@react-three/fiber'],
+        //     //     },
+        //     // },
+        //     external: [
+        //         'react',
+        //         'three',
+        //         '@react-three/drei',
+        //         '@react-three/fiber',
+        //     ],
         // },
     },
     // server: {
