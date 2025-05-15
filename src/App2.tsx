@@ -1,11 +1,11 @@
-import { Scene } from '@/components/3DComponents/Scene/Scene.tsx';
+import { Scene } from '@/components/3DComponents/Scene/Scene';
 import { Canvas } from '@react-three/fiber';
 import { Leva } from 'leva';
 import { ReactNode, useEffect, useRef } from 'react';
-import { Experience } from '@/components/3DComponents/Experience/Experience.tsx';
+import { Experience } from '@/components/3DComponents/Experience/Experience';
 import { CameraControls, Loader } from '@react-three/drei';
-import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
-import { SettingsType } from '@/configs/3DCarouselSettingsTypes.js';
+import { useCarousel } from '@/hooks/reducers/useCarousel';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
 
 interface AppProps {
     children: ReactNode;
