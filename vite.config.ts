@@ -6,6 +6,12 @@ import dns from 'node:dns';
 dns.setDefaultResultOrder('verbatim');
 export default defineConfig({
     plugins: [react()],
+    base: '/3D_Portfolio/',
+    build: {
+        outDir: 'dist',
+        emptyOutDir: true,
+        sourcemap: false,
+    },
     // server: {
     //     // origin: 'https://http://192.168.1.181:5173',
     //     // origin: 'http://localhost:5173',
