@@ -15,6 +15,7 @@ interface AppProps {
     boundaries?: { x: number; y: number; z: number };
     scaleX?: number;
     scaleY?: number;
+    isMobile?: boolean;
 }
 
 const initialCameraFov = 20;
@@ -35,21 +36,19 @@ export default function App({
     scaleX,
     scaleY,
 }: AppProps) {
-    const cameraRef = useRef<CameraControls>(null!);
     const reducer = useCarousel();
 
     useEffect(() => {
-        // reducer.setViewMode(viewMode);
         reducer.batchUpdate({
-            isMobile: size[0] < 768,
-            isTablet: size[0] < 1024,
+            isMobile: (size[0] ?? 1) < 768,
+            isTablet: (size[0] ?? 1) < 1024,
             contentWidth: width,
             contentSizes: size,
             contentHeight: height,
             generalScaleX: scaleX,
             generalScaleY: scaleY,
         });
-    }, [size[0]]);
+    }, [size?.[0]]);
 
     // Global Draco config
     // useEffect(() => {
@@ -116,17 +115,13 @@ export default function App({
                 {/* <SceneParams SETTINGS={SETTINGS} size={size}> */}
                 {/* <Suspense fallback={<LoadingScene />}> */}
                 <Scene
-                    SETTINGS={SETTINGS}
-                    // size={size}
-                    // width={width}
-                    // scaleX={scaleX}
-                    // cards={cards}
-                    boundaries={boundaries}
+                    SETTINGS={SETTINGS || ({} as SettingsType)}
+                    boundaries={boundaries || { x: 0, y: 0, z: 0 }}
                     reducer={reducer}
                 >
                     {children}
                 </Scene>
-                <Experience ref={cameraRef} reducer={reducer} />
+                <Experience reducer={reducer} />
 
                 {/* </Suspense> */}
                 {/* </SceneParams> */}
