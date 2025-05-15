@@ -108,10 +108,5 @@
         "name": "Symfony",
         "optimized": "Symfony_model.glb",
         "mobile": "Symfony_mobile_model.glb"
-    },
-    {
-        "name": "WordPress",
-        "optimized": "Symfony_model.glb",
-        "mobile": "Symfony_mobile_model.glb"
     }
 ]
