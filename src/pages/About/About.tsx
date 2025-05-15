@@ -1,28 +1,21 @@
-import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
-import { PageContainer } from '@/components/3DComponents/Html/PageContainer.tsx';
-import { AboutContent } from '@/pages/About/AboutContent.tsx';
+import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions';
+import { PageContainer } from '@/components/3DComponents/Html/PageContainer';
+import { AboutContent } from '@/pages/About/AboutContent';
 import '@css/About.scss';
 import { Center, Float } from '@react-three/drei';
 import { memo, useEffect, useRef } from 'react';
 import { Group } from 'three';
 import { useFrame } from '@react-three/fiber';
-import GitIcon from '@models/optimized/Github_mobile_model.glb';
-import LinkedIn from '@models/optimized/Linkedin_model.glb';
-import {
-    Icons,
-    preloadIcons,
-} from '@/components/3DComponents/3DIcons/Icons.tsx';
+import { Icons } from '@/components/3DComponents/3DIcons/Icons';
 import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
     DESKTOP_HTML_ICONS_POSITION_SETTINGS,
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
-} from '@/configs/3DCarousel.config.ts';
+} from '@/configs/3DCarousel.config';
 import { easing } from 'maath';
-import { Title } from '@/components/3DComponents/Title/Title.tsx';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
-import { frustumChecker } from '@/utils/frustrumChecker.ts';
-
-preloadIcons([GitIcon, LinkedIn]);
+import { Title } from '@/components/3DComponents/Title/Title';
+import { frustumChecker } from '@/utils/frustrumChecker';
+import { PagesTypes } from '@/components/3DComponents/Scene/Scene';
 
 const floatOptions = {
     autoInvalidate: true,
@@ -33,14 +26,15 @@ const floatOptions = {
 };
 
 type AboutTypes = {
-    contentWidth: ReducerType['contentWidth'];
-    contentHeight: ReducerType['contentHeight'];
-    generalScaleX: ReducerType['generalScaleX'];
-    visible: ReducerType['visible'];
-    /** @defaultValue 0.5 */
-    margin?: number;
-};
+    /** @defaultValue 0.5 */ margin?: number;
+} & PagesTypes;
 
+const LinkedIn = `${
+    import.meta.env.BASE_URL
+}assets/models/optimized/Linkedin_model.glb`;
+const GitHub = `${
+    import.meta.env.BASE_URL
+}assets/models/optimized/Github_model.glb`;
 let isActive = false;
 
 /**
@@ -79,7 +73,11 @@ const MemoizedAbout = memo(function About({
                 contentHeight,
                 margin
             );
-            titlePositionRef.current.set(titlePos[0], titlePos[1], titlePos[2]);
+            titlePositionRef.current.set(
+                titlePos[0] ?? 0,
+                titlePos[1] ?? 0,
+                titlePos[2] ?? 0
+            );
             contentPositionRef.current.set(0, 0 - margin, 0);
 
             const iconPos = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
@@ -87,7 +85,11 @@ const MemoizedAbout = memo(function About({
                 contentWidth,
                 margin
             );
-            iconsPositionRef.current.set(iconPos[0], iconPos[1], iconPos[2]);
+            iconsPositionRef.current.set(
+                iconPos[0] ?? 0,
+                iconPos[1] ?? 0,
+                iconPos[2] ?? 0
+            );
         } else {
             titlePositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             contentPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
@@ -162,6 +164,7 @@ const MemoizedAbout = memo(function About({
             }
         }
     });
+
     return (
         <group visible={isActive} ref={groupRef}>
             <Float {...floatOptions}>
@@ -192,7 +195,7 @@ const MemoizedAbout = memo(function About({
                 <Center>
                     <Float {...floatOptions}>
                         <Icons
-                            model={GitIcon}
+                            model={GitHub}
                             rotation={[0, 3, 0]}
                             position={[0, 0, 0]}
                         />
