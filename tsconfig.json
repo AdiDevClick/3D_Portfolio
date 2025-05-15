@@ -1,21 +1,24 @@
 {
   "files": [],
   "compilerOptions": {
-      "composite": false,
-      "strict": true,
+      /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+      "composite": true,
       "esModuleInterop": true,
       "skipLibCheck": true,
-      "target": "ESNext",
-      "module": "ESNext",
+      "target": "ES2022",
+      "module": "ES2022",
       "jsx": "react-jsx",
       "moduleResolution": "bundler",
+      "moduleDetection": "force",
       "resolveJsonModule": true,
-      "isolatedModules": true,
       "useUnknownInCatchVariables": true,
+      "allowImportingTsExtensions": true,
+      "noEmit": true,
       "baseUrl": ".",
       "allowJs": true,
-      "checkJs": false,
-      // "noEmit": true,
+      "checkJs": true,
       "paths": {
         "@/*": ["src/*"],
         "@assets/*": ["src/assets/*"],
@@ -28,12 +31,12 @@
         "@hooks/*": ["src/hooks/*"]
       },
       "types": ["react", "react-dom"],
-      "lib": ["DOM", "ESNext"],
+      "lib": ["DOM", "ES2022", "DOM.Iterable"],
   },
   "references": [
     // { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "build", "TODELETE"] 
+  "exclude": ["node_modules"] 
 }
