@@ -1,8 +1,9 @@
-import { SimpleEnvironment } from '@/components/Loaders/Loader.tsx';
-import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config.ts';
+import { SimpleEnvironment } from '@/components/Loaders/Loader';
+import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
 import { wait } from '@/functions/promises.js';
-import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning.tsx';
-import { cameraLookAt } from '@/utils/cameraLooktAt.ts';
+import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
+import { ReducerType } from '@/hooks/reducers/carouselTypes';
+import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
 import { Suspense, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -29,7 +30,7 @@ const cameraPositions = {
     },
 };
 
-export function Experience({ ref, reducer }) {
+export function Experience({ reducer }: { reducer: ReducerType }) {
     const {
         activeContent,
         isMobile,
@@ -39,6 +40,7 @@ export function Experience({ ref, reducer }) {
         clickElement,
         visible,
     } = reducer;
+    const ref = useRef<CameraControls>(null!);
 
     const params = useParams();
     const navigate = useNavigate();
@@ -143,7 +145,6 @@ export function Experience({ ref, reducer }) {
         const activateCardByURL = async (retries = 5, delay = 500) => {
             try {
                 // await wait(delay, 'Attente pour un nouvel essai');
-
                 if (showElements.length === 0) {
                     throw createHttpError('Try again', 403);
                 }
@@ -155,13 +156,6 @@ export function Experience({ ref, reducer }) {
                 if (!targetCard) {
                     throw createHttpError('No project found', 404);
                 }
-
-                // if (!targetCard.ref?.current) {
-                //     console.log(targetCard);
-                //     throw new Error('Card reference not ready', {
-                //         cause: { status: 403 },
-                //     });
-                // }
 
                 // Wait for the carousel mode to establish
                 await wait(400);
