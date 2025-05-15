@@ -27,7 +27,11 @@ export function ProjectContent({ card }: cardType) {
                             rel="noopener noreferrer"
                             target="_blank"
                         >
-                            <Tags logo={element.logo}>{element.name}</Tags>
+                            <Tags
+                                logo={import.meta.env.BASE_URL + element.logo}
+                            >
+                                {element.name}
+                            </Tags>
                         </a>
                     );
                 })}
@@ -52,7 +56,12 @@ export function ProjectContent({ card }: cardType) {
                 {Object.entries(card.stack).map(([text, logoUrl]) => {
                     const id = useId();
                     return (
-                        <Tags key={id} logo={logoUrl as string}>
+                        <Tags
+                            key={id}
+                            logo={
+                                (import.meta.env.BASE_URL + logoUrl) as string
+                            }
+                        >
                             {text}
                         </Tags>
                     );
