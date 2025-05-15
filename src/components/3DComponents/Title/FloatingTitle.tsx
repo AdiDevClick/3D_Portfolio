@@ -1,4 +1,4 @@
-import { Title } from '@/components/3DComponents/Title/Title.tsx';
+import { Title } from '@/components/3DComponents/Title/Title';
 import { Float } from '@react-three/drei';
 import { JSX, memo, ReactNode } from 'react';
 
