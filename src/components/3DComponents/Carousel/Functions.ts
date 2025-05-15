@@ -2,6 +2,29 @@
  * CAROUSEL FUNCTIONS
  */
 
+// Extending Window interface to include custom properties
+interface CustomWindow extends Window {
+    _textureCache?: Record<string, any>;
+    _textureCacheStats?: {
+        hits: number;
+        misses: number;
+        totalLoaded: number;
+        savedLoadTime: number;
+    };
+}
+
+declare global {
+    interface Window {
+        _textureCache?: Record<string, any>;
+        _textureCacheStats?: {
+            hits: number;
+            misses: number;
+            totalLoaded: number;
+            savedLoadTime: number;
+        };
+    }
+}
+
 import {
     CardProps,
     CollisionConfig,
@@ -66,7 +89,7 @@ export function createCardProperties(
     const defaultContent = {
         title: 'title',
         cardTitle: 'cardTitle',
-        url: `images/img${Math.floor(i % 10) + 1}.png`,
+        url: `/assets/images/img${Math.floor(i % 10) + 1}.png`,
         description: 'description',
         content: [
             'Intégration du Canvas avec ThreeJS',
