@@ -6,7 +6,7 @@ import dns from 'node:dns';
 dns.setDefaultResultOrder('verbatim');
 export default defineConfig({
     plugins: [react()],
-    // base: '/3D_Portfolio/',
+    base: '/3D_Portfolio/',
     // base: '/',
     build: {
         outDir: 'dist',
@@ -92,9 +92,9 @@ export default defineConfig({
         '**/*.obj',
         '**/*.fbx',
     ],
-    optimizeDeps: {
-        exclude: ['three'], // Exclure three de l'optimisation par défaut
-    },
+    // optimizeDeps: {
+    //     exclude: ['three'],
+    // },
 });
 
 // export default defineConfig({
