@@ -1,15 +1,15 @@
-import MemoizedIconsContainer from '@/components/3DComponents/3DIcons/IconsContainer.tsx';
-import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config.ts';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import MemoizedIconsContainer from '@/components/3DComponents/3DIcons/IconsContainer';
+import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
+import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { memo, RefObject, Suspense, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
-import { frustumChecker } from '@/utils/frustrumChecker.ts';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
-import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle.tsx';
-import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle.tsx';
+import { frustumChecker } from '@/utils/frustrumChecker';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
+import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
+import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
 import { ContactShadows } from '@react-three/drei';
 
 type HomeTypes = {
@@ -129,7 +129,6 @@ const MemoizedHome = memo(function Home({
                 <FloatingTitle
                     scale={generalScaleX}
                     size={30}
-                    // isMobile={isMobile}
                     textProps={{
                         height: 20,
                     }}
