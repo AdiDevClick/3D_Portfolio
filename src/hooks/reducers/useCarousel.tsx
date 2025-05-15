@@ -1,6 +1,6 @@
 import { useCallback, useReducer } from 'react';
-import { CarouselState, ReducerType } from './carouselTypes.ts';
-import { carouselReducer } from '@/hooks/reducers/carouselReducer.tsx';
+import { CarouselState, ReducerType } from './carouselTypes';
+import { carouselReducer } from '@/hooks/reducers/carouselReducer';
 
 // Initial state
 const initialState: CarouselState = {
