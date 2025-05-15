@@ -1,8 +1,8 @@
-import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText.tsx';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon.tsx';
-import { HexCell } from '@/components/3DComponents/Forms/HexCell.tsx';
-import { GridLayout } from '@/components/3DComponents/Grid/GridLayout.tsx';
-import { frustumChecker } from '@/utils/frustrumChecker.ts';
+import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
+import { HexCell } from '@/components/3DComponents/Forms/HexCell';
+import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
+import { frustumChecker } from '@/utils/frustrumChecker';
 import { Center } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { JSX, memo, Suspense, useRef } from 'react';
