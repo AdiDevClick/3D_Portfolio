@@ -20,25 +20,17 @@ export function PageContainer({ children, pageName }: PageContainerTypes) {
     const location = useLocation();
 
     const [activeURL, setActiveURL] = useState(false);
-    // const { lookAtSmooth } = useLookAtSmooth();
 
     /**
      * Activate page URL and content loaded
      */
     useEffect(() => {
         if (!groupRef.current) return;
-        location.pathname === import.meta.env.BASE_URL + pageName
+        // console.log(import.meta.env.BASE_URL + pageName);
+        location.pathname === pageName
             ? setActiveURL(true)
             : setActiveURL(false);
     }, [location]);
-
-    // useEffect(() => {
-    // if (!groupRef.current || !activeURL) return;
-    // const timer = setTimeout(() => {
-    // lookAtSmooth(groupRef.current.position);
-    // return () => clearTimeout(timer);
-    // }, 100);
-    // }, [activeURL]);
 
     /**
      * POSITIONING IF URL IS ACTIVE / NON ACTIVE -
@@ -48,7 +40,11 @@ export function PageContainer({ children, pageName }: PageContainerTypes) {
             easing.damp3(
                 groupRef.current.position,
                 activeURL
-                    ? DEFAULT_HTML_POSITION_SETTINGS
+                    ? (DEFAULT_HTML_POSITION_SETTINGS as [
+                          number,
+                          number,
+                          number
+                      ])
                     : DEFAULT_PROJECTS_POSITION_SETTINGS,
                 0.3,
                 delta
