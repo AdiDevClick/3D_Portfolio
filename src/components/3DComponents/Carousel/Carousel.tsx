@@ -42,7 +42,6 @@ let frameCountRef = 0;
 interface CarouselProps {
     reducer: ReducerType;
     boundaries: { x: number; y: number; z: number };
-    datas: [{}];
     SETTINGS: SettingsType;
 }
 export default function Carousel({
