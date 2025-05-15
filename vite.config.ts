@@ -6,12 +6,13 @@ import dns from 'node:dns';
 dns.setDefaultResultOrder('verbatim');
 export default defineConfig({
     plugins: [react()],
-    base: '/3D_Portfolio/',
+    // base: '/3D_Portfolio/',
     // base: '/',
     build: {
         outDir: 'dist',
         emptyOutDir: true,
         sourcemap: false,
+        chunkSizeWarningLimit: 2000,
         // rollupOptions: {
         //     output: {
         //         manualChunks: {

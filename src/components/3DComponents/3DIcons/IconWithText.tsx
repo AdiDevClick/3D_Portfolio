@@ -1,12 +1,12 @@
-import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh.tsx';
-import { Title } from '@/components/3DComponents/Title/Title.tsx';
+import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
+import { Title } from '@/components/3DComponents/Title/Title';
 import { Center, Float, useCursor } from '@react-three/drei';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { Group } from 'three';
 import { easing } from 'maath';
 import { JSX, useRef, useState } from 'react';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 type IconsTypes = {
     model: string;
     datas: { name: string; text: string };
