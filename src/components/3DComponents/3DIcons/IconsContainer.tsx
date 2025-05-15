@@ -93,18 +93,13 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                             <IconWithText
                                 key={icon.name}
                                 scalar={0.8 * scalar}
-                                model={`../assets/models/${
+                                model={`${
+                                    import.meta.env.BASE_URL
+                                }/assets/models/${
                                     isMobile
                                         ? `mobile/${icon.mobile}`
                                         : `optimized/${icon.optimized}`
                                 }`}
-                                // model={resolvePath(
-                                //     `@models/${
-                                //         isMobile
-                                //             ? `mobile/${icon.mobile}`
-                                //             : `optimized/${icon.optimized}`
-                                //     }`
-                                // )}
                                 index={index}
                                 isMobile={isMobile}
                                 datas={{
@@ -135,14 +130,14 @@ export default MemoizedIconsContainer;
  *
  * @param aliasPath - The alias path to resolve
  */
-function resolvePath(aliasPath: string) {
-    const aliasMap: Record<string, string> = {
-        '@models': '/src/assets/3DModels',
-    };
-    const [alias, ...rest] = aliasPath.split('/');
-    if (alias in aliasMap) {
-        return new URL(`${aliasMap[alias]}/${rest.join('/')}`, import.meta.url)
-            .href;
-    }
-    throw new Error(`Alias "${alias}" non reconnu`);
-}
+// function resolvePath(aliasPath: string) {
+//     const aliasMap: Record<string, string> = {
+//         '@models': '/src/assets/3DModels',
+//     };
+//     const [alias, ...rest] = aliasPath.split('/');
+//     if (alias in aliasMap) {
+//         return new URL(`${aliasMap[alias]}/${rest.join('/')}`, import.meta.url)
+//             .href;
+//     }
+//     throw new Error(`Alias "${alias}" non reconnu`);
+// }
