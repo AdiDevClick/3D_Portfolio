@@ -1,5 +1,5 @@
 import { RefObject } from 'react';
-import { Box3, Mesh, Object3D, Vector3 } from 'three';
+import { Box3, Object3D, Vector3 } from 'three';
 
 type sidesPositions = {
     bottom: number;
@@ -47,7 +47,7 @@ export function getSidesPositions(
     return { bottom, top, left, right, front, back };
 }
 
-export function getSidesPositions2(refObject: Mesh): sidesPositions {
+export function getSidesPositions2(refObject: ObjectType): sidesPositions {
     if (!refObject) return null;
 
     let { height, width, depth } = refObject.geometry.parameters;
