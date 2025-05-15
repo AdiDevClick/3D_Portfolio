@@ -7,10 +7,20 @@ dns.setDefaultResultOrder('verbatim');
 export default defineConfig({
     plugins: [react()],
     base: '/3D_Portfolio/',
+    // base: '/',
     build: {
         outDir: 'dist',
         emptyOutDir: true,
         sourcemap: false,
+        // rollupOptions: {
+        //     output: {
+        //         manualChunks: {
+        //             'three-vendor': ['three'],
+        //             'react-drei': ['@react-three/drei'],
+        //             'react-fiber': ['@react-three/fiber'],
+        //         },
+        //     },
+        // },
     },
     // server: {
     //     // origin: 'https://http://192.168.1.181:5173',
@@ -75,6 +85,9 @@ export default defineConfig({
         '**/*.obj',
         '**/*.fbx',
     ],
+    optimizeDeps: {
+        exclude: ['three'], // Exclure three de l'optimisation par défaut
+    },
 });
 
 // export default defineConfig({

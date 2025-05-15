@@ -8,6 +8,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "outDir": "./dist-app",
 
     /* Bundler mode */
     "moduleResolution": "bundler",

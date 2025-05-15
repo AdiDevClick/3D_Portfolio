@@ -7,6 +7,8 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "outDir": "./dist-node" ,
+
 
     /* Bundler mode */
     "moduleResolution": "bundler",
