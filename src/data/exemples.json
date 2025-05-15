@@ -1,44 +1,51 @@
 [
     {
         "id": "1",
-        "title": "Carte 1",
-        "cover": "../src/assets/images/img1.png",
-        "description": "Une description rapide",
+        "title": "Portfolio HTML",
+        "cardTitle": "Portfolio HTML",
+        "cover": "../src/assets/images/Portfolio.jpg",
+        "description": "Un portfolio HTML/CSS responsive",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Utilisation du CSS pour styler le site",
+            "Créé avec HTML, CSS et JavaScript",
+            "Une implémentation responsive avec burger menu"
         ],
         "stack": {
-            "React": "../src/assets/icons/react.svg",
-            "TypeScript": "../src/assets/icons/typescript.svg"
+            "HTML": "../src/assets/icons/html.svg",
+            "CSS": "../src/assets/icons/css.svg",
+            "JavaScript": "../src/assets/icons/javascript.svg"
         },
         "links": [
             {
                 "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://www.github.com/AdiDevClick/Portfolio",
                 "logo": "../src/assets/icons/github.svg"
             },
             {
                 "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://adidevclick.github.io/Portfolio/",
                 "logo": "../src/assets/icons/github.svg"
             }
         ]
     },
     {
         "id": "2",
-        "title": "Carte 2",
-        "cover": "../src/assets/images/img2.png",
-        "description": "Une description rapide",
+        "title": "Recettes",
+        "cover": "../src/assets/images/recettes.jpg",
+        "description": "Un site de partage de recettes dynamique. ",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Créé avec PHP et JavaScript",
+            "Architecture MVC",
+            "Requêtes AJAX pour le chargement dynamique",
+            "Construction de requêtes SQL complexes"
         ],
         "stack": {
-            "React": "../src/assets/icons/react.svg",
-            "TypeScript": "../src/assets/icons/typescript.svg"
+            "Php": "../src/assets/icons/php.svg",
+            "JavaScript": "../src/assets/icons/javascript.svg",
+            "MySQL": "../src/assets/icons/mysql.svg",
+            "CSS": "../src/assets/icons/css.svg",
+            "HTML": "../src/assets/icons/html.svg",
+            "Vite": "../src/assets/icons/vite.svg"
         },
         "links": [
             {
