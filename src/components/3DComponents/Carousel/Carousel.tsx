@@ -18,7 +18,11 @@ import { Float } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
-import datas from '@data/exemples.json';
+import datasJson from '@data/exemples.json';
+import { ElementType } from '@/hooks/reducers/carouselTypes';
+
+const datas = datasJson as unknown as ElementType[];
+
 import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 
@@ -38,7 +42,7 @@ let frameCountRef = 0;
 interface CarouselProps {
     reducer: ReducerType;
     boundaries: { x: number; y: number; z: number };
-    datas: [];
+    datas: [{}];
     SETTINGS: SettingsType;
 }
 export default function Carousel({
@@ -143,7 +147,7 @@ export default function Carousel({
         });
 
         if (cardsMemo.length < showElements.length) {
-            reducer.deleteElements(cardsMemo);
+            reducer.deleteElements(cardsMemo as unknown as ElementType[]);
         }
     }, [cardsMemo]);
 
@@ -300,12 +304,6 @@ export default function Carousel({
             setIsInitialLoading(false);
         }
     }, [showElements, allCardsLoaded]);
-
-    // useEffect(() => {
-    //     if (loadedCount >= showElements.length) {
-    //         setIsInitialLoading(false);
-    //     }
-    // }, [showElements, loadedCount]);
 
     return (
         <group visible={activeURL} ref={projectsRef}>
