@@ -1,5 +1,5 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
+import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { Html } from '@react-three/drei';
 import { HtmlProps } from '@react-three/drei/web/Html';
 import { useFrame } from '@react-three/fiber';
