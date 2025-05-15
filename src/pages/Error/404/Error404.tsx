@@ -1,4 +1,4 @@
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import '@css/404.css';
 import {
     Billboard,
@@ -9,7 +9,7 @@ import {
 import { useLoader } from '@react-three/fiber';
 import { useOutletContext } from 'react-router';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
-import model from '@models/Brokenglass_model.glb';
+// import model from '../assets/models/original/Brokenglass_model.glb';
 import { Object3D } from 'three';
 
 type ContextType = {
@@ -29,8 +29,11 @@ const floatOptions = {
  */
 export function Error404() {
     const { isMobile, scaleX } = useOutletContext<ContextType>();
+    const modelPath = `${
+        import.meta.env.BASE_URL
+    }assets/models/original/Brokenglass_model.glb`;
 
-    const { nodes } = useLoader(GLTFLoader, model, (loader) => {
+    const { nodes } = useLoader(GLTFLoader, modelPath, (loader) => {
         const gltfLoader = loader as GLTFLoader;
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath(
