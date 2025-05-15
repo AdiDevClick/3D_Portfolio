@@ -1,4 +1,4 @@
-import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh.tsx';
+import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
 import { Html, useCursor, useGLTF } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
 import { JSX, useState } from 'react';
@@ -37,7 +37,7 @@ export function Icons({ model, ...props }: IconsTypes) {
             dispose={null}
             {...props}
         >
-            {nodes.Scene.children.map((node) => {
+            {nodes.Scene?.children.map((node) => {
                 return (
                     <IconMesh
                         key={node.uuid}
