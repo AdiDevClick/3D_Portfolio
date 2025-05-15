@@ -3,22 +3,19 @@ import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { memo, PropsWithChildren, ReactNode, useEffect, useRef } from 'react';
 import { DoubleSide, Mesh } from 'three';
 import {
-    ElementType,
-    ReducerType,
-} from '../../../hooks/reducers/carouselTypes.js';
-import { getSidesPositions } from '../../../functions/3Dmodels.js';
-import {
     handleActiveCardEffects,
     handleClickedCardEffects,
     handleNormalAnimation,
-} from '@/components/3DComponents/Carousel/Functions.js';
+} from '@/components/3DComponents/Carousel/Functions';
 import {
     CARD_HOVER_SCALE,
     DESKTOP_TITLE_POSITION,
     MOBILE_TITLE_POSITION,
-} from '@/configs/3DCarousel.config.js';
+} from '@/configs/3DCarousel.config';
 import { easing } from 'maath';
-import { SettingsType } from '@/configs/3DCarouselSettingsTypes.js';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
+import { getSidesPositions } from '@/functions/3Dmodels';
+import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes';
 
 export type CardProps = {
     card: ElementType;
@@ -144,14 +141,14 @@ const MemoizedCard = memo(
             <Image
                 position={card.position}
                 ref={cardRef}
-                url={card.url}
+                url={import.meta.env.BASE_URL + card.url}
                 // texture={card.texture}
                 transparent
                 side={DoubleSide}
                 rotation={[
-                    card.rotation[0],
-                    card.rotation[1],
-                    card.rotation[2],
+                    card.rotation[0] ?? 0,
+                    card.rotation[1] ?? 0,
+                    card.rotation[2] ?? 0,
                 ]}
                 {...props}
                 // args={[textureQuality, textureQuality]}
