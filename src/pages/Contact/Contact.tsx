@@ -1,14 +1,11 @@
-import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle.tsx';
-import {
-    DEFAULT_PROJECTS_POSITION_SETTINGS,
-    DESKTOP_HTML_ICONS_POSITION_SETTINGS,
-} from '@/configs/3DCarousel.config.ts';
-import { frustumChecker } from '@/utils/frustrumChecker.ts';
+import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
+import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
+import { PagesTypes } from '@/pages/About/About';
+import { frustumChecker } from '@/utils/frustrumChecker';
 import { Html, Sparkles, Stars, useCursor } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { useRef, useState } from 'react';
-import { useOutletContext } from 'react-router';
+import { memo, useRef, useState } from 'react';
 import { Group } from 'three';
 // import GitIcon from '@models/optimized/Github_mobile_model.glb';
 // import LinkedIn from '@models/optimized/Linkedin_model.glb';
@@ -22,8 +19,12 @@ let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 //     floatingRange: [-0.1, 0.1] as [number, number],
 // };
 
-export function Contact() {
-    const { isMobile, scaleX } = useOutletContext();
+const MemoizedContact = memo(function Contact({
+    isMobile,
+    generalScaleX,
+    visible,
+}: PagesTypes) {
+    // const { isMobile, scaleX } = useOutletContext();
     const groupRef = useRef<Group>(null);
     // const iconsRef = useRef<Group>(null);
     const frameCountRef = useRef(0);
@@ -31,13 +32,15 @@ export function Contact() {
     const [hovered, setHovered] = useState(false);
     const scale = hovered ? 1.2 : 1;
 
+    const isActive = visible === 'contact';
     useCursor(hovered);
 
     // const isActive = visible === 'home';
 
-    // currentGroupPos = isActive
-    //     ? currentGroupPos.set(0, 0, 0)
-    //     : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+    currentGroupPos = isActive
+        ? currentGroupPos.set(0, 0, 0)
+        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+
     useFrame((state, delta) => {
         if (!groupRef.current) return;
         frameCountRef.current += 1;
@@ -50,9 +53,13 @@ export function Contact() {
             isMobile
         );
 
-        if (groupRef.current.visible) {
-            // if (groupRef.current.visible || isActive) {
-            easing.damp3(groupRef.current.position, [0, 0, 0], 0.2, delta);
+        if (groupRef.current.visible || isActive) {
+            easing.damp3(
+                groupRef.current.position,
+                currentGroupPos,
+                0.2,
+                delta
+            );
             easing.damp3(groupRef.current.scale, scale, 0.2, delta);
 
             // if (iconsRef.current.visible || groupRef.current.visible) {
@@ -78,7 +85,7 @@ export function Contact() {
         >
             {/* <group ref={groupRef} visible={isActive}> */}
             <FloatingTitle
-                scale={scaleX}
+                scale={generalScaleX}
                 size={30}
                 textProps={{
                     height: 20,
@@ -138,7 +145,7 @@ export function Contact() {
             />
         </group>
     );
-}
+});
 
 function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>) {
     e.stopPropagation();
@@ -148,3 +155,5 @@ function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>) {
     // window.open('https://www.github.com/AdiDevClick');
     // }
 }
+
+export default MemoizedContact;
