@@ -7,10 +7,11 @@
     "scripts": {
         "dev": "vite",
         "devhost": "vite --host",
-        "build": "tsc && vite build",
+        "build": "vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "deploy": "gh-pages -d dist",
+        "typecheck": "tsc --noEmit",
+        "deploy": "gh-pages -d dist --no-history",
         "predeploy": "npm run build"
     },
     "dependencies": {
