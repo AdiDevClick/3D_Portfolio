@@ -41,6 +41,12 @@ const MemoizedContact = memo(function Contact({
         );
 
         if (groupRef.current.visible || isActive) {
+            console.log(
+                'je suis visible: ',
+                groupRef.current.visible,
+                'je suis active:',
+                isActive
+            );
             easing.damp3(
                 groupRef.current.position,
                 currentGroupPos,
@@ -105,15 +111,17 @@ const MemoizedContact = memo(function Contact({
                 </Center>
             </group> */}
             <Sparkles count={30} size={6} speed={0.4} color={'blue'} />
-            <Stars
-                radius={100}
-                depth={50}
-                count={5000}
-                factor={4}
-                saturation={0}
-                fade
-                speed={1}
-            />
+            {isActive && (
+                <Stars
+                    radius={100}
+                    depth={50}
+                    count={5000}
+                    factor={4}
+                    saturation={0}
+                    fade
+                    speed={1}
+                />
+            )}
         </group>
     );
 });
