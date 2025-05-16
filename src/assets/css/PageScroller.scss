@@ -8,6 +8,7 @@
     width: 100vw;
     overflow: auto;
     position: relative;
+    touch-action: pan-y;
     // Old iOS Safari
     -webkit-overflow-scrolling: touch;
 }
