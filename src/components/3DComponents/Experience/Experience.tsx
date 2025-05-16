@@ -83,7 +83,6 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
             case 'card-opened':
             case 'card-detail':
                 if (activeContent) {
-                    console.log('JAI UN ACTIVE CONTENT');
                     prevCamPosRef.current = camera.position.clone();
 
                     positionCameraToCard(
