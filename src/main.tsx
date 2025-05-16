@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import '@css/index.css';
 import '@css/Main.scss';
@@ -24,7 +24,11 @@ const router = createBrowserRouter(
             children: [
                 {
                     path: 'error',
-                    element: <Error404 />,
+                    element: (
+                        <Suspense fallback={null}>
+                            <Error404 />
+                        </Suspense>
+                    ),
                 },
                 // {
                 //     path: 'contact',
