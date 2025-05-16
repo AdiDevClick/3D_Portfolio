@@ -24,14 +24,14 @@ const router = createBrowserRouter(
             element: <Root />,
             errorElement: <Root contentType={'error'} />,
             children: [
-                {
-                    path: 'error-page',
-                    element: (
-                        // <Suspense fallback={<PlaceholderIcon />}>
-                        <Error404 />
-                        // </Suspense>
-                    ),
-                },
+                // {
+                //     path: 'error-page',
+                //     element: (
+                //         // <Suspense fallback={<PlaceholderIcon />}>
+                //         <Error404 />
+                //         // </Suspense>
+                //     ),
+                // },
                 {
                     path: 'test',
                     element: <Error404 />,
