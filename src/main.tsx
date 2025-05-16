@@ -13,6 +13,7 @@ import datas from '@data/exemples.json';
 import { useSettings } from '@/hooks/useSettings';
 import { Error404 } from '@/pages/Error/404/Error404';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
+import MemoizedContact from '@/pages/Contact/Contact';
 
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -31,10 +32,10 @@ const router = createBrowserRouter(
                         // </Suspense>
                     ),
                 },
-                // {
-                //     path: 'contact',
-                //     element: <Contact />,
-                // },
+                {
+                    path: 'contact',
+                    element: <Error404 />,
+                },
             ],
         },
     ],
