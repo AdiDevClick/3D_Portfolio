@@ -210,6 +210,7 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
                 <CameraControls
                     // attach="shadow-camera"
                     // makeDefault
+                    // azimuthRotateSpeed={0.5}
                     // no Y-axis
                     polarRotateSpeed={0}
                     // no zoom
@@ -235,6 +236,12 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
                         three: 0,
                     }}
                     onStart={(e) => onControlStart(e, activeContent?.isClicked)}
+                    // onEnd={() => {
+                    //     // Réactiver le défilement de la page après l'interaction
+                    //     document.body.style.overflow = '';
+                    // }}
+                    // dragToOffset={false}
+                    // smoothTime={0.25}
                 />
             </directionalLight>
 
@@ -272,7 +279,7 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
  */
 export function onControlStart(e, active) {
     // e.target.azimuthAngle = 0;
-
+    // document.body.style.overflow = 'hidden';
     e.azimuthAngleLimits = [MathUtils.degToRad(-30), MathUtils.degToRad(30)];
     if (active) {
         // e.target.minAzimuthAngle = minAngle;
