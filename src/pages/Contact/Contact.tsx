@@ -40,7 +40,7 @@ const MemoizedContact = memo(function Contact({
             isMobile
         );
 
-        if (groupRef.current.visible || isActive) {
+        if (groupRef.current.visible) {
             console.log(
                 'je suis visible: ',
                 groupRef.current.visible,
