@@ -181,6 +181,7 @@ export default function Carousel({
                 return;
             }
 
+            // !! IMPORTANT !! Reset any active content
             if (
                 visible === 'carousel' &&
                 activeContent?.isClicked &&
