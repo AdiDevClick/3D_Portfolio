@@ -1,6 +1,9 @@
 import { PagesTypes } from '@/components/3DComponents/Scene/Scene';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
-import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
+import {
+    ACTIVE_PROJECTS_POSITION_SETTINGS,
+    DEFAULT_PROJECTS_POSITION_SETTINGS,
+} from '@/configs/3DCarousel.config';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { Html, Sparkles, Stars, useCursor } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
@@ -25,8 +28,9 @@ const MemoizedContact = memo(function Contact({
     useCursor(hovered);
 
     currentGroupPos = isActive
-        ? currentGroupPos.set(0, 0, 0)
-        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+        ? ACTIVE_PROJECTS_POSITION_SETTINGS.clone()
+        : // ? currentGroupPos.set(0, 0, 0)
+          DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
     useFrame((state, delta) => {
         if (!groupRef.current) return;
