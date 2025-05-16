@@ -49,5 +49,9 @@
         width: 95%;
         gap: var(--grid-gap-mobile);
         row-gap: var(--grid-gap);
+
+        &__title {
+            font-size: var(--fs-bigger-medium-higher);
+        }
     }
 }
