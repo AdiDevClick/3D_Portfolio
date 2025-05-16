@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Leva } from 'leva';
 import { ReactNode, useEffect, useRef } from 'react';
 import { Experience } from '@/components/3DComponents/Experience/Experience';
-import { CameraControls, Loader } from '@react-three/drei';
+import { Loader } from '@react-three/drei';
 import { useCarousel } from '@/hooks/reducers/useCarousel';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
 
@@ -67,6 +67,14 @@ export default function App({
             {/* <Suspense fallback={null}> */}
             <Canvas
                 // frameloop={isMobile ? 'demand' : 'always'}
+                // eventSource={document.getElementById('root')}
+                eventPrefix="client"
+                onTouchStart={(e) => {
+                    // Empêcher le comportement par défaut uniquement sur le canvas
+                    if (e.target === e.currentTarget) {
+                        e.preventDefault();
+                    }
+                }}
                 gl={{
                     antialias: isMobile ? false : true,
                     // preserveDrawingBuffer: true,
