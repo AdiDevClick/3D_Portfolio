@@ -110,7 +110,7 @@ export function Root(contentType: { contentType?: string }) {
 
     return (
         <>
-            <Header />
+            <Header isMobile={isMobile} />
             <App
                 width={width}
                 // cards={cardsMemo}
