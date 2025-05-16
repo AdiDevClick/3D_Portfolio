@@ -62,6 +62,7 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
             case 'home':
             case 'about':
             case 'contact':
+            case 'error':
                 cameraLookAt(
                     cameraPositions.home.position,
                     cameraPositions.home,
