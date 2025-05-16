@@ -5,7 +5,7 @@ import '@css/Main.scss';
 import '@css/reset.css';
 import App from './App2';
 import { RouterProvider } from 'react-router/dom';
-import { createBrowserRouter, Outlet } from 'react-router';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError';
 import { Header } from '@/components/HTML/header/Header';
 import useResize from '@/hooks/useResize';
@@ -14,24 +14,32 @@ import { useSettings } from '@/hooks/useSettings';
 import { Error404 } from '@/pages/Error/404/Error404';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import MemoizedContact from '@/pages/Contact/Contact';
+import MemoizedHome from '@/pages/Home/Home';
 
 const baseUrl = import.meta.env.BASE_URL;
 
 const router = createBrowserRouter(
     [
         {
-            path: '/*',
+            path: '/',
             element: <Root />,
             errorElement: <Root contentType={'error'} />,
             children: [
-                // {
-                //     path: 'error-page',
-                //     element: (
-                //         // <Suspense fallback={<PlaceholderIcon />}>
-                //         <Error404 />
-                //         // </Suspense>
-                //     ),
-                // },
+                { index: true },
+                {
+                    path: 'projets',
+                    children: [
+                        {
+                            path: ':id',
+                        },
+                    ],
+                },
+                {
+                    path: 'contact',
+                },
+                {
+                    path: 'a-propos',
+                },
                 {
                     path: 'error',
                     element: (
@@ -39,6 +47,10 @@ const router = createBrowserRouter(
                             <Error404 />
                         </Suspense>
                     ),
+                },
+                {
+                    path: '*',
+                    element: <Navigate to="/error" replace />,
                 },
             ],
         },
@@ -65,16 +77,16 @@ const height = 2 * Math.tan(vFov / 2) * 20;
 export function Root(contentType: { contentType?: string }) {
     const errorContent = contentType.contentType === 'error';
     const { size } = useResize(100);
-    const isTouchDevice = size[0] < 1024;
-    const isMobile = size[0] < 768;
+    const isTouchDevice = (size[0] ?? 1) < 1024;
+    const isMobile = (size[0] ?? 1) < 768;
     const SETTINGS = useSettings(datas);
 
     // // Specify boundaries & responsive boundaries
-    const aspectRatio = size[0] / size[1];
+    const aspectRatio = (size[0] ?? 1) / (size[1] ?? 1);
     const width = height * aspectRatio;
 
-    const scaleX = Math.max(0.5, size[0] / 1920);
-    const scaleY = Math.max(0.5, size[1] / 1080);
+    const scaleX = Math.max(0.5, (size[0] ?? 1) / 1920);
+    const scaleY = Math.max(0.5, (size[1] ?? 1) / 1080);
 
     const responsiveBoundaries = {
         x: SETTINGS.x * scaleX,
