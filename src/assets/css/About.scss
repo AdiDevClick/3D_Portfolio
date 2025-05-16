@@ -48,5 +48,6 @@
     @include for-size(mobile) {
         width: 95%;
         gap: var(--grid-gap-mobile);
+        row-gap: var(--grid-gap);
     }
 }
