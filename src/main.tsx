@@ -20,7 +20,7 @@ const baseUrl = import.meta.env.BASE_URL;
 const router = createBrowserRouter(
     [
         {
-            path: '/',
+            path: '/*',
             element: <Root />,
             errorElement: <Root contentType={'error'} />,
             children: [
@@ -34,7 +34,11 @@ const router = createBrowserRouter(
                 // },
                 {
                     path: 'error',
-                    element: <Error404 />,
+                    element: (
+                        <Suspense fallback={<PlaceholderIcon />}>
+                            <Error404 />
+                        </Suspense>
+                    ),
                 },
             ],
         },

@@ -10,6 +10,9 @@ import { useLoader } from '@react-three/fiber';
 import { useOutletContext } from 'react-router';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
 import { Object3D } from 'three';
+import modelPath from '@models/Brokenglass_model.glb';
+import { Suspense } from 'react';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 
 type ContextType = {
     isMobile: boolean;
@@ -22,9 +25,9 @@ const floatOptions = {
     rotationIntensity: 0.3,
     floatIntensity: 0.5,
 };
-const modelPath = `${
-    import.meta.env.BASE_URL
-}assets/models/original/Brokenglass_model.glb`;
+// const modelPath = `${
+//     import.meta.env.BASE_URL
+// }assets/models/original/Brokenglass_model.glb`;
 
 /**
  * Affiche la page 404
@@ -77,23 +80,31 @@ export function Error404() {
             <FallbackText fontSize={0.15 * scaleX} position={[0, -3, -10]}>
                 Le bouton ci-dessous te ramènera en lieux sûrs
             </FallbackText>
-            <group position={[-8 * scaleX, -9 * scaleX, 0]} scale={5 * scaleX}>
-                {nodes.Scene?.children.map((node: Object3D) => {
-                    return (
+            <Suspense fallback={<PlaceholderIcon />}>
+                <group
+                    position={[-8 * scaleX, -9 * scaleX, 0]}
+                    scale={5 * scaleX}
+                >
+                    {nodes.Scene?.children.map((node: Object3D) => (
                         <Float
                             {...floatOptions}
                             speed={0.1 + Math.random() * 2}
                             key={node.uuid}
                         >
-                            <GlassMesh
-                                name="glass-mesh"
-                                data={node}
-                                isMobile={isMobile}
-                            />
+                            <Suspense
+                                key={node.uuid}
+                                fallback={<PlaceholderIcon />}
+                            >
+                                <GlassMesh
+                                    name="glass-mesh"
+                                    data={node}
+                                    isMobile={isMobile}
+                                />
+                            </Suspense>
                         </Float>
-                    );
-                })}
-            </group>
+                    ))}
+                </group>
+            </Suspense>
             {/* <div className="info">
                 <h2 className="fourofour">Cette page est introuvable</h2>
                 <p className="fourofour">
