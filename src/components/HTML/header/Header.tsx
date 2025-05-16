@@ -67,9 +67,9 @@ export function Header() {
                     <li>
                         <NavLink to="/contact">Me Contacter</NavLink>
                     </li>
-                    <li>
+                    {/* <li>
                         <NavLink to="/more">More</NavLink>
-                    </li>
+                    </li> */}
                 </ul>
             </nav>
             {/* )} */}
