@@ -16,7 +16,7 @@
         const basePath = basePathSegments.join('/');
         const restPath = pathSegments.slice(segmentCount + 1).join('/');
         // const restPath = '/' + pathSegments.slice(segmentCount + 1).join('/');
-
+        console.log(restPath)
         // Redirecter vers la page principale avec un paramètre encodé
         l.replace(
             l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
