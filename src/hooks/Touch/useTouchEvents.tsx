@@ -32,6 +32,7 @@ const events = [
  */
 export function useTouchEvents(
     node: RefObject<HTMLButtonElement>,
+    isMobile: boolean,
     transitionElement: RefObject<HTMLElement>,
     setIsOpen: (isOpen: boolean) => void
 ) {
@@ -51,6 +52,7 @@ export function useTouchEvents(
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const props = {
+        isMobile,
         transitionElement,
         isClickInProgress,
         setIsClickInProgress,
@@ -126,7 +128,7 @@ function startDrag(
 ) {
     if (props.isMoving) return;
     const element = props.transitionElement.current;
-    let eventPoint: { screenX: number; screenY: number };
+    let eventPoint;
     if ('targetTouches' in e) {
         if (e.targetTouches.length > 1 && e.cancelable) e.preventDefault();
         eventPoint = e.targetTouches[0];
@@ -134,7 +136,9 @@ function startDrag(
         eventPoint = e;
     }
 
-    props.setOrigin({ x: eventPoint.screenX, y: eventPoint.screenY });
+    if (eventPoint) {
+        props.setOrigin({ x: eventPoint.screenX, y: eventPoint.screenY });
+    }
 
     disableTransition(element);
 
@@ -177,47 +181,80 @@ function drag(
     if (!props.origin || !props.elementSize) return;
     const element = props.transitionElement.current;
 
-    const pressionPoint =
-        'targetTouches' in e
-            ? (e as TouchEvent).targetTouches[0]
-            : (e as MouseEvent);
+    const pressionPoint = 'targetTouches' in e ? e.targetTouches[0] : e;
 
-    const translate = {
-        x: pressionPoint.screenX - props.origin.x,
-        y: pressionPoint.screenY - props.origin.y,
-    };
+    let translate;
 
-    if ('targetTouches' in e && Math.abs(translate.x) > Math.abs(translate.y)) {
-        if (e.cancelable) e.preventDefault();
-        e.stopPropagation();
-    }
-
-    const offsets = element.getBoundingClientRect();
-
-    element.classList.add('opening');
-
-    const buttonWidthInPercent =
-        (100 * (props.elementSize.width - _element.offsetWidth)) /
-        props.elementSize.width;
-
-    const removedButtonWidth = element.classList.contains('closed')
-        ? buttonWidthInPercent
-        : 0;
-
-    props.setLastTranslate(translate);
-
-    if (translate.x >= 0) {
-        if (offsets.left >= 0 || translate.x >= props.elementSize.width) {
-            return;
+    if (pressionPoint) {
+        translate = {
+            x: pressionPoint.screenX - props.origin.x,
+            y: pressionPoint.screenY - props.origin.y,
+        };
+        if (
+            'targetTouches' in e &&
+            Math.abs(translate.x) > Math.abs(translate.y)
+        ) {
+            if (e.cancelable) e.preventDefault();
+            e.stopPropagation();
         }
-    }
 
-    translateElement(
-        element,
-        0,
-        (100 * translate.x) / props.elementSize.width - removedButtonWidth
-    );
-    props.setIsMoving(true);
+        const offsets = element.getBoundingClientRect();
+
+        element.classList.add('opening');
+
+        const buttonWidthInPercent =
+            (100 * (props.elementSize.width - _element.offsetWidth)) /
+            props.elementSize.width;
+        const buttonHeightInPercent =
+            100 * (_element.offsetHeight / props.elementSize.height);
+
+        const removedButtonWidth = element.classList.contains('closed')
+            ? buttonWidthInPercent
+            : 0;
+        const removedButtonHeight = element.classList.contains('closed')
+            ? buttonHeightInPercent
+            : 0;
+
+        props.setLastTranslate(translate);
+
+        if (!props.isMobile && translate.x >= 0) {
+            if (offsets.left >= 0 || translate.x >= props.elementSize.width) {
+                return;
+            }
+        }
+
+        if (props.isMobile && translate.y <= 0) {
+            // if (translate.y >= _element.offsetHeight) return;
+            if (
+                translate.y <=
+                -(props.elementSize.height - _element.offsetHeight)
+            ) {
+                return;
+            }
+        }
+
+        console.log(
+            props.isMobile,
+            translate.y,
+            props.elementSize.height,
+            buttonHeightInPercent,
+            _element.offsetHeight,
+            -(props.elementSize.height - _element.offsetHeight)
+        );
+
+        translateElement(
+            element,
+            props.isMobile
+                ? (100 * translate.y) / props.elementSize.height -
+                      removedButtonHeight
+                : 0,
+            !props.isMobile
+                ? (100 * translate.x) / props.elementSize.width -
+                      removedButtonWidth
+                : 0
+        );
+        props.setIsMoving(true);
+    }
 }
 
 /**
@@ -241,7 +278,14 @@ function endDrag(
         const element = props.transitionElement.current;
         enableTransition(element);
 
-        if (Math.abs(props.lastTranslate.x / props.elementSize.width) > 0.2) {
+        if (
+            (!props.isMobile &&
+                Math.abs(props.lastTranslate.x / props.elementSize.width) >
+                    0.2) ||
+            (props.isMobile &&
+                Math.abs(props.lastTranslate.y / props.elementSize.height) >
+                    0.2)
+        ) {
             if (element.classList.contains('closed')) {
                 props.setIsOpen(true);
             } else {
@@ -256,11 +300,23 @@ function endDrag(
                 ? buttonWidthInPercent
                 : 0;
 
+            const buttonHeightInPercent =
+                100 * (_element.offsetHeight / props.elementSize.height);
+
+            const removedButtonHeight = element.classList.contains('closed')
+                ? buttonHeightInPercent
+                : 0;
+
             translateElement(
                 element,
-                0,
-                props.lastTranslate.x / props.elementSize.width -
-                    removedButtonWidth
+                props.isMobile
+                    ? props.lastTranslate.y / props.elementSize.height -
+                          removedButtonHeight
+                    : 0,
+                !props.isMobile
+                    ? props.lastTranslate.x / props.elementSize.width -
+                          removedButtonWidth
+                    : 0
             );
         }
 
