@@ -4,13 +4,13 @@ import '@css/NavHeader.scss';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useTouchEvents } from '@/hooks/Touch/useTouchEvents';
 
-export function Header() {
+export function Header({ isMobile }: { isMobile: boolean }) {
     const headerRef = useRef<HTMLElement>(null!);
     const buttonRef = useRef<HTMLButtonElement>(null!);
     const [isOpen, setIsOpen] = useState(false);
 
     const { isMoving, isClickInProgress, setIsClickInProgress } =
-        useTouchEvents(buttonRef, headerRef, setIsOpen);
+        useTouchEvents(buttonRef, isMobile, headerRef, setIsOpen);
     const active = isOpen ? 'opened' : 'closed';
 
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
