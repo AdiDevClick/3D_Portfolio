@@ -284,7 +284,7 @@ export function handleClickedCardEffects(
 
     // Bending effect disabled
     if (card.bending > 0) updateBending(card, card.bending - delta);
-    const targetWidth = baseScale + 0.4;
+    const targetWidth = baseScale + 0.9;
     const threshold = targetWidth * 0.05;
 
     if (
@@ -293,7 +293,7 @@ export function handleClickedCardEffects(
     ) {
         // Zoom Bounce effect
         // reducer.updateWidth(card, baseScale + 0.4);
-        updateWidth(card, cardHoverScale + 0.4);
+        updateWidth(card, cardHoverScale + 0.9);
         // reducer.updateWidth(card, card.currentWidth + delta);
     }
 }
@@ -311,7 +311,7 @@ export function handleActiveCardEffects(
         updateBending(card, card.bending - delta);
     }
 
-    const targetWidth = baseScale + 0.2;
+    const targetWidth = baseScale + 0.4;
     // !! IMPORTANT !! It can cause a bug if the card is not clicked
     const threshold = targetWidth * 0.05;
     // Increase width with bounce effect
@@ -319,7 +319,7 @@ export function handleActiveCardEffects(
         card.currentWidth < targetWidth &&
         targetWidth - card.currentWidth > threshold
     ) {
-        updateWidth(card, cardHoverScale + 0.2);
+        updateWidth(card, cardHoverScale + 0.4);
         // reducer.updateWidth(card, card.currentWidth + delta);
         // Boucing effect
         // easing.damp3(scale, 0.5, 0.15, delta);
