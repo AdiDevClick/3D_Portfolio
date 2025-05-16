@@ -24,4 +24,5 @@ export interface TouchEventProps {
     ) => void;
     abortControllerRef: RefObject<AbortController | null>;
     setIsOpen: (isOpen: boolean) => void;
+    isMobile: boolean;
 }
