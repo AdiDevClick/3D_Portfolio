@@ -93,7 +93,7 @@ export function IconWithText({
                     left
                     bottom={isMobile ? true : false}
                 >
-                    {nodes.Scene.children.map((node) => {
+                    {nodes.Scene?.children.map((node) => {
                         return (
                             <IconMesh
                                 name="icons-Container__icon"
