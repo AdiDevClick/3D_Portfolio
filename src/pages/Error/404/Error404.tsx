@@ -9,7 +9,6 @@ import {
 import { useLoader } from '@react-three/fiber';
 import { useOutletContext } from 'react-router';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
-// import model from '../assets/models/original/Brokenglass_model.glb';
 import { Object3D } from 'three';
 
 type ContextType = {
@@ -23,16 +22,15 @@ const floatOptions = {
     rotationIntensity: 0.3,
     floatIntensity: 0.5,
 };
+const modelPath = `${
+    import.meta.env.BASE_URL
+}assets/models/original/Brokenglass_model.glb`;
 
 /**
  * Affiche la page 404
  */
 export function Error404() {
     const { isMobile, scaleX } = useOutletContext<ContextType>();
-    const modelPath = `${
-        import.meta.env.BASE_URL
-    }assets/models/original/Brokenglass_model.glb`;
-
     const { nodes } = useLoader(GLTFLoader, modelPath, (loader) => {
         const gltfLoader = loader as GLTFLoader;
         const dracoLoader = new DRACOLoader();
@@ -41,6 +39,28 @@ export function Error404() {
         );
         gltfLoader.setDRACOLoader(dracoLoader);
     });
+    // const { nodes } = useLoader(
+    //     GLTFLoader,
+    //     modelPath,
+    //     (loader) => {
+    //         try {
+    //             const dracoLoader = new DRACOLoader();
+    //             dracoLoader.setDecoderPath(
+    //                 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+    //             );
+
+    //             const gltfLoader = loader as GLTFLoader;
+    //             gltfLoader.setDRACOLoader(dracoLoader);
+    //         } catch (e) {
+    //             console.error('Erreur lors de la configuration du loader:', e);
+    //             setError(true);
+    //         }
+    //     },
+    //     (e) => {
+    //         console.error('Erreur lors du chargement du modèle:', e);
+    //         setError(true);
+    //     }
+    // );
 
     return (
         <Billboard position={[0, 1, 0]}>
@@ -58,7 +78,7 @@ export function Error404() {
                 Le bouton ci-dessous te ramènera en lieux sûrs
             </FallbackText>
             <group position={[-8 * scaleX, -9 * scaleX, 0]} scale={5 * scaleX}>
-                {nodes.Scene.children.map((node: Object3D) => {
+                {nodes.Scene?.children.map((node: Object3D) => {
                     return (
                         <Float
                             {...floatOptions}
@@ -74,7 +94,6 @@ export function Error404() {
                     );
                 })}
             </group>
-
             {/* <div className="info">
                 <h2 className="fourofour">Cette page est introuvable</h2>
                 <p className="fourofour">
