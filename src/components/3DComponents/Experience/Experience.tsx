@@ -41,13 +41,11 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
         visible,
     } = reducer;
     const ref = useRef<CameraControls>(null!);
+    const prevCamPosRef = useRef(DEFAULT_CAMERA_POSITION.clone());
 
     const params = useParams();
     const navigate = useNavigate();
-    const id = params['*']?.split('/')[1];
-
     const location = useLocation();
-    const prevCamPosRef = useRef(DEFAULT_CAMERA_POSITION.clone());
     const { positionCameraToCard } = useCameraPositioning();
 
     /**
@@ -109,7 +107,7 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
         if (location.pathname === '/') {
             if (visible !== 'home') setViewMode('home');
         } else if (location.pathname.includes('projets')) {
-            if (id) {
+            if (params.id) {
                 if (visible !== 'card-detail') setViewMode('card-detail');
             } else if (activeContent?.isActive && !activeContent?.isClicked) {
                 if (visible !== 'card-detail') setViewMode('card-detail');
@@ -123,7 +121,7 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
         } else {
             if (visible !== 'error') setViewMode('error');
         }
-    }, [location.pathname, id, activeContent]);
+    }, [location.pathname, params.id, activeContent]);
 
     /**
      * Camera positioning on URL loading -
@@ -131,26 +129,29 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
      * if the URLparams contains a card ID -
      */
     useEffect(() => {
-        if (
-            !ref.current ||
-            !params['*']?.includes('projets') ||
-            !id ||
-            activeContent
-        ) {
+        if (!ref.current || !params.id || activeContent) {
             return;
         }
+        // const options = {
+        //     id: params.id,
+        //     showElements,
+        //     activateElement,
+        //     clickElement,
+        //     setViewMode,
+        //     navigate,
+        // };
 
         const initialDelay = 500;
 
         const activateCardByURL = async (retries = 5, delay = 500) => {
             try {
-                // await wait(delay, 'Attente pour un nouvel essai');
                 if (showElements.length === 0) {
                     throw createHttpError('Try again', 403);
                 }
 
                 const targetCard = showElements.find(
-                    (element: { id: string }) => element.id === id
+                    (element: { id: string }) => element.id === params.id
+                    // (element: { id: string }) => element.id === id
                 );
 
                 if (!targetCard) {
@@ -162,12 +163,11 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
 
                 // Activate card to focus
                 activateElement(targetCard, true);
-                navigate('/projets', { replace: false });
+
                 await wait(600);
 
                 // Activate click after a short delay
                 clickElement(targetCard);
-                navigate('/projets/' + id, { replace: false });
             } catch (error) {
                 const typedError = error as ErrorWithCause;
 
@@ -178,19 +178,19 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
 
                 if (typedError.cause?.status === 404) {
                     setViewMode('carousel');
-                    navigate('/projets', { replace: false });
                     return navigate('/error', { replace: false });
                 }
-                console.error('Erreur non gérée :', typedError);
+                console.error('Erreur non gérée :', typedError, error);
             }
         };
 
         // Awaits the initialization of the elements (initialDelay)
         // And then activate the card
-        const timer = setTimeout(activateCardByURL, initialDelay);
 
+        // activateCardByURL(5, initialDelay, options);
+        const timer = setTimeout(activateCardByURL, initialDelay);
         return () => clearTimeout(timer);
-    }, [id, showElements]);
+    }, [params.id, showElements]);
 
     return (
         <>
@@ -301,3 +301,57 @@ function createHttpError(message: string, status: number): Error {
     });
     return error;
 }
+
+// async function activateCardByURL(retries = 5, delay = 500, options) {
+//     const {
+//         id,
+//         showElements,
+//         activateElement,
+//         clickElement,
+//         setViewMode,
+//         navigate,
+//     } = options;
+//     try {
+//         // await wait(delay, 'Attente pour un nouvel essai');
+//         if (showElements.length === 0) {
+//             throw createHttpError('Try again', 403);
+//         }
+
+//         const targetCard = showElements.find(
+//             (element: { id: string }) => element.id === id
+//             // (element: { id: string }) => element.id === id
+//         );
+
+//         if (!targetCard) {
+//             throw createHttpError('No project found', 404);
+//         }
+
+//         // Wait for the carousel mode to establish
+//         await wait(400);
+
+//         // Activate card to focus
+//         activateElement(targetCard, true);
+//         // navigate('/projets', { replace: false });
+//         await wait(600);
+
+//         // Activate click after a short delay
+//         clickElement(targetCard);
+//         // navigate('/projets/' + params.id, { replace: false });
+//         // navigate('/projets/' + id, { replace: false });
+//     } catch (error) {
+//         const typedError = error as ErrorWithCause;
+
+//         if (retries > 0 && typedError.cause?.status === 403) {
+//             console.log('Je vais réessayer');
+//             await wait(delay, 'Attente pour un nouvel essai');
+//             return activateCardByURL(retries - 1, delay * 2, options);
+//         }
+
+//         if (typedError.cause?.status === 404) {
+//             setViewMode('carousel');
+//             // navigate('/projets', { replace: false });
+//             return navigate('/error', { replace: false });
+//         }
+//         console.error('Erreur non gérée :', typedError, error);
+//     }
+// }
