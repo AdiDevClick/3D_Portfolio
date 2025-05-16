@@ -1,3 +1,5 @@
+@use 'mixins' as *;
+
 .about {
     // margin-top: var(--grid-gap);
     padding: calc(var(--grid-gap) *2) 0;
@@ -41,5 +43,10 @@
         white-space: nowrap;
         transform: translateY(900%);
         font-family: sans-serif;
+    }
+
+    @include for-size(mobile) {
+        width: 95%;
+        gap: var(--grid-gap-mobile);
     }
 }
