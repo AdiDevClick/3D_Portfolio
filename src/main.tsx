@@ -19,7 +19,7 @@ const baseUrl = import.meta.env.BASE_URL;
 const router = createBrowserRouter(
     [
         {
-            path: '*',
+            path: '/',
             element: <Root />,
             errorElement: <Root contentType={'error'} />,
             children: [
