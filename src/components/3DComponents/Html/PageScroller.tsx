@@ -12,7 +12,6 @@ import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx'
  */
 export function PageScroller() {
     const containerRef = useRef(null);
-
     return (
         <group ref={containerRef}>
             {containerRef.current && (
