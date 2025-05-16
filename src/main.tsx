@@ -12,6 +12,7 @@ import useResize from '@/hooks/useResize';
 import datas from '@data/exemples.json';
 import { useSettings } from '@/hooks/useSettings';
 import { Error404 } from '@/pages/Error/404/Error404';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -23,9 +24,9 @@ const router = createBrowserRouter(
             errorElement: <Root contentType={'error'} />,
             children: [
                 {
-                    path: 'error/page',
+                    path: 'error-page',
                     element: (
-                        <Suspense fallback={null}>
+                        <Suspense fallback={<PlaceholderIcon />}>
                             <Error404 />
                         </Suspense>
                     ),
