@@ -1,4 +1,4 @@
-import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle.tsx';
+import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { Sparkles } from '@react-three/drei';
 import { RefObject } from 'react';
 import { Group } from 'three';
