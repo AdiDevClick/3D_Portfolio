@@ -14,7 +14,8 @@
         const pathSegments = l.pathname.split('/');
         const basePathSegments = pathSegments.slice(0, segmentCount + 1);
         const basePath = basePathSegments.join('/');
-        const restPath = '/' + pathSegments.slice(segmentCount + 1).join('/');
+        const restPath = pathSegments.slice(segmentCount + 1).join('/');
+        // const restPath = '/' + pathSegments.slice(segmentCount + 1).join('/');
 
         // Redirecter vers la page principale avec un paramètre encodé
         l.replace(
