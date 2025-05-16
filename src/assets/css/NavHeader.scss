@@ -1,3 +1,5 @@
+@use 'mixins' as *;
+
 $headerWidth: 250px;
 $buttonWidth : 50px;
 
@@ -72,6 +74,28 @@ header {
             inset: 0;
             place-self: center;
             color: white;
+        }
+    }
+
+    @include for-size(mobile) {
+        bottom: 0;
+        max-height: 30%;
+        max-width: 100%;
+
+        &.opened {
+            transform: translate(0, 0);
+        }
+
+        &.closed {
+            transform: translate(0, calc(100% - $buttonWidth));
+        }
+
+        // transform: translate(0);
+        // transition: transform 0.3s ease;
+        button {
+            top: 0;
+            height: $buttonWidth;
+            width: 100%;
         }
     }
 }
