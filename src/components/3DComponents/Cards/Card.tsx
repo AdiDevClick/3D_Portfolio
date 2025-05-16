@@ -46,7 +46,7 @@ const MemoizedCard = memo(
         const segments = reducer.isMobile ? 8 : 12;
 
         const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
-        const cardHoverRadius = card.isActive ? 0.1 : 0.05;
+        const cardHoverRadius = card.isActive ? 0.02 : 0.05;
         const cardHoverZoom = card.isActive ? 1 : 1.5;
 
         useCursor(card.isActive || false);
