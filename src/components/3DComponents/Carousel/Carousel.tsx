@@ -14,7 +14,7 @@ import {
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useLocation } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
-import { Float } from '@react-three/drei';
+import { Billboard, Float } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
@@ -318,27 +318,29 @@ export default function Carousel({
                     side={DoubleSide}
                 />
             </mesh>
-            <Float>
-                {isCarouselLoaded ? (
-                    <Title
-                        scale={reducer.generalScaleX}
-                        name={'carousel__title'}
-                        ref={titleRef}
-                        rotation={[0, 3.164, 0]}
-                    >
-                        Mes Projets
-                    </Title>
-                ) : (
-                    <FallbackText
-                        scale={4.2 * reducer.generalScaleX}
-                        name={'carousel__title'}
-                        ref={titleRef}
-                        rotation={[0, 3.164, 0]}
-                    >
-                        Mes Projets
-                    </FallbackText>
-                )}
-            </Float>
+            <Billboard rotation={[0, 3.164, 0]}>
+                <Float>
+                    {isCarouselLoaded ? (
+                        <Title
+                            scale={reducer.generalScaleX}
+                            name={'carousel__title'}
+                            ref={titleRef}
+                            // rotation={[0, 3.164, 0]}
+                        >
+                            Mes Projets
+                        </Title>
+                    ) : (
+                        <FallbackText
+                            scale={4.2 * reducer.generalScaleX}
+                            name={'carousel__title'}
+                            ref={titleRef}
+                            // rotation={[0, 3.164, 0]}
+                        >
+                            Mes Projets
+                        </FallbackText>
+                    )}
+                </Float>
+            </Billboard>
 
             <Suspense fallback={<PlaceholderIcon />}>
                 <MemoizedCardsContainer
