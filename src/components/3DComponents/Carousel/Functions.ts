@@ -89,7 +89,7 @@ export function createCardProperties(
     const defaultContent = {
         title: 'title',
         cardTitle: 'cardTitle',
-        url: `/assets/images/img${Math.floor(i % 10) + 1}.png`,
+        url: `assets/images/img${Math.floor(i % 10) + 1}.png`,
         description: 'description',
         content: [
             'Intégration du Canvas avec ThreeJS',

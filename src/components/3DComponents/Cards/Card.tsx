@@ -136,7 +136,6 @@ const MemoizedCard = memo(
                 }
             };
         }, []);
-
         return (
             <Image
                 position={card.position}
