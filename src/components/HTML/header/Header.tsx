@@ -87,11 +87,11 @@ export function Header({ isMobile }: { isMobile: boolean }) {
                 </ul>
             </nav>
             {/* )} */}
-            {!isMobile && (
-                <Button ref={buttonRef} type="button" onClick={handleClick}>
-                    {isOpen ? 'Open' : 'Close'}
-                </Button>
-            )}
+            {/* {!isMobile && ( */}
+            <Button ref={buttonRef} type="button" onClick={handleClick}>
+                {isOpen ? 'Open' : 'Close'}
+            </Button>
+            {/* )} */}
         </header>
     );
 }
