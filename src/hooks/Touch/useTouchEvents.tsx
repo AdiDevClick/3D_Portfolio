@@ -128,6 +128,7 @@ function startDrag(
 ) {
     if (props.isMoving) return;
     const element = props.transitionElement.current;
+
     let eventPoint;
     if ('targetTouches' in e) {
         if (e.targetTouches.length > 1 && e.cancelable) e.preventDefault();
@@ -182,78 +183,125 @@ function drag(
     const element = props.transitionElement.current;
 
     const pressionPoint = 'targetTouches' in e ? e.targetTouches[0] : e;
+    if (!pressionPoint) return;
 
-    let translate;
+    const translate = {
+        x: pressionPoint.screenX - props.origin.x,
+        y: pressionPoint.screenY - props.origin.y,
+    };
 
-    if (pressionPoint) {
-        translate = {
-            x: pressionPoint.screenX - props.origin.x,
-            y: pressionPoint.screenY - props.origin.y,
-        };
+    // if ('targetTouches' in e && Math.abs(translate.x) > Math.abs(translate.y)) {
+    //     if (e.cancelable) e.preventDefault();
+    //     e.stopPropagation();
+    // }
+    if (
+        'targetTouches' in e &&
+        Math.abs(translate.x) > Math.abs(translate.y) &&
+        !props.isMobile
+    ) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+    } else if (
+        'targetTouches' in e &&
+        Math.abs(translate.y) > Math.abs(translate.x) &&
+        props.isMobile
+    ) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+    }
+
+    const offsets = element.getBoundingClientRect();
+
+    element.classList.add('opening');
+    props.setLastTranslate(translate);
+
+    let percentX = 0;
+    let percentY = 0;
+    const isClosed = element.classList.contains('closed');
+
+    const options = {
+        elementSize: props.isMobile
+            ? props.elementSize.height
+            : props.elementSize.width,
+        buttonSize: props.isMobile
+            ? _element.offsetHeight
+            : _element.offsetWidth,
+        isClosed,
+        translate: props.isMobile ? translate.y : translate.x,
+        lastTranslate: false,
+        isMobile: props.isMobile,
+    };
+
+    if (props.isMobile) {
         if (
-            'targetTouches' in e &&
-            Math.abs(translate.x) > Math.abs(translate.y)
+            translate.y <= 0 &&
+            (translate.y <=
+                -(props.elementSize.height - _element.offsetHeight) ||
+                !isClosed)
         ) {
-            if (e.cancelable) e.preventDefault();
-            e.stopPropagation();
+            return;
         }
 
-        const offsets = element.getBoundingClientRect();
-
-        element.classList.add('opening');
-
-        const buttonWidthInPercent =
-            (100 * (props.elementSize.width - _element.offsetWidth)) /
-            props.elementSize.width;
-        const buttonHeightInPercent =
-            100 * (_element.offsetHeight / props.elementSize.height);
-
-        const removedButtonWidth = element.classList.contains('closed')
-            ? buttonWidthInPercent
-            : 0;
-        const removedButtonHeight = element.classList.contains('closed')
-            ? buttonHeightInPercent
-            : 0;
-
-        props.setLastTranslate(translate);
-
-        if (!props.isMobile && translate.x >= 0) {
-            if (offsets.left >= 0 || translate.x >= props.elementSize.width) {
-                return;
-            }
+        percentY = calculateTranslate(options);
+    } else {
+        if (
+            (translate.x >= 0 && offsets.left >= 0) ||
+            translate.x >= props.elementSize.width
+        ) {
+            return;
         }
 
-        if (props.isMobile && translate.y <= 0) {
-            // if (translate.y >= _element.offsetHeight) return;
-            if (
-                translate.y <=
-                -(props.elementSize.height - _element.offsetHeight)
-            ) {
-                return;
-            }
-        }
+        percentX = calculateTranslate(options);
+    }
+    translateElement(element, percentY, percentX);
+    props.setIsMoving(true);
+}
 
-        console.log(
-            props.isMobile,
-            translate.y,
-            props.elementSize.height,
-            buttonHeightInPercent,
-            _element.offsetHeight,
-            -(props.elementSize.height - _element.offsetHeight)
+/**
+ * Calculates the translate value -
+ * @description Return the translate value in percentage -
+ * If mobile, calculate the Y axis -
+ * If not, calculate the X axis -
+ *
+ * @param elementSize The size of the element to translate -
+ * @param buttonSize The size of the button -
+ * @param isClosed If the element is closed -
+ * @param translate The translate value, be it x or y -
+ * @param lastTranslate If the last translate value is used -
+ * @param isMobile If the device is mobile -
+ * @returns
+ */
+function calculateTranslate({
+    elementSize,
+    buttonSize,
+    isClosed,
+    translate,
+    lastTranslate = false,
+    isMobile = false,
+}: {
+    elementSize: number;
+    buttonSize: number;
+    isClosed: boolean;
+    translate: number;
+    /** @DefaultValue false */
+    lastTranslate?: boolean;
+    /** @DefaultValue false */
+    isMobile?: boolean;
+}) {
+    const maxDistance = elementSize - buttonSize;
+    const buttonSizeInPercent = (100 * maxDistance) / elementSize;
+    const normalized = lastTranslate ? 1 : 100;
+
+    if (isMobile) {
+        return (
+            (normalized * translate) / elementSize +
+            (isClosed ? buttonSizeInPercent : 0)
         );
-
-        translateElement(
-            element,
-            props.isMobile
-                ? (100 * translate.y) / props.elementSize.height -
-                      removedButtonHeight
-                : 0,
-            !props.isMobile
-                ? (100 * translate.x) / props.elementSize.width -
-                      removedButtonWidth
-                : 0
+    } else {
+        return (
+            (normalized * translate) / elementSize -
+            (isClosed ? buttonSizeInPercent : 0)
         );
-        props.setIsMoving(true);
     }
 }
 
@@ -277,6 +325,7 @@ function endDrag(
     if (props.elementSize && props.lastTranslate && props.origin) {
         const element = props.transitionElement.current;
         enableTransition(element);
+        const isClosed = element.classList.contains('closed');
 
         if (
             (!props.isMobile &&
@@ -286,38 +335,37 @@ function endDrag(
                 Math.abs(props.lastTranslate.y / props.elementSize.height) >
                     0.2)
         ) {
-            if (element.classList.contains('closed')) {
+            if (isClosed) {
                 props.setIsOpen(true);
             } else {
                 props.setIsOpen(false);
             }
         } else {
-            const buttonWidthInPercent =
-                (100 * (props.elementSize.width - _element.offsetWidth)) /
-                props.elementSize.width;
+            let percentX = 0;
+            let percentY = 0;
 
-            const removedButtonWidth = element.classList.contains('closed')
-                ? buttonWidthInPercent
-                : 0;
+            const options = {
+                elementSize: props.isMobile
+                    ? props.elementSize.height
+                    : props.elementSize.width,
+                buttonSize: props.isMobile
+                    ? _element.offsetHeight
+                    : _element.offsetWidth,
+                isClosed,
+                translate: props.isMobile
+                    ? props.lastTranslate.y
+                    : props.lastTranslate.x,
+                lastTranslate: true,
+                isMobile: props.isMobile,
+            };
 
-            const buttonHeightInPercent =
-                100 * (_element.offsetHeight / props.elementSize.height);
+            if (props.isMobile) {
+                percentY = calculateTranslate(options);
+            } else {
+                percentX = calculateTranslate(options);
+            }
 
-            const removedButtonHeight = element.classList.contains('closed')
-                ? buttonHeightInPercent
-                : 0;
-
-            translateElement(
-                element,
-                props.isMobile
-                    ? props.lastTranslate.y / props.elementSize.height -
-                          removedButtonHeight
-                    : 0,
-                !props.isMobile
-                    ? props.lastTranslate.x / props.elementSize.width -
-                          removedButtonWidth
-                    : 0
-            );
+            translateElement(element, percentY, percentX);
         }
 
         element.addEventListener(
@@ -377,7 +425,5 @@ function enableTransition(element: HTMLElement) {
 function translateElement(element: HTMLElement, percentY = 0, percentX = 0) {
     if (!element) return;
     if (percentX > 0 && percentX < 0.2) percentX = 0;
-
-    element.style.transform =
-        'translate3d(' + percentX + '%,' + percentY + '%, 0)';
+    element.style.transform = `translate3d(${percentX}%,${percentY}%, 0)`;
 }
