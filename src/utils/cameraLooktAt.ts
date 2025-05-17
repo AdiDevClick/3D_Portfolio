@@ -18,9 +18,11 @@ export function cameraLookAt(
 ) {
     const { camera } = currentCamera;
     if (!newCamPosition) return;
+
     if ('fov' in camera) {
         camera.fov = cameraPositions.fov;
     }
+
     currentCamera.setLookAt(
         newCamPosition.x,
         newCamPosition.y,
@@ -30,5 +32,6 @@ export function cameraLookAt(
         cameraPositions.target.z,
         true
     );
+
     camera.updateProjectionMatrix();
 }
