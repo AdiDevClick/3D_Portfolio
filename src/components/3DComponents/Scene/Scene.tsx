@@ -83,7 +83,7 @@ export function Scene({
     useEffect(() => {
         switch (visible) {
             case 'home':
-                setVirtualPageCount(3.5);
+                setVirtualPageCount(isMobile ? 2.5 : 3.5);
                 break;
             case 'about':
                 setVirtualPageCount(1.3);
