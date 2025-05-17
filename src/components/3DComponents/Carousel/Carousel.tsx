@@ -325,7 +325,6 @@ export default function Carousel({
                             scale={reducer.generalScaleX}
                             name={'carousel__title'}
                             ref={titleRef}
-                            // rotation={[0, 3.164, 0]}
                         >
                             Mes Projets
                         </Title>
@@ -334,7 +333,6 @@ export default function Carousel({
                             scale={4.2 * reducer.generalScaleX}
                             name={'carousel__title'}
                             ref={titleRef}
-                            // rotation={[0, 3.164, 0]}
                         >
                             Mes Projets
                         </FallbackText>

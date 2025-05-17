@@ -40,7 +40,7 @@ export function Header({ isMobile }: { isMobile: boolean }) {
     return (
         <header
             ref={headerRef}
-            className={active}
+            className={isMobile ? '' : active}
             onMouseEnter={handleMouseOver}
             onMouseLeave={handleMouseOut}
         >
@@ -67,16 +67,14 @@ export function Header({ isMobile }: { isMobile: boolean }) {
                     <li>
                         <NavLink to="/contact">Me Contacter</NavLink>
                     </li>
-                    {/* <li>
-                        <NavLink to="/more">More</NavLink>
-                    </li> */}
                 </ul>
             </nav>
             {/* )} */}
-            {/* <Button ref={buttonRef} type="button"> */}
-            <Button ref={buttonRef} type="button" onClick={handleClick}>
-                {isOpen ? 'Open' : 'Close'}
-            </Button>
+            {!isMobile && (
+                <Button ref={buttonRef} type="button" onClick={handleClick}>
+                    {isOpen ? 'Open' : 'Close'}
+                </Button>
+            )}
         </header>
     );
 }

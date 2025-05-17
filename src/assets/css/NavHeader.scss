@@ -17,15 +17,9 @@ header {
     overflow: hidden;
     // padding-top: 50px;
     // transform: translate(0);
-    transition: max-width 0.3s, transform 0.3s ease;
+    transition: transform 0.3s ease;
 
     >nav {
-        transition: opacity 0.2s ease-in-out;
-        // margin: $buttonWidth;
-        // @starting-style {
-        //     opacity: 0;
-        // }
-        // margin-top: $buttonWidth;
 
         >ul {
             display: grid;
@@ -65,13 +59,6 @@ header {
             background-color: #555555e1;
         }
 
-        // &::after {
-        //     content: 'X';
-        //     position: absolute;
-        //     color: white;
-        //     font-size: 20px;
-        // }
-
         &::before {
             content: '≡';
             position: absolute;
@@ -83,25 +70,41 @@ header {
 
     @include for-size(mobile) {
         bottom: 0;
-        padding-top: calc($buttonWidth + 10px);
-        padding-bottom: $buttonWidth;
-        height: fit-content;
+        // padding-top: calc($buttonWidth + 10px);
+        // padding-bottom: $buttonWidth;
+        height: $buttonWidth;
         max-width: 100%;
+        place-items: center;
 
-        &.opened {
-            transform: translate(0, 0);
-        }
+        // &.opened {
+        //     transform: translate(0, 0);
+        // }
 
-        &.closed {
-            transform: translate(0, calc(100% - $buttonWidth));
-        }
+        // &.closed {
+        //     transform: translate(0, calc(100% - $buttonWidth));
+        // }
 
-        // transform: translate(0);
-        // transition: transform 0.3s ease;
-        button {
-            top: 0;
-            height: $buttonWidth;
-            width: 100%;
+        // button {
+        //     top: 0;
+        //     height: $buttonWidth;
+        //     width: 100%;
+        // }
+
+        >nav {
+
+            >ul {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+                place-items: center;
+
+                li {
+                    cursor: pointer;
+                }
+
+                a {
+                    color: white;
+                }
+            }
         }
     }
 }
