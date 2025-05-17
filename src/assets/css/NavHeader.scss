@@ -29,9 +29,15 @@ header {
             li {
                 width: 70%;
                 cursor: pointer;
+
             }
 
             a {
+
+                &:hover {
+                    color: #55555525;
+                }
+
                 display: grid;
                 width: 100%;
                 place-self: center;
@@ -49,6 +55,10 @@ header {
                 span {
                     grid-column: 2;
                     place-self: start;
+                }
+
+                &.active {
+                    color: yellow;
                 }
             }
         }
