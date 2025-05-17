@@ -3,14 +3,14 @@ import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config'
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { memo, RefObject, Suspense, useRef } from 'react';
+import { memo, RefObject, Suspense, useLayoutEffect, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
-import { ContactShadows } from '@react-three/drei';
+import { ContactShadows, useScroll } from '@react-three/drei';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -52,6 +52,7 @@ const MemoizedHome = memo(function Home({
     const titleRef = useRef<Group>(null);
     const groupRef = useRef<Group>(null);
     const stackRef = useRef<Group>(null);
+    const scroll = useScroll();
 
     currentTitlePos = isActive
         ? currentTitlePos.set(0, 0, 0)
@@ -59,6 +60,13 @@ const MemoizedHome = memo(function Home({
     currentStackPos = isActive
         ? currentStackPos.set(0, yPosition, 0)
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+
+    /**
+     * Reset scroll position to reinitialize the camera
+     */
+    useLayoutEffect(() => {
+        scroll.el.scrollTo({ top: 1, behavior: 'instant' });
+    }, [visible]);
 
     useFrame((state, delta) => {
         if (!groupRef.current || !titleRef.current || !stackRef.current) return;
