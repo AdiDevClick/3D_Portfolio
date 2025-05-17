@@ -45,12 +45,6 @@ const MemoizedContact = memo(function Contact({
         );
 
         if (groupRef.current.visible) {
-            console.log(
-                'je suis visible: ',
-                groupRef.current.visible,
-                'je suis active:',
-                isActive
-            );
             easing.damp3(
                 groupRef.current.position,
                 currentGroupPos,
