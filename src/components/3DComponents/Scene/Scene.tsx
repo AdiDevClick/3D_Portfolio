@@ -91,7 +91,7 @@ export function Scene({
             default:
                 setVirtualPageCount(0);
         }
-    }, [visible]);
+    }, [visible, isMobile]);
 
     const pagesMemoProps = useMemo(
         () => ({
