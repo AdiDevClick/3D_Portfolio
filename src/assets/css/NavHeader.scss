@@ -114,13 +114,14 @@ header {
             >ul {
                 grid-template-columns: repeat(4, 1fr);
                 gap: 15px;
-                place-items: center;
 
                 li {
                     min-width: 50px;
                 }
 
                 a {
+                    grid-template-columns: 1fr;
+                    place-items: center;
                     color: white;
                     font-size: 20px;
                 }
