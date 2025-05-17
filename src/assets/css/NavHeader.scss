@@ -105,3 +105,7 @@ header {
         }
     }
 }
+
+body:has(.card) header {
+    z-index: 1;
+}
