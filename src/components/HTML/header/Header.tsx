@@ -4,14 +4,11 @@ import '@css/NavHeader.scss';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useTouchEvents } from '@/hooks/Touch/useTouchEvents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse';
 import {
-    fas,
-    fa6,
     faPortrait,
-    faFolder,
+    faHouse,
     faFolderOpen,
-    faAddressBook,
+    faPhone,
 } from '@fortawesome/free-solid-svg-icons';
 
 export function Header({ isMobile }: { isMobile: boolean }) {
@@ -83,7 +80,7 @@ export function Header({ isMobile }: { isMobile: boolean }) {
                     </li>
                     <li>
                         <NavLink to="/contact">
-                            <FontAwesomeIcon icon={faAddressBook} />
+                            <FontAwesomeIcon icon={faPhone} />
                             <span>Me Contacter</span>
                         </NavLink>
                     </li>
