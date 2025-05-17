@@ -76,7 +76,8 @@ export function Root(contentType: { contentType?: string }) {
     const errorContent = contentType.contentType === 'error';
     const { size } = useResize(100);
     const isTouchDevice = (size[0] ?? 1) < 1024;
-    const isMobile = (size[0] ?? 1) < 768;
+    const isMobile = (size[0] ?? 1) < 576;
+    const isTablet = (size[0] ?? 1) < 768;
     const SETTINGS = useSettings(datas);
 
     // // Specify boundaries & responsive boundaries
