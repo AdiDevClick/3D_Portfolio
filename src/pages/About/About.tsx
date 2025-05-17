@@ -2,8 +2,8 @@ import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions';
 import { PageContainer } from '@/components/3DComponents/Html/PageContainer';
 import { AboutContent } from '@/pages/About/AboutContent';
 import '@css/About.scss';
-import { Center, Float } from '@react-three/drei';
-import { memo, useEffect, useRef } from 'react';
+import { Center, Float, useScroll } from '@react-three/drei';
+import { memo, useEffect, useLayoutEffect, useRef } from 'react';
 import { Group } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Icons } from '@/components/3DComponents/3DIcons/Icons';
@@ -65,6 +65,8 @@ const MemoizedAbout = memo(function About({
         DEFAULT_PROJECTS_POSITION_SETTINGS.clone()
     );
 
+    const scroll = useScroll();
+
     isActive = visible === 'about';
 
     useEffect(() => {
@@ -97,6 +99,12 @@ const MemoizedAbout = memo(function About({
         }
     }, [contentWidth, contentHeight, visible]);
 
+    /**
+     * Reset scroll position to reinitialize the camera
+     */
+    useLayoutEffect(() => {
+        scroll.el.scrollTo({ top: 1, behavior: 'instant' });
+    }, [visible]);
     // const settingsConfig = useMemo(() => {
     //     return {
     //         HTMLSettings: folder(
