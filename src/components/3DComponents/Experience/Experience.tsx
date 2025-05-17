@@ -82,7 +82,6 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
             case 'card-detail':
                 if (activeContent) {
                     prevCamPosRef.current = camera.position.clone();
-
                     positionCameraToCard(
                         ref,
                         activeContent,
