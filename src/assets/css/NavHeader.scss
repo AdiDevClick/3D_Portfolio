@@ -23,14 +23,33 @@ header {
 
         >ul {
             display: grid;
+            place-items: center;
             row-gap: 20px;
 
             li {
+                width: 70%;
                 cursor: pointer;
             }
 
             a {
+                display: grid;
+                width: 100%;
+                place-self: center;
+                grid-template-columns: 40px 1fr;
                 color: white;
+
+                svg {
+                    font-size: 20px;
+
+                    &[data-icon="image-portrait"] {
+                        font-size: 25px;
+                    }
+                }
+
+                span {
+                    grid-column: 2;
+                    place-self: start;
+                }
             }
         }
     }
