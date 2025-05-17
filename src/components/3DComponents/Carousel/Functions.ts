@@ -235,7 +235,7 @@ export function onHover(
     reducer: ReducerType
 ): void {
     e.stopPropagation();
-    if (reducer.activeContent?.isClicked) return;
+    if (reducer.activeContent?.isClicked || reducer.isMobile) return;
     reducer.activateElement(card, true);
 }
 
