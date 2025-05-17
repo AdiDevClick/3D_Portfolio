@@ -8,6 +8,9 @@ export default defineConfig({
     plugins: [react()],
     base: '/3D_Portfolio/',
     // base: '/',
+    css: {
+        devSourcemap: true,
+    },
     build: {
         outDir: 'dist',
         emptyOutDir: true,
