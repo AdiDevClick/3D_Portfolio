@@ -31,6 +31,7 @@
     {
         "id": "2",
         "title": "Recettes",
+        "cardTitle": "Site de Recettes",
         "cover": "assets/images/Recettes.jpg",
         "description": "Un site de partage de recettes dynamique. ",
         "content": [
