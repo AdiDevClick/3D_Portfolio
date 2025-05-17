@@ -293,7 +293,6 @@ export function onControlStart(e, active) {
         // e.target.azimuthRotateSpeed = 0.5;
     }
     // e.target.camera.updateProjectionMatrix();
-    console.log(e.target);
 
     // maxAngle = cardAngles.active + Math.PI / 8;
     // minAngle = cardAngles.active - Math.PI / 8;
