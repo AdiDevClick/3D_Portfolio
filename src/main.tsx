@@ -23,20 +23,24 @@ const router = createBrowserRouter(
             element: <Root />,
             errorElement: <Root contentType={'error'} />,
             children: [
-                { index: true },
+                { index: true, element: <Outlet /> },
                 {
                     path: 'projets',
+                    element: <Outlet />,
                     children: [
                         {
                             path: ':id',
+                            element: <Outlet />,
                         },
                     ],
                 },
                 {
                     path: 'contact',
+                    element: <Outlet />,
                 },
                 {
                     path: 'a-propos',
+                    element: <Outlet />,
                 },
                 {
                     path: 'error',
