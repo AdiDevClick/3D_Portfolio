@@ -62,9 +62,10 @@
     },
     {
         "id": "3",
-        "title": "Carte 3",
-        "cover": "assets/images/img3.png",
-        "description": "Une description rapide",
+        "title": "Mon Portfolio 3D",
+        "cardTitle": "Portfolio 3D",
+        "cover": "assets/images/img8.png",
+        "description": "Un portfolio personnel qui exploîte la puissance du développement 3D moderne. Un avant-goût de ce que peut être un développement web 3D ainsi que mes compétences et projets.",
         "content": [
             "Intégration du Canvas avec ThreeJS",
             "Créé avec React et TypeScript",
@@ -72,7 +73,10 @@
         ],
         "stack": {
             "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
+            "TypeScript": "assets/icons/typescript.svg",
+            "Sass": "assets/icons/sass.svg",
+            "ThreeJS": "assets/icons/threedotjs.svg",
+            "Vite": "assets/icons/vite.svg"
         },
         "links": [
             {
@@ -83,7 +87,7 @@
             {
                 "name": "Visit Website",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
+                "logo": "assets/icons/website.svg"
             }
         ]
     },
@@ -137,7 +141,7 @@
             {
                 "name": "Visit Website",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
+                "logo": "assets/icons/website.svg"
             }
         ]
     },
@@ -186,12 +190,12 @@
             {
                 "name": "GitHub",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "/assets/icons/github.svg"
+                "logo": "assets/icons/github.svg"
             },
             {
                 "name": "Visit Website",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "www"
+                "logo": "assets/icons/website.svg"
             }
         ]
     },
@@ -217,12 +221,12 @@
             {
                 "name": "GitHub",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "/assets/icons/github.svg"
+                "logo": "assets/icons/github.svg"
             },
             {
                 "name": "Visit Website",
                 "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "/assets/icons/website.svg"
+                "logo": "assets/icons/website.svg"
             }
         ]
     },
