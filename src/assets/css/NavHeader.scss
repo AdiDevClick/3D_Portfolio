@@ -98,11 +98,17 @@ header {
                 place-items: center;
 
                 li {
-                    cursor: pointer;
+                    min-width: 50px;
                 }
 
                 a {
                     color: white;
+                    font-size: 20px;
+                }
+
+                span {
+                    visibility: hidden;
+                    display: none;
                 }
             }
         }

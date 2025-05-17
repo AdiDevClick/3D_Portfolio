@@ -3,6 +3,16 @@ import { NavLink } from 'react-router';
 import '@css/NavHeader.scss';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useTouchEvents } from '@/hooks/Touch/useTouchEvents';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse';
+import {
+    fas,
+    fa6,
+    faPortrait,
+    faFolder,
+    faFolderOpen,
+    faAddressBook,
+} from '@fortawesome/free-solid-svg-icons';
 
 export function Header({ isMobile }: { isMobile: boolean }) {
     const headerRef = useRef<HTMLElement>(null!);
@@ -55,17 +65,27 @@ export function Header({ isMobile }: { isMobile: boolean }) {
                             aria-labelledby="home-link-text"
                             to="/"
                         >
+                            <FontAwesomeIcon icon={faHouse} />
                             <span id="home-link-text">Accueil</span>
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/a-propos">A Propos</NavLink>
+                        <NavLink to="/a-propos">
+                            <FontAwesomeIcon icon={faPortrait} />
+                            <span>A Propos</span>
+                        </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/projets">Mes Projets</NavLink>
+                        <NavLink to="/projets">
+                            <FontAwesomeIcon icon={faFolderOpen} />
+                            <span>Projets</span>
+                        </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/contact">Me Contacter</NavLink>
+                        <NavLink to="/contact">
+                            <FontAwesomeIcon icon={faAddressBook} />
+                            <span>Me Contacter</span>
+                        </NavLink>
                     </li>
                 </ul>
             </nav>
