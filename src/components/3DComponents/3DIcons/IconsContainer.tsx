@@ -77,49 +77,47 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     });
 
     return (
-        <group ref={groupRef} {...props}>
-            <Center name="icon__center-container" bottom>
-                {icons.map((icon, index) => (
-                    <GridLayout
-                        width={width}
-                        key={icon.name + '-grid'}
-                        name={icon.name + '-grid'}
-                        length={icons.length}
-                        index={index}
-                        scalar={scalar}
-                        options={gridOptions}
-                    >
-                        <Suspense fallback={<PlaceholderIcon />}>
-                            <IconWithText
-                                key={icon.name}
-                                scalar={0.8 * scalar}
-                                model={`${
-                                    import.meta.env.BASE_URL
-                                }/assets/models/${
-                                    isMobile
-                                        ? `mobile/${icon.mobile}`
-                                        : `optimized/${icon.optimized}`
-                                }`}
-                                index={index}
-                                isMobile={isMobile}
-                                datas={{
-                                    text: icon.name,
-                                    name: icon.name,
-                                }}
-                                name={'icon__content'}
-                                position={
-                                    isMobile
-                                        ? [0.5 * scalar, 1.45 * scalar, 0]
-                                        : [-0.4 * scalar, 0.5 * scalar, 0]
-                                }
-                            />
-                        </Suspense>
-                        <Center bottom>
-                            <HexCell scalar={scalar} />
-                        </Center>
-                    </GridLayout>
-                ))}
-            </Center>
+        <group name="icon__center-container" ref={groupRef} {...props}>
+            {/* <Center bottom> */}
+            {icons.map((icon, index) => (
+                <GridLayout
+                    width={width}
+                    key={icon.name + '-grid'}
+                    name={icon.name + '-grid'}
+                    length={icons.length}
+                    index={index}
+                    scalar={scalar}
+                    options={gridOptions}
+                >
+                    <Suspense fallback={<PlaceholderIcon />}>
+                        <IconWithText
+                            key={icon.name}
+                            scalar={0.8 * scalar}
+                            model={`${import.meta.env.BASE_URL}/assets/models/${
+                                isMobile
+                                    ? `mobile/${icon.mobile}`
+                                    : `optimized/${icon.optimized}`
+                            }`}
+                            index={index}
+                            isMobile={isMobile}
+                            datas={{
+                                text: icon.name,
+                                name: icon.name,
+                            }}
+                            name={'icon__content'}
+                            position={
+                                isMobile
+                                    ? [0.5 * scalar, 1.45 * scalar, 0]
+                                    : [-0.4 * scalar, 0.5 * scalar, 0]
+                            }
+                        />
+                    </Suspense>
+                    <Center bottom>
+                        <HexCell scalar={scalar} />
+                    </Center>
+                </GridLayout>
+            ))}
+            {/* </Center> */}
         </group>
     );
 });
