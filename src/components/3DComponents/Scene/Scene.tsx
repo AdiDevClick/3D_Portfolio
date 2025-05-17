@@ -83,7 +83,7 @@ export function Scene({
     useEffect(() => {
         switch (visible) {
             case 'home':
-                setVirtualPageCount(5);
+                setVirtualPageCount(3.5);
                 break;
             case 'about':
                 setVirtualPageCount(1.3);
@@ -122,7 +122,6 @@ export function Scene({
                     {/* <Suspense fallback={<PlaceholderIcon />}> */}
                     <MemoizedAbout {...pagesMemoProps} />
                     {/* </Suspense> */}
-                    <MemoizedContact {...pagesMemoProps} />
                     {/* </Suspense> */}
                 </Scroll>
                 {/* <PageScroller /> */}
@@ -130,6 +129,7 @@ export function Scene({
                 {pagesRef.current && isMobile && <PageScroller />}
             </ScrollControls>
             {/* <Banner position={[0, -0.15, 0]} /> */}
+            <MemoizedContact {...pagesMemoProps} />
 
             {/* <Rig> */}
             {/* <Rig rotation={[0, 0, 0.15]}> */}
