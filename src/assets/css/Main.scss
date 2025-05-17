@@ -47,6 +47,7 @@ body,
     scroll-behavior: smooth;
     line-height: 1.5;
     font-weight: 500;
+    overflow: hidden;
 }
 
 canvas {
@@ -79,6 +80,7 @@ h1 {
     >* {
         visibility: visible;
     }
+
 }
 
 @keyframes scaleFromZero {
