@@ -8,21 +8,24 @@ header {
     position: absolute;
     z-index: 1000000000;
     height: 100%;
+    // min-height: min-content;
     width: 100%;
     max-width: min(250px, 100%);
     background-color: #333333e1;
     text-align: center;
     align-content: center;
     overflow: hidden;
+    // padding-top: 50px;
     // transform: translate(0);
     transition: max-width 0.3s, transform 0.3s ease;
 
     >nav {
         transition: opacity 0.2s ease-in-out;
-
+        // margin: $buttonWidth;
         // @starting-style {
         //     opacity: 0;
         // }
+        // margin-top: $buttonWidth;
 
         >ul {
             display: grid;
@@ -54,6 +57,7 @@ header {
         place-self: end;
         color: transparent;
         border: none;
+        overflow: hidden;
         font-size: 16px;
         transition: background-color 0.3s ease;
 
@@ -79,7 +83,9 @@ header {
 
     @include for-size(mobile) {
         bottom: 0;
-        max-height: 30%;
+        padding-top: calc($buttonWidth + 10px);
+        padding-bottom: $buttonWidth;
+        height: fit-content;
         max-width: 100%;
 
         &.opened {

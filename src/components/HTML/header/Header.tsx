@@ -40,7 +40,7 @@ export function Header({ isMobile }: { isMobile: boolean }) {
     return (
         <header
             ref={headerRef}
-            className={`main-container ${active}`}
+            className={active}
             onMouseEnter={handleMouseOver}
             onMouseLeave={handleMouseOut}
         >
