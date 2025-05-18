@@ -24,6 +24,7 @@ type HomeTypes = {
 
 let currentTitlePos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentStackPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+let count = 0;
 
 /**
  * Home page component.
@@ -61,16 +62,21 @@ const MemoizedHome = memo(function Home({
         ? currentStackPos.set(0, yPosition, 0)
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
-    /**
-     * Reset scroll position to reinitialize the camera
-     */
-    useLayoutEffect(() => {
-        scroll.el.scrollTo({ top: 1, behavior: 'instant' });
-    }, [visible]);
+    if (count > 0) count = 0;
 
     useFrame((state, delta) => {
         if (!groupRef.current || !titleRef.current || !stackRef.current) return;
         frameCountRef.current += 1;
+
+        if (isActive && count <= 0) {
+            scroll.offset = 0;
+            scroll.el.scrollTo({ top: 0, behavior: 'smooth' });
+            count++;
+        }
+
+        if (!isActive && count > 0) {
+            count = 0;
+        }
 
         // Check if the objects are in the frustum
         frustumChecker(
@@ -88,6 +94,7 @@ const MemoizedHome = memo(function Home({
                 delta
             );
         }
+
         if (titleRef.current.visible || isActive) {
             easing.damp3(
                 titleRef.current.position,
@@ -97,7 +104,6 @@ const MemoizedHome = memo(function Home({
             );
         }
     });
-
     return (
         <group visible={isActive} ref={groupRef}>
             {/* <SpotLight

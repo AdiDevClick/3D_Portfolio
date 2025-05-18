@@ -3,7 +3,7 @@ import { PageContainer } from '@/components/3DComponents/Html/PageContainer';
 import { AboutContent } from '@/pages/About/AboutContent';
 import '@css/About.scss';
 import { Center, Float, useScroll } from '@react-three/drei';
-import { memo, useEffect, useLayoutEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { Group } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Icons } from '@/components/3DComponents/3DIcons/Icons';
@@ -37,6 +37,8 @@ const GitHub = `${
 }assets/models/optimized/Github_model.glb`;
 let isActive = false;
 
+let count = 0;
+
 /**
  * Contains the about page content/informations.
  *
@@ -66,7 +68,6 @@ const MemoizedAbout = memo(function About({
     );
 
     const scroll = useScroll();
-
     isActive = visible === 'about';
 
     useEffect(() => {
@@ -99,12 +100,6 @@ const MemoizedAbout = memo(function About({
         }
     }, [contentWidth, contentHeight, visible]);
 
-    /**
-     * Reset scroll position to reinitialize the camera
-     */
-    useLayoutEffect(() => {
-        scroll.el.scrollTo({ top: 1, behavior: 'instant' });
-    }, [visible]);
     // const settingsConfig = useMemo(() => {
     //     return {
     //         HTMLSettings: folder(
@@ -123,6 +118,7 @@ const MemoizedAbout = memo(function About({
     //     'HTML SETTINGS',
     //     () => settingsConfig
     // );
+    if (count > 0) count = 0;
 
     useFrame((state, delta) => {
         if (
@@ -133,6 +129,16 @@ const MemoizedAbout = memo(function About({
         )
             return;
         frameCountRef.current += 1;
+
+        if (isActive && count <= 0) {
+            scroll.offset = 0;
+            scroll.el.scrollTo({ top: 0, behavior: 'instant' });
+            count++;
+        }
+
+        if (!isActive && count > 0) {
+            count = 0;
+        }
 
         frustumChecker(
             [titleRef.current, iconsRef.current, contentRef.current],

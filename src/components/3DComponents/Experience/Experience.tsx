@@ -215,9 +215,9 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
                     // no zoom
                     dollySpeed={0}
                     // Max angle on active is given by the camera
-                    maxAzimuthAngle={maxAngle}
+                    // maxAzimuthAngle={maxAngle}
                     // Min angle on active is given by the camera
-                    minAzimuthAngle={minAngle}
+                    // minAzimuthAngle={minAngle}
                     ref={ref}
                     mouseButtons={{
                         // Activate left click for rotation
@@ -279,18 +279,20 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
 export function onControlStart(e, active) {
     // e.target.azimuthAngle = 0;
     // document.body.style.overflow = 'hidden';
-    e.azimuthAngleLimits = [MathUtils.degToRad(-30), MathUtils.degToRad(30)];
+    // e.azimuthAngleLimits = [MathUtils.degToRad(-20), MathUtils.degToRad(20)];
     if (active) {
-        // e.target.minAzimuthAngle = minAngle;
-        // e.target.maxAzimuthAngle = maxAngle;
+        e.target.minAzimuthAngle = MathUtils.degToRad(-10);
+        e.target.maxAzimuthAngle = MathUtils.degToRad(70);
+
+        e.target.azimuthRotateSpeed = 0.3;
         // e.target.maxSpeed = 0.1;
         // e.target.minAzimuthAngle = -Math.PI / 8;
         // e.target.maxAzimuthAngle = Math.PI / 8;
     } else {
-        // e.target.maxAzimuthAngle = Infinity;
-        // e.target.minAzimuthAngle = -Infinity;
+        e.target.maxAzimuthAngle = Infinity;
+        e.target.minAzimuthAngle = -Infinity;
         // e.target.maxSpeed = Infinity;
-        // e.target.azimuthRotateSpeed = 0.5;
+        e.target.azimuthRotateSpeed = 0.5;
     }
     // e.target.camera.updateProjectionMatrix();
 
