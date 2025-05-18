@@ -2,6 +2,7 @@ import { RefObject, useCallback } from 'react';
 import { Box3, Vector3 } from 'three';
 import { ElementType } from '@/hooks/reducers/carouselTypes';
 import { CameraControls } from '@react-three/drei';
+import { shortestAnglePath } from '@/components/3DComponents/Carousel/Functions';
 
 // interface ControlsRef {
 //     camera: Camera;
@@ -15,6 +16,12 @@ import { CameraControls } from '@react-three/drei';
 //         enableTransition?: boolean
 //     ) => void;
 // }
+const CAMERA_ANGLE_OFFSET = Math.PI / 28;
+const ACTIVE_FORWARD_OFFSET = 10.5;
+const CAMERA_SAFETY_MARGIN = 8;
+const EXTRA_PULLBACK_MOBILE = 5.5;
+const EXTRA_PULLBACK_DESKTOP = 3.5;
+const ANGLELIMITS = Math.PI / 9; // ~20 degrés
 
 /**
  * Hook pour gérer le positionnement de la caméra vers une carte
@@ -51,29 +58,22 @@ export function useCameraPositioning() {
                 ? Math.min(0.85, lerpFactor * 1.5)
                 : lerpFactor;
 
-            // Final position offsets
-            const activeForwardOffset = 10.5;
-            const extraPullback = isMobile ? 5.5 : 3.5;
-            const CAMERA_ANGLE_OFFSET = Math.PI / 28;
-            const CAMERA_SAFETY_MARGIN = 8;
             const desiredAngle = cardAngles.active + CAMERA_ANGLE_OFFSET;
 
-            let angleDelta = desiredAngle - currentCameraAngle;
+            const angleDelta = shortestAnglePath(
+                currentCameraAngle,
+                desiredAngle
+            );
 
-            // Normalize the angle delta to be within -PI to PI
-            // This ensures that the camera rotates in the shortest direction
-            // from on half to the other
-            while (angleDelta > Math.PI) angleDelta -= 2 * Math.PI;
-            while (angleDelta < -Math.PI) angleDelta += 2 * Math.PI;
+            const newAngle = isClicked
+                ? desiredAngle
+                : currentCameraAngle + angleDelta * effectiveLerpFactor;
 
             // Camera position from the center of the circle
             const finalDesiredRadius =
-                containerScale + activeForwardOffset + extraPullback;
-            // const finalDesiredRadius = Math.max(
-            //     containerScale + activeForwardOffset + extraPullback,
-            //     // Minimum radius to avoid camera clipping
-            //     14
-            // );
+                containerScale +
+                ACTIVE_FORWARD_OFFSET +
+                (isMobile ? EXTRA_PULLBACK_MOBILE : EXTRA_PULLBACK_DESKTOP);
 
             const camTargetPos = ref.current.position.clone();
 
@@ -83,21 +83,11 @@ export function useCameraPositioning() {
             bbox.getSize(sizeObj);
             const verticalCenterOffset = sizeObj.y / 5;
 
-            // const newAngle = currentCameraAngle + angleDelta * lerpFactor;
-            const newAngle = isClicked
-                ? desiredAngle // Aller directement à l'angle voulu
-                : currentCameraAngle + angleDelta * effectiveLerpFactor;
-
             const camPos = new Vector3(
                 Math.sin(newAngle) * finalDesiredRadius,
                 camTargetPos.y + verticalCenterOffset,
                 Math.cos(newAngle) * finalDesiredRadius
             );
-            // const camPos = new Vector3(
-            //     Math.sin(desiredAngle) * finalDesiredRadius,
-            //     camTargetPos.y + verticalCenterOffset,
-            //     Math.cos(desiredAngle) * finalDesiredRadius
-            // );
 
             // Adding interpolation to the camera position
             // const newCamPos = camera.position.clone().lerp(camPos, lerpFactor);
@@ -131,7 +121,6 @@ export function useCameraPositioning() {
                 newCamPos.x *= scale;
                 newCamPos.z *= scale;
             }
-
             controlsRef.current.setLookAt(
                 newCamPos.x,
                 newCamPos.y,
@@ -148,6 +137,13 @@ export function useCameraPositioning() {
             return {
                 cameraPosition: newCamPos,
                 targetPosition: shiftedTarget,
+                angleLimits: isClicked
+                    ? {
+                          min: desiredAngle - ANGLELIMITS,
+                          max: desiredAngle + ANGLELIMITS,
+                          default: desiredAngle,
+                      }
+                    : { min: -Infinity, max: Infinity },
             };
         },
         []
