@@ -94,6 +94,8 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
 
                     // Set the max camera angles to the active card
                     if (activeContent.isClicked && results?.angleLimits) {
+                        // !! IMPORTANT !! - Forces the camera to rotate without
+                        // animation to avoid a clipping bug when the camera is not in the right position
                         ref.current.rotateTo(
                             results.angleLimits.default ?? 0,
                             ref.current.polarAngle,
