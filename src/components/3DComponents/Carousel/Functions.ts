@@ -824,3 +824,29 @@ export const customEasing = {
 //         }, 100),
 //     [done]
 // );
+
+/**
+ * Calculate the shortest angle path between two angles
+ *
+ * @param fromAngle - The starting angle in radians
+ * @param toAngle - The target angle in radians
+ */
+export function shortestAnglePath(fromAngle: number, toAngle: number): number {
+    // Angle difference from one side to the other
+    let diff = toAngle - fromAngle;
+
+    // This ensures that the camera rotates in the shortest direction
+    // from one half to the other
+    while (diff > Math.PI) {
+        diff -= 2 * Math.PI;
+    }
+    while (diff < -Math.PI) {
+        diff += 2 * Math.PI;
+    }
+
+    return diff;
+}
+// Normaliser les angles entre -π et π
+function normalizeAngle(angle) {
+    return ((angle + Math.PI) % (2 * Math.PI)) - Math.PI;
+}
