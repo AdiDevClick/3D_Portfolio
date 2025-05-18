@@ -76,18 +76,32 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
                     cameraPositions.carousel,
                     ref.current
                 );
+                // Resets the max camera angles to infinity
+                ref.current.minAzimuthAngle = minAngle;
+                ref.current.maxAzimuthAngle = maxAngle;
                 break;
 
             case 'card-opened':
             case 'card-detail':
                 if (activeContent) {
                     prevCamPosRef.current = camera.position.clone();
-                    positionCameraToCard(
+                    const results = positionCameraToCard(
                         ref,
                         activeContent,
                         isMobile,
                         activeContent.isClicked
                     );
+
+                    // Set the max camera angles to the active card
+                    if (activeContent.isClicked && results?.angleLimits) {
+                        ref.current.rotateTo(
+                            results.angleLimits.default ?? 0,
+                            ref.current.polarAngle,
+                            false
+                        );
+                        ref.current.minAzimuthAngle = results.angleLimits.min;
+                        ref.current.maxAzimuthAngle = results.angleLimits.max;
+                    }
                     break;
                 }
                 if (!activeContent) {
@@ -215,9 +229,9 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
                     // no zoom
                     dollySpeed={0}
                     // Max angle on active is given by the camera
-                    // maxAzimuthAngle={maxAngle}
+                    maxAzimuthAngle={maxAngle}
                     // Min angle on active is given by the camera
-                    // minAzimuthAngle={minAngle}
+                    minAzimuthAngle={minAngle}
                     ref={ref}
                     mouseButtons={{
                         // Activate left click for rotation
@@ -281,23 +295,26 @@ export function onControlStart(e, active) {
     // document.body.style.overflow = 'hidden';
     // e.azimuthAngleLimits = [MathUtils.degToRad(-20), MathUtils.degToRad(20)];
     if (active) {
-        e.target.minAzimuthAngle = MathUtils.degToRad(-10);
-        e.target.maxAzimuthAngle = MathUtils.degToRad(70);
-
-        e.target.azimuthRotateSpeed = 0.3;
-        // e.target.maxSpeed = 0.1;
-        // e.target.minAzimuthAngle = -Math.PI / 8;
-        // e.target.maxAzimuthAngle = Math.PI / 8;
+        // e.target.minAzimuthAngle = MathUtils.degToRad(-10);
+        // e.target.minAzimuthAngle = -Math.PI / 2;
+        // // e.target.maxAzimuthAngle = MathUtils.degToRad(70);
+        // e.target.maxAzimuthAngle = Math.PI / 2;
+        // e.target.azimuthRotateSpeed = 0.3;
+        // // e.target.maxSpeed = 0.1;
+        // // e.target.minAzimuthAngle = -Math.PI / 8;
+        // // e.target.maxAzimuthAngle = Math.PI / 8;
+        // e.target.update(0);
     } else {
-        e.target.maxAzimuthAngle = Infinity;
-        e.target.minAzimuthAngle = -Infinity;
-        // e.target.maxSpeed = Infinity;
-        e.target.azimuthRotateSpeed = 0.5;
+        // e.target.maxAzimuthAngle = Infinity;
+        // e.target.minAzimuthAngle = -Infinity;
+        // // e.target.maxSpeed = Infinity;
+        // e.target.azimuthRotateSpeed = 0.5;
     }
     // e.target.camera.updateProjectionMatrix();
 
     // maxAngle = cardAngles.active + Math.PI / 8;
     // minAngle = cardAngles.active - Math.PI / 8;
+    // e.target.update(0);
 }
 function createHttpError(message: string, status: number): Error {
     const error = new Error(message);
