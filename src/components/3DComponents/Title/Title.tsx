@@ -45,6 +45,7 @@ export function Title({
                 size={size}
                 height={1}
                 smooth={1}
+                letterSpacing={2.5}
                 font={importedFont}
                 {...textProps}
             >
