@@ -18,7 +18,7 @@ import { Billboard, Float } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
-import datasJson from '@data/exemples.json';
+import datasJson from '@data/projects.json';
 import { ElementType } from '@/hooks/reducers/carouselTypes';
 
 const datas = datasJson as unknown as ElementType[];

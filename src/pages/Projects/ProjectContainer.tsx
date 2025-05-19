@@ -1,7 +1,7 @@
 import { ProjectContent } from '@/pages/Projects/ProjectContent';
-import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
+import { ElementType } from '@/hooks/reducers/carouselTypes';
 import '@css/Card.scss';
-import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions.ts';
+import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions';
 import { ThreeEvent } from '@react-three/fiber';
 import { MouseEvent } from 'react';
 

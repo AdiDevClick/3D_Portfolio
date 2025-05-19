@@ -76,8 +76,6 @@ export function HtmlContainer({
                 ref={htmlRef}
                 transform
                 distanceFactor={distanceFactor}
-                // style={{ ['--data-custom-scale' as string]: scaleRatio }}
-                // scale={scaleRatio}
                 {...props}
             >
                 {children}
