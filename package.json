@@ -20,6 +20,7 @@
         "@fortawesome/free-regular-svg-icons": "^6.7.2",
         "@fortawesome/free-solid-svg-icons": "^6.7.2",
         "@fortawesome/react-fontawesome": "^0.2.2",
+        "@react-spring/three": "^10.0.0",
         "@react-three/drei": "^10.0.4",
         "@react-three/fiber": "^9.1.0",
         "@types/node": "^22.13.10",
