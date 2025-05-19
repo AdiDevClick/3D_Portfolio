@@ -1,5 +1,6 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
+import { animated, useSpring } from '@react-spring/three';
 import { Html } from '@react-three/drei';
 import { HtmlProps } from '@react-three/drei/web/Html';
 import { useFrame } from '@react-three/fiber';
@@ -36,6 +37,13 @@ export function HtmlContainer({
     const htmlRef = useRef<HTMLDivElement>(null);
     const frameCountRef = useRef(0);
 
+    // Scale animation
+    const springProps = useSpring({
+        scale: scaleRatio,
+        config: { mass: 1, tension: 120, friction: 14 },
+        delay: 100,
+    });
+
     useFrame(() => {
         if (done || !htmlRef.current) return;
         frameCountRef.current += 1;
@@ -63,16 +71,17 @@ export function HtmlContainer({
     }, [dynamicContent, forceMeasure]);
 
     return (
-        <Html
-            ref={htmlRef}
-            transform
-            distanceFactor={distanceFactor}
-            // scale={0.7}
-            // scale={scaleRatio * 0.7}
-            style={{ ['--data-custom-scale' as string]: scaleRatio * 0.7 }}
-            {...props}
-        >
-            {children}
-        </Html>
+        <animated.group scale={springProps.scale} position={[0, 0, 0]}>
+            <Html
+                ref={htmlRef}
+                transform
+                distanceFactor={distanceFactor}
+                // style={{ ['--data-custom-scale' as string]: scaleRatio }}
+                // scale={scaleRatio}
+                {...props}
+            >
+                {children}
+            </Html>
+        </animated.group>
     );
 }
