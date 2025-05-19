@@ -1,12 +1,4 @@
-import { JSX } from 'react';
-
-type SpherePresenceTypes = {
-    // position: [number, number, number];
-    radius: [number, number];
-    color: string;
-    /** @defaultValue true */
-    visible?: boolean;
-} & JSX.IntrinsicElements['mesh'];
+import { SpherePresenceTypes } from '@/components/3DComponents/SpherePresence/SpherePresenceTypes';
 
 /**
  * Wireframe sphere presence Helper -
