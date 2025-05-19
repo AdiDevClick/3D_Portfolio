@@ -241,8 +241,9 @@
             "Amélioration du référencement naturel du site"
         ],
         "stack": {
-            "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
+            "JavaScript": "assets/icons/javascript.svg",
+            "CSS": "assets/icons/css.svg",
+            "HTML": "assets/icons/html.svg"
         },
         "links": [
             {

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import '@css/index.css';
 import '@css/Main.scss';
 import '@css/reset.css';
-import App from './App2';
+import App from './App';
 import { RouterProvider } from 'react-router/dom';
 import { createBrowserRouter, Navigate, Outlet } from 'react-router';
 import { PageError } from './pages/Error/PageError';

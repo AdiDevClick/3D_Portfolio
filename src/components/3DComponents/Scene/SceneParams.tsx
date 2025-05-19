@@ -1,4 +1,4 @@
-import { ReducerContext } from '@/App2.tsx';
+import { ReducerContext } from '@/App';
 import { useCarousel } from '@/hooks/reducers/useCarousel.tsx';
 import { createContext, ReactNode, use, useEffect } from 'react';
 
