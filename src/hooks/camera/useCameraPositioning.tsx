@@ -107,6 +107,10 @@ export function useCameraPositioning() {
             // Final position
             const shiftedTarget = newTarget.clone().add(rightOffset);
 
+            if (isMobile && isClicked) {
+                newCamPos.z *= 1.05;
+                shiftedTarget.y += 0.5;
+            }
             // !! IMPORTANT !! Modify FOV if mobile
             camera.fov = isMobile ? 19 : 20;
 
@@ -129,7 +133,7 @@ export function useCameraPositioning() {
                 isClicked && isMobile ? shiftedTarget.y - 1.5 : shiftedTarget.y,
                 shiftedTarget.z,
                 // Animation ?
-                true
+                !(isClicked && isMobile)
             );
 
             camera.updateProjectionMatrix();
