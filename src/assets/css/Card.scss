@@ -121,7 +121,7 @@
     @include for-size(smalltablet) {
         max-height: 50vh;
 
-        transform: translate(-50%);
+        transform: translate(-50%, 100%);
         width: 100%;
         // width: 95vw;
         background: blue;

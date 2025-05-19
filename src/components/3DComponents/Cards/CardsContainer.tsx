@@ -8,8 +8,10 @@ import { ProjectContainer } from '@/pages/Projects/ProjectContainer';
 import {
     DESKTOP_HTML_CONTAINER_DEPTH,
     DESKTOP_HTML_CONTAINER_ROTATION,
+    DESKTOP_HTML_TITLE_POSITION_SETTINGS,
     MOBILE_HTML_CONTAINER_POSITION,
     MOBILE_HTML_CONTAINER_ROTATION,
+    MOBILE_PROJECT_CONTAINER_POSITION,
 } from '@/configs/3DCarousel.config.ts';
 import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
