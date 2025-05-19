@@ -2,7 +2,6 @@ import { Suspense, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { DoubleSide, Mesh, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
 import {
     animateCardEntry,
     animateCarouselContainer,
@@ -11,8 +10,7 @@ import {
     handleCardCollisions,
     updateTitlePosition,
 } from '@/components/3DComponents/Carousel/Functions';
-import { ReducerType } from '@/hooks/reducers/carouselTypes';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { Billboard, Float } from '@react-three/drei';
 import { Group } from 'three';
@@ -25,6 +23,7 @@ const datas = datasJson as unknown as ElementType[];
 
 import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
+import { CarouselProps } from '@/components/3DComponents/Carousel/FunctionsTypes';
 
 const activeForwardOffset = 0.5;
 const animationSpeed = 0.22;
@@ -39,11 +38,6 @@ const bezierPos = new Vector3();
 let frameCountRef = 0;
 // let isCarouselLoaded = false;
 
-interface CarouselProps {
-    reducer: ReducerType;
-    boundaries: { x: number; y: number; z: number };
-    SETTINGS: SettingsType;
-}
 export default function Carousel({
     boundaries,
     reducer,
@@ -68,6 +62,7 @@ export default function Carousel({
     const boundariesRef = useRef<Mesh>(null!);
 
     const location = useLocation();
+    const params = useParams();
     const id = useId();
 
     // États pour l'animation
@@ -76,7 +71,8 @@ export default function Carousel({
     const [isCarouselLoaded, setIsCarouselLoaded] = useState(false);
 
     const activeURL = location.pathname.includes('projets');
-    const activeProject = activeURL && location.pathname.split('/')[2];
+    const activeProject = activeURL && params.id;
+    // const activeProject = activeURL && location.pathname.split('/')[2];
 
     /**
      * Création des propriétés des cartes -
