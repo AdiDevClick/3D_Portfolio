@@ -72,7 +72,7 @@ export const MOBILE_TITLE_POSITION = [0, -1.2, 0.05] as [
     number
 ];
 /** Position du conteneur HTML */
-export const MOBILE_HTML_CONTAINER_POSITION = [0, -0.9, 0.05] as [
+export const MOBILE_HTML_CONTAINER_POSITION = [0, 0, 0.05] as [
     // export const MOBILE_HTML_CONTAINER_POSITION = [0, -0.6, 0.05] as [
     // export const MOBILE_HTML_CONTAINER_POSITION = [0, -1.5, 0.05] as [
     number,
@@ -118,6 +118,26 @@ export const DESKTOP_HTML_ICONS_POSITION_SETTINGS = (
     width: number,
     margin: number
 ) => [width / 2 - margin * 2.5, -height / 2 - margin, 0];
+
+export const MOBILE_PROJECT_CONTAINER_POSITION = () => {
+    // Utiliser le même calcul de hauteur basé sur FOV
+    const initialCameraFov = 19;
+    const vFov = (initialCameraFov * Math.PI) / 180; // FOV en radians
+    const visibleHeight = 2 * Math.tan(vFov / 2) * initialCameraFov; // Hauteur visible à distance 20
+
+    // Calculer le décalage vertical en fonction du contenu
+    // Plus le contenu est grand, plus il remonte
+    const contentFactor = Math.min(visibleHeight / 15, 2.5);
+    // const yOffset = visibleHeight - contentFactor * 1.2;
+    const yOffset = -2 - contentFactor * 0.5;
+
+    return DESKTOP_HTML_TITLE_POSITION_SETTINGS(visibleHeight, 0.5);
+    // return [
+    //     0, // X centré
+    //     visibleHeight, // Y adaptatif avec décalage vers le haut
+    //     5, // Z - plus proche de la caméra pour meilleure lisibilité
+    // ];
+};
 // ) => new Vector3(width / 2 - margin * 2.5, -height / 2 - margin, 0);
 
 /**
