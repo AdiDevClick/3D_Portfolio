@@ -1,5 +1,5 @@
+import { importedNormalFont } from '@/configs/3DFonts.config';
 import { Text, TextProps } from '@react-three/drei';
-import normalMontFont from '@assets/fonts/Montserrat-VariableFont_wght.ttf';
 import React, { ReactNode } from 'react';
 import { Group, Mesh } from 'three';
 
@@ -18,7 +18,7 @@ export function FallbackText({ children, ref, ...props }: FallbackTextTypes) {
         <Text
             ref={ref}
             castShadow
-            font={normalMontFont}
+            font={importedNormalFont}
             fontSize={0.1}
             color="black"
             outlineWidth={0.004}
