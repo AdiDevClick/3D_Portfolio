@@ -47,7 +47,7 @@ const MemoizedCard = memo(
 
         const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
         const cardHoverRadius = card.isActive ? 0.02 : 0.05;
-        const cardHoverZoom = card.isActive ? 1 : 1.5;
+        const cardHoverZoom = card.isActive ? 0.8 : 1.1;
 
         useCursor(card.isActive || false);
 
@@ -149,6 +149,9 @@ const MemoizedCard = memo(
                     card.rotation[1] ?? 0,
                     card.rotation[2] ?? 0,
                 ]}
+                // scale={card.isClicked ? card.baseScale : card.baseScale}
+                // scale={card.currentWidth}
+                scale={card.isClicked ? card.currentWidth : card.baseScale}
                 {...props}
                 // args={[textureQuality, textureQuality]}
             >
