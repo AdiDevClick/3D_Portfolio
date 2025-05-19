@@ -1,4 +1,3 @@
-import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
 import { CenterProps, Text3DProps, TextProps } from '@react-three/drei';
 import { JSX, ReactNode, RefObject } from 'react';
 import { Mesh } from 'three';
