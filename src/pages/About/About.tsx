@@ -15,7 +15,7 @@ import {
 import { easing } from 'maath';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { frustumChecker } from '@/utils/frustrumChecker';
-import { PagesTypes } from '@/components/3DComponents/Scene/Scene';
+import { PagesTypes } from '@/components/3DComponents/Scene/SceneTypes';
 
 const floatOptions = {
     autoInvalidate: true,

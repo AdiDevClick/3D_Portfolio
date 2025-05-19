@@ -1,4 +1,4 @@
-import { PagesTypes } from '@/components/3DComponents/Scene/Scene';
+import { PagesTypes } from '@/components/3DComponents/Scene/SceneTypes';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
