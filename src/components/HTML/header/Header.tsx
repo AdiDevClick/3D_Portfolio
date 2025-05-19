@@ -10,8 +10,9 @@ import {
     faFolderOpen,
     faPhone,
 } from '@fortawesome/free-solid-svg-icons';
+import { HeadersProps } from '@/components/HTML/HTMLtypes';
 
-export function Header({ isMobile }: { isMobile: boolean }) {
+export function Header({ isMobile }: HeadersProps) {
     const headerRef = useRef<HTMLElement>(null!);
     const buttonRef = useRef<HTMLButtonElement>(null!);
     const [isOpen, setIsOpen] = useState(false);

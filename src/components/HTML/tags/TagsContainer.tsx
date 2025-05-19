@@ -1,14 +1,9 @@
-import { ElementType } from '@/hooks/reducers/carouselTypes.ts';
-import { PropsWithChildren } from 'react';
 import '@css/Tags.scss';
-type DatasType = {
-    /** La propriété "stack" de la card contenant toute la stack technique */
-    datas: ElementType['stack'];
-};
+import { TagsContainerProps } from '@/components/HTML/HTMLtypes';
 
 /**
  * Crer des tags puis les affiches dans un container
  */
-export function TagsContainer({ children }: PropsWithChildren) {
+export function TagsContainer({ children }: TagsContainerProps) {
     return <ul className="tags_container">{children}</ul>;
 }

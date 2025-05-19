@@ -1,9 +1,4 @@
-import { ReactNode } from 'react';
-type TagsTypes = {
-    children: ReactNode;
-    /** url du logo */
-    logo: string;
-};
+import { TagsTypes } from '@/components/HTML/HTMLtypes';
 
 /**
  * Affiche un Tag contenant un texte ainsi qu'un logo
@@ -12,7 +7,7 @@ type TagsTypes = {
 export function Tags({ children, logo }: TagsTypes) {
     return (
         <li className="tag">
-            <img src={logo} alt={children} />
+            <img src={logo} alt={children?.toString()} />
             {children}
         </li>
     );

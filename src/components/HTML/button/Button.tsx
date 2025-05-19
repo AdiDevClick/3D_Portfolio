@@ -1,32 +1,20 @@
-import { ButtonHTMLAttributes, DragEvent, PropsWithChildren, Ref } from 'react';
-type ButtonProps = {
-    ref: Ref<HTMLButtonElement>;
-};
+import { ButtonProps } from '@/components/HTML/HTMLtypes';
 
 /**
  * Composant bouton réutilisable -
  * Il renvoie un callback au parent -
  */
-export function Button({
-    children,
-    ref,
-    ...props
-}: PropsWithChildren & ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps) {
+export function Button({ children, ref, ...props }: ButtonProps) {
     /**
      * Disable default drag behavior to
      * avoid conflicts -
      */
-    const handleDragStart = (e: DragEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-    };
+    // const handleDragStart = (e: DragEvent<HTMLButtonElement>) => {
+    //     e.preventDefault();
+    // };
 
     return (
-        <button
-            ref={ref}
-            // onClick={props.onClick}
-            // onDrag={handleDragStart}
-            {...props}
-        >
+        <button ref={ref} {...props}>
             {children}
         </button>
     );
