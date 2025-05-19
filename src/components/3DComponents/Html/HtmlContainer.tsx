@@ -1,18 +1,9 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
-import { ReducerType } from '@/hooks/reducers/carouselTypes';
+import { HtmlContainerTypes } from '@/components/3DComponents/Html/HtmlPagesTypes';
 import { animated, useSpring } from '@react-spring/three';
 import { Html } from '@react-three/drei';
-import { HtmlProps } from '@react-three/drei/web/Html';
 import { useFrame } from '@react-three/fiber';
-import { ReactNode, useEffect, useRef, useState } from 'react';
-
-type HtmlContainerTypes = {
-    reducer?: ReducerType;
-    children: ReactNode;
-    dynamicContent?: boolean;
-    forceMeasure?: boolean;
-    distanceFactor?: number;
-} & Omit<HtmlProps, 'ref'>;
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Contient un <group /> qui sera transformé en élément 3D par défaut -

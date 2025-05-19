@@ -1,5 +1,4 @@
 import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions';
-import { PageContainer } from '@/components/3DComponents/Html/PageContainer';
 import { AboutContent } from '@/pages/About/AboutContent';
 import '@css/About.scss';
 import { Center, Float, useScroll } from '@react-three/drei';
@@ -15,7 +14,8 @@ import {
 import { easing } from 'maath';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { frustumChecker } from '@/utils/frustrumChecker';
-import { PagesTypes } from '@/components/3DComponents/Scene/SceneTypes';
+import { BillboardPageContainer } from '@/components/3DComponents/Html/PageContainer';
+import { AboutTypes } from '@/components/3DComponents/Html/HtmlPagesTypes';
 
 const floatOptions = {
     autoInvalidate: true,
@@ -24,10 +24,6 @@ const floatOptions = {
     floatIntensity: 0.5,
     floatingRange: [-0.1, 0.1] as [number, number],
 };
-
-type AboutTypes = {
-    /** @defaultValue 0.5 */ margin?: number;
-} & PagesTypes;
 
 const LinkedIn = `${
     import.meta.env.BASE_URL
@@ -195,12 +191,12 @@ const MemoizedAbout = memo(function About({
             <group ref={contentRef}>
                 {contentRef && (
                     <Center>
-                        <PageContainer pageName={'/a-propos'}>
+                        <BillboardPageContainer pageName={'/a-propos'}>
                             <AboutContent
                                 onWheel={onScrollHandler}
                                 className="about"
                             />
-                        </PageContainer>
+                        </BillboardPageContainer>
                     </Center>
                 )}
             </group>

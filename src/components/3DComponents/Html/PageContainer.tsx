@@ -1,4 +1,5 @@
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer';
+import { BillboardPageContainerProps } from '@/components/3DComponents/Html/HtmlPagesTypes';
 import {
     DEFAULT_HTML_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
@@ -6,16 +7,23 @@ import {
 import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Group } from 'three';
 
-type PageContainerTypes = {
-    children: ReactNode;
-    pageName: string;
-};
-
-export function PageContainer({ children, pageName }: PageContainerTypes) {
+/**
+ * PageContainer component
+ * @description This component is used to create a container for the HTML content of a page.
+ * The container will have a default .html-container class.
+ * It will always face the camera
+ *
+ * @param pageName - Name of the page
+ * @returns
+ */
+export function BillboardPageContainer({
+    children,
+    pageName,
+}: BillboardPageContainerProps) {
     const groupRef = useRef<Group>(null);
     const location = useLocation();
 
@@ -26,7 +34,6 @@ export function PageContainer({ children, pageName }: PageContainerTypes) {
      */
     useEffect(() => {
         if (!groupRef.current) return;
-        // console.log(import.meta.env.BASE_URL + pageName);
         location.pathname === pageName
             ? setActiveURL(true)
             : setActiveURL(false);
