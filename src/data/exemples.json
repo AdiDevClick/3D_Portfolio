@@ -4,11 +4,13 @@
         "title": "Portfolio HTML",
         "cardTitle": "Portfolio HTML",
         "cover": "assets/images/Portfolio.jpg",
-        "description": "Un portfolio HTML/CSS responsive",
+        "description": "Un portfolio HTML/CSS responsive qui présente une utilisation robuste du CSS ainsi que de la structure HTML",
         "content": [
             "Utilisation du CSS pour styler le site",
             "Créé avec HTML, CSS et JavaScript",
-            "Une implémentation responsive avec burger menu"
+            "Une implémentation responsive avec burger menu",
+            "Utilisation de Flexbox et Grid pour la mise en page",
+            "Utilisation de JavaScript pour les interactions avec le menu Burger"
         ],
         "stack": {
             "HTML": "assets/icons/html.svg",
@@ -30,15 +32,24 @@
     },
     {
         "id": "2",
-        "title": "Recettes",
+        "title": "Partage de recettes",
         "cardTitle": "Site de Recettes",
         "cover": "assets/images/Recettes.jpg",
-        "description": "Un site de partage de recettes dynamique. ",
+        "description": "Un site de partage de recettes dynamique. Un projet de développement web complet qui met en avant mes compétences en PHP et JavaScript. Il s'articule autour d'un CRUD complet permettant une communiation AJAX entre le front-end et le back-end. Un projet qui est voué à une constante évolution !",
         "content": [
             "Créé avec PHP et JavaScript",
             "Architecture MVC",
-            "Requêtes AJAX pour le chargement dynamique",
-            "Construction de requêtes SQL complexes"
+            "Requêtes AJAX pour une interaction dynamique de l'utilisateur",
+            "Construction de requêtes SQL complexes",
+            "Implémentation d'un système CRUD complet",
+            "Création d'un validateur d'inputs dynamique",
+            "Intégration d'une search bar dynamique pour la recherche de recettes",
+            "Gestion des sessions et des cookies",
+            "Gestion des erreurs et des exceptions",
+            "Gestion des fichiers et des images",
+            "Prise en charge d'envoi d'emails de notifications depuis le serveur",
+            "Gestion du tactile pour une expérience utilisateur fluide sur mobile et desktop",
+            "Utilisation avancée du CSS pour le design et l'animation"
         ],
         "stack": {
             "Php": "assets/icons/php.svg",
@@ -46,17 +57,18 @@
             "MySQL": "assets/icons/mysql.svg",
             "CSS": "assets/icons/css.svg",
             "HTML": "assets/icons/html.svg",
-            "Vite": "assets/icons/vite.svg"
+            "Vite": "assets/icons/vite.svg",
+            "Figma": "assets/icons/figma.svg"
         },
         "links": [
             {
                 "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://github.com/AdiDevClick/CRUD---Register",
                 "logo": "assets/icons/github.svg"
             },
             {
                 "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://adi.ezaya.fr/recettes/",
                 "logo": "assets/icons/website.svg"
             }
         ]
@@ -65,19 +77,25 @@
         "id": "3",
         "title": "Mon Portfolio 3D",
         "cardTitle": "Portfolio 3D",
-        "cover": "assets/images/img8.png",
-        "description": "Un portfolio personnel qui exploîte la puissance du développement 3D moderne. Un avant-goût de ce que peut être un développement web 3D ainsi que mes compétences et projets.",
+        "cover": "assets/images/Portfolio3D.jpg",
+        "description": "Un portfolio personnel qui exploîte la puissance du développement 3D moderne. Un avant-goût de ce que peut être site web 3D ainsi que mes compétences et projets.",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
+            "Intégration du Canvas avec ThreeJS et React Three Fiber",
             "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Une implémentation responsive de l'expérience 3D",
+            "Une optimisation de React et des modèles 3D pour une expérience utilisateur fluide",
+            "La création de modèles 3D personnalisés avec Blender",
+            "Une gestion des animations et des interactions avec le modèle 3D",
+            "Utilisation de React Router pour la navigation entre les pages"
         ],
         "stack": {
             "React": "assets/icons/react.svg",
+            "React Router": "assets/icons/reactrouter.svg",
             "TypeScript": "assets/icons/typescript.svg",
             "Sass": "assets/icons/sass.svg",
             "ThreeJS": "assets/icons/threedotjs.svg",
-            "Vite": "assets/icons/vite.svg"
+            "Vite": "assets/icons/vite.svg",
+            "Blender": "assets/icons/blender.svg"
         },
         "links": [
             {
@@ -87,159 +105,140 @@
             },
             {
                 "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://adidevclick.github.io/3D_Portfolio/",
                 "logo": "assets/icons/website.svg"
             }
         ]
     },
     {
         "id": "4",
-        "title": "Carte 4",
-        "cover": "assets/images/img4.png",
-        "description": "Une description rapide",
+        "title": "Développement d'une API",
+        "cardTitle": "Mon Vieux Grimoire",
+        "cover": "assets/images/Grimoire.jpg",
+        "description": "Développement Back-End API RESTful pour le site 'Mon Vieux Grimoire', une plateforme de référencement et de notation de livres créée avec React.",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Mise en place d'une API RESTful robuste et sécurisée",
+            "Créé avec NodeJS et Express",
+            "Une communication fluide entre le front-end et le back-end",
+            "Gestion des requêtes avec un ODM (Mongoose)",
+            "Intégration d'un antiflood pour protéger l'API",
+            "Intégration du Green-Code pour une API éco-responsable",
+            "Se rapprocher au maximum des recommandations de l'OWASP"
         ],
         "stack": {
-            "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
+            "NodeJS": "assets/icons/nodedotjs.svg",
+            "JavaScript": "assets/icons/javascript.svg",
+            "Express": "assets/icons/express.svg",
+            "MongoDB": "assets/icons/mongodb.svg",
+            "Mongoose": "assets/icons/mongoose.svg"
         },
         "links": [
             {
                 "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
-            },
-            {
-                "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://github.com/AdiDevClick/Grimoire",
                 "logo": "assets/icons/github.svg"
             }
         ]
     },
     {
         "id": "5",
-        "title": "Carte 5",
-        "cover": "assets/images/img5.png",
-        "description": "Une description rapide",
+        "title": "Développement Front-end React",
+        "cardTitle": "Kasa",
+        "cover": "assets/images/Kasa.jpg",
+        "description": "Développement d'une application de location de logements avec React. Un projet demandant l'implémentation d'une maquette Figma responsive",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Créé avec React",
+            "Une implémentation responsive d'une maquette Figma",
+            "Gestion des routes avec React Router",
+            "Utilisation de composants React réutilisables",
+            "Gestion des animations en CSS pour une intégration facilitée"
         ],
         "stack": {
             "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
+            "Vite": "assets/icons/vite.svg",
+            "Figma": "assets/icons/figma.svg",
+            "Sass": "assets/icons/sass.svg",
+            "React Router": "assets/icons/reactrouter.svg"
         },
         "links": [
             {
                 "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://github.com/AdiDevClick/React_Kasa_App",
                 "logo": "assets/icons/github.svg"
-            },
-            {
-                "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/website.svg"
             }
         ]
     },
     {
         "id": "6",
-        "title": "Carte 6",
-        "cover": "assets/images/img6.png",
-        "description": "Une description rapide",
+        "title": "Portfolio Architecte d'Intérieur",
+        "cardTitle": "Sophie Bluel",
+        "cover": "assets/images/Bluel.jpg",
+        "description": "Un projet consistant à développer le portfolio d'une architecte d'intérieur. Articuté autour d'une modale dynamique pour la gestion des projets, il demande une validation des inputs ainsi qu'une intéraction avec le back-end.",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Créé avec HTML, CSS et JavaScript",
+            "Implémenté avec la Programation Orientée Objet",
+            "Une communication avec le back-end NodeJS",
+            "Gestion des inputs et des fichiers",
+            "Gestion des animations en CSS et JavaScript",
+            "Une intégration fidèle de la maquette Figma",
+            "Communication avec une API back-end"
         ],
         "stack": {
-            "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
+            "HTML": "assets/icons/html.svg",
+            "CSS": "assets/icons/css.svg",
+            "JavaScript": "assets/icons/javascript.svg",
+            "Figma": "assets/icons/figma.svg"
         },
         "links": [
             {
                 "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
-            },
-            {
-                "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://github.com/AdiDevClick/OC-JS-Homepage",
                 "logo": "assets/icons/github.svg"
             }
         ]
     },
     {
         "id": "7",
-        "title": "Carte 7",
-        "cover": "assets/images/img7.png",
-        "description": "Une description rapide",
+        "title": "Intégration d'une interface web",
+        "cardTitle": "Booki",
+        "cover": "assets/images/Booki.jpg",
+        "description": "Développement d'une interface web pour un site de réservation de logements. Une intégration demandedant une attention particulière aux détails et à la mise en page depuis la maquette Figma.",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Créé avec HTML et CSS",
+            "Une implémentation fidèle et responsive de la maquette Figma",
+            ""
         ],
         "stack": {
-            "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
+            "CSS": "assets/icons/css.svg",
+            "HTML": "assets/icons/html.svg",
+            "Figma": "assets/icons/figma.svg"
         },
         "links": [
             {
                 "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://github.com/AdiDevClick/OC_booki",
                 "logo": "assets/icons/github.svg"
             },
             {
                 "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://adidevclick.github.io/OC_booki/",
                 "logo": "assets/icons/website.svg"
             }
         ]
     },
     {
         "id": "8",
-        "title": "Mon Portfolio 3D",
-        "cardTitle": "Portfolio 3D",
-        "cover": "assets/images/img8.png",
-        "description": "Un portfolio personnel qui exploîte la puissance du développement 3D moderne. Un avant-goût de ce que peut être un développement web 3D ainsi que mes compétences et projets.",
+        "title": "Corrections du Site Nina Carducci",
+        "cardTitle": "Optimisation SEO",
+        "cover": "assets/images/Nina.jpg",
+        "description": "Un projet consistant à optimiser le site de Nina Carducci pour améliorer son référencement naturel, ses performances et la correction de bugs existants",
         "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
-        ],
-        "stack": {
-            "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg",
-            "Sass": "assets/icons/sass.svg",
-            "ThreeJS": "assets/icons/threedotjs.svg",
-            "Vite": "assets/icons/vite.svg"
-        },
-        "links": [
-            {
-                "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
-            },
-            {
-                "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/website.svg"
-            }
-        ]
-    },
-    {
-        "id": "9",
-        "title": "Carte 9",
-        "cover": "assets/images/img9.png",
-        "description": "Une description rapide",
-        "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
+            "Utilisation d'outils d'accessibilité tels que WAVE et Lighthouse",
+            "Déboggage des erreurs venant de scripts jQuery",
+            "Optimisation des images",
+            "Minification des scripts et des styles",
+            "Amélioration des performances du site",
+            "Amélioration du référencement naturel du site"
         ],
         "stack": {
             "React": "assets/icons/react.svg",
@@ -248,66 +247,12 @@
         "links": [
             {
                 "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://github.com/AdiDevClick/OC_SEO",
                 "logo": "assets/icons/github.svg"
             },
             {
                 "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
-            }
-        ]
-    },
-    {
-        "id": "10",
-        "title": "Carte 10",
-        "cover": "assets/images/img1.png",
-        "description": "Une description rapide",
-        "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
-        ],
-        "stack": {
-            "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
-        },
-        "links": [
-            {
-                "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
-            },
-            {
-                "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
-            }
-        ]
-    },
-    {
-        "id": "11",
-        "title": "Carte 11",
-        "cover": "assets/images/work.png",
-        "description": "Une description rapide",
-        "content": [
-            "Intégration du Canvas avec ThreeJS",
-            "Créé avec React et TypeScript",
-            "Une implémentation responsive de l'expérience 3D"
-        ],
-        "stack": {
-            "React": "assets/icons/react.svg",
-            "TypeScript": "assets/icons/typescript.svg"
-        },
-        "links": [
-            {
-                "name": "GitHub",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
-                "logo": "assets/icons/github.svg"
-            },
-            {
-                "name": "Visit Website",
-                "link": "https://www.github.com/AdiDevClick/3d_portfolio",
+                "link": "https://adidevclick.github.io/OC_SEO/",
                 "logo": "assets/icons/github.svg"
             }
         ]
