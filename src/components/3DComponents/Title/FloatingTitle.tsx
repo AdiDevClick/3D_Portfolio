@@ -1,6 +1,7 @@
 import { Title } from '@/components/3DComponents/Title/Title';
+import { FloatingTitleProps } from '@/components/3DComponents/Title/TitlesTypes';
 import { Float } from '@react-three/drei';
-import { JSX, memo, ReactNode } from 'react';
+import { memo } from 'react';
 
 const floatOptions = {
     autoInvalidate: true,
@@ -9,19 +10,6 @@ const floatOptions = {
     floatIntensity: 0.5,
     floatingRange: [-0.1, 0.1] as [number, number],
 };
-
-/**
- * FloatingTitle component types.
- */
-type FloatingTitleProps = {
-    children: ReactNode;
-    size: number;
-    isMobile?: boolean;
-    scale: number;
-    textProps?: {};
-} & JSX.IntrinsicElements['group'] & {
-        [key: string]: any;
-    };
 
 /**
  * FloatingTitle component.

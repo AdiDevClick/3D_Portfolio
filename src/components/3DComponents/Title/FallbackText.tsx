@@ -1,12 +1,6 @@
+import { FallbackTextTypes } from '@/components/3DComponents/Title/TitlesTypes';
 import { importedNormalFont } from '@/configs/3DFonts.config';
-import { Text, TextProps } from '@react-three/drei';
-import React, { ReactNode } from 'react';
-import { Group, Mesh } from 'three';
-
-type FallbackTextTypes = {
-    children: ReactNode;
-    ref?: React.RefObject<Mesh | Group>;
-} & TextProps;
+import { Text } from '@react-three/drei';
 
 /**
  * FallbackText component that displays a non-3D text for mobile.

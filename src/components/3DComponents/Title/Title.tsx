@@ -1,13 +1,6 @@
+import { TitleTypes } from '@/components/3DComponents/Title/TitlesTypes';
 import { importedFont } from '@/configs/3DFonts.config';
-import { Center, CenterProps, Text3D, Text3DProps } from '@react-three/drei';
-import { ReactNode } from 'react';
-
-type TitleTypes = {
-    children: string | string[] | ReactNode;
-    size?: number;
-    textProps?: Omit<Text3DProps, 'children' | 'font' | 'size'>;
-    [key: string]: any;
-} & Omit<CenterProps, 'children'>;
+import { Center, Text3D } from '@react-three/drei';
 
 /**
  * 3D Title component that displays a 3D text in the center of the screen.

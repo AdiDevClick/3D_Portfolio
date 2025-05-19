@@ -1,7 +1,6 @@
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
+import { HomePageTitleProps } from '@/components/3DComponents/Title/TitlesTypes';
 import { Sparkles } from '@react-three/drei';
-import { RefObject } from 'react';
-import { Group } from 'three';
 
 /**
  * Main title of the home page.
@@ -9,13 +8,7 @@ import { Group } from 'three';
  * @param ref - Ref of the group
  * @param scale - Scale of the title from the reducer generalScaleX
  */
-export function HomePageTitle({
-    ref,
-    scale,
-}: {
-    ref: RefObject<Group>;
-    scale: number;
-}) {
+export function HomePageTitle({ ref, scale }: HomePageTitleProps) {
     return (
         <group ref={ref}>
             <FloatingTitle
