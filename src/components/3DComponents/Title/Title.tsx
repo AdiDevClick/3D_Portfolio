@@ -1,14 +1,7 @@
-import {
-    Center,
-    CenterProps,
-    FontData,
-    Text3D,
-    Text3DProps,
-} from '@react-three/drei';
-import montserratFont from '@assets/fonts/Montserrat_Thin_Regular.json';
+import { importedFont } from '@/configs/3DFonts.config';
+import { Center, CenterProps, Text3D, Text3DProps } from '@react-three/drei';
 import { ReactNode } from 'react';
 
-const typedMontserratFont = montserratFont as unknown as FontData;
 type TitleTypes = {
     children: string | string[] | ReactNode;
     size?: number;
@@ -52,7 +45,7 @@ export function Title({
                 size={size}
                 height={1}
                 smooth={1}
-                font={typedMontserratFont}
+                font={importedFont}
                 {...textProps}
             >
                 {children}
