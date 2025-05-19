@@ -1,3 +1,5 @@
+import { HexCellProps } from '@/components/3DComponents/Forms/FormsTypes';
+
 /**
  * Creates a hexagonal cell component
  *
@@ -5,7 +7,7 @@
  * - Scalar is used to scale the cell depending on the screen size.
  * @param  scalar - Scalar for the hex cell
  */
-export function HexCell({ scalar }: { scalar: number }) {
+export function HexCell({ scalar }: HexCellProps) {
     return (
         <mesh>
             <cylinderGeometry
