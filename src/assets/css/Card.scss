@@ -34,7 +34,7 @@
     //     height: 100%;
     // }
     // transform: translate(0);
-    transform: translate(-2%);
+    transform: translate(-10%);
 
     // &::after {
     //     content: "";
@@ -113,11 +113,14 @@
     @include for-size(tablet) {
         // width: clamp(10%, 100%, calc(100% - 30%));
         // width: clamp(min(52%, 100%), 100%, 52vw);
+        transform: translate(-40%);
 
         background: red;
     }
 
     @include for-size(smalltablet) {
+        max-height: 50vh;
+
         transform: translate(-50%);
         width: 100%;
         // width: 95vw;
