@@ -1,17 +1,13 @@
+import { loadCardByURL } from '@/components/3DComponents/Experience/ExperienceFunctions';
+import { ExperienceProps } from '@/components/3DComponents/Experience/ExperienceTypes';
 import { SimpleEnvironment } from '@/components/Loaders/Loader';
 import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
-import { wait } from '@/functions/promises.js';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
-import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
 import { Suspense, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { MathUtils, Vector3 } from 'three';
-
-interface ErrorWithCause extends Error {
-    cause?: { status: number };
-}
+import { Vector3 } from 'three';
 
 let minAngle = -Infinity;
 let maxAngle = Infinity;
@@ -30,7 +26,7 @@ const cameraPositions = {
     },
 };
 
-export function Experience({ reducer }: { reducer: ReducerType }) {
+export function Experience({ reducer }: ExperienceProps) {
     const {
         activeContent,
         isMobile,
@@ -147,63 +143,22 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
         if (!ref.current || !params.id || activeContent) {
             return;
         }
-        // const options = {
-        //     id: params.id,
-        //     showElements,
-        //     activateElement,
-        //     clickElement,
-        //     setViewMode,
-        //     navigate,
-        // };
+        const options = {
+            id: params.id,
+            showElements,
+            activateElement,
+            clickElement,
+            setViewMode,
+            navigate,
+        };
 
         const initialDelay = 500;
 
-        const activateCardByURL = async (retries = 5, delay = 500) => {
-            try {
-                if (showElements.length === 0) {
-                    throw createHttpError('Try again', 403);
-                }
-
-                const targetCard = showElements.find(
-                    (element: { id: string }) => element.id === params.id
-                    // (element: { id: string }) => element.id === id
-                );
-
-                if (!targetCard) {
-                    throw createHttpError('No project found', 404);
-                }
-
-                // Wait for the carousel mode to establish
-                await wait(400);
-
-                // Activate card to focus
-                activateElement(targetCard, true);
-
-                await wait(600);
-
-                // Activate click after a short delay
-                clickElement(targetCard);
-            } catch (error) {
-                const typedError = error as ErrorWithCause;
-
-                if (retries > 0 && typedError.cause?.status === 403) {
-                    await wait(delay, 'Attente pour un nouvel essai');
-                    return activateCardByURL(retries - 1, delay * 2);
-                }
-
-                if (typedError.cause?.status === 404) {
-                    setViewMode('carousel');
-                    return navigate('/error', { replace: false });
-                }
-                console.error('Erreur non gérée :', typedError, error);
-            }
-        };
-
         // Awaits the initialization of the elements (initialDelay)
         // And then activate the card
-
-        // activateCardByURL(5, initialDelay, options);
-        const timer = setTimeout(activateCardByURL, initialDelay);
+        const timer = setTimeout(() => {
+            loadCardByURL(5, initialDelay, options);
+        }, initialDelay);
         return () => clearTimeout(timer);
     }, [params.id, showElements]);
 
@@ -250,7 +205,6 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
                         two: 0,
                         three: 0,
                     }}
-                    onStart={(e) => onControlStart(e, activeContent?.isClicked)}
                     // onEnd={() => {
                     //     // Réactiver le défilement de la page après l'interaction
                     //     document.body.style.overflow = '';
@@ -286,98 +240,3 @@ export function Experience({ reducer }: { reducer: ReducerType }) {
         </>
     );
 }
-
-/**
- * Gère la rotation max de la caméra -
- * @param e
- * @param active
- */
-export function onControlStart(e, active) {
-    // e.target.azimuthAngle = 0;
-    // document.body.style.overflow = 'hidden';
-    // e.azimuthAngleLimits = [MathUtils.degToRad(-20), MathUtils.degToRad(20)];
-    if (active) {
-        // e.target.minAzimuthAngle = MathUtils.degToRad(-10);
-        // e.target.minAzimuthAngle = -Math.PI / 2;
-        // // e.target.maxAzimuthAngle = MathUtils.degToRad(70);
-        // e.target.maxAzimuthAngle = Math.PI / 2;
-        // e.target.azimuthRotateSpeed = 0.3;
-        // // e.target.maxSpeed = 0.1;
-        // // e.target.minAzimuthAngle = -Math.PI / 8;
-        // // e.target.maxAzimuthAngle = Math.PI / 8;
-        // e.target.update(0);
-    } else {
-        // e.target.maxAzimuthAngle = Infinity;
-        // e.target.minAzimuthAngle = -Infinity;
-        // // e.target.maxSpeed = Infinity;
-        // e.target.azimuthRotateSpeed = 0.5;
-    }
-    // e.target.camera.updateProjectionMatrix();
-
-    // maxAngle = cardAngles.active + Math.PI / 8;
-    // minAngle = cardAngles.active - Math.PI / 8;
-    // e.target.update(0);
-}
-function createHttpError(message: string, status: number): Error {
-    const error = new Error(message);
-
-    Object.defineProperty(error, 'cause', {
-        value: { status },
-        enumerable: true,
-    });
-    return error;
-}
-
-// async function activateCardByURL(retries = 5, delay = 500, options) {
-//     const {
-//         id,
-//         showElements,
-//         activateElement,
-//         clickElement,
-//         setViewMode,
-//         navigate,
-//     } = options;
-//     try {
-//         // await wait(delay, 'Attente pour un nouvel essai');
-//         if (showElements.length === 0) {
-//             throw createHttpError('Try again', 403);
-//         }
-
-//         const targetCard = showElements.find(
-//             (element: { id: string }) => element.id === id
-//             // (element: { id: string }) => element.id === id
-//         );
-
-//         if (!targetCard) {
-//             throw createHttpError('No project found', 404);
-//         }
-
-//         // Wait for the carousel mode to establish
-//         await wait(400);
-
-//         // Activate card to focus
-//         activateElement(targetCard, true);
-//         // navigate('/projets', { replace: false });
-//         await wait(600);
-
-//         // Activate click after a short delay
-//         clickElement(targetCard);
-//         // navigate('/projets/' + params.id, { replace: false });
-//         // navigate('/projets/' + id, { replace: false });
-//     } catch (error) {
-//         const typedError = error as ErrorWithCause;
-
-//         if (retries > 0 && typedError.cause?.status === 403) {
-//             console.log('Je vais réessayer');
-//             await wait(delay, 'Attente pour un nouvel essai');
-//             return activateCardByURL(retries - 1, delay * 2, options);
-//         }
-
-//         if (typedError.cause?.status === 404) {
-//             setViewMode('carousel');
-//             // navigate('/projets', { replace: false });
-//             return navigate('/error', { replace: false });
-//         }
-//         console.error('Erreur non gérée :', typedError, error);
-//     }
-// }
