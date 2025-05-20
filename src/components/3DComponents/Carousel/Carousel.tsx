@@ -24,9 +24,10 @@ const datas = datasJson as unknown as ElementType[];
 import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { CarouselProps } from '@/components/3DComponents/Carousel/FunctionsTypes';
-
-const activeForwardOffset = 0.5;
-const animationSpeed = 0.22;
+import {
+    CARD_ACTIVE_FORWARD_OFFSET,
+    CARD_ANIMATION_SPEED,
+} from '@/configs/Cards.config';
 
 let animationProgress = 0;
 
@@ -80,6 +81,10 @@ export default function Carousel({
             );
     }, [SETTINGS.CARDS_COUNT, SETTINGS.CARD_SCALE, SETTINGS.CONTAINER_SCALE]);
 
+    /**
+     * Card positions -
+     * @description  This will calculate the positions of the cards
+     */
     const cardPositionsMemo = useMemo(() => {
         if (!showElements.length)
             return {
@@ -105,7 +110,7 @@ export default function Carousel({
                 activeCard,
                 showElements.length,
                 SETTINGS.CONTAINER_SCALE,
-                activeForwardOffset,
+                CARD_ACTIVE_FORWARD_OFFSET,
                 SETTINGS.THREED
             );
 
@@ -118,7 +123,7 @@ export default function Carousel({
         showElements.length,
         SETTINGS.CONTAINER_SCALE,
         SETTINGS.THREED,
-        activeForwardOffset,
+        CARD_ACTIVE_FORWARD_OFFSET,
     ]);
 
     /**
@@ -218,7 +223,7 @@ export default function Carousel({
 
             animationProgress = Math.min(
                 1,
-                animationProgress + delta * animationSpeed
+                animationProgress + delta * CARD_ANIMATION_SPEED
             );
 
             if (animationProgress >= 1) {
