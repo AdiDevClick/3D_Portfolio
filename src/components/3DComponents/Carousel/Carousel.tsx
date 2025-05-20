@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { DoubleSide, Mesh, Vector3 } from 'three';
+import { DoubleSide, Mesh, Object3DEventMap, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import {
@@ -54,7 +54,7 @@ export default function Carousel({
     } = reducer;
 
     const projectsRef = useRef<Group>(null!);
-    const titleRef = useRef<Mesh | Group>(null!);
+    const titleRef = useRef<Mesh | Group<Object3DEventMap>>(null!);
     const boundariesRef = useRef<Mesh>(null!);
 
     const location = useLocation();

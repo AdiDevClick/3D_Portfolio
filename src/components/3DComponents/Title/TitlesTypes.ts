@@ -1,11 +1,11 @@
 import { CenterProps, Text3DProps, TextProps } from '@react-three/drei';
 import { JSX, ReactNode, RefObject } from 'react';
-import { Mesh } from 'three';
+import { Mesh, Object3D } from 'three';
 import { Group } from 'three/examples/jsm/libs/tween.module.js';
 
 export type FallbackTextTypes = {
     children: ReactNode;
-    ref?: React.RefObject<Mesh | Group>;
+    ref?: React.RefObject<Mesh | Group | Object3D>;
 } & TextProps;
 
 /**

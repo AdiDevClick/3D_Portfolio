@@ -94,7 +94,6 @@ export function Experience({ reducer }: ExperienceProps) {
                         isMobile,
                         activeContent.isClicked
                     );
-                    console.log(isMobile);
                     // Set the max camera angles to the active card
                     if (activeContent.isClicked && results?.angleLimits) {
                         // !! IMPORTANT !! - Forces the camera to rotate without
