@@ -64,13 +64,13 @@ export function IconWithText({
         if (!groupRef.current) return;
         frameCountRef.current += 1;
         if (frameCountRef.current % 4 === 0) {
-            const contentGrid = groupRef.current.getObjectByName(datas.name)
-                ?.parent?.parent;
+            const contentGrid = groupRef.current.parent?.parent;
+
             if (contentGrid?.visible)
                 easing.damp3(
                     groupRef.current.scale,
                     hovered ? 1.2 : 1,
-                    0.2,
+                    0.1,
                     delta
                 );
         }
@@ -81,7 +81,7 @@ export function IconWithText({
             ref={groupRef}
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
-            // dispose={null}
+            dispose={null}
             name={datas.name}
             {...props}
         >
