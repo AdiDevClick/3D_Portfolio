@@ -50,6 +50,7 @@ import {
     Group,
     LinearFilter,
     LinearMipmapLinearFilter,
+    Mesh,
     TextureLoader,
     Vector3,
 } from 'three';
@@ -342,7 +343,7 @@ export function animateCarouselContainer(
  * Updates the title position
  */
 export function updateTitlePosition(
-    titleRef: RefObject<Group>,
+    titleRef: RefObject<Group | Mesh>,
     contentHeight: number,
     delta: number
 ) {
