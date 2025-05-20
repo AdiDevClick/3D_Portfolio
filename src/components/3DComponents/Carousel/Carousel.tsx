@@ -50,15 +50,10 @@ export default function Carousel({
         isMobile,
         allCardsLoaded,
         visible,
-        addElements,
-        updateElements,
-        deleteElements,
-        generalScaleX,
-        updateBending,
     } = reducer;
 
     const projectsRef = useRef<Group>(null!);
-    const titleRef = useRef<Group>(null!);
+    const titleRef = useRef<Mesh | Group>(null!);
     const boundariesRef = useRef<Mesh>(null!);
 
     const location = useLocation();
