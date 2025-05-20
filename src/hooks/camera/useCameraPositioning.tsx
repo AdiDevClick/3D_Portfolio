@@ -7,6 +7,8 @@ import {
     CAMERA_ACTIVE_FORWARD_OFFSET,
     CAMERA_ANGLE_OFFSET,
     CAMERA_ANGLELIMITS,
+    CAMERA_CLICKED_DESKTOP_OFFSET,
+    CAMERA_CLICKED_MOBILE_OFFSET,
     CAMERA_EXTRA_PULLBACK_DESKTOP,
     CAMERA_EXTRA_PULLBACK_MOBILE,
     CAMERA_FOV_DESKTOP,
@@ -109,7 +111,10 @@ export function useCameraPositioning() {
             const rightVector = new Vector3(1, 0, 0);
             rightVector.applyQuaternion(ref.current.quaternion);
 
-            const offsetDistance = !isMobile && isClicked ? 2 : 0;
+            const offsetDistance =
+                !isMobile && isClicked
+                    ? CAMERA_CLICKED_DESKTOP_OFFSET
+                    : CAMERA_CLICKED_MOBILE_OFFSET;
             const rightOffset = rightVector.multiplyScalar(offsetDistance);
 
             // Final position

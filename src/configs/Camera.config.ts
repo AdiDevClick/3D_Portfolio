@@ -24,6 +24,13 @@ export const CAMERA_FOV_DESKTOP = 20;
  * when a card is clicked -
  * @description Puts the camera a bit on the sides
  */
+export const CAMERA_CLICKED_MOBILE_OFFSET = 0;
+export const CAMERA_CLICKED_DESKTOP_OFFSET = 1.4;
+
+/**
+ * Small tilt offset for the camera to avoir true flat angle
+ * @description Can help the html container to be more visible
+ */
 export const CAMERA_ANGLE_OFFSET = Math.PI / 28;
 
 /**
