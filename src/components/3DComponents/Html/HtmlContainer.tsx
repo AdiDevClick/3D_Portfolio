@@ -35,9 +35,8 @@ export function HtmlContainer({
             mass: 1,
             tension: 120,
             friction: 14,
-            damping: 0.5,
         },
-        delay: 500,
+        delay: 100,
     });
 
     useFrame(() => {
