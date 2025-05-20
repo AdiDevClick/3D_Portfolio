@@ -73,11 +73,11 @@
 
     @include for-size(tablet) {
         transform: translate(-40%);
+        width: min(100%, 60%);
     }
 
     @include for-size(smalltablet) {
         max-height: 50vh;
-
         transform: translate(-50%, 100%);
         width: 100%;
     }
