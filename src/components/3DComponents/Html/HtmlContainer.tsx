@@ -31,8 +31,13 @@ export function HtmlContainer({
     // Scale animation
     const springProps = useSpring({
         scale: scaleRatio,
-        config: { mass: 1, tension: 120, friction: 14 },
-        delay: 100,
+        config: {
+            mass: 1,
+            tension: 120,
+            friction: 14,
+            damping: 0.5,
+        },
+        delay: 500,
     });
 
     useFrame(() => {
@@ -62,7 +67,7 @@ export function HtmlContainer({
     }, [dynamicContent, forceMeasure]);
 
     return (
-        <animated.group scale={springProps.scale} position={[0, 0, 0]}>
+        <animated.group scale={springProps.scale}>
             <Html
                 ref={htmlRef}
                 transform
