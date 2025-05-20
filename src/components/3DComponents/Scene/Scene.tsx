@@ -36,7 +36,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
     useEffect(() => {
         switch (visible) {
             case 'home':
-                setVirtualPageCount(isMobile ? 2.5 : 3.5);
+                setVirtualPageCount(isMobile ? 2.5 : 3.6);
                 break;
             case 'about':
                 setVirtualPageCount(1.3);
