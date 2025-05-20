@@ -1,9 +1,7 @@
 @use 'mixins' as *;
 
 .card {
-    // box-sizing: "border-box";
     display: grid;
-    // grid-auto-rows: auto;
     grid-template-columns: 0.5fr 4fr 0.5fr;
     overflow: auto;
     gap: var(--grid-gap);
@@ -12,46 +10,10 @@
     background: var(--bg-color);
     padding: 40px 0;
     border-radius: 5px;
-    // border-radius: 20px;
-    // max-width: 960px;
-    // min-width: 550px;
-    // width: clamp(30vw, 60vw, 60vw);
-    // width: 920px;
-    // width: 95vw;
-    // width: calc(100vw * 2);
-    // ok
     width: clamp(min(52%, 100%), 100%, 52vw);
-    // plus ok
-    // width: clamp(550px, 100vw, 960px);
     max-height: 80vh;
     color: black;
-    // &::before {
-    //     content: "";
-    //     grid-column: 1 / 1;
-    //     place-self: center;
-    //     position: absolute;
-    //     border-left: 3px solid black;
-    //     height: 100%;
-    // }
-    // transform: translate(0);
     transform: translate(-10%);
-
-    // &::after {
-    //     content: "";
-    //     grid-column: 1 / 1;
-    //     grid-row: 1 / 1;
-    //     align-self: center;
-    //     justify-self: center;
-    //     background-color: red;
-    //     position: absolute;
-    //     // border: 2px solid black;
-    //     height: 30px;
-    //     width: 30px;
-    //     border-radius: 50%;
-    //     outline: 10px solid var(--bg-color)
-    // }
-
-    // min-height: 650px;
 
     * {
         grid-column: 2;
@@ -75,7 +37,6 @@
             display: grid;
             grid-template-columns: 0.5fr 4fr;
             padding: 5px;
-            // font-size: var(--fs-medium);
 
             svg {
                 grid-column: 1/1;
@@ -111,11 +72,7 @@
     }
 
     @include for-size(tablet) {
-        // width: clamp(10%, 100%, calc(100% - 30%));
-        // width: clamp(min(52%, 100%), 100%, 52vw);
         transform: translate(-40%);
-
-        background: red;
     }
 
     @include for-size(smalltablet) {
@@ -123,23 +80,19 @@
 
         transform: translate(-50%, 100%);
         width: 100%;
-        // width: 95vw;
-        background: blue;
     }
 
     @include for-size(mobile) {
         grid-template-columns: 0.3fr 4fr 0.3fr;
         column-gap: 0;
         padding: 20px 0;
-        background: var(--dark-bg-color);
+        // background: var(--dark-bg-color);
 
         &__title {
             font-size: var(--fs-bigger-intermediate);
         }
 
         &__close {
-            // grid-column: 2;
-            // place-self: end;
             margin-left: -15px;
 
             &::after {
