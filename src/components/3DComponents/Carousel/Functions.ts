@@ -218,8 +218,7 @@ export function onClickHandler(
 export function onPointerOut(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
-    reducer: ReducerType,
-    _: any
+    reducer: ReducerType
 ): void {
     e.stopPropagation();
     if (reducer.activeContent?.isClicked) return;
@@ -235,106 +234,14 @@ export function onHover(
     reducer: ReducerType
 ): void {
     e.stopPropagation();
-    if (reducer.activeContent?.isClicked || reducer.isMobile) return;
+    if (
+        (reducer.activeContent && reducer.activeContent.isClicked) ||
+        reducer.isMobile
+    )
+        return;
+
     reducer.activateElement(card, true);
 }
-
-/**
- * Gère les animations d'une carte par défaut
- */
-export function handleNormalAnimation(
-    material: any,
-    rotation: Euler,
-    cardHoverScale: number,
-    cardHoverRadius: number,
-    cardHoverZoom: number,
-    maxBending: number,
-    { updateWidth, updateBending, delta, card, scale }: CardProps
-) {
-    if (!card.isActive && card.currentWidth > card.baseScale) {
-        // updateWidth(card, card.baseScale);
-        updateWidth(card, card.currentWidth - delta);
-    }
-
-    if (!card.isActive && card.bending < maxBending) {
-        updateBending(card, card.bending + delta);
-    }
-
-    // // Scale the card size up
-    easing.damp3(scale, cardHoverScale, 0.2, delta);
-    // Modify card radius to be rounder
-    easing.damp(material, 'radius', cardHoverRadius, 0.2, delta);
-    // Scale the zoom inside the plane mesh
-    easing.damp(material, 'zoom', cardHoverZoom, 0.2, delta);
-    // Rotation reset
-    easing.damp(rotation, 'x', 0, 0.15, delta);
-}
-
-/**
- * Gère les effets d'une carte cliquée
- */
-export function handleClickedCardEffects(
-    baseScale: number,
-    { delta, scale, card, updateWidth, updateBending }: CardProps,
-    cardHoverScale: number
-) {
-    // Scale up animation
-    const targetScale = new Vector3(1.5, 1.5, 1.5);
-    easing.damp3(scale, targetScale, 0.15, delta);
-    // scale.lerp(targetScale, 0.15);
-
-    // Bending effect disabled
-    if (card.bending > 0) updateBending(card, card.bending - delta);
-    // const targetWidth = card.currentWidth * cardHoverScale;
-    const targetWidth = baseScale + 0.9;
-    // const targetWidth = card.currentWidth + 0.9;
-    const threshold = targetWidth * 0.05;
-
-    if (
-        card.currentWidth < targetWidth &&
-        targetWidth - card.currentWidth > threshold
-    ) {
-        // Zoom Bounce effect
-        // reducer.updateWidth(card, baseScale + 0.4);
-        updateWidth(card, targetWidth);
-        // updateWidth(card, cardHoverScale + 0.9);
-        // reducer.updateWidth(card, card.currentWidth + delta);
-    }
-    // Scale up animation
-    // const targetScale = new Vector3(1.5, 1.5, 1.5);
-    // easing.damp3(scale, targetScale, 0.25, delta);
-    // easing.damp3(scale, targetWidth, 0.15, delta);
-}
-
-/**
- * Gère les effets d'une carte active
- */
-export function handleActiveCardEffects(
-    baseScale: number,
-    { card, delta, updateWidth, updateBending, scale }: CardProps,
-    cardHoverScale: number
-): void {
-    // Remove bending effect
-    if (card.bending > 0) {
-        updateBending(card, card.bending - delta);
-    }
-
-    const targetWidth = baseScale + 0.4;
-    // !! IMPORTANT !! It can cause a bug if the card is not clicked
-    const threshold = targetWidth * 0.05;
-    // Increase width with bounce effect
-    if (
-        card.currentWidth < targetWidth &&
-        targetWidth - card.currentWidth > threshold
-    ) {
-        updateWidth(card, targetWidth);
-        // updateWidth(card, cardHoverScale + 0.4);
-        // reducer.updateWidth(card, card.currentWidth + delta);
-    }
-    // Boucing effect
-    easing.damp3(scale, cardHoverScale, 0.15, delta);
-}
-
 /**
  * Handles collision detection between cards
  */
