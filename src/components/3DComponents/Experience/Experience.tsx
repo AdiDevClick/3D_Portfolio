@@ -2,6 +2,7 @@ import { loadCardByURL } from '@/components/3DComponents/Experience/ExperienceFu
 import { ExperienceProps } from '@/components/3DComponents/Experience/ExperienceTypes';
 import { SimpleEnvironment } from '@/components/Loaders/Loader';
 import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
+import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
@@ -51,6 +52,12 @@ export function Experience({ reducer }: ExperienceProps) {
     useEffect(() => {
         if (!ref.current) return;
         const { camera } = ref.current;
+        cameraPositions.carousel.fov = isMobile
+            ? CAMERA_FOV_MOBILE
+            : CAMERA_FOV_DESKTOP;
+        cameraPositions.home.fov = isMobile
+            ? CAMERA_FOV_MOBILE
+            : CAMERA_FOV_DESKTOP;
 
         switch (visible) {
             case 'home':
@@ -152,7 +159,7 @@ export function Experience({ reducer }: ExperienceProps) {
             navigate,
         };
 
-        const initialDelay = 500;
+        const initialDelay = 800;
 
         // Awaits the initialization of the elements (initialDelay)
         // And then activate the card
