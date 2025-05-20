@@ -1,12 +1,15 @@
 import { Image, ImageProps, useCursor } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
-import { memo, PropsWithChildren, ReactNode, useEffect, useRef } from 'react';
-import { DoubleSide, Mesh } from 'three';
 import {
-    handleActiveCardEffects,
-    handleClickedCardEffects,
-    handleNormalAnimation,
-} from '@/components/3DComponents/Carousel/Functions';
+    memo,
+    PropsWithChildren,
+    ReactNode,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
+import { DoubleSide, Mesh } from 'three';
+
 import {
     CARD_HOVER_SCALE,
     DESKTOP_TITLE_POSITION,
@@ -16,6 +19,7 @@ import { easing } from 'maath';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
 import { getSidesPositions } from '@/functions/3Dmodels';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes';
+import { useSpring, animated } from '@react-spring/three';
 
 export type CardProps = {
     card: ElementType;
@@ -31,150 +35,210 @@ export type CardProps = {
 /**
  * Composant Conteneur de cartes
  */
-const MemoizedCard = memo(
-    function Card({
-        reducer,
-        card,
-        children,
-        SETTINGS,
-        ...props
-    }: PropsWithChildren<CardProps>) {
-        const cardRef = useRef<Mesh & ImageProps>(null!);
-        const { updateBending, updateWidth, isMobile, visible } = reducer;
+const MemoizedCard = memo(function Card({
+    reducer,
+    card,
+    children,
+    SETTINGS,
+    ...props
+}: PropsWithChildren<CardProps>) {
+    const cardRef = useRef<Mesh & ImageProps>(null!);
+    const { updateBending, updateWidth, isMobile, visible } = reducer;
+    // const widthRef = useRef(card.baseScale);
+    // const navigate = useNavigate();
+    // const location = useLocation();
+    // const [width, setWidth] = useState(1);
+    const [ratio, setRatio] = useState(1);
+    // const [currentRatio, setCurrentRatio] = useState(card.baseScale * 0.7);
+    // const [animatedScale, setAnimatedScale] = useState(card.baseScale);
+    // mobile Optimisations
+    const segments = reducer.isMobile ? 8 : 12;
 
-        // mobile Optimisations
-        const segments = reducer.isMobile ? 8 : 12;
+    const { widthSpring, bendingValue, cardScale } = useSpring({
+        // Valeurs cibles qui changent en fonction de l'état clicked
+        widthSpring: card.isClicked ? card.baseScale + 0.9 : card.baseScale,
+        bendingValue: card.isClicked ? 0 : SETTINGS.BENDING,
+        cardScale: card.isClicked ? 0.8 : card.isActive ? 1.05 : 1.0,
+        // cardScale: card.isClicked ? 1.5 : 1.0,
+        // Configuration de l'animation - très importante pour la fluidité
+        config: {
+            mass: 1.5,
+            tension: 170, // Tension plus basse = animation plus douce
+            friction: 22, // Friction plus haute = moins d'oscillations
+            precision: 0.001, // S'arrête quand les changements sont minimes
+        },
+    });
 
-        const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
-        const cardHoverRadius = card.isActive ? 0.02 : 0.05;
-        const cardHoverZoom = card.isActive ? 0.8 : 1.1;
+    const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
+    const cardHoverRadius = card.isActive ? 0.02 : 0.05;
+    const cardHoverZoom = card.isActive ? 0.9 : 1.1;
 
-        useCursor(card.isActive || false);
+    useCursor(card.isActive || false);
 
-        useFrame((_, delta) => {
-            if (
-                !cardRef.current ||
-                (!visible?.includes('carousel') &&
-                    !visible?.includes('card')) ||
-                !cardRef.current.visible
-            )
-                return;
-            const title = cardRef.current.getObjectByName('card__title');
-            if (!title) return;
-            const { material, scale, rotation } = cardRef.current;
+    useFrame((_, delta) => {
+        if (
+            !cardRef.current ||
+            (!visible?.includes('carousel') && !visible?.includes('card')) ||
+            !cardRef.current.visible
+        )
+            return;
+        const title = cardRef.current.getObjectByName('card__title');
+        if (!title) return;
+        const { material, scale, rotation } = cardRef.current;
 
-            const props = {
-                delta,
-                scale,
-                updateBending,
-                updateWidth,
-                card,
-            };
-            if (!card.isClicked) {
-                easing.damp3(
-                    title.position,
-                    isMobile ? MOBILE_TITLE_POSITION : DESKTOP_TITLE_POSITION,
-                    0.1,
-                    delta
-                );
-                handleNormalAnimation(
-                    material,
-                    rotation,
-                    cardHoverScale,
-                    cardHoverRadius,
-                    cardHoverZoom,
-                    SETTINGS.BENDING,
-                    props
-                );
+        const targetScale: [number, number, number] = card.isClicked
+            ? // ? [1.5, 1.5, 1.5]
+              [cardHoverScale * 2.5, cardHoverScale * 2.5, 2]
+            : card.isActive
+            ? [cardHoverScale * 1.1, cardHoverScale, 1]
+            : [cardHoverScale, cardHoverScale, 1];
 
-                if (card.isActive) {
-                    handleActiveCardEffects(
-                        card.baseScale,
-                        props,
-                        cardHoverScale
-                    );
-                }
-            } else {
-                handleClickedCardEffects(card.baseScale, props, cardHoverScale);
-                easing.damp3(
-                    title.position,
-                    [0, -SETTINGS.y_HEIGHT / 2, 0.1],
-                    0.1,
-                    delta
-                );
-            }
-        });
+        const scaleDampingFactor = card.isClicked
+            ? 0.15
+            : card.isActive
+            ? 0.3
+            : 0.2;
 
-        /**
-         * Enregistre la ref ainsi que le radius
-         * de la collision sphere de la carte
-         * dans le reducerDatas
-         */
-        useEffect(() => {
-            if (cardRef.current) {
-                const positions = getSidesPositions(card, cardRef);
-                reducer.updateElements({
-                    ...card,
-                    ref: cardRef,
-                    presenceRadius: SETTINGS.PRESENCE_RADIUS,
-                    spacePositions: positions || undefined,
-                    _loaded: true,
-                });
-            }
+        easing.damp3(scale, targetScale, scaleDampingFactor, delta);
 
-            return () => {
-                // Cleanup textures and geometries
-                if (cardRef.current) {
-                    if (Array.isArray(cardRef.current.material)) {
-                        cardRef.current.material.forEach((mat) =>
-                            mat.dispose()
-                        );
-                    } else {
-                        cardRef.current.material.dispose();
-                    }
-                    cardRef.current.geometry.dispose();
-                }
-            };
-        }, []);
-        return (
-            <Image
-                position={card.position}
-                ref={cardRef}
-                url={import.meta.env.BASE_URL + card.url}
-                // texture={card.texture}
-                transparent
-                side={DoubleSide}
-                rotation={[
-                    card.rotation[0] ?? 0,
-                    card.rotation[1] ?? 0,
-                    card.rotation[2] ?? 0,
-                ]}
-                // scale={card.isClicked ? card.baseScale : card.baseScale}
-                // scale={card.currentWidth}
-                scale={card.isClicked ? card.currentWidth : card.baseScale}
-                {...props}
-                // args={[textureQuality, textureQuality]}
-            >
-                {children}
-
-                <bentPlaneGeometry
-                    args={[
-                        card.isActive ? card.bending : SETTINGS.BENDING,
-                        card.isActive ? card.currentWidth : card.baseScale,
-                        SETTINGS.y_HEIGHT,
-                        segments,
-                    ]}
-                />
-            </Image>
+        easing.damp3(
+            title.position,
+            !card.isClicked
+                ? isMobile
+                    ? MOBILE_TITLE_POSITION
+                    : DESKTOP_TITLE_POSITION
+                : [0, -SETTINGS.y_HEIGHT / 4, 0.1],
+            0.1,
+            delta
         );
-    }
-    // (prevProps, nextProps) => {
-    //     return (
-    //         prevProps.card.id === nextProps.card.id &&
-    //         prevProps.card.isActive === nextProps.card.isActive &&
-    //         prevProps.card.isClicked === nextProps.card.isClicked &&
-    //         prevProps.card.currentWidth === nextProps.card.currentWidth
-    //     );
-    // }
-);
+        easing.damp3(title.scale, !card.isClicked ? 1 : 0.5, 0.1, delta);
+        // easing.damp3(
+        //     scale,
+        //     card.isClicked ? width : cardHoverScale,
+        //     0.3,
+        //     delta
+        // );
+        // easing.damp3(
+        //     scale,
+        //     card.isClicked
+        //         ? width / ratio
+        //         : card.isActive
+        //         ? [cardHoverScale * 1.1, cardHoverScale, 1]
+        //         : [cardHoverScale, cardHoverScale, 1],
+        //     scaleDampingFactor,
+        //     delta
+        // );
+
+        easing.damp(
+            material,
+            'zoom',
+            card.isClicked ? 0.9 : cardHoverZoom,
+            0.3,
+            delta
+        );
+        easing.damp(material, 'radius', cardHoverRadius, 0.2, delta);
+        easing.damp(rotation, 'x', 0, 0.15, delta);
+    });
+
+    /**
+     * Enregistre la ref ainsi que le radius
+     * de la collision sphere de la carte
+     * dans le reducerDatas
+     */
+    useEffect(() => {
+        if (cardRef.current) {
+            const positions = getSidesPositions(card, cardRef);
+            reducer.updateElements({
+                ...card,
+                ref: cardRef,
+                presenceRadius: SETTINGS.PRESENCE_RADIUS,
+                spacePositions: positions || undefined,
+                bending: SETTINGS.BENDING,
+                _loaded: true,
+            });
+        }
+
+        return () => {
+            // Cleanup textures and geometries
+            if (cardRef.current) {
+                if (Array.isArray(cardRef.current.material)) {
+                    cardRef.current.material.forEach((mat) => mat.dispose());
+                } else {
+                    cardRef.current.material.dispose();
+                }
+                cardRef.current.geometry.dispose();
+            }
+        };
+    }, []);
+
+    /**
+     * Calculate the ratio of the card
+     * based on the clicked state for smoother animations
+     */
+    useEffect(() => {
+        if (!cardRef.current) return;
+        let width = card.baseScale;
+        let bending = SETTINGS.BENDING;
+        let ratio = 1;
+        if (card.isClicked) {
+            width = card.baseScale + 0.8;
+            ratio = card.baseScale / width;
+            // ratio = (card.baseScale * width) / 4;
+            bending = 0.01;
+        } else if (card.isActive) {
+            width = card.baseScale + 0.5;
+            ratio = (card.baseScale * width) / 2.5;
+            bending = 0.01;
+        } else {
+            width = card.baseScale;
+            ratio = card.baseScale * 0.7;
+            bending = SETTINGS.BENDING;
+        }
+
+        // setWidth(width);
+        setRatio(ratio);
+        updateWidth(card, width);
+        updateBending(card, bending);
+    }, [card.isActive, card.isClicked]);
+
+    return (
+        // <animated.group
+        //     // position={[0, 0, 1]}
+        //     // position={card.isClicked ? [0, 0, -1] : card.position}
+        //     scale={cardScale}
+        // >
+        <Image
+            position={card.position}
+            ref={cardRef}
+            url={import.meta.env.BASE_URL + card.url}
+            // texture={card.texture}
+            transparent
+            side={DoubleSide}
+            rotation={[
+                card.rotation[0] ?? 0,
+                card.rotation[1] ?? 0,
+                card.rotation[2] ?? 0,
+            ]}
+            // scale={width}
+            scale={ratio}
+            {...props}
+        >
+            {children}
+
+            <bentPlaneGeometry
+                args={[
+                    card.bending,
+                    card.baseScale,
+                    card.isClicked
+                        ? SETTINGS.y_HEIGHT / 2
+                        : // : card.isActive
+                          // ? SETTINGS.y_HEIGHT / 1.3
+                          SETTINGS.y_HEIGHT,
+                    segments,
+                ]}
+            />
+        </Image>
+        // </animated.group>
+    );
+});
 export default MemoizedCard;
