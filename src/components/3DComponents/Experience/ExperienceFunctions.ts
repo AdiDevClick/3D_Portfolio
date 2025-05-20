@@ -51,7 +51,6 @@ export async function loadCardByURL(
         if (!targetCard) {
             throw createHttpError('No project found', 404);
         }
-
         // Wait for the carousel mode to establish
         await wait(400);
 
