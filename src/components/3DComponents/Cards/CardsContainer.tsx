@@ -58,19 +58,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                 return (
                     <group key={card.id + i}>
                         <MemoizedCard
-                            onPointerOver={(e) => onHover(e, card, reducer)}
-                            onPointerOut={(e) =>
-                                onPointerOut(e, card, reducer, navigate)
-                            }
-                            onClick={(e) =>
-                                onClickHandler(
-                                    e,
-                                    card,
-                                    reducer,
-                                    location,
-                                    navigate
-                                )
-                            }
                             card={card}
                             presenceRadius={
                                 SETTINGS.PRESENCE_RADIUS * card.baseScale
@@ -78,6 +65,20 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             {...cardsPropsMemo}
                         >
                             <SpherePresenceHelper
+                                position={[0, -0.2, 0]}
+                                onPointerOver={(e) => onHover(e, card, reducer)}
+                                onPointerOut={(e) =>
+                                    onPointerOut(e, card, reducer)
+                                }
+                                onClick={(e) =>
+                                    onClickHandler(
+                                        e,
+                                        card,
+                                        reducer,
+                                        location,
+                                        navigate
+                                    )
+                                }
                                 name="card__spherePresenceHelper"
                                 visible={SETTINGS.PRESENCE_CIRCLE}
                                 radius={[
