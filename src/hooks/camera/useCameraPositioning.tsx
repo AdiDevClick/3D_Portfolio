@@ -3,6 +3,18 @@ import { Box3, Vector3 } from 'three';
 import { ElementType } from '@/hooks/reducers/carouselTypes';
 import { CameraControls } from '@react-three/drei';
 import { shortestAnglePath } from '@/components/3DComponents/Carousel/Functions';
+import {
+    CAMERA_ACTIVE_FORWARD_OFFSET,
+    CAMERA_ANGLE_OFFSET,
+    CAMERA_ANGLELIMITS,
+    CAMERA_EXTRA_PULLBACK_DESKTOP,
+    CAMERA_EXTRA_PULLBACK_MOBILE,
+    CAMERA_FOV_DESKTOP,
+    CAMERA_FOV_MOBILE,
+    CAMERA_MOBILE_Y_POSITION,
+    CAMERA_MOBILE_Z_POSITION,
+    CAMERA_SAFETY_MARGIN,
+} from '@/configs/Camera.config';
 
 // interface ControlsRef {
 //     camera: Camera;
@@ -16,12 +28,6 @@ import { shortestAnglePath } from '@/components/3DComponents/Carousel/Functions'
 //         enableTransition?: boolean
 //     ) => void;
 // }
-const CAMERA_ANGLE_OFFSET = Math.PI / 28;
-const ACTIVE_FORWARD_OFFSET = 10.5;
-const CAMERA_SAFETY_MARGIN = 8;
-const EXTRA_PULLBACK_MOBILE = 5.5;
-const EXTRA_PULLBACK_DESKTOP = 3.5;
-const ANGLELIMITS = Math.PI / 9; // ~20 degrés
 
 /**
  * Hook pour gérer le positionnement de la caméra vers une carte
@@ -72,8 +78,10 @@ export function useCameraPositioning() {
             // Camera position from the center of the circle
             const finalDesiredRadius =
                 containerScale +
-                ACTIVE_FORWARD_OFFSET +
-                (isMobile ? EXTRA_PULLBACK_MOBILE : EXTRA_PULLBACK_DESKTOP);
+                CAMERA_ACTIVE_FORWARD_OFFSET +
+                (isMobile
+                    ? CAMERA_EXTRA_PULLBACK_MOBILE
+                    : CAMERA_EXTRA_PULLBACK_DESKTOP);
 
             const camTargetPos = ref.current.position.clone();
 
@@ -107,16 +115,17 @@ export function useCameraPositioning() {
             // Final position
             const shiftedTarget = newTarget.clone().add(rightOffset);
 
-            if (isMobile && isClicked) {
-                newCamPos.z *= 1.05;
-                shiftedTarget.y += 0.5;
-            }
             // !! IMPORTANT !! Modify FOV if mobile
-            camera.fov = isMobile ? 19 : 20;
+            camera.fov = isMobile ? CAMERA_FOV_MOBILE : CAMERA_FOV_DESKTOP;
 
             const distanceToCenter = Math.sqrt(
                 newCamPos.x * newCamPos.x + newCamPos.z * newCamPos.z
             );
+
+            // if (isMobile && isClicked) {
+            //     newCamPos.z *= CAMERA_MOBILE_Z_POSITION;
+            //     shiftedTarget.y += CAMERA_MOBILE_Y_POSITION;
+            // }
 
             // Too close? Scale the camera position
             const minDistanceToCenter = containerScale + CAMERA_SAFETY_MARGIN;
@@ -143,8 +152,8 @@ export function useCameraPositioning() {
                 targetPosition: shiftedTarget,
                 angleLimits: isClicked
                     ? {
-                          min: desiredAngle - ANGLELIMITS,
-                          max: desiredAngle + ANGLELIMITS,
+                          min: desiredAngle - CAMERA_ANGLELIMITS,
+                          max: desiredAngle + CAMERA_ANGLELIMITS,
                           default: desiredAngle,
                       }
                     : { min: -Infinity, max: Infinity },
