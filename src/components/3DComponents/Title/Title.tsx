@@ -28,12 +28,13 @@ export function Title({
         <Center front ref={ref} name={name} {...props}>
             <Text3D
                 castShadow
+                receiveShadow
                 bevelEnabled={true}
-                curveSegments={isMobile ? 1 : 32}
-                bevelSegments={isMobile ? 1 : 3}
+                curveSegments={isMobile ? 4 : 32}
+                bevelSegments={isMobile ? 2 : 4}
                 bevelThickness={1}
-                bevelSize={2}
-                bevelOffset={0}
+                bevelSize={1.5}
+                bevelOffset={0.5}
                 scale={0.01}
                 size={size}
                 height={1}
@@ -53,8 +54,14 @@ export function Title({
                             resolution={isMobile ? 256 : 2048}
                             distortion={0}
                         /> */}
-                <meshLambertMaterial />
-                {/* <meshMatcapMaterial color={'black'} /> */}
+                {/* <meshLambertMaterial color={'grey'} /> */}
+                <meshStandardMaterial
+                    color="#757575"
+                    metalness={0.2}
+                    roughness={0.5}
+                    envMapIntensity={1}
+                />
+                {/* <meshMatcapMaterial color={'grey'} /> */}
             </Text3D>
         </Center>
     );

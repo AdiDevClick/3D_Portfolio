@@ -93,7 +93,9 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     size={10}
                                     textProps={{
                                         scale: 0.01 * reducer.generalScaleX,
-                                        bevelSize: 1,
+                                        bevelSize: 0.2,
+                                        bevelOffset: 0.2,
+                                        bevelThickness: 0.2,
                                     }}
                                 >
                                     {card.cardTitle ? card.cardTitle : 'test'}
