@@ -1,14 +1,10 @@
 import { sharedMatrices } from '@/utils/matrices';
-import { Object3D, Camera, Box3 } from 'three';
+import { Object3D, Camera, Box3, Vector3 } from 'three';
 
 // Extend the Object3D type to include boundingbox property
-declare global {
-    namespace THREE {
-        interface Object3D {
-            boundingbox?: Box3;
-        }
-    }
-}
+type Object3DWithBoundingBox = Object3D & {
+    boundingbox?: Box3;
+};
 
 interface FrustumState {
     camera: Camera;
@@ -78,11 +74,23 @@ function deepSearch(object: Object3D, name: string) {
 }
 
 function checkVisibility(object: Object3D) {
-    if (!object.boundingbox) {
-        object.boundingbox = sharedMatrices.box;
+    const obj = object as Object3DWithBoundingBox;
+    if (!obj.boundingbox) {
+        obj.boundingbox = sharedMatrices.box;
     }
-    object.boundingbox.setFromObject(object);
-    object.visible = sharedMatrices.frustum.intersectsBox(object.boundingbox);
+    obj.boundingbox.setFromObject(object);
+    const contentSize = new Vector3();
+    obj.boundingbox.getSize(contentSize);
+    if (contentSize.x > 0 && contentSize.y > 0 && contentSize.z > 0) {
+        obj.userData.contentSize = contentSize.clone();
 
-    return object.visible;
+        // Log de débogage (à supprimer en production)
+        if (object.name.includes('content')) {
+            console.log(`Size updated for ${object.name}:`, contentSize);
+        }
+    }
+
+    obj.visible = sharedMatrices.frustum.intersectsBox(obj.boundingbox);
+
+    return obj.visible;
 }
