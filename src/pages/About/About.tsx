@@ -20,7 +20,7 @@ import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import aboutText from '@data/about-texts.json';
 import { importedNormalFont } from '@/configs/3DFonts.config';
 import { useSpring, animated } from '@react-spring/three';
-import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIcons';
+import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
 
 let isActive = false;
 
