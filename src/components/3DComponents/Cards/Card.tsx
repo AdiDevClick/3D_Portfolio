@@ -179,7 +179,7 @@ const MemoizedCard = memo(function Card({
         if (!cardRef.current) return;
         let width = card.baseScale;
         let bending = SETTINGS.BENDING;
-        let ratio = card.baseScale * width;
+        let ratio = 1;
         if (card.isClicked) {
             width = card.baseScale + 0.8;
             // ratio = card.baseScale / width;
