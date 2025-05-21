@@ -117,7 +117,7 @@ export const DESKTOP_HTML_ICONS_POSITION_SETTINGS = (
     height: number,
     width: number,
     margin: number
-) => [width / 2 - margin * 2.5, -height / 2 - margin, 0];
+) => [width / 2 - margin * 2.5, -height - margin, 0];
 
 export const MOBILE_PROJECT_CONTAINER_POSITION = () => {
     // Utiliser le même calcul de hauteur basé sur FOV
