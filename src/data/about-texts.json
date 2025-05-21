@@ -1,0 +1,50 @@
+[
+    {
+        "type": "title",
+        "text": "Du laboratoire au code : mon parcours"
+    },
+    {
+        "type": "text",
+        "text": "J'ai débuté comme prothésiste dentaire, façonnant des pièces avec précision et minutie. \nCette rigueur reste au cœur de ma pratique aujourd'hui. \nFace à la contraction du marché, j'ai pivoté vers la vente et réparation de matériel informatique, concrétisant ma passion de longue date pour la technologie."
+    },
+    {
+        "type": "title",
+        "text": "Expertise technique et humaine"
+    },
+    {
+        "type": "text",
+        "text": "Ma stack technique s'articule autour de React, Three.js, TypeScript, VanillaJS, PHP et Node.js. \nCe qui enrichit vraiment mon approche, c'est l'expérience client acquise pendant mes années de vente. \nJ'ai créé des sites WordPress professionnels qui m'ont permis d'observer directement l'interaction des utilisateurs avec mes interfaces.  \nJe conçois la 3D web non comme une fin en soi, mais comme un portail vers une expérience immersive. \nMon objectif n'est pas de submerger l'utilisateur dans un univers 3D complexe, mais d'utiliser cette dimension pour enrichir son parcours de manière intuitive et mémorable."
+    },
+    {
+        "type": "title",
+        "text": "Une approche centrée sur l'humain"
+    },
+    {
+        "type": "text",
+        "text": "Ma philosophie de développement place l'expérience utilisateur au premier plan. \nJe me pose systématiquement la question : Comment l'utilisateur s'attend-il à interagir ici ?. \nCette perspective guide ma résolution de problèmes et me permet d'anticiper les défis techniques avec une vision claire de l'objectif final."
+    },
+    {
+        "type": "title",
+        "text": "Ce qui me définit"
+    },
+    {
+        "type": "text",
+        "text": "Mon parcours de vendeur m'a doté d'un esprit critique affûté et d'une obsession pour la précision des besoins. \nDans la vente comme dans le code, le résultat final et la satisfaction de l'utilisateur sont les véritables mesures du succès. \nJe considère la 3D comme l'évolution naturelle du web ; \nElle ajoute cette dimension \"wow\" qui transforme une simple visite en une expérience mémorable. \nMon défi quotidien est de trouver l'équilibre parfait entre créativité visuelle et fonctionnalité intuitive, entre l'émerveillement et l'efficacité."
+    },
+    {
+        "type": "title",
+        "text": "Au-delà des écrans"
+    },
+    {
+        "type": "text",
+        "text": "Les voyages, particulièrement en Asie, nourrissent ma créativité et élargissent mes perspectives. \nChaque culture apporte son lot d'inspirations uniques que j'intègre subtilement dans mes projets. \nPassionné de jeux vidéo, j'y puise constamment des idées pour améliorer mes interfaces. \nAprès tout, quelle meilleure école d'expérience utilisateur qu'un médium où l'engagement est la clé de la réussite ?"
+    },
+    {
+        "type": "title",
+        "text": "Objectif : l'apprentissage perpétuel"
+    },
+    {
+        "type": "text",
+        "text": "Mes projets sont avant tout des laboratoires d'expérimentation et d'apprentissage. \nJe trouve une joie particulière à découvrir de nouvelles technologies et à les implémenter dans des situations concrètes. \nCette curiosité insatiable me pousse à constamment repousser les limites de ce que je peux créer."
+    }
+]
