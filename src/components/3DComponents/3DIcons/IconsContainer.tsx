@@ -78,7 +78,6 @@ const MemoizedIconsContainer = memo(function IconsContainer({
 
     return (
         <group name="icon__center-container" ref={groupRef} {...props}>
-            {/* <Center bottom> */}
             {icons.map((icon, index) => (
                 <GridLayout
                     width={width}
@@ -117,7 +116,6 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                     </Center>
                 </GridLayout>
             ))}
-            {/* </Center> */}
         </group>
     );
 });
