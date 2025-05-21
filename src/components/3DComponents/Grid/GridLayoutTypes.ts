@@ -1,4 +1,5 @@
 import { JSX, ReactNode } from 'react';
+import { Vector3 } from 'three';
 
 export type GridLayoutProps = {
     children: ReactNode;
@@ -10,6 +11,9 @@ export type GridLayoutProps = {
     length: number;
     /** Scalar value to adjust the size of the grid items and text - @defaultValue 1 */
     scalar?: number;
+    type?: string;
+
+    positionY?: number;
     /** Grid layout options */
     options?: {
         /** Number of columns in the grid - @defaultValue 3 */
@@ -22,5 +26,16 @@ export type GridLayoutProps = {
         marginY: number;
         /** Margin for the window - @defaultValue 1 */
         windowMargin: number;
+        /** Specifies if it should compute height */
+        dynamicHeightContent?: boolean;
     };
 } & JSX.IntrinsicElements['group'];
+
+export interface GridLayoutTypes {
+    contentSize: Vector3;
+    item: {};
+    type?: string;
+    index: number;
+    calculatedHeight: number;
+    positionY: number;
+}
