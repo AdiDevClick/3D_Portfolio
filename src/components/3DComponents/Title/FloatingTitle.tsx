@@ -13,6 +13,7 @@ const floatOptions = {
 
 /**
  * FloatingTitle component.
+ * This title is already rotated.
  */
 const FloatingTitle = memo(function FloatingTitle({
     children,
