@@ -312,18 +312,7 @@ const MemoizedAbout = memo(function About({
                         </animated.group>
                     </GridLayout>
                 ))}
-                {/* {contentRef && (
-                    <Center>
-                        <BillboardPageContainer pageName={'/a-propos'}>
-                            <AboutContent
-                                onWheel={onScrollHandler}
-                                className="about"
-                            />
-                        </BillboardPageContainer>
-                    </Center>
-                )} */}
             </group>
-            {/* <Text>test</Text> */}
 
             <ContactIconsContainer ref={iconsRef} />
         </group>
