@@ -28,8 +28,14 @@ export function FloatIcon({
     return (
         <animated.group scale={hoveredStyle.scale.to((s) => [s, s, s])}>
             <Float
-                onPointerOver={() => setHovered(true)}
-                onPointerOut={() => setHovered(false)}
+                onPointerOver={(e) => {
+                    e.stopPropagation();
+                    setHovered(true);
+                }}
+                onPointerOut={(e) => {
+                    e.stopPropagation();
+                    setHovered(false);
+                }}
                 speed={1}
                 rotationIntensity={0.5}
                 floatIntensity={0.5}
