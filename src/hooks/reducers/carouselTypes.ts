@@ -183,7 +183,7 @@ export interface ReducerType {
     /** Store the viewport normalized height for content calculations */
     contentHeight: number | null;
     /** Store the viewport normalized width  for content calculations */
-    contentWidth: number | null;
+    contentWidth: number;
     /** Store the calculated X-axis Scalar value to fit on all devices */
     generalScaleX: number;
     /** Store the calculated Y-axis Scalar value to fit on all devices */
