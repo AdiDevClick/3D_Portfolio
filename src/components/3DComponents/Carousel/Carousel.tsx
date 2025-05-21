@@ -384,6 +384,19 @@ export default function Carousel({
                     roughness={0.5}
                 />
             </mesh> */}
+            {/* <mesh
+                receiveShadow
+                position={[0, -1, 0]}
+                rotation={[-Math.PI / 2, 0, 0]}
+                scale={[10, 10, 1]}
+            >
+                <planeGeometry />
+                <meshStandardMaterial
+                    color="#f0f0f0"
+                    roughness={0.7}
+                    metalness={0.1}
+                />
+            </mesh> */}
 
             {/* <ContactShadows
                 frames={1}
@@ -392,5 +405,44 @@ export default function Carousel({
                 opacity={0.6}
             /> */}
         </group>
+    );
+}
+// Ajouter avant votre composant ParticlesEffect
+function GradientFloor() {
+    return (
+        <mesh
+            receiveShadow
+            position={[0, -1.01, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}
+            scale={[20, 20, 1]}
+        >
+            <planeGeometry />
+            <meshStandardMaterial
+                color="#f8f0ea"
+                roughness={0.7}
+                metalness={0.1}
+                envMapIntensity={0.8}
+            >
+                {/* Shader pour créer un dégradé radial */}
+                <shaderMaterial
+                    attach="onBeforeCompile"
+                    args={[
+                        (shader) => {
+                            shader.fragmentShader =
+                                shader.fragmentShader.replace(
+                                    '#include <color_fragment>',
+                                    `
+                            #include <color_fragment>
+                            // Créer un dégradé radial
+                            float dist = length(vUv - vec2(0.5));
+                            float gradient = smoothstep(0.4, 0.8, dist);
+                            diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 0.85, gradient);
+                            `
+                                );
+                        },
+                    ]}
+                />
+            </meshStandardMaterial>
+        </mesh>
     );
 }
