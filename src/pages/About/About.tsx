@@ -1,7 +1,6 @@
 import '@css/About.scss';
 import {
-    Center,
-    Float,
+    CenterProps,
     shaderMaterial,
     Text,
     useScroll,
@@ -9,7 +8,6 @@ import {
 import { memo, useEffect, useRef } from 'react';
 import { Color, Group } from 'three';
 import { extend, useFrame } from '@react-three/fiber';
-import { Icons } from '@/components/3DComponents/3DIcons/Icons';
 import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
@@ -22,21 +20,8 @@ import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import aboutText from '@data/about-texts.json';
 import { importedNormalFont } from '@/configs/3DFonts.config';
 import { useSpring, animated } from '@react-spring/three';
+import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIcons';
 
-const floatOptions = {
-    autoInvalidate: true,
-    speed: 1.5,
-    rotationIntensity: 0.5,
-    floatIntensity: 0.5,
-    floatingRange: [-0.1, 0.1] as [number, number],
-};
-
-const LinkedIn = `${
-    import.meta.env.BASE_URL
-}assets/models/optimized/Linkedin_model.glb`;
-const GitHub = `${
-    import.meta.env.BASE_URL
-}assets/models/optimized/Github_model.glb`;
 let isActive = false;
 
 let count = 0;
@@ -340,38 +325,20 @@ const MemoizedAbout = memo(function About({
             </group>
             {/* <Text>test</Text> */}
 
-            <group ref={iconsRef}>
-                <Center>
-                    <Float {...floatOptions}>
-                        <Icons
-                            model={GitHub}
-                            rotation={[0, 3, 0]}
-                            position={[0, 0, 0]}
-                        />
-                    </Float>
-                    <Float {...floatOptions}>
-                        <Icons
-                            model={LinkedIn}
-                            rotation={[0, 3, 0]}
-                            position={[-0.6, 0, 0]}
-                        />
-                    </Float>
-                </Center>
-            </group>
+            <ContactIconsContainer ref={iconsRef} />
         </group>
     );
 });
 
 export default MemoizedAbout;
 
-// Créer un matériau personnalisé pour les textes importants
 const GradientTextMaterial = shaderMaterial(
     {
         color1: new Color('#4a6fa5'),
         color2: new Color('#6a5acd'),
         time: 0,
     },
-    // Vertex shader - animation subtile
+    // Vertex shader -
     `
         varying vec2 vUv;
         void main() {
@@ -379,7 +346,7 @@ const GradientTextMaterial = shaderMaterial(
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
     `,
-    // Fragment shader - dégradé animé
+    // Fragment shader -
     `
         uniform vec3 color1;
         uniform vec3 color2;
