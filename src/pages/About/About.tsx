@@ -1,21 +1,27 @@
-import { onScrollHandler } from '@/components/3DComponents/Carousel/Functions';
-import { AboutContent } from '@/pages/About/AboutContent';
 import '@css/About.scss';
-import { Center, Float, useScroll } from '@react-three/drei';
+import {
+    Center,
+    Float,
+    shaderMaterial,
+    Text,
+    useScroll,
+} from '@react-three/drei';
 import { memo, useEffect, useRef } from 'react';
-import { Group } from 'three';
-import { useFrame } from '@react-three/fiber';
+import { Color, Group } from 'three';
+import { extend, useFrame } from '@react-three/fiber';
 import { Icons } from '@/components/3DComponents/3DIcons/Icons';
 import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
-    DESKTOP_HTML_ICONS_POSITION_SETTINGS,
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config';
 import { easing } from 'maath';
-import { Title } from '@/components/3DComponents/Title/Title';
 import { frustumChecker } from '@/utils/frustrumChecker';
-import { BillboardPageContainer } from '@/components/3DComponents/Html/PageContainer';
 import { AboutTypes } from '@/components/3DComponents/Html/HtmlPagesTypes';
+import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
+import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
+import aboutText from '@data/about-texts.json';
+import { importedNormalFont } from '@/configs/3DFonts.config';
+import { useSpring, animated } from '@react-spring/three';
 
 const floatOptions = {
     autoInvalidate: true,
@@ -49,13 +55,24 @@ const MemoizedAbout = memo(function About({
     contentHeight,
     generalScaleX,
     visible,
+    isMobile,
     margin = 0.5,
 }: AboutTypes) {
+    const gridOptions = {
+        columnsNumber: 1,
+        rowOffset: 0,
+        marginX: 2.5,
+        marginY: isMobile ? 1.5 : 1.5,
+        windowMargin: 1.5,
+        dynamicHeightContent: true,
+    };
+
     const frameCountRef = useRef(0);
     const contentRef = useRef<Group>(null);
     const titleRef = useRef<Group>(null);
     const iconsRef = useRef<Group>(null);
     const groupRef = useRef<Group>(null);
+    const materials = useRef(new Map());
 
     const titlePositionRef = useRef(DEFAULT_PROJECTS_POSITION_SETTINGS.clone());
     const iconsPositionRef = useRef(DEFAULT_PROJECTS_POSITION_SETTINGS.clone());
@@ -67,7 +84,7 @@ const MemoizedAbout = memo(function About({
     isActive = visible === 'about';
 
     useEffect(() => {
-        if (isActive && contentHeight && contentWidth) {
+        if (isActive && contentHeight && contentWidth && contentRef.current) {
             const titlePos = DESKTOP_HTML_TITLE_POSITION_SETTINGS(
                 contentHeight,
                 margin
@@ -77,24 +94,30 @@ const MemoizedAbout = memo(function About({
                 titlePos[1] ?? 0,
                 titlePos[2] ?? 0
             );
-            contentPositionRef.current.set(0, 0 - margin, 0);
+            contentPositionRef.current.set(0, contentHeight * 0.1, 0);
+            // contentPositionRef.current.set(
+            //     2.8 * generalScaleX,
+            //     contentHeight * 0.1,
+            //     0
+            // );
+            // contentPositionRef.current.set(0, 0 - margin, 0);
 
-            const iconPos = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
-                contentHeight,
-                contentWidth,
-                margin
-            );
-            iconsPositionRef.current.set(
-                iconPos[0] ?? 0,
-                iconPos[1] ?? 0,
-                iconPos[2] ?? 0
-            );
+            // const iconPos = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
+            //     contentRef.current.userData.contentSize.y,
+            //     contentWidth,
+            //     margin
+            // );
+            // iconsPositionRef.current.set(
+            //     iconPos[0] ?? 0,
+            //     iconPos[1] ?? 0,
+            //     iconPos[2] ?? 0
+            // );
         } else {
             titlePositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             contentPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             iconsPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
         }
-    }, [contentWidth, contentHeight, visible]);
+    }, [contentWidth, contentHeight, visible, isActive, margin]);
 
     // const settingsConfig = useMemo(() => {
     //     return {
@@ -136,7 +159,30 @@ const MemoizedAbout = memo(function About({
             count = 0;
         }
 
+        if (materials.current instanceof Map) {
+            materials.current.forEach((material) => {
+                if (material && material.uniforms) {
+                    material.uniforms.time.value = state.clock.getElapsedTime();
+
+                    // animating the gradient colors
+                    const t = state.clock.getElapsedTime() * 0.2;
+                    material.uniforms.color1.value.setHSL(
+                        Math.sin(t) * 0.1 + 0.6,
+                        0.7,
+                        0.5
+                    );
+
+                    material.uniforms.color2.value.setHSL(
+                        Math.cos(t) * 0.1 + 0.8,
+                        0.8,
+                        0.6
+                    );
+                }
+            });
+        }
+
         frustumChecker(
+            // [titleRef.current, iconsRef.current],
             [titleRef.current, iconsRef.current, contentRef.current],
             state,
             frameCountRef.current,
@@ -157,6 +203,14 @@ const MemoizedAbout = memo(function About({
                 );
             }
             if (iconsRef.current.visible || groupRef.current.visible) {
+                if (
+                    contentRef.current.userData.contentSize &&
+                    frameCountRef.current % 60 === 0
+                ) {
+                    const contentSizeY =
+                        contentRef.current.userData.contentSize.y;
+                    iconsPositionRef.current.set(0, -contentSizeY - margin, 0);
+                }
                 easing.damp3(
                     iconsRef.current.position,
                     iconsPositionRef.current,
@@ -164,6 +218,7 @@ const MemoizedAbout = memo(function About({
                     delta
                 );
             }
+
             if (titleRef.current.visible || groupRef.current.visible) {
                 easing.damp3(
                     titleRef.current.position,
@@ -177,19 +232,102 @@ const MemoizedAbout = memo(function About({
 
     return (
         <group visible={isActive} ref={groupRef}>
-            <Float {...floatOptions}>
-                <Title
-                    ref={titleRef}
-                    rotation={[0, 3.164, 0]}
-                    bottom
-                    scale={generalScaleX}
-                >
-                    A propos de moi
-                </Title>
-            </Float>
+            <FloatingTitle
+                ref={titleRef}
+                bottom
+                size={40}
+                scale={generalScaleX}
+            >
+                A propos de moi
+            </FloatingTitle>
 
-            <group ref={contentRef}>
-                {contentRef && (
+            <group ref={contentRef} userData={{ preventClipping: true }}>
+                {aboutText.map((text, index) => (
+                    <GridLayout
+                        width={contentWidth ?? 0}
+                        key={'about-' + index * Math.random() + '-grid'}
+                        name={'about-' + index + '-grid'}
+                        length={aboutText.length}
+                        index={index}
+                        scalar={generalScaleX}
+                        type={text.type}
+                        options={gridOptions}
+                    >
+                        <animated.group
+                            {...useSpring({
+                                from: {
+                                    scale: 0.1,
+                                    opacity: 0,
+                                },
+                                to: { scale: 1, opacity: 1 },
+                                delay: index * 500,
+                                config: {
+                                    mass: 1,
+                                    tension: 280,
+                                    friction: 30,
+                                },
+                            })}
+                        >
+                            {/* <Suspense fallback={null}> */}
+                            {text.type === 'title' && (
+                                <Text
+                                    position={[0, 0, -0.1]}
+                                    fontSize={
+                                        (isMobile ? 0.6 : 0.5) * generalScaleX
+                                    }
+                                    outlineWidth={isMobile ? 0.002 : 0.002}
+                                    outlineColor="rgba(0, 0, 0, 0.01)"
+                                    anchorY="top"
+                                    maxWidth={contentWidth - 0.5}
+                                    font={importedNormalFont}
+                                    userData={{ isWrappedText: true }}
+                                >
+                                    {text.text}
+                                    {/* <meshStandardMaterial
+                                        color="#2a5298"
+                                        metalness={0.8}
+                                        roughness={0.2}
+                                        envMapIntensity={2.5}
+                                    /> */}
+                                    <gradientTextMaterial
+                                        ref={(ref) => {
+                                            if (ref)
+                                                materials.current.set(
+                                                    index,
+                                                    ref
+                                                );
+                                        }}
+                                    />
+                                </Text>
+                            )}
+                            {text.type === 'text' && (
+                                <Text
+                                    position={[0, 0, -0.3]}
+                                    fontSize={
+                                        (isMobile ? 0.4 : 0.2) * generalScaleX
+                                    }
+                                    outlineWidth={isMobile ? 0.002 : 0.002}
+                                    outlineColor="rgba(0, 0, 0, 0.01)"
+                                    color={'black'}
+                                    textAlign="justify"
+                                    anchorY="top"
+                                    fontWeight={700}
+                                    maxWidth={
+                                        isMobile
+                                            ? contentWidth - 0.7
+                                            : contentWidth / 2
+                                    }
+                                    font={importedNormalFont}
+                                    userData={{ isWrappedText: true }}
+                                >
+                                    {text.text}
+                                </Text>
+                            )}
+                            {/* </Suspense> */}
+                        </animated.group>
+                    </GridLayout>
+                ))}
+                {/* {contentRef && (
                     <Center>
                         <BillboardPageContainer pageName={'/a-propos'}>
                             <AboutContent
@@ -198,8 +336,9 @@ const MemoizedAbout = memo(function About({
                             />
                         </BillboardPageContainer>
                     </Center>
-                )}
+                )} */}
             </group>
+            {/* <Text>test</Text> */}
 
             <group ref={iconsRef}>
                 <Center>
@@ -224,3 +363,34 @@ const MemoizedAbout = memo(function About({
 });
 
 export default MemoizedAbout;
+
+// Créer un matériau personnalisé pour les textes importants
+const GradientTextMaterial = shaderMaterial(
+    {
+        color1: new Color('#4a6fa5'),
+        color2: new Color('#6a5acd'),
+        time: 0,
+    },
+    // Vertex shader - animation subtile
+    `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    // Fragment shader - dégradé animé
+    `
+        uniform vec3 color1;
+        uniform vec3 color2;
+        uniform float time;
+        varying vec2 vUv;
+        void main() {
+            float mixValue = sin(vUv.y * 3.14 + time * 0.5) * 0.5 + 0.5;
+            vec3 color = mix(color1, color2, mixValue);
+            gl_FragColor = vec4(color, 1.0);
+        }
+    `
+);
+
+extend({ GradientTextMaterial });
