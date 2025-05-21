@@ -38,9 +38,13 @@ const MemoizedContact = memo(function Contact({
         ? ACTIVE_PROJECTS_POSITION_SETTINGS.clone()
         : // ? currentGroupPos.set(0, 0, 0)
           DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-    console.log(contentHeight, contentWidth);
+
     currentIconsPos = isActive
-        ? DESKTOP_HTML_ICONS_POSITION_SETTINGS(contentHeight, contentWidth, 0.5)
+        ? DESKTOP_HTML_ICONS_POSITION_SETTINGS(
+              contentHeight ?? 1,
+              contentWidth,
+              0.5
+          )
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
     useFrame((state, delta) => {
         if (!groupRef.current || !iconsRef.current) return;
@@ -63,32 +67,11 @@ const MemoizedContact = memo(function Contact({
             );
             easing.damp3(groupRef.current.scale, scale, 0.2, delta);
 
-            // if (iconsRef.current.visible || groupRef.current.visible) {
-            //     easing.damp3(
-            //         iconsRef.current.position,
-            //         DESKTOP_HTML_ICONS_POSITION_SETTINGS(
-            //                         contentHeight,
-            //                         contentWidth,
-            //                         margin
-            //                     );,
-            //         0.3,
-            //         delta
-            //     );
-            //
             if (iconsRef.current.visible || groupRef.current.visible) {
-                // if (
-                //     contentRef.current.userData.contentSize &&
-                //     frameCountRef.current % 60 === 0
-                // ) {
-                //     const contentSizeY =
-                //         contentRef.current.userData.contentSize.y;
-                //     iconsPositionRef.current.set(0, -contentSizeY - margin, 0);
-                // }
-
+                // if (iconsRef.current.visible) {
                 easing.damp3(
                     iconsRef.current.position,
                     currentIconsPos,
-                    // [0, -3.5 + 0.5, 0],
                     0.3,
                     delta
                 );
