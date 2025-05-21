@@ -5,10 +5,20 @@ import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
 import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
-import { CameraControls, Environment } from '@react-three/drei';
+import { CameraControls, Environment, Stars } from '@react-three/drei';
 import { Suspense, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Vector3 } from 'three';
+import {
+    Bloom,
+    ChromaticAberration,
+    EffectComposer,
+    Noise,
+    Vignette,
+    BrightnessContrast,
+    SSAO,
+    ToneMapping,
+} from '@react-three/postprocessing';
 
 let minAngle = -Infinity;
 let maxAngle = Infinity;
@@ -172,9 +182,10 @@ export function Experience({ reducer }: ExperienceProps) {
         <>
             <directionalLight
                 castShadow
-                intensity={2}
-                position={[10, 6, 6]}
-                shadow-mapSize={[1024, 1024]}
+                intensity={0.8}
+                position={[10, 5, 3]}
+                shadow-mapSize={[2048, 2048]}
+                color="grey"
             >
                 {/* <orthographicCamera
                     // attach="shadow-camera"
@@ -183,6 +194,10 @@ export function Experience({ reducer }: ExperienceProps) {
                     top={20}
                     bottom={-20}
                 /> */}
+                <orthographicCamera
+                    attach="shadow-camera"
+                    args={[-15, 15, 15, -15, 0.1, 30]} // [left, right, top, bottom, near, far]
+                />
                 <CameraControls
                     // attach="shadow-camera"
                     // makeDefault
@@ -211,17 +226,40 @@ export function Experience({ reducer }: ExperienceProps) {
                         two: 0,
                         three: 0,
                     }}
-                    // onEnd={() => {
-                    //     // Réactiver le défilement de la page après l'interaction
-                    //     document.body.style.overflow = '';
-                    // }}
-                    // dragToOffset={false}
-                    // smoothTime={0.25}
                 />
             </directionalLight>
-
+            <ambientLight intensity={0.4} color="#fff6f0" />
             {/* <fog attach="fog" args={['#17171b', 30, 40]} /> */}
-
+            <pointLight position={[3, 5, 4]} intensity={0.6} color="#ffe0d0" />
+            <pointLight
+                position={[-4, 6, -5]}
+                intensity={0.5}
+                color="#f5f5ff"
+            />
+            <spotLight
+                position={[0, 5, 3]}
+                angle={Math.PI / 4}
+                penumbra={0.5}
+                intensity={0.7}
+                color="#ffffff"
+                distance={10}
+                decay={1}
+            />
+            <spotLight
+                position={[0, 10, 0]}
+                angle={Math.PI / 3}
+                penumbra={0.7}
+                intensity={0.8}
+                color="#ffffff"
+                castShadow={false} // Ne pas projeter d'ombres pour éviter les conflits
+                distance={20}
+                decay={2}
+                target-position={[0, -1, 0]} // Pointer vers le sol
+            />
+            <hemisphereLight
+                args={['#ffffff', '#ffe0d0', 0.6]} // [couleur ciel, couleur sol, intensité]
+                position={[0, 10, 0]}
+            />
             {/* <fog attach="fog" args={['black', 8.5, 12]} /> */}
             <fog attach="fog" args={[0xfff0ea, 10, 100]} />
             <color attach="background" args={[0xfff0ea]} />
@@ -241,8 +279,99 @@ export function Experience({ reducer }: ExperienceProps) {
                 }
             >
                 {/* <Environment preset="dawn" background blur={0.5} /> */}
-                <Environment preset="park" background blur={0.5} />
+                <Environment preset="sunset" background blur={0.4} />
+                {/* <Environment preset="park" background blur={0.5} /> */}
             </Suspense>
+            {/* <EffectComposer>
+                <Bloom
+                    luminanceThreshold={0.2}
+                    luminanceSmoothing={0.9}
+                    intensity={0.15} // Légèrement augmenté
+                />
+                <Noise opacity={0.01} />
+                <BrightnessContrast brightness={0.08} contrast={0.1} /> //
+                Légèrement plus lumineux
+                <ToneMapping
+                    adaptive={true}
+                    resolution={256}
+                    middleGrey={0.6}
+                    maxLuminance={2.5}
+                />
+            </EffectComposer> */}
+            {/* <EffectComposer enableNormalPass>
+                <Noise opacity={0.01} />
+                <BrightnessContrast brightness={0.1} contrast={0.15} />
+                <ToneMapping
+                    adaptive={true}
+                    resolution={256}
+                    middleGrey={0.7}
+                    maxLuminance={2.5}
+                />
+
+                <SSAO
+                    samples={16}
+                    radius={0.1}
+                    intensity={0.25}
+                    luminanceInfluence={0.6}
+                />
+            </EffectComposer> */}
+            {/* <ParticlesEffect /> */}
+            {/* <Stars
+                radius={100}
+                depth={50}
+                count={5000}
+                factor={4}
+                saturation={0}
+                fade
+                speed={1}
+            /> */}
+            <ShadowCatcher />
         </>
+    );
+}
+
+function ParticlesEffect() {
+    // Créer 500 particules dispersées dans l'espace
+    const particleCount = 500;
+    const particlesPositions = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+        particlesPositions[i * 3] = (Math.random() - 0.5) * 30; // x
+        particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 15; // y
+        particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 30; // z
+    }
+
+    return (
+        <points>
+            <bufferGeometry>
+                <float32BufferAttribute
+                    attach="attributes-position"
+                    args={[particlesPositions, 3]}
+                />
+            </bufferGeometry>
+            <pointsMaterial
+                size={0.08}
+                color="#ffffff"
+                transparent
+                opacity={0.6}
+            />
+        </points>
+    );
+}
+function ShadowCatcher() {
+    return (
+        <mesh
+            receiveShadow
+            position={[0, -1.02, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}
+            scale={[30, 30, 1]}
+        >
+            <planeGeometry />
+            <shadowMaterial
+                transparent
+                opacity={0.2} // Valeur réduite pour des ombres plus subtiles
+                color="#000000"
+            />
+        </mesh>
     );
 }
