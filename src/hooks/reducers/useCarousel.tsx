@@ -9,7 +9,7 @@ const initialState: CarouselState = {
     isMobile: false,
     isTablet: false,
     contentSizes: null,
-    contentWidth: null,
+    contentWidth: 1,
     contentHeight: null,
     generalScaleX: 1,
     // generalScales: {
