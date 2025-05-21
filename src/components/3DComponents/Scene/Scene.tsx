@@ -21,8 +21,14 @@ import { SceneProps } from '@/components/3DComponents/Scene/SceneTypes';
  * @returns
  */
 export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
-    const { generalScaleX, contentHeight, contentWidth, isMobile, visible } =
-        reducer;
+    const {
+        generalScaleX,
+        generalScaleY,
+        contentHeight,
+        contentWidth,
+        isMobile,
+        visible,
+    } = reducer;
 
     const pagesRef = useRef(null!);
 
@@ -36,10 +42,10 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
     useEffect(() => {
         switch (visible) {
             case 'home':
-                setVirtualPageCount(isMobile ? 2.5 : 3.6);
+                setVirtualPageCount(isMobile ? 2.8 : 3.6);
                 break;
             case 'about':
-                setVirtualPageCount(1.3);
+                setVirtualPageCount(isMobile ? 6 : 4.8);
                 break;
             default:
                 setVirtualPageCount(0);
@@ -52,6 +58,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
             contentHeight: contentHeight,
             isMobile: isMobile,
             generalScaleX: generalScaleX,
+            generalScaleY: generalScaleY,
             visible: visible,
         }),
         [contentWidth, contentHeight, isMobile, generalScaleX, visible]
