@@ -51,12 +51,11 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             reducer,
         };
     }, [reducer, SETTINGS]);
-
     return (
         <group name="cards-container">
             {reducer.showElements.map((card, i) => {
                 return (
-                    <group key={card.id + i}>
+                    <group key={card.url + i}>
                         <MemoizedCard
                             card={card}
                             presenceRadius={
@@ -147,11 +146,34 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                         </MemoizedCard>
 
                         <ContactShadows
-                            frames={1}
+                            key={card.id + i + 'shadow'}
+                            frames={120}
                             position={[0, -1.02, 0]}
+                            // scale={card.isClicked || card.isActive ? 10 : 5}
                             blur={1}
                             opacity={0.6}
                         />
+                        {/* <mesh
+                            receiveShadow
+                            position={[
+                                card.position[0],
+                                card.position[1] - 0.5,
+                                card.position[2],
+                            ]}
+                            rotation={[-Math.PI / 2, 0, 0]}
+                            scale={[
+                                card.isClicked
+                                    ? card.baseScale * 2
+                                    : card.baseScale * 1.2,
+                                card.isClicked
+                                    ? card.baseScale * 2
+                                    : card.baseScale * 1.2,
+                                1,
+                            ]}
+                        >
+                            <planeGeometry />
+                            <shadowMaterial transparent opacity={0.4} />
+                        </mesh> */}
                     </group>
                 );
             })}
@@ -160,10 +182,3 @@ const MemoizedCardsContainer = memo(function CardsContainer({
 });
 
 export default MemoizedCardsContainer;
-// export default memo(CardContainer, (prevProps, nextProps) => {
-//     // Ne re-render que si ces props spécifiques ont changé
-//     return (
-//         prevProps.SETTINGS === nextProps.SETTINGS &&
-//         prevProps.reducer.showElements === nextProps.reducer.showElements
-//     );
-// });
