@@ -47,7 +47,7 @@ const MemoizedCard = memo(function Card({
     // const widthRef = useRef(card.baseScale);
     // const navigate = useNavigate();
     // const location = useLocation();
-    // const [width, setWidth] = useState(1);
+    const [width, setWidth] = useState(1);
     const [ratio, setRatio] = useState(1);
     // const [currentRatio, setCurrentRatio] = useState(card.baseScale * 0.7);
     // const [animatedScale, setAnimatedScale] = useState(card.baseScale);
@@ -94,10 +94,10 @@ const MemoizedCard = memo(function Card({
             : [cardHoverScale, cardHoverScale, 1];
 
         const scaleDampingFactor = card.isClicked
-            ? 0.15
+            ? 0.2
             : card.isActive
             ? 0.3
-            : 0.2;
+            : 0.3;
 
         easing.damp3(scale, targetScale, scaleDampingFactor, delta);
 
@@ -179,11 +179,11 @@ const MemoizedCard = memo(function Card({
         if (!cardRef.current) return;
         let width = card.baseScale;
         let bending = SETTINGS.BENDING;
-        let ratio = 1;
+        let ratio = card.baseScale * width;
         if (card.isClicked) {
             width = card.baseScale + 0.8;
-            ratio = card.baseScale / width;
-            // ratio = (card.baseScale * width) / 4;
+            // ratio = card.baseScale / width;
+            ratio = (card.baseScale * width) / 4;
             bending = 0.01;
         } else if (card.isActive) {
             width = card.baseScale + 0.5;
@@ -191,11 +191,12 @@ const MemoizedCard = memo(function Card({
             bending = 0.01;
         } else {
             width = card.baseScale;
-            ratio = card.baseScale * 0.7;
+            ratio = card.baseScale * width;
+            // ratio = card.baseScale * 0.7;
             bending = SETTINGS.BENDING;
         }
 
-        // setWidth(width);
+        setWidth(width);
         setRatio(ratio);
         updateWidth(card, width);
         updateBending(card, bending);
@@ -208,6 +209,7 @@ const MemoizedCard = memo(function Card({
         //     scale={cardScale}
         // >
         <Image
+            // key={'card-img' + card.id}
             position={card.position}
             ref={cardRef}
             url={import.meta.env.BASE_URL + card.url}
@@ -219,6 +221,7 @@ const MemoizedCard = memo(function Card({
                 card.rotation[1] ?? 0,
                 card.rotation[2] ?? 0,
             ]}
+            // scale={card.currentWidth}
             // scale={width}
             scale={ratio}
             {...props}
