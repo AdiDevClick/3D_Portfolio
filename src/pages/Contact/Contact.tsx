@@ -1,8 +1,10 @@
+import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
 import { PagesTypes } from '@/components/3DComponents/Scene/SceneTypes';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
+    DESKTOP_HTML_ICONS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { Html, Sparkles, Stars, useCursor } from '@react-three/drei';
@@ -12,13 +14,18 @@ import { memo, useRef, useState } from 'react';
 import { Group } from 'three';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+let currentIconsPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
 const MemoizedContact = memo(function Contact({
     isMobile,
+    contentHeight,
+    contentWidth,
     generalScaleX,
     visible,
 }: PagesTypes) {
     const groupRef = useRef<Group>(null);
+    const iconsRef = useRef<Group>(null);
+
     const frameCountRef = useRef(0);
 
     const [hovered, setHovered] = useState(false);
@@ -31,14 +38,17 @@ const MemoizedContact = memo(function Contact({
         ? ACTIVE_PROJECTS_POSITION_SETTINGS.clone()
         : // ? currentGroupPos.set(0, 0, 0)
           DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-
+    console.log(contentHeight, contentWidth);
+    currentIconsPos = isActive
+        ? DESKTOP_HTML_ICONS_POSITION_SETTINGS(contentHeight, contentWidth, 0.5)
+        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
     useFrame((state, delta) => {
-        if (!groupRef.current) return;
+        if (!groupRef.current || !iconsRef.current) return;
         frameCountRef.current += 1;
 
         // Check if the objects are in the frustum
         frustumChecker(
-            [groupRef.current],
+            [groupRef.current, iconsRef.current],
             state,
             frameCountRef.current,
             isMobile
@@ -64,14 +74,38 @@ const MemoizedContact = memo(function Contact({
             //         0.3,
             //         delta
             //     );
-            // }
+            //
+            if (iconsRef.current.visible || groupRef.current.visible) {
+                // if (
+                //     contentRef.current.userData.contentSize &&
+                //     frameCountRef.current % 60 === 0
+                // ) {
+                //     const contentSizeY =
+                //         contentRef.current.userData.contentSize.y;
+                //     iconsPositionRef.current.set(0, -contentSizeY - margin, 0);
+                // }
+
+                easing.damp3(
+                    iconsRef.current.position,
+                    currentIconsPos,
+                    // [0, -3.5 + 0.5, 0],
+                    0.3,
+                    delta
+                );
+            }
         }
     });
     return (
         <group
             ref={groupRef}
-            onPointerOver={() => setHovered(true)}
-            onPointerOut={() => setHovered(false)}
+            onPointerOver={(e) => {
+                e.stopPropagation();
+                setHovered(true);
+            }}
+            onPointerOut={(e) => {
+                e.stopPropagation();
+                setHovered(false);
+            }}
             onClick={onClickHandler}
             visible={isActive}
         >
@@ -90,6 +124,7 @@ const MemoizedContact = memo(function Contact({
                     <div className="about__tooltip">Visitez mon LinkedIn</div>
                 </Html>
             )}
+            <ContactIconsContainer ref={iconsRef} />
             {/* <group ref={iconsRef}>
                 <Center>
                     <Float {...floatOptions}>
