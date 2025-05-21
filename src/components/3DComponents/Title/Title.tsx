@@ -55,12 +55,34 @@ export function Title({
                             distortion={0}
                         /> */}
                 {/* <meshLambertMaterial color={'grey'} /> */}
-                <meshStandardMaterial
+                {/* <meshStandardMaterial
                     color="#757575"
                     metalness={0.2}
                     roughness={0.5}
                     envMapIntensity={1}
+                /> */}
+                {/* <meshStandardMaterial
+                    color="#ffffff"
+                    emissive="#4facfe" // Bleu néon vif
+                    emissiveIntensity={1.2}
+                    metalness={0.2}
+                    roughness={0.2}
+                    envMapIntensity={2}
+                /> */}
+                <meshStandardMaterial
+                    color="black"
+                    metalness={0.7}
+                    roughness={0.3}
+                    envMapIntensity={2.5}
                 />
+                {/* <Outlines
+                    transparent
+                    opacity={0.95}
+                    color="#00f2fe" // Cyan brillant pour le contour
+                    thickness={0.05}
+                    screenspace={false}
+                    pulse={1.5} // Effet de pulsation
+                /> */}
                 {/* <meshMatcapMaterial color={'grey'} /> */}
             </Text3D>
         </Center>
