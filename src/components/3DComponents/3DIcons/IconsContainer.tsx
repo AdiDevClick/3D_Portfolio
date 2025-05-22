@@ -71,7 +71,7 @@ const MemoizedIconsContainer = memo(function IconsContainer({
             state,
             frameCountRef.current,
             isMobile,
-            { mobileTime: 20, desktopTime: 5, name: '-grid' },
+            { mobileTime: 10, desktopTime: 5, name: '-grid' },
             true
         );
     });
@@ -106,8 +106,8 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                             name={'icon__content'}
                             position={
                                 isMobile
-                                    ? [0.5 * scalar, 1.45 * scalar, 0]
-                                    : [-0.4 * scalar, 0.5 * scalar, 0]
+                                    ? [0.5 * scalar, 1.45 * scalar, -0.15]
+                                    : [0, 0.5 * scalar, 0]
                             }
                         />
                     </Suspense>

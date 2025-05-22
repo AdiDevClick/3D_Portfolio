@@ -77,8 +77,8 @@ export function IconWithText({
     });
 
     return (
-        <group
-            ref={groupRef}
+        <Center
+            ref={groupRef as any}
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
             dispose={null}
@@ -116,6 +116,8 @@ export function IconWithText({
                         isMobile={isMobile}
                         name="icons-Container__title"
                         position-x={0.2 * scalar}
+                        position-y={-0.1}
+                        size={30}
                         textProps={{ scale: 0.01 * scalar }}
                         scalar={scalar}
                     >
@@ -127,6 +129,6 @@ export function IconWithText({
                     </Center>
                 )}
             </Float>
-        </group>
+        </Center>
     );
 }
