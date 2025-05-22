@@ -351,7 +351,7 @@ export function updateTitlePosition(
     if (titleRef.current.visible) {
         const titlePosition = DESKTOP_HTML_TITLE_POSITION_SETTINGS(
             contentHeight,
-            -0.4
+            0.5
         );
         easing.damp3(
             titleRef.current.position,

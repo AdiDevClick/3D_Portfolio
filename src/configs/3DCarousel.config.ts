@@ -110,7 +110,7 @@ export const DESKTOP_HTML_CONTAINER_ROTATION = [0, 0, 0] as [
 export const DESKTOP_HTML_TITLE_POSITION_SETTINGS = (
     height: number,
     margin: number
-) => [0, height / 2 + margin - 1, 0];
+) => [0, height / 2 - margin * 2, 0];
 // ) => new Vector3(0, height / 2 + margin - 1, 0);
 /** Position des icônes des pages */
 export const DESKTOP_HTML_ICONS_POSITION_SETTINGS = (
