@@ -74,6 +74,7 @@ const MemoizedAbout = memo(function About({
                 contentHeight,
                 margin
             );
+
             titlePositionRef.current.set(
                 titlePos[0] ?? 0,
                 titlePos[1] ?? 0,
@@ -221,7 +222,7 @@ const MemoizedAbout = memo(function About({
                 ref={titleRef}
                 bottom
                 size={40}
-                scale={generalScaleX}
+                scale={isMobile ? generalScaleX * 1.2 : generalScaleX}
             >
                 A propos de moi
             </FloatingTitle>
