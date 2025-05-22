@@ -54,27 +54,6 @@
                 } 
         }
   </script>
-  <!-- <script>
-    // Script pour gérer la redirection depuis 404.html
-    (function () {
-      const redirect = sessionStorage.redirect;
-      delete sessionStorage.redirect;
-
-      // Si on a un paramètre p dans l'URL (venant de 404.html)
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirectPath = searchParams.get('p');
-
-      if (redirectPath) {
-        // Effacer le paramètre p de l'URL visible
-        history.replaceState(null, null,
-          window.location.pathname + redirectPath
-        );
-      } else if (redirect && redirect !== window.location.href) {
-        // Support pour une ancienne méthode de redirection si présente
-        history.replaceState(null, null, redirect);
-      }
-    })();
-  </script> -->
   <script src="src/utils/redirectURL.ts" type="module" async></script>
 
 </head>
