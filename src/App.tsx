@@ -1,7 +1,7 @@
 import { Scene } from '@/components/3DComponents/Scene/Scene';
 import { Canvas } from '@react-three/fiber';
 import { Leva } from 'leva';
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, Suspense, useEffect, useRef } from 'react';
 import { Experience } from '@/components/3DComponents/Experience/Experience';
 import { Loader } from '@react-three/drei';
 import { useCarousel } from '@/hooks/reducers/useCarousel';
@@ -121,7 +121,7 @@ export default function App({
                     <Preload all />
                 </Suspense> */}
                 {/* <SceneParams SETTINGS={SETTINGS} size={size}> */}
-                {/* <Suspense fallback={<LoadingScene />}> */}
+                {/* <Suspense fallback={null}> */}
                 <Scene
                     SETTINGS={SETTINGS || ({} as SettingsType)}
                     boundaries={boundaries || { x: 0, y: 0, z: 0 }}
@@ -130,12 +130,40 @@ export default function App({
                     {children}
                 </Scene>
                 <Experience reducer={reducer} />
-
                 {/* </Suspense> */}
                 {/* </SceneParams> */}
             </Canvas>
             {/* </Suspense> */}
-            <Loader />
+            <Loader
+            // containerStyles={{
+            //     display: 'none', // Cacher le loader par défaut
+            // }}
+            // dataStyles={{
+            //     color: '#ffffff',
+            // }}
+            // onStart={() => {
+            //     document.getElementById('loader-container')!.style.display =
+            //         'flex';
+            // }}
+            // onProgress={(progress) => {
+            //     const fill = document.querySelector(
+            //         '.progress-fill'
+            //     ) as HTMLElement;
+            //     if (fill) {
+            //         fill.style.width = `${progress * 100}%`;
+            //     }
+            // }}
+            // onFinish={() => {
+            //     const container =
+            //         document.getElementById('loader-container');
+            //     if (container) {
+            //         container.style.opacity = '0';
+            //         setTimeout(() => {
+            //             container.style.display = 'none';
+            //         }, 500); // Fade out animation
+            //     }
+            // }}
+            />
         </main>
     );
 }

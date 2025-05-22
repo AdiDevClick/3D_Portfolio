@@ -339,13 +339,13 @@ export default function Carousel({
                 </Float>
             </Billboard>
 
-            <Suspense fallback={<PlaceholderIcon />}>
-                <MemoizedCardsContainer
-                    reducer={reducer}
-                    SETTINGS={SETTINGS}
-                    isCarouselLoaded={isCarouselLoaded}
-                />
-            </Suspense>
+            {/* <Suspense fallback={<PlaceholderIcon />}> */}
+            <MemoizedCardsContainer
+                reducer={reducer}
+                SETTINGS={SETTINGS}
+                isCarouselLoaded={isCarouselLoaded}
+            />
+            {/* </Suspense> */}
             {/* <mesh
                 visible={activeURL}
                 position-y={-1.2}
