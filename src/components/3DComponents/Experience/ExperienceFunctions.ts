@@ -44,6 +44,8 @@ export async function loadCardByURL(
             throw createHttpError('Try again', 403);
         }
 
+        setViewMode('carousel');
+
         const targetCard = showElements.find(
             (element: { id: string }) => element.id === id
         );
@@ -53,7 +55,6 @@ export async function loadCardByURL(
         }
         // Wait for the carousel mode to establish
         await wait(400);
-
         // Activate card to focus
         activateElement(targetCard, true);
 
