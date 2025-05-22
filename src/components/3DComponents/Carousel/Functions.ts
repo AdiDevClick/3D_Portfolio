@@ -25,10 +25,7 @@ declare global {
     }
 }
 
-import {
-    CardProps,
-    CollisionConfig,
-} from '@/components/3DComponents/Carousel/FunctionsTypes.ts';
+import { CollisionConfig } from '@/components/3DComponents/Carousel/FunctionsTypes.ts';
 import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_CARD_POSITION,
@@ -40,6 +37,7 @@ import {
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
 import { MathPos } from '@/functions/positionning.ts';
+import { promiseState, wait, waitAndFail } from '@/functions/promises';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { RootState, ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -60,6 +58,9 @@ type commonParamsTypes = {
     animationProgress: number;
     delta: number;
 };
+//
+// const hoverPromisesArray = [];
+const hoverPromisesArray = new Map<string, Promise<void>>();
 
 /**
  * Définit les propriétés qui seront intégrées aux cartes.
@@ -216,14 +217,78 @@ export function onClickHandler(
 /**
  * Gère la sortie du pointeur d'une carte
  */
-export function onPointerOut(
+export async function onPointerOut(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
     reducer: ReducerType
-): void {
+) {
     e.stopPropagation();
-    if (reducer.activeContent?.isClicked) return;
+
+    if (reducer.activeContent?.isClicked) {
+        // hoverPromisesArray.clear();
+        return;
+    }
+
+    // try {
+    console.log(' entrée dans dans le pointer out ');
+    // hoverPromisesArray.set(card.id, await wait(100, 'Hover out card'));
+
+    // if (hoverPromises.has(card.id)) {
+    //     hoverPromises.delete(card.id);
+    // }
+    // hoverPromisesArray.push(waitAndFail(100, 'Hover out card'));
+    // console.log(hoverPromisesArray);
+    // hoverPromisesArray
+    if (!hoverPromisesArray.has(card.id)) {
+        // const r = await promiseState(hoverPromisesArray);
+        // if (r.status === 'fulfilled') {
+        //     // if (r.status === 'fulfilled' && r.value.has(card.id)) {
+        //     hoverPromisesArray.delete(card.id);
+        //     // hoverPromisesArray.set(card.id, await wait(100, 'Hover out card'));
+        //     // if (reducer.activeContent?.id === card.id) {
+        //     throw new Error('Une carte est encore active', {
+        //         cause: {
+        //             status: 403,
+        //             message: {
+        //                 promiseState: r.status,
+        //                 cardId: card.id,
+        //                 activeContentId: reducer.activeContent?.id,
+        //                 message: 'Il ne faut pas désactiver cette carte',
+        //             },
+        //         },
+        //     });
+        //     // }
+        // }
+        // return;
+    }
+    // hoverPromisesArray.delete(card.id);
     reducer.activateElement(card, false);
+    // hoverPromisesArray.delete(card.id);
+    // throw new Error('Je désactive mais jai pas demandé !', {
+    //     cause: {
+    //         status: 403,
+    //         message: {
+    //             promiseState: r.status,
+    //             cardId: card.id,
+    //             activeContentId: reducer.activeContent?.id,
+    //             message: 'Pourquoi je désactive cette carte ?',
+    //         },
+    //     },
+    // });
+    // } catch (error) {
+    //     if (error.cause && error.cause.status === 403) {
+    //         console.warn(
+    //             'Error message: ',
+    //             error.cause.message,
+    //             '\nError status: ',
+    //             error.cause.status
+    //         );
+    //         // hoverPromisesArray.set(card.id, waitAndFail(100, 'Hover out card'));
+    //     } else {
+    //         console.warn('Error message: ', error);
+    //     }
+    // }
+    // if (reducer.activeContent?.id !== card.id) return;
 }
 
 /**
@@ -233,16 +298,61 @@ export function onHover(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
     reducer: ReducerType
-): void {
+) {
     e.stopPropagation();
     if (
         (reducer.activeContent && reducer.activeContent.isClicked) ||
         reducer.isMobile
     )
         return;
+    // hoverPromisesArray = [];
 
+    // const timer = setTimeout(() => {
+    //     if (reducer.activeContent && reducer.activeContent.id === card.id) {
+    //         return;
+    //     }
+    //     reducer.activateElement(card, true);
+    //     return () => {
+    //         clearTimeout(timer);
+    //     };
+    // }, 100);
+    // Clear the timeout if the card is clicked or if the active content is changed
+    // if (reducer.activeContent) {
+    if (reducer.activeContent || reducer.activeContent?.id === card.id) {
+        // hoverPromisesArray.delete(card.id);
+        return;
+    }
+
+    // try {
+    //     // hoverPromisesArray.push(wait(100, 'Hover card'));
+    //     console.log('jactive la carte');
+    //     if (hoverPromisesArray.has(card.id)) {
+    //         // hoverPromisesArray.set(card.id, wait(200, 'Hover card'));
+    //         throw new Error('Object deja existant dans le tableau', {
+    //             cause: {
+    //                 status: 403,
+    //                 message: 'Pas besoin de la réactiver',
+    //                 // promiseState: r.status,
+    //                 cardId: card.id,
+    //                 activeContentId: reducer.activeContent?.id,
+    //             },
+    //         });
+    //     }
+    console.log('jactive ma carte');
     reducer.activateElement(card, true);
+    // hoverPromisesArray.delete(card.id);
+    // hoverPromisesArray.set(card.id, wait(200, 'Hover card'));
+    // } catch (error) {
+    //     if (error.cause && error.cause.status === 403) {
+    //         console.warn('Error message: ', error.cause.message);
+    //     } else {
+    //         console.warn('Error message: ', error);
+    //     }
+    // }
+
+    // hoverPromisesArray.set(card.id, await wait(100, 'Hover card'));
 }
+
 /**
  * Handles collision detection between cards
  */
