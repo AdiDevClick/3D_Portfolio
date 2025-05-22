@@ -56,3 +56,86 @@ export function wait(duration, message = '') {
         }, duration);
     });
 }
+
+/**
+ * Rejette une promesse de force
+ * @param {number} duration
+ * @param {string} message
+ */
+export function waitAndFail(duration, message) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            reject(message);
+        }, duration);
+    });
+}
+
+/**
+ * Permet de RACE un array de promesse en retournant
+ * le status et la value/reason associée à la promesse qui arrive en première
+ * @param {Promise} promise
+ * @returns
+ */
+export function promiseState(promise) {
+    let mapObject = false;
+    const allPromises = [];
+    const pendingState = { status: 'pending' };
+
+    // if (promise instanceof Map) {
+    //     mapObject = true;
+    //     for (const [key, promiseItem] of promise.entries()) {
+    //         allPromises.push(promiseItem);
+    //     }
+    // }
+    // if (promise instanceof Map) {
+    //     for (const [key, promiseItem] of promise.entries()) {
+    //         allPromises.push(
+    //             promiseItem
+    //                 .then((value) => ({ status: 'fulfilled', value, key }))
+    //                 .catch((reason) => ({ status: 'rejected', reason, key }))
+    //         );
+    //     }
+    //     return Promise.race([...allPromises, Promise.resolve(pendingState)]);
+    // }
+
+    return Promise.race([
+        mapObject ? allPromises : promise,
+        Promise.resolve(pendingState),
+    ]).then(
+        (value) =>
+            value === pendingState ? value : { status: 'fulfilled', value },
+        (reason) => ({ status: 'rejected', reason })
+    );
+    // return Promise.race([promise, Promise.resolve(pendingState)]).then(
+    //     (value) =>
+    //         value === pendingState ? value : { status: 'fulfilled', value },
+    //     (reason) => ({ status: 'rejected', reason })
+    // );
+
+    // Si c'est une Map de promesses
+    if (promise instanceof Map) {
+        const pendingState = { status: 'pending' };
+        const allPromises = [];
+
+        const promiseArray = Array.from(promise.values());
+
+        console.log(promiseArray);
+        // Extraire toutes les promesses de la Map en ajoutant leur clé
+        for (const [key, promiseItem] of promise.entries()) {
+            allPromises.push(
+                promiseItem
+                    .then((value) => ({ status: 'fulfilled', value, key }))
+                    .catch((reason) => ({ status: 'rejected', reason, key }))
+            );
+        }
+
+        // Race entre toutes les promesses et un état "pending" immédiat
+        return Promise.race([...allPromises, Promise.resolve(pendingState)]);
+    }
+
+    return Promise.reject(
+        new Error(
+            'promiseState: Argument must be a Promise or a Map of Promises'
+        )
+    );
+}
