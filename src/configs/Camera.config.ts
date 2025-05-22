@@ -8,13 +8,14 @@
  * when a card is clicked
  * @constant {number}
  */
-export const CAMERA_MOBILE_Z_POSITION = 1;
+export const CAMERA_MOBILE_Z_POSITION = -0.9;
 
 /**
  * Camera Y position for the mobile version
  * when a card is clicked
  */
-export const CAMERA_MOBILE_Y_POSITION = 0.5;
+export const CAMERA_MOBILE_Y_POSITION = -0.2;
+// export const CAMERA_MOBILE_Y_POSITION = -0.8;
 
 export const CAMERA_FOV_MOBILE = 19;
 export const CAMERA_FOV_DESKTOP = 20;
