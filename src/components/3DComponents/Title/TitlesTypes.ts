@@ -1,7 +1,6 @@
 import { CenterProps, Text3DProps, TextProps } from '@react-three/drei';
 import { JSX, ReactNode, RefObject } from 'react';
-import { Mesh, Object3D } from 'three';
-import { Group } from 'three/examples/jsm/libs/tween.module.js';
+import { Group, Mesh, Object3D } from 'three';
 
 export type FallbackTextTypes = {
     children: ReactNode;
@@ -29,6 +28,6 @@ export type TitleTypes = {
 } & Omit<CenterProps, 'children'>;
 
 export type HomePageTitleProps = {
-    ref: RefObject<Group>;
+    ref: RefObject<Group | null>;
     scale: number;
 };
