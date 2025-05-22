@@ -2,29 +2,33 @@ import {
     onClickHandler,
     onHover,
     onPointerOut,
-} from '@/components/3DComponents/Carousel/Functions.ts';
-import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer.tsx';
+} from '@/components/3DComponents/Carousel/Functions';
+import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer';
 import { ProjectContainer } from '@/pages/Projects/ProjectContainer';
 import {
     DESKTOP_HTML_CONTAINER_DEPTH,
     DESKTOP_HTML_CONTAINER_ROTATION,
     MOBILE_HTML_CONTAINER_POSITION,
     MOBILE_HTML_CONTAINER_ROTATION,
-} from '@/configs/3DCarousel.config.ts';
-import { ReducerType } from '@/hooks/reducers/carouselTypes.ts';
-import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
-import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/SpherePresence.tsx';
+} from '@/configs/3DCarousel.config';
+import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes';
+import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
+import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/SpherePresence';
 import { useLocation, useNavigate } from 'react-router';
-import { Title } from '@/components/3DComponents/Title/Title.tsx';
-import MemoizedCard from '@/components/3DComponents/Cards/Card.tsx';
-import { memo, useMemo } from 'react';
+import { Title } from '@/components/3DComponents/Title/Title';
+import MemoizedCard from '@/components/3DComponents/Cards/Card';
+import { memo, useCallback, useMemo } from 'react';
 import { ContactShadows } from '@react-three/drei';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText.tsx';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
+import { Mesh } from 'three';
+import useDebounce from '@/hooks/useDebounce';
 
 type CardsContainerTypes = {
     reducer: ReducerType;
     SETTINGS: SettingsType;
 };
+
+let initializedEvents = false;
 
 /**
  * Conteneur pour les Cards et ses dépendances -
@@ -45,6 +49,21 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         htmlContentRotation = DESKTOP_HTML_CONTAINER_ROTATION;
     }
 
+    /**
+     * Allows to set the position of the event box
+     *
+     * @param node - The event box
+     * @param card - The card to set the position
+     */
+    const eventBox = useCallback((node: Mesh | null, card: ElementType) => {
+        if (!node && initializedEvents) return;
+        if (card.ref?.current?.position) {
+            node?.position.copy(card.ref.current.position);
+            node?.rotation.copy(card.ref.current.rotation);
+            initializedEvents = true;
+        }
+    }, []);
+
     const cardsPropsMemo = useMemo(() => {
         return {
             SETTINGS,
@@ -56,7 +75,30 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             {reducer.showElements.map((card, i) => {
                 return (
                     <group key={card.url + i}>
+                        <mesh
+                            ref={(e) => eventBox(e, card)}
+                            onPointerOver={(e) => onHover(e, card, reducer)}
+                            onPointerOut={(e) => onPointerOut(e, card, reducer)}
+                            name="card__eventBox"
+                            visible={false}
+                        >
+                            <boxGeometry args={[card.baseScale, 2, 1]}>
+                                <meshStandardMaterial
+                                    color={'white'}
+                                    opacity={0.5}
+                                />
+                            </boxGeometry>
+                        </mesh>
                         <MemoizedCard
+                            onClick={(e) =>
+                                onClickHandler(
+                                    e,
+                                    card,
+                                    reducer,
+                                    location,
+                                    navigate
+                                )
+                            }
                             card={card}
                             presenceRadius={
                                 SETTINGS.PRESENCE_RADIUS * card.baseScale
@@ -65,19 +107,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                         >
                             <SpherePresenceHelper
                                 position={[0, -0.2, 0]}
-                                onPointerOver={(e) => onHover(e, card, reducer)}
-                                onPointerOut={(e) =>
-                                    onPointerOut(e, card, reducer)
-                                }
-                                onClick={(e) =>
-                                    onClickHandler(
-                                        e,
-                                        card,
-                                        reducer,
-                                        location,
-                                        navigate
-                                    )
-                                }
                                 name="card__spherePresenceHelper"
                                 visible={SETTINGS.PRESENCE_CIRCLE}
                                 radius={[
