@@ -152,7 +152,7 @@ export const DEFAULT_CARD_POSITION = [0, -100, 0];
 // export const DEFAULT_PROJECTS_POSITION_SETTINGS = [0, -100, 0];
 export const DEFAULT_PROJECTS_POSITION_SETTINGS = new Vector3(0, -100, 0);
 // export const ACTIVE_PROJECTS_POSITION_SETTINGS = [0, 0.15, 0];
-export const ACTIVE_PROJECTS_POSITION_SETTINGS = new Vector3(0, 0.15, 0);
+export const ACTIVE_PROJECTS_POSITION_SETTINGS = new Vector3(0, 0, 0);
 /** Default HTML positions */
 export const DEFAULT_HTML_POSITION_SETTINGS = [0, -0.8, 0];
 // export const DEFAULT_HTML_POSITION_SETTINGS = new Vector3(0, -0.8, 0);
