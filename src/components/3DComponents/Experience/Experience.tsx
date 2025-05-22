@@ -362,14 +362,15 @@ function ShadowCatcher() {
     return (
         <mesh
             receiveShadow
-            position={[0, -1.02, 0]}
+            position={[0, -1.6, 0]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={[30, 30, 1]}
         >
             <planeGeometry />
             <shadowMaterial
                 transparent
-                opacity={0.2} // Valeur réduite pour des ombres plus subtiles
+                opacity={0.2}
+                // opacity={0.2}
                 color="#000000"
             />
         </mesh>
