@@ -51,6 +51,7 @@ export default function Carousel({
         isMobile,
         allCardsLoaded,
         visible,
+        generalScaleX,
     } = reducer;
 
     const projectsRef = useRef<Group>(null!);
@@ -318,7 +319,9 @@ export default function Carousel({
                 <Float>
                     {isCarouselLoaded ? (
                         <Title
-                            scale={reducer.generalScaleX}
+                            scale={
+                                isMobile ? generalScaleX * 1.2 : generalScaleX
+                            }
                             name={'carousel__title'}
                             ref={titleRef}
                         >
@@ -326,7 +329,7 @@ export default function Carousel({
                         </Title>
                     ) : (
                         <FallbackText
-                            scale={4.2 * reducer.generalScaleX}
+                            scale={4.2 * generalScaleX}
                             name={'carousel__title'}
                             ref={titleRef}
                         >
