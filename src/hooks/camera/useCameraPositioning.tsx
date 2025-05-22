@@ -127,10 +127,10 @@ export function useCameraPositioning() {
                 newCamPos.x * newCamPos.x + newCamPos.z * newCamPos.z
             );
 
-            // if (isMobile && isClicked) {
-            //     newCamPos.z *= CAMERA_MOBILE_Z_POSITION;
-            //     shiftedTarget.y += CAMERA_MOBILE_Y_POSITION;
-            // }
+            if (isMobile && isClicked) {
+                newCamPos.z *= CAMERA_MOBILE_Z_POSITION;
+                shiftedTarget.y += CAMERA_MOBILE_Y_POSITION;
+            }
 
             // Too close? Scale the camera position
             const minDistanceToCenter = containerScale + CAMERA_SAFETY_MARGIN;
