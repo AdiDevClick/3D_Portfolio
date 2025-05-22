@@ -18,7 +18,7 @@ export function Title({
     children,
     ref,
     name,
-    size = 30,
+    size = 40,
     isMobile = false,
     textProps = {},
     scalar,
