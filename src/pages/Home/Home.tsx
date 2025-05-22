@@ -134,10 +134,7 @@ const MemoizedHome = memo(function Home({
                 color="#fff3b0"
             /> */}
 
-            <HomePageTitle
-                ref={titleRef as RefObject<Group>}
-                scale={generalScaleX}
-            />
+            <HomePageTitle ref={titleRef} scale={generalScaleX} />
 
             <group ref={stackRef}>
                 <FloatingTitle
