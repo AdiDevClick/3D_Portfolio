@@ -40,11 +40,11 @@ export async function loadCardByURL(
         navigate,
     } = options;
     try {
+        setViewMode('carousel');
+
         if (showElements.length === 0) {
             throw createHttpError('Try again', 403);
         }
-
-        setViewMode('carousel');
 
         const targetCard = showElements.find(
             (element: { id: string }) => element.id === id
