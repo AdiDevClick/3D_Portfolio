@@ -8,14 +8,21 @@ import {
     CAMERA_ANGLE_OFFSET,
     CAMERA_ANGLELIMITS,
     CAMERA_CLICKED_DESKTOP_OFFSET,
+    CAMERA_CLICKED_LERP_MULTIPLIER,
+    CAMERA_CLICKED_MAX_LERP_FACTOR,
     CAMERA_CLICKED_MOBILE_OFFSET,
+    CAMERA_EDGE_COMPENSATION_FACTOR,
+    CAMERA_EDGE_LERP_FACTOR,
     CAMERA_EXTRA_PULLBACK_DESKTOP,
     CAMERA_EXTRA_PULLBACK_MOBILE,
     CAMERA_FOV_DESKTOP,
     CAMERA_FOV_MOBILE,
+    CAMERA_MAX_EDGE_COMPENSATION,
     CAMERA_MOBILE_Y_POSITION,
     CAMERA_MOBILE_Z_POSITION,
+    CAMERA_OFFSET_EDGE_ADJUSTMENT,
     CAMERA_SAFETY_MARGIN,
+    CAMERA_VERTICAL_CENTER_DIVISOR,
 } from '@/configs/Camera.config';
 
 // interface ControlsRef {
@@ -62,16 +69,31 @@ export function useCameraPositioning() {
                 camera.position.z
             );
 
-            const effectiveLerpFactor = isClicked
-                ? Math.min(0.85, lerpFactor * 1.5)
-                : lerpFactor;
-
             const desiredAngle = cardAngles.active + CAMERA_ANGLE_OFFSET;
 
             const angleDelta = shortestAnglePath(
                 currentCameraAngle,
                 desiredAngle
             );
+
+            const absDelta = Math.abs(angleDelta);
+            const angleFactor = Math.min(1, absDelta / Math.PI);
+
+            // !! IMPORTANT !! Modify the lerp factor to rotate
+            // a bit faster to the cards on the edges
+            const adaptiveLerpFactor =
+                lerpFactor * (1 + angleFactor * CAMERA_EDGE_LERP_FACTOR);
+            const edgeCompensation = Math.min(
+                CAMERA_MAX_EDGE_COMPENSATION,
+                angleFactor * CAMERA_EDGE_COMPENSATION_FACTOR
+            );
+
+            const effectiveLerpFactor = isClicked
+                ? Math.min(
+                      CAMERA_CLICKED_MAX_LERP_FACTOR,
+                      adaptiveLerpFactor * CAMERA_CLICKED_LERP_MULTIPLIER
+                  )
+                : adaptiveLerpFactor;
 
             const newAngle = isClicked
                 ? desiredAngle
@@ -80,7 +102,7 @@ export function useCameraPositioning() {
             // Camera position from the center of the circle
             const finalDesiredRadius =
                 containerScale +
-                CAMERA_ACTIVE_FORWARD_OFFSET +
+                CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation) +
                 (isMobile
                     ? CAMERA_EXTRA_PULLBACK_MOBILE
                     : CAMERA_EXTRA_PULLBACK_DESKTOP);
@@ -91,7 +113,8 @@ export function useCameraPositioning() {
             const bbox = new Box3().setFromObject(ref.current);
             const sizeObj = new Vector3();
             bbox.getSize(sizeObj);
-            const verticalCenterOffset = sizeObj.y / 5;
+            const verticalCenterOffset =
+                sizeObj.y / CAMERA_VERTICAL_CENTER_DIVISOR;
 
             const camPos = new Vector3(
                 Math.sin(newAngle) * finalDesiredRadius,
@@ -112,9 +135,11 @@ export function useCameraPositioning() {
             rightVector.applyQuaternion(ref.current.quaternion);
 
             const offsetDistance =
-                !isMobile && isClicked
+                (!isMobile && isClicked
                     ? CAMERA_CLICKED_DESKTOP_OFFSET
-                    : CAMERA_CLICKED_MOBILE_OFFSET;
+                    : CAMERA_CLICKED_MOBILE_OFFSET) *
+                (1 - angleFactor * CAMERA_OFFSET_EDGE_ADJUSTMENT);
+
             const rightOffset = rightVector.multiplyScalar(offsetDistance);
 
             // Final position
@@ -139,6 +164,7 @@ export function useCameraPositioning() {
                 newCamPos.x *= scale;
                 newCamPos.z *= scale;
             }
+
             controlsRef.current.setLookAt(
                 newCamPos.x,
                 newCamPos.y,
