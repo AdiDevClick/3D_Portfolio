@@ -17,11 +17,13 @@ import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/S
 import { useLocation, useNavigate } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
 import MemoizedCard from '@/components/3DComponents/Cards/Card';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ContactShadows } from '@react-three/drei';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
-import { Mesh } from 'three';
+import { Group, Mesh, Quaternion, Vector3 } from 'three';
 import useDebounce from '@/hooks/useDebounce';
+import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
+import { useSpring, animated } from '@react-spring/three';
 
 type CardsContainerTypes = {
     reducer: ReducerType;
@@ -41,6 +43,26 @@ const MemoizedCardsContainer = memo(function CardsContainer({
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [isCarouselMoving, setIsCarouselMoving] = useState(false);
+    const [isCarouselClicked, setIsCarouselClicked] = useState(false);
+
+    const lastPointerPosition = useRef({ x: 0, y: 0 });
+    const groupRef = useRef<Group>(null!);
+    const { camera } = useThree();
+    const lastCameraPosition = useRef(new Vector3());
+    const lastCameraRotation = useRef(new Quaternion());
+    const cameraMovementThreshold = 0.15;
+
+    const animation = useSpring({
+        scale: isCarouselClicked ? 0.8 : 1,
+        config: {
+            mass: 1,
+            tension: 120,
+            friction: 14,
+        },
+        delay: 500,
+    });
+
     let htmlContentRotation = [0, 0, 0] as [number, number, number];
 
     if (reducer.isMobile) {
@@ -56,7 +78,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
      * @param card - The card to set the position
      */
     const eventBox = useCallback((node: Mesh | null, card: ElementType) => {
-        if (!node && initializedEvents) return;
+        if (!node) return;
         if (card.ref?.current?.position) {
             node?.position.copy(card.ref.current.position);
             node?.rotation.copy(card.ref.current.rotation);
@@ -64,28 +86,133 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         }
     }, []);
 
+    const endCarouselMovement = useDebounce(() => {
+        setIsCarouselMoving(false);
+    }, 100);
+
+    const handlePointerMove = useCallback(
+        (e: ThreeEvent<PointerEvent>) => {
+            if (reducer.isMobile) return;
+            e.stopPropagation();
+
+            const distanceX = Math.abs(
+                e.point.x - lastPointerPosition.current.x
+            );
+            const distanceY = Math.abs(
+                e.point.y - lastPointerPosition.current.y
+            );
+            const totalDistance = distanceX + distanceY;
+            if (totalDistance > 0.5) {
+                setIsCarouselMoving(true);
+                endCarouselMovement();
+            }
+
+            lastPointerPosition.current = { x: e.point.x, y: e.point.y };
+        },
+        [reducer.isMobile]
+    );
+
+    const startCarouselMovement = (e) => {
+        e.stopPropagation();
+        setIsCarouselClicked(true);
+        setIsCarouselMoving(true);
+    };
+
+    const debouncedStartCarouselMovement = useDebounce(
+        startCarouselMovement,
+        110
+    );
+
+    useFrame((state, delta) => {
+        if (!groupRef.current) return;
+        if (isCarouselClicked) return;
+
+        // Check previous camera position
+        const positionDelta = new Vector3()
+            .copy(camera.position)
+            .distanceTo(lastCameraPosition.current);
+
+        // Compare Quarternions for rotation
+        const rotationDelta = camera.quaternion.angleTo(
+            lastCameraRotation.current
+        );
+
+        if (positionDelta > cameraMovementThreshold || rotationDelta > 0.01) {
+            // if (positionDelta > cameraMovementThreshold || rotationDelta > 0.01) {
+            // console.log('mouvement de la camera');
+            setIsCarouselMoving(true);
+            // if (!isCarouselClicked) {
+            endCarouselMovement();
+            // }
+        }
+
+        // if (isCarouselClicked || isCarouselMoving) {
+        // easing.damp3(
+        //     groupRef.current.scale,
+        //     isCarouselMoving ? 0.8 : 1,
+        //     // isCarouselClicked || isCarouselMoving ? 0.8 : 1,
+        //     0.8,
+        //     delta
+        // );
+        // // }
+
+        // Update last camera position & rotation
+        lastCameraPosition.current.copy(camera.position);
+        lastCameraRotation.current.copy(camera.quaternion);
+    });
+
     const cardsPropsMemo = useMemo(() => {
         return {
             SETTINGS,
             reducer,
         };
     }, [reducer, SETTINGS]);
+
+    const debouncedOnHoverHandler = useDebounce(onHover, 200);
     return (
-        <group name="cards-container">
+        <animated.group
+            ref={groupRef}
+            name="cards-container"
+            onPointerMove={!isCarouselClicked && handlePointerMove}
+            onPointerDown={debouncedStartCarouselMovement}
+            onPointerUp={(e) => {
+                e.stopPropagation();
+                setIsCarouselClicked(false);
+                endCarouselMovement();
+            }}
+            // scale={animation.scale}
+            // scale={isCarouselMoving ? 0.8 : 1}
+        >
             {reducer.showElements.map((card, i) => {
                 return (
                     <group key={card.url + i}>
                         <mesh
                             ref={(e) => eventBox(e, card)}
-                            onPointerOver={(e) => onHover(e, card, reducer)}
+                            onPointerOver={(e) =>
+                                !isCarouselMoving &&
+                                !isCarouselClicked &&
+                                debouncedOnHoverHandler(
+                                    e,
+                                    card,
+                                    reducer,
+                                    isCarouselMoving,
+                                    setIsCarouselMoving
+                                )
+                            }
+                            onPointerMove={(e) =>
+                                !isCarouselMoving &&
+                                !isCarouselClicked &&
+                                onHover(e, card, reducer, isCarouselMoving)
+                            }
                             onPointerOut={(e) => onPointerOut(e, card, reducer)}
-                            name="card__eventBox"
+                            name={`eventBox_${card.id}`}
                             visible={false}
                         >
                             <boxGeometry args={[card.baseScale, 2, 1]}>
                                 <meshStandardMaterial
                                     color={'white'}
-                                    opacity={0.5}
+                                    opacity={0}
+                                    transparent
                                 />
                             </boxGeometry>
                         </mesh>
@@ -96,7 +223,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     card,
                                     reducer,
                                     location,
-                                    navigate
+                                    navigate,
+                                    isCarouselMoving
                                 )
                             }
                             card={card}
@@ -158,7 +286,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                                     card,
                                                     reducer,
                                                     location,
-                                                    navigate
+                                                    navigate,
+                                                    isCarouselMoving
                                                 )
                                             }
                                             card={card}
@@ -206,7 +335,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                     </group>
                 );
             })}
-        </group>
+        </animated.group>
     );
 });
 

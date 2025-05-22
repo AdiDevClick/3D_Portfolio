@@ -37,7 +37,6 @@ import {
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
 import { MathPos } from '@/functions/positionning.ts';
-import { promiseState, wait, waitAndFail } from '@/functions/promises';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { RootState, ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -200,11 +199,20 @@ export function onClickHandler(
     card: ElementType,
     reducer: ReducerType,
     location: { pathname: string },
-    navigate: any
+    navigate: any,
+    isCarouselMoving: boolean
 ): void {
     e.stopPropagation();
     // Deny any other clicked elements if one is opened
     if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
+        return;
+    }
+
+    if (isCarouselMoving && e.nativeEvent.type === 'pointerup') {
+        return;
+    }
+
+    if (isCarouselMoving && e.nativeEvent.type === 'click') {
         return;
     }
     navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
@@ -230,7 +238,6 @@ export async function onPointerOut(
     }
 
     // try {
-    console.log(' entrée dans dans le pointer out ');
     // hoverPromisesArray.set(card.id, await wait(100, 'Hover out card'));
 
     // if (hoverPromises.has(card.id)) {
@@ -297,60 +304,22 @@ export async function onPointerOut(
 export function onHover(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
-    reducer: ReducerType
+    reducer: ReducerType,
+    isCarouselMoving: boolean,
+    setIsCarouselMoving: (value: boolean) => void
 ) {
     e.stopPropagation();
+    if (isCarouselMoving) return;
     if (
         (reducer.activeContent && reducer.activeContent.isClicked) ||
-        reducer.isMobile
+        reducer.isMobile ||
+        (reducer.activeContent && reducer.activeContent?.id === card.id)
     )
         return;
-    // hoverPromisesArray = [];
-
-    // const timer = setTimeout(() => {
-    //     if (reducer.activeContent && reducer.activeContent.id === card.id) {
-    //         return;
-    //     }
-    //     reducer.activateElement(card, true);
-    //     return () => {
-    //         clearTimeout(timer);
-    //     };
-    // }, 100);
-    // Clear the timeout if the card is clicked or if the active content is changed
-    // if (reducer.activeContent) {
-    if (reducer.activeContent || reducer.activeContent?.id === card.id) {
-        // hoverPromisesArray.delete(card.id);
-        return;
+    if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
+        reducer.activeContent.isActive = false;
     }
-
-    // try {
-    //     // hoverPromisesArray.push(wait(100, 'Hover card'));
-    //     console.log('jactive la carte');
-    //     if (hoverPromisesArray.has(card.id)) {
-    //         // hoverPromisesArray.set(card.id, wait(200, 'Hover card'));
-    //         throw new Error('Object deja existant dans le tableau', {
-    //             cause: {
-    //                 status: 403,
-    //                 message: 'Pas besoin de la réactiver',
-    //                 // promiseState: r.status,
-    //                 cardId: card.id,
-    //                 activeContentId: reducer.activeContent?.id,
-    //             },
-    //         });
-    //     }
-    console.log('jactive ma carte');
     reducer.activateElement(card, true);
-    // hoverPromisesArray.delete(card.id);
-    // hoverPromisesArray.set(card.id, wait(200, 'Hover card'));
-    // } catch (error) {
-    //     if (error.cause && error.cause.status === 403) {
-    //         console.warn('Error message: ', error.cause.message);
-    //     } else {
-    //         console.warn('Error message: ', error);
-    //     }
-    // }
-
-    // hoverPromisesArray.set(card.id, await wait(100, 'Hover card'));
 }
 
 /**
