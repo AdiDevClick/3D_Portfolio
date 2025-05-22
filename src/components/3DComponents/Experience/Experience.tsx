@@ -167,7 +167,7 @@ export function Experience({ reducer }: ExperienceProps) {
             setViewMode,
             navigate,
         };
-
+        setViewMode('carousel');
         const initialDelay = 800;
 
         // Awaits the initialization of the elements (initialDelay)
