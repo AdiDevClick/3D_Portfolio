@@ -15,6 +15,14 @@ type IconsTypes = {
     /** @defaultValue 0.5 */
     margin?: number;
     isMobile: boolean;
+    /** @defaultValue 100 */
+    iconScale?: number;
+    floatOptions?: {
+        speed?: number;
+        floatIntensity?: number;
+        rotationIntensity?: number;
+        floatRange?: [number, number];
+    };
 } & JSX.IntrinsicElements['group'];
 
 /**
@@ -29,14 +37,18 @@ type IconsTypes = {
  * @param isMobile - Boolean indicating if the device is mobile
  * @param margin - **Default=0.5** - Margin between icons
  * @param props - Additional properties for the 3D group element
+ * @param iconScale - Scale of the icon **Default=100**
+ * @param floatOptions - Options for the floating effect
  * @returns
  */
 export function IconWithText({
     model,
     scalar,
+    iconScale = 100,
     index,
     datas,
     isMobile,
+    floatOptions,
     margin = 0.5,
     ...props
 }: IconsTypes) {
@@ -85,7 +97,7 @@ export function IconWithText({
             name={datas.name}
             {...props}
         >
-            <Float>
+            <Float {...floatOptions}>
                 <Center
                     position-y={isMobile ? -0.8 * scalar : 0}
                     position-x={isMobile ? 0.1 * scalar : 0}
@@ -102,7 +114,7 @@ export function IconWithText({
                                 // iconColor={'#000000'}
                                 // curveSegments={isMobile ? 4 : 32}
                                 hovered={hovered}
-                                scale={100 * scalar}
+                                scale={iconScale * scalar}
                                 castShadow
                                 receiveShadow
                             />
