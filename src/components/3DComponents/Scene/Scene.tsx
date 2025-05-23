@@ -45,7 +45,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                 setVirtualPageCount(isMobile ? 2.8 : 3.6);
                 break;
             case 'about':
-                setVirtualPageCount(isMobile ? 6 : 6);
+                setVirtualPageCount(isMobile ? 6.5 : 6);
                 break;
             default:
                 setVirtualPageCount(0);
