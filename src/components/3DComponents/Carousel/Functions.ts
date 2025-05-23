@@ -191,6 +191,14 @@ export function createCardProperties(
     };
 }
 
+// const allowedClosestClasses = [
+//     '.card',
+//     '.card__close',
+//     '.card__title',
+//     '.card__description',
+//     '.card__content',
+// ];
+
 /**
  * Gère le clic sur une carte
  */
@@ -201,7 +209,7 @@ export function onClickHandler(
     location: { pathname: string },
     navigate: any,
     isCarouselMoving: boolean,
-    setIsCarouselClicked: (value: boolean) => void
+    isCarouselClicked: boolean
 ): void {
     e.stopPropagation();
     // Deny any other clicked elements if one is opened
@@ -214,16 +222,26 @@ export function onClickHandler(
     //     '\n event type : ',
     //     e.type,
     //     '\n card clicked ? :',
-    //     card.isClicked
+    //     card.isClicked,
+    //     '\n carousel clicked ? :',
+    //     isCarouselClicked,
+    //     '\n target ?',
+    //     e.nativeEvent.target
     // );
     if (isCarouselMoving && e.nativeEvent.type === 'pointerup') {
         return;
     }
 
-    if (isCarouselMoving && e.nativeEvent.type === 'click') {
-        // console.log('jai  arrêté le clic ! ');
-
-        return;
+    if (
+        (isCarouselClicked || isCarouselMoving) &&
+        e.nativeEvent.type === 'click'
+    ) {
+        if (
+            !e.nativeEvent.target ||
+            !(e.nativeEvent.target as HTMLElement).closest('.card')
+        ) {
+            return;
+        }
     }
     navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
         replace: false,
@@ -247,7 +265,7 @@ export async function onPointerOut(
     if (reducer.activeContent?.isClicked) {
         return;
     }
-
+    // console.log('POINTER OUT EFFECTUE');
     reducer.activateElement(card, false);
     // endCarouselMovement();
 }
