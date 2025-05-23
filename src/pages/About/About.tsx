@@ -5,7 +5,7 @@ import {
     Text,
     useScroll,
 } from '@react-three/drei';
-import { memo, useEffect, useRef } from 'react';
+import { memo, Suspense, useEffect, useRef } from 'react';
 import { Color, Group } from 'three';
 import { extend, useFrame } from '@react-three/fiber';
 import {
@@ -254,62 +254,64 @@ const MemoizedAbout = memo(function About({
                                 },
                             })}
                         >
-                            {/* <Suspense fallback={null}> */}
-                            {text.type === 'title' && (
-                                <Text
-                                    position={[0, 0, -0.1]}
-                                    fontSize={
-                                        (isMobile ? 0.6 : 0.5) * generalScaleX
-                                    }
-                                    outlineWidth={isMobile ? 0.002 : 0.002}
-                                    outlineColor="rgba(0, 0, 0, 0.01)"
-                                    anchorY="top"
-                                    maxWidth={contentWidth - 0.5}
-                                    font={importedNormalFont}
-                                    userData={{ isWrappedText: true }}
-                                >
-                                    {text.text}
-                                    {/* <meshStandardMaterial
+                            <Suspense fallback={null}>
+                                {text.type === 'title' && (
+                                    <Text
+                                        position={[0, 0, -0.1]}
+                                        fontSize={
+                                            (isMobile ? 0.6 : 0.5) *
+                                            generalScaleX
+                                        }
+                                        outlineWidth={isMobile ? 0.002 : 0.002}
+                                        outlineColor="rgba(0, 0, 0, 0.01)"
+                                        anchorY="top"
+                                        maxWidth={contentWidth - 0.5}
+                                        font={importedNormalFont}
+                                        userData={{ isWrappedText: true }}
+                                    >
+                                        {text.text}
+                                        {/* <meshStandardMaterial
                                         color="#2a5298"
                                         metalness={0.8}
                                         roughness={0.2}
                                         envMapIntensity={2.5}
                                     /> */}
-                                    <gradientTextMaterial
-                                        ref={(ref) => {
-                                            if (ref)
-                                                materials.current.set(
-                                                    index,
-                                                    ref
-                                                );
-                                        }}
-                                    />
-                                </Text>
-                            )}
-                            {text.type === 'text' && (
-                                <Text
-                                    position={[0, 0, -0.3]}
-                                    fontSize={
-                                        (isMobile ? 0.4 : 0.2) * generalScaleX
-                                    }
-                                    outlineWidth={isMobile ? 0.002 : 0.002}
-                                    outlineColor="rgba(0, 0, 0, 0.01)"
-                                    color={'black'}
-                                    textAlign="justify"
-                                    anchorY="top"
-                                    fontWeight={700}
-                                    maxWidth={
-                                        isMobile
-                                            ? contentWidth - 0.7
-                                            : contentWidth / 2
-                                    }
-                                    font={importedNormalFont}
-                                    userData={{ isWrappedText: true }}
-                                >
-                                    {text.text}
-                                </Text>
-                            )}
-                            {/* </Suspense> */}
+                                        <gradientTextMaterial
+                                            ref={(ref) => {
+                                                if (ref)
+                                                    materials.current.set(
+                                                        index,
+                                                        ref
+                                                    );
+                                            }}
+                                        />
+                                    </Text>
+                                )}
+                                {text.type === 'text' && (
+                                    <Text
+                                        position={[0, 0, -0.3]}
+                                        fontSize={
+                                            (isMobile ? 0.4 : 0.2) *
+                                            generalScaleX
+                                        }
+                                        outlineWidth={isMobile ? 0.002 : 0.002}
+                                        outlineColor="rgba(0, 0, 0, 0.01)"
+                                        color={'black'}
+                                        textAlign="justify"
+                                        anchorY="top"
+                                        fontWeight={700}
+                                        maxWidth={
+                                            isMobile
+                                                ? contentWidth - 0.7
+                                                : contentWidth / 2
+                                        }
+                                        font={importedNormalFont}
+                                        userData={{ isWrappedText: true }}
+                                    >
+                                        {text.text}
+                                    </Text>
+                                )}
+                            </Suspense>
                         </animated.group>
                     </GridLayout>
                 ))}

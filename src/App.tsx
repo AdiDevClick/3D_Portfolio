@@ -6,6 +6,7 @@ import { Experience } from '@/components/3DComponents/Experience/Experience';
 import { Loader } from '@react-three/drei';
 import { useCarousel } from '@/hooks/reducers/useCarousel';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 
 interface AppProps {
     children: ReactNode;
@@ -120,16 +121,16 @@ export default function App({
                     <Preload all />
                 </Suspense> */}
                 {/* <SceneParams SETTINGS={SETTINGS} size={size}> */}
-                {/* <Suspense fallback={null}> */}
-                <Scene
-                    SETTINGS={SETTINGS || ({} as SettingsType)}
-                    boundaries={boundaries || { x: 0, y: 0, z: 0 }}
-                    reducer={reducer}
-                >
-                    {children}
-                </Scene>
-                <Experience reducer={reducer} />
-                {/* </Suspense> */}
+                <Suspense fallback={<PlaceholderIcon />}>
+                    <Scene
+                        SETTINGS={SETTINGS || ({} as SettingsType)}
+                        boundaries={boundaries || { x: 0, y: 0, z: 0 }}
+                        reducer={reducer}
+                    >
+                        {children}
+                    </Scene>
+                    <Experience reducer={reducer} />
+                </Suspense>
                 {/* </SceneParams> */}
             </Canvas>
             {/* </Suspense> */}

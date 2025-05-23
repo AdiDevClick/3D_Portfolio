@@ -98,7 +98,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                         metalness={0.5}
                     />
                 </mesh> */}
-            <Suspense fallback={<PlaceholderIcon />}>
+            <Suspense fallback={null}>
                 <Carousel
                     reducer={reducer}
                     boundaries={boundaries}

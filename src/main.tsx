@@ -45,7 +45,7 @@ const router = createBrowserRouter(
                 {
                     path: 'error',
                     element: (
-                        <Suspense fallback={<PlaceholderIcon />}>
+                        <Suspense fallback={null}>
                             <Error404 />
                         </Suspense>
                     ),

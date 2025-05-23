@@ -67,6 +67,7 @@ export function Error404() {
 
     return (
         <Billboard position={[0, 1, 0]}>
+            {/* <Suspense fallback={null}> */}
             <FallbackText fontSize={3 * scaleX} position={[0, 0, -10]}>
                 404
             </FallbackText>
@@ -80,7 +81,7 @@ export function Error404() {
             <FallbackText fontSize={0.15 * scaleX} position={[0, -3, -10]}>
                 Le bouton ci-dessous te ramènera en lieux sûrs
             </FallbackText>
-            <Suspense fallback={<PlaceholderIcon />}>
+            <Suspense fallback={null}>
                 <group
                     position={[-8 * scaleX, -9 * scaleX, 0]}
                     scale={5 * scaleX}
@@ -91,16 +92,17 @@ export function Error404() {
                             speed={0.1 + Math.random() * 2}
                             key={node.uuid}
                         >
-                            <Suspense
+                            {/* <Suspense key={node.uuid} fallback={null}> */}
+                            {/* <Suspense
                                 key={node.uuid}
                                 fallback={<PlaceholderIcon />}
-                            >
-                                <GlassMesh
-                                    name="glass-mesh"
-                                    data={node}
-                                    isMobile={isMobile}
-                                />
-                            </Suspense>
+                            > */}
+                            <GlassMesh
+                                name="glass-mesh"
+                                data={node}
+                                isMobile={isMobile}
+                            />
+                            {/* </Suspense> */}
                         </Float>
                     ))}
                 </group>
@@ -123,6 +125,7 @@ export function Error404() {
             {/* <NavLink className="error__link" to={'/test'}>
                 Retourner sur la page d’accueil
             </NavLink> */}
+            {/* </Suspense> */}
         </Billboard>
     );
 }
