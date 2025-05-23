@@ -17,7 +17,7 @@ import { SpherePresenceHelper } from '@/components/3DComponents/SpherePresence/S
 import { useLocation, useNavigate } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
 import MemoizedCard from '@/components/3DComponents/Cards/Card';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { ContactShadows } from '@react-three/drei';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { Group, Mesh, Quaternion, Vector3 } from 'three';
@@ -30,8 +30,6 @@ type CardsContainerTypes = {
     SETTINGS: SettingsType;
 };
 const distancesArray: { index: number; distance: number }[] = [];
-
-let initializedEvents = false;
 
 /**
  * Conteneur pour les Cards et ses dépendances -
@@ -141,24 +139,29 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         // setIsCarouselClicked(true);
         setIsCarouselMoving(true);
     };
+    const carouselClick = (e) => {
+        e.stopPropagation();
+        setIsCarouselClicked(true);
+    };
 
-    const debouncedStartCarouselMovement = useDebounce(
-        startCarouselMovement,
-        110
-    );
+    const debouncedStartCarouselClick = useDebounce(carouselClick, 110);
+    // const debouncedStartCarouselMovement = useDebounce(
+    //     startCarouselMovement,
+    //     110
+    // );
 
     useFrame((state) => {
         if (!groupRef.current) return;
         frameRateCount.current += 1;
 
+        // Handle event Box scale
         if (frameRateCount.current % 20 === 0) {
-            // Handle event Box scale
             distancesArray.length = 0;
 
             const camera = state.camera;
 
             reducer.showElements.forEach((item, i) => {
-                if (!item.ref.current) return;
+                if (!item.ref?.current) return;
 
                 const distanceFromCamera = item.ref.current.position.distanceTo(
                     camera.position
@@ -173,7 +176,9 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             distancesArray.sort((a, b) => a.distance - b.distance);
 
             const closestCardIndex =
-                distancesArray.length > 0 ? distancesArray[0].index : -1;
+                distancesArray.length > 0 && distancesArray[0]
+                    ? distancesArray[0].index
+                    : -1;
 
             reducer.showElements.forEach((item, i) => {
                 if (!item.eventBox) return;
@@ -185,10 +190,10 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                     i === closestCardIndex + 1 ||
                     i === closestCardIndex + 2
                 ) {
-                    item.eventBox.material.color.setRGB(0.5, 1, 0.5);
+                    // item.eventBox.material.color.setRGB(0.5, 1, 0.5);
                     item.eventBox.scale.set(1, 1, 1);
                 } else {
-                    item.eventBox.material.color.setRGB(1, 0.5, 0.5);
+                    // item.eventBox.material.color.setRGB(1, 0.5, 0.5);
                     item.eventBox.scale.set(0.1, 0.1, 0.1);
                 }
             });
@@ -210,9 +215,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             positionDelta > cameraMovementThreshold ||
             rotationDelta > rotationThreshold
         ) {
-            // if (positionDelta > cameraMovementThreshold || rotationDelta > 0.01) {
             setIsCarouselMoving(true);
-            // if (!isCarouselClicked) {
             // console.log(
             //     'CAMERA TRANSITION EN COURS, DELTA :',
             //     positionDelta,
@@ -236,39 +239,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         // Update last camera position & rotation
         lastCameraPosition.current.copy(camera.position);
         lastCameraRotation.current.copy(camera.quaternion);
-
-        // if (frameRateCount.current % 50 === 0) {
-        //     reducer.showElements.forEach((card) => {
-        //         if (card.ref?.current && card.eventBox) {
-        //             const { position } = card.ref.current;
-        //             // const { isVisible, interactivityDepth } =
-        //             //     evaluateCardVisibility(
-        //             //         camera,
-        //             //         card.ref.current.position
-        //             //     );
-        //             // console.log(isVisible, card.id);
-        //             const distance = camera.position.distanceTo(position);
-
-        //             if ()
-        //             // console.log('distance', distance, 'card id :', card.id);
-
-        //             // Ajuster la profondeur de l'eventBox
-        //             // if (card.eventBox.geometry) {
-        //             //     // Si la carte est active, garder une profondeur maximale
-        //             //     const finalDepth = card.isActive
-        //             //         ? 1.5
-        //             //         : interactivityDepth;
-
-        //             //     // Mettre à jour la géométrie
-        //             //     // card.eventBox.scale.z = 1;
-        //             //     card.eventBox.scale.z = finalDepth;
-
-        //             //     // Rendre l'eventBox interactive ou non
-        //             //     card.eventBox.visible = isVisible || card.isActive;
-        //             // }
-        //         }
-        //     });
-        // }
     });
 
     // useEffect(() => {
@@ -293,6 +263,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
     }, [reducer, SETTINGS]);
 
     const debouncedOnHoverHandler = useDebounce(onHover, 200);
+
     return (
         <animated.group
             ref={groupRef}
@@ -300,11 +271,13 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             // onPointerMove={isCarouselMoving && handlePointerMove}
             onPointerMove={isCarouselClicked && handlePointerMove}
             // onPointerDown={debouncedStartCarouselMovement}
-            onPointerDown={(e) => {
-                e.stopPropagation();
-                // setIsCarouselMoving(true);
-                setIsCarouselClicked(true);
-            }}
+            onPointerDown={debouncedStartCarouselClick}
+            // onPointerDown={(e) => {
+            //     e.stopPropagation();
+            //     // setIsCarouselMoving(true);
+            //     // setIsCarouselClicked(true);
+            //     debouncedStartCarouselClick;
+            // }}
             onPointerUp={(e) => {
                 e.stopPropagation();
                 setIsCarouselClicked(false);
@@ -392,7 +365,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     location,
                                     navigate,
                                     isCarouselMoving,
-                                    setIsCarouselClicked
+                                    isCarouselClicked
                                 )
                             }
                             // onPointerOver={(e) =>
@@ -467,7 +440,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                                     location,
                                                     navigate,
                                                     isCarouselMoving,
-                                                    setIsCarouselClicked
+                                                    isCarouselClicked
                                                 )
                                             }
                                             card={card}
@@ -520,35 +493,3 @@ const MemoizedCardsContainer = memo(function CardsContainer({
 });
 
 export default MemoizedCardsContainer;
-const evaluateCardVisibility = (camera, cardPosition) => {
-    // Direction dans laquelle la caméra regarde
-    const cameraDirection = new Vector3(0, 0, -1).applyQuaternion(
-        camera.quaternion
-    );
-
-    // Direction de la caméra vers la carte
-    const cardDirection = new Vector3()
-        .subVectors(cardPosition, camera.position)
-        .normalize();
-
-    // Angle entre la direction de la caméra et la carte
-    const angle = cameraDirection.angleTo(cardDirection);
-
-    // Distance entre la caméra et la carte
-    const distance = camera.position.distanceTo(cardPosition);
-
-    // Facteurs d'interactivité
-    const angleThreshold = Math.PI / 2; // 90 degrés
-    const angleFactor = Math.max(0, 1 - angle / angleThreshold);
-
-    const distanceThreshold = 15; // Ajuster selon votre échelle
-    const distanceFactor = Math.max(0, 1 - distance / distanceThreshold);
-
-    // Combinaison des facteurs (angle a plus d'importance)
-    const visibilityFactor = angleFactor * 0.7 + distanceFactor * 0.3;
-
-    return {
-        isVisible: visibilityFactor > 0.15, // Seuil de visibilité
-        interactivityDepth: Math.max(0.1, visibilityFactor * 2), // Profondeur de l'eventBox
-    };
-};
