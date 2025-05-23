@@ -29,6 +29,7 @@ type CardsContainerTypes = {
     reducer: ReducerType;
     SETTINGS: SettingsType;
 };
+const distancesArray: { index: number; distance: number }[] = [];
 
 let initializedEvents = false;
 
@@ -43,17 +44,26 @@ const MemoizedCardsContainer = memo(function CardsContainer({
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [isCarouselMoving, setIsCarouselMoving] = useState(false);
-    const [isCarouselClicked, setIsCarouselClicked] = useState(false);
+    const [isCarouselMoving, setIsCarouselMoving] = useState(
+        false
+        // reducer.activeContent?.isActive || false
+    );
+    const [isCarouselClicked, setIsCarouselClicked] = useState(
+        // false
+        reducer.activeContent?.isClicked || false
+    );
+    const frameRateCount = useRef(0);
 
     const lastPointerPosition = useRef({ x: 0, y: 0 });
     const groupRef = useRef<Group>(null!);
     const { camera } = useThree();
     const lastCameraPosition = useRef(new Vector3());
     const lastCameraRotation = useRef(new Quaternion());
-    const cameraMovementThreshold = 0.15;
+    const cameraMovementThreshold = 0.25;
+    // const cameraMovementThreshold = 0.15;
     const pointerThreshold = 0.9;
-    const endMovementDebounceDelay = 150;
+    const rotationThreshold = 0.012;
+    const endMovementDebounceDelay = 200;
 
     const animation = useSpring({
         scale: isCarouselMoving ? 0.8 : 1,
@@ -86,23 +96,17 @@ const MemoizedCardsContainer = memo(function CardsContainer({
 
             if (card.ref?.current?.position) {
                 node.position.copy(card.ref.current.position);
-                // node.rotation.copy(card.ref.current.rotation);
+                node.rotation.copy(card.ref.current.rotation);
                 // node.rotation.set(card.ref.current.rotation.x, 0, 0);
-                node.rotation.set(0, card.ref.current.rotation.y, 0);
+                // node.rotation.set(0, card.ref.current.rotation.y, 0);
             }
-            // if (card.isActive) {
-            //     node?.position.set(
-            //         card.ref.current.position.x,
-            //         card.ref.current.position.y,
-            //         card.ref.current.position.z - 1
-            //     );
-            // }
         },
         [isCarouselMoving]
     );
 
     const endCarouselMovement = useDebounce(() => {
         // console.log('END MOVEMENT');
+
         setIsCarouselMoving(false);
     }, endMovementDebounceDelay);
 
@@ -124,7 +128,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                 //     'POINTER TRANSITION EN COURS, TOTAL DISTANCE :',
                 //     totalDistance
                 // );
-
                 endCarouselMovement();
             }
 
@@ -135,7 +138,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
 
     const startCarouselMovement = (e) => {
         e.stopPropagation();
-        setIsCarouselClicked(true);
+        // setIsCarouselClicked(true);
         setIsCarouselMoving(true);
     };
 
@@ -144,9 +147,54 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         110
     );
 
-    useFrame((state, delta) => {
+    useFrame((state) => {
         if (!groupRef.current) return;
-        if (isCarouselClicked) return;
+        frameRateCount.current += 1;
+
+        if (frameRateCount.current % 20 === 0) {
+            // Handle event Box scale
+            distancesArray.length = 0;
+
+            const camera = state.camera;
+
+            reducer.showElements.forEach((item, i) => {
+                if (!item.ref.current) return;
+
+                const distanceFromCamera = item.ref.current.position.distanceTo(
+                    camera.position
+                );
+
+                distancesArray.push({
+                    index: i,
+                    distance: distanceFromCamera,
+                });
+            });
+
+            distancesArray.sort((a, b) => a.distance - b.distance);
+
+            const closestCardIndex =
+                distancesArray.length > 0 ? distancesArray[0].index : -1;
+
+            reducer.showElements.forEach((item, i) => {
+                if (!item.eventBox) return;
+
+                if (
+                    i === closestCardIndex ||
+                    i === closestCardIndex - 1 ||
+                    i === closestCardIndex - 2 ||
+                    i === closestCardIndex + 1 ||
+                    i === closestCardIndex + 2
+                ) {
+                    item.eventBox.material.color.setRGB(0.5, 1, 0.5);
+                    // item.eventBox.scale.set(1, 1, 1);
+                } else {
+                    item.eventBox.material.color.setRGB(1, 0.5, 0.5);
+                    // item.eventBox.scale.set(0.1, 0.1, 0.1);
+                }
+            });
+        }
+
+        if (!isCarouselClicked || reducer.activeContent?.isActive) return;
 
         // Check previous camera position
         const positionDelta = new Vector3()
@@ -158,7 +206,10 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             lastCameraRotation.current
         );
 
-        if (positionDelta > cameraMovementThreshold || rotationDelta > 0.008) {
+        if (
+            positionDelta > cameraMovementThreshold ||
+            rotationDelta > rotationThreshold
+        ) {
             // if (positionDelta > cameraMovementThreshold || rotationDelta > 0.01) {
             setIsCarouselMoving(true);
             // if (!isCarouselClicked) {
@@ -171,7 +222,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             endCarouselMovement();
             // }
         }
-
         // if (isCarouselClicked || isCarouselMoving) {
         // easing.damp3(
         //     groupRef.current.scale,
@@ -181,17 +231,51 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         //     delta
         // );
         // // }
+        // endCarouselMovement();
 
         // Update last camera position & rotation
         lastCameraPosition.current.copy(camera.position);
         lastCameraRotation.current.copy(camera.quaternion);
+
+        // if (frameRateCount.current % 50 === 0) {
+        //     reducer.showElements.forEach((card) => {
+        //         if (card.ref?.current && card.eventBox) {
+        //             const { position } = card.ref.current;
+        //             // const { isVisible, interactivityDepth } =
+        //             //     evaluateCardVisibility(
+        //             //         camera,
+        //             //         card.ref.current.position
+        //             //     );
+        //             // console.log(isVisible, card.id);
+        //             const distance = camera.position.distanceTo(position);
+
+        //             if ()
+        //             // console.log('distance', distance, 'card id :', card.id);
+
+        //             // Ajuster la profondeur de l'eventBox
+        //             // if (card.eventBox.geometry) {
+        //             //     // Si la carte est active, garder une profondeur maximale
+        //             //     const finalDepth = card.isActive
+        //             //         ? 1.5
+        //             //         : interactivityDepth;
+
+        //             //     // Mettre à jour la géométrie
+        //             //     // card.eventBox.scale.z = 1;
+        //             //     card.eventBox.scale.z = finalDepth;
+
+        //             //     // Rendre l'eventBox interactive ou non
+        //             //     card.eventBox.visible = isVisible || card.isActive;
+        //             // }
+        //         }
+        //     });
+        // }
     });
 
     // useEffect(() => {
     //     if (isCarouselMoving) {
-    //         console.log('objects moving');
+    //         console.log('carousel moving t');
     //     } else {
-    //         console.log('objects not moving');
+    //         console.log('carousel not moving');
     //     }
 
     //     if (isCarouselClicked) {
@@ -213,13 +297,25 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         <animated.group
             ref={groupRef}
             name="cards-container"
-            onPointerMove={!isCarouselClicked && handlePointerMove}
-            onPointerDown={debouncedStartCarouselMovement}
+            // onPointerMove={isCarouselMoving && handlePointerMove}
+            onPointerMove={isCarouselClicked && handlePointerMove}
+            // onPointerDown={debouncedStartCarouselMovement}
+            onPointerDown={(e) => {
+                e.stopPropagation();
+                // setIsCarouselMoving(true);
+                setIsCarouselClicked(true);
+            }}
             onPointerUp={(e) => {
                 e.stopPropagation();
                 setIsCarouselClicked(false);
-                endCarouselMovement();
+                // endCarouselMovement();
             }}
+            // onClick={(e) => {
+            //     e.stopPropagation();
+            //     console.log('test');
+            //     // setIsCarouselClicked(false);
+            //     // endCarouselMovement();
+            // }}
             // scale={animation.scale}
             // scale={isCarouselMoving ? 0.8 : 1}
         >
@@ -230,9 +326,18 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             key={`eventBox_${card.id}`}
                             ref={(e) => eventBox(e, card)}
                             onPointerOver={(e) =>
+                                // !isCarouselMoving &&
+                                // // !isCarouselClicked &&
+                                // debouncedOnHoverHandler(
+                                //     e,
+                                //     card,
+                                //     reducer,
+                                //     isCarouselMoving,
+                                //     setIsCarouselMoving
+                                // )
                                 !isCarouselMoving &&
                                 !isCarouselClicked &&
-                                debouncedOnHoverHandler(
+                                onHover(
                                     e,
                                     card,
                                     reducer,
@@ -243,6 +348,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             onPointerMove={(e) =>
                                 !isCarouselMoving &&
                                 !isCarouselClicked &&
+                                card.id !== reducer.activeContent?.id &&
                                 onHover(
                                     e,
                                     card,
@@ -266,7 +372,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                 args={[
                                     card.baseScale,
                                     2,
-                                    card.isActive ? 1.5 : 0.5,
+                                    1,
+                                    // card.isActive ? 1.5 : 0.5,
                                 ]}
                             >
                                 <meshStandardMaterial
@@ -284,7 +391,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     reducer,
                                     location,
                                     navigate,
-                                    isCarouselMoving
+                                    isCarouselMoving,
+                                    setIsCarouselClicked
                                 )
                             }
                             // onPointerOver={(e) =>
@@ -358,7 +466,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                                     reducer,
                                                     location,
                                                     navigate,
-                                                    isCarouselMoving
+                                                    isCarouselMoving,
+                                                    setIsCarouselClicked
                                                 )
                                             }
                                             card={card}
@@ -411,3 +520,35 @@ const MemoizedCardsContainer = memo(function CardsContainer({
 });
 
 export default MemoizedCardsContainer;
+const evaluateCardVisibility = (camera, cardPosition) => {
+    // Direction dans laquelle la caméra regarde
+    const cameraDirection = new Vector3(0, 0, -1).applyQuaternion(
+        camera.quaternion
+    );
+
+    // Direction de la caméra vers la carte
+    const cardDirection = new Vector3()
+        .subVectors(cardPosition, camera.position)
+        .normalize();
+
+    // Angle entre la direction de la caméra et la carte
+    const angle = cameraDirection.angleTo(cardDirection);
+
+    // Distance entre la caméra et la carte
+    const distance = camera.position.distanceTo(cardPosition);
+
+    // Facteurs d'interactivité
+    const angleThreshold = Math.PI / 2; // 90 degrés
+    const angleFactor = Math.max(0, 1 - angle / angleThreshold);
+
+    const distanceThreshold = 15; // Ajuster selon votre échelle
+    const distanceFactor = Math.max(0, 1 - distance / distanceThreshold);
+
+    // Combinaison des facteurs (angle a plus d'importance)
+    const visibilityFactor = angleFactor * 0.7 + distanceFactor * 0.3;
+
+    return {
+        isVisible: visibilityFactor > 0.15, // Seuil de visibilité
+        interactivityDepth: Math.max(0.1, visibilityFactor * 2), // Profondeur de l'eventBox
+    };
+};
