@@ -364,6 +364,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     reducer,
                                     location,
                                     navigate,
+                                    reducer.isMobile,
                                     isCarouselMoving,
                                     isCarouselClicked
                                 )
@@ -439,6 +440,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                                     reducer,
                                                     location,
                                                     navigate,
+                                                    reducer.isMobile,
                                                     isCarouselMoving,
                                                     isCarouselClicked
                                                 )

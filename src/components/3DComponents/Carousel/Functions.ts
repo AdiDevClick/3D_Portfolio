@@ -208,6 +208,7 @@ export function onClickHandler(
     reducer: ReducerType,
     location: { pathname: string },
     navigate: any,
+    isMobile: boolean,
     isCarouselMoving: boolean,
     isCarouselClicked: boolean
 ): void {
@@ -233,6 +234,7 @@ export function onClickHandler(
     }
 
     if (
+        !isMobile &&
         (isCarouselClicked || isCarouselMoving) &&
         e.nativeEvent.type === 'click'
     ) {
