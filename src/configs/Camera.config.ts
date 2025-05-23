@@ -29,7 +29,15 @@ export const CAMERA_CLICKED_MOBILE_OFFSET = 0;
 export const CAMERA_CLICKED_DESKTOP_OFFSET = 1.4;
 
 /**
- * Small tilt offset for the camera to avoir true flat angle
+ * Not hovered camera offset
+ *
+ * @description This can help the camera to be more centered
+ * Lower value = more centered
+ */
+export const CAMERA_HOVER_DESKTOP_OFFSET = 0.2;
+
+/**
+ * Small tilt offset for the camera to avoid true flat angle
  * @description Can help the html container to be more visible
  */
 export const CAMERA_ANGLE_OFFSET = Math.PI / 28;
@@ -40,6 +48,7 @@ export const CAMERA_ANGLE_OFFSET = Math.PI / 28;
  */
 export const CAMERA_EXTRA_PULLBACK_MOBILE = 5.5;
 export const CAMERA_EXTRA_PULLBACK_DESKTOP = 3.5;
+export const CAMERA_HOVER_PULLBACK_DESKTOP = 4.2;
 
 /**
  * OFFSET for the camera
@@ -76,21 +85,20 @@ export const CAMERA_SAFETY_MARGIN = 8;
  *
  * Higher value = closer to the card
  */
-export const CAMERA_MAX_EDGE_COMPENSATION = 0.3;
+export const CAMERA_MAX_EDGE_COMPENSATION = 0.5;
 /**
  * Rotation speed for the camera for
  * cards on the edges
  *
  * Higher value = faster rotation
  */
-export const CAMERA_EDGE_LERP_FACTOR = 0.4;
-
+export const CAMERA_EDGE_LERP_FACTOR = 0.8;
 /**
  * Compensation factor for the camera
  * when a card is on the edges
  * Higher value = more compensation
  */
-export const CAMERA_EDGE_COMPENSATION_FACTOR = 0.5;
+export const CAMERA_EDGE_COMPENSATION_FACTOR = 9;
 
 /**
  *
@@ -128,7 +136,7 @@ export const CAMERA_CLICKED_LERP_MULTIPLIER = 1.5;
  *
  * Higher value = more offset
  */
-export const CAMERA_OFFSET_EDGE_ADJUSTMENT = 0.3;
+export const CAMERA_OFFSET_EDGE_ADJUSTMENT = 1;
 
 /**
  * Vertical position divisor for the camera
