@@ -52,9 +52,11 @@ const MemoizedCardsContainer = memo(function CardsContainer({
     const lastCameraPosition = useRef(new Vector3());
     const lastCameraRotation = useRef(new Quaternion());
     const cameraMovementThreshold = 0.15;
+    const pointerThreshold = 0.9;
+    const endMovementDebounceDelay = 150;
 
     const animation = useSpring({
-        scale: isCarouselClicked ? 0.8 : 1,
+        scale: isCarouselMoving ? 0.8 : 1,
         config: {
             mass: 1,
             tension: 120,
@@ -77,18 +79,32 @@ const MemoizedCardsContainer = memo(function CardsContainer({
      * @param node - The event box
      * @param card - The card to set the position
      */
-    const eventBox = useCallback((node: Mesh | null, card: ElementType) => {
-        if (!node) return;
-        if (card.ref?.current?.position) {
-            node?.position.copy(card.ref.current.position);
-            node?.rotation.copy(card.ref.current.rotation);
-            initializedEvents = true;
-        }
-    }, []);
+    const eventBox = useCallback(
+        (node: Mesh | null, card: ElementType) => {
+            if (!node) return;
+            card.eventBox = node;
+
+            if (card.ref?.current?.position) {
+                node.position.copy(card.ref.current.position);
+                // node.rotation.copy(card.ref.current.rotation);
+                // node.rotation.set(card.ref.current.rotation.x, 0, 0);
+                node.rotation.set(0, card.ref.current.rotation.y, 0);
+            }
+            // if (card.isActive) {
+            //     node?.position.set(
+            //         card.ref.current.position.x,
+            //         card.ref.current.position.y,
+            //         card.ref.current.position.z - 1
+            //     );
+            // }
+        },
+        [isCarouselMoving]
+    );
 
     const endCarouselMovement = useDebounce(() => {
+        // console.log('END MOVEMENT');
         setIsCarouselMoving(false);
-    }, 100);
+    }, endMovementDebounceDelay);
 
     const handlePointerMove = useCallback(
         (e: ThreeEvent<PointerEvent>) => {
@@ -102,8 +118,13 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                 e.point.y - lastPointerPosition.current.y
             );
             const totalDistance = distanceX + distanceY;
-            if (totalDistance > 0.5) {
+            if (totalDistance > pointerThreshold) {
                 setIsCarouselMoving(true);
+                // console.log(
+                //     'POINTER TRANSITION EN COURS, TOTAL DISTANCE :',
+                //     totalDistance
+                // );
+
                 endCarouselMovement();
             }
 
@@ -137,11 +158,16 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             lastCameraRotation.current
         );
 
-        if (positionDelta > cameraMovementThreshold || rotationDelta > 0.01) {
+        if (positionDelta > cameraMovementThreshold || rotationDelta > 0.008) {
             // if (positionDelta > cameraMovementThreshold || rotationDelta > 0.01) {
-            // console.log('mouvement de la camera');
             setIsCarouselMoving(true);
             // if (!isCarouselClicked) {
+            // console.log(
+            //     'CAMERA TRANSITION EN COURS, DELTA :',
+            //     positionDelta,
+            //     '\n ROTATION DELTA :',
+            //     rotationDelta
+            // );
             endCarouselMovement();
             // }
         }
@@ -160,6 +186,20 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         lastCameraPosition.current.copy(camera.position);
         lastCameraRotation.current.copy(camera.quaternion);
     });
+
+    // useEffect(() => {
+    //     if (isCarouselMoving) {
+    //         console.log('objects moving');
+    //     } else {
+    //         console.log('objects not moving');
+    //     }
+
+    //     if (isCarouselClicked) {
+    //         console.log('objects clicked');
+    //     } else {
+    //         console.log('objects not clicked');
+    //     }
+    // }, [isCarouselMoving, isCarouselClicked]);
 
     const cardsPropsMemo = useMemo(() => {
         return {
@@ -187,6 +227,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                 return (
                     <group key={card.url + i}>
                         <mesh
+                            key={`eventBox_${card.id}`}
                             ref={(e) => eventBox(e, card)}
                             onPointerOver={(e) =>
                                 !isCarouselMoving &&
@@ -202,13 +243,32 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             onPointerMove={(e) =>
                                 !isCarouselMoving &&
                                 !isCarouselClicked &&
-                                onHover(e, card, reducer, isCarouselMoving)
+                                onHover(
+                                    e,
+                                    card,
+                                    reducer,
+                                    isCarouselMoving,
+                                    setIsCarouselMoving
+                                )
                             }
-                            onPointerOut={(e) => onPointerOut(e, card, reducer)}
+                            onPointerOut={(e) =>
+                                onPointerOut(
+                                    e,
+                                    card,
+                                    reducer,
+                                    endCarouselMovement
+                                )
+                            }
                             name={`eventBox_${card.id}`}
                             visible={false}
                         >
-                            <boxGeometry args={[card.baseScale, 2, 1]}>
+                            <boxGeometry
+                                args={[
+                                    card.baseScale,
+                                    2,
+                                    card.isActive ? 1.5 : 0.5,
+                                ]}
+                            >
                                 <meshStandardMaterial
                                     color={'white'}
                                     opacity={0}
@@ -227,6 +287,17 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     isCarouselMoving
                                 )
                             }
+                            // onPointerOver={(e) =>
+                            //     !isCarouselMoving &&
+                            //     !isCarouselClicked &&
+                            //     debouncedOnHoverHandler(
+                            //         e,
+                            //         card,
+                            //         reducer,
+                            //         isCarouselMoving,
+                            //         setIsCarouselMoving
+                            //     )
+                            // }
                             card={card}
                             presenceRadius={
                                 SETTINGS.PRESENCE_RADIUS * card.baseScale
