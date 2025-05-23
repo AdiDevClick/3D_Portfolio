@@ -17,6 +17,8 @@ import {
     CAMERA_EXTRA_PULLBACK_MOBILE,
     CAMERA_FOV_DESKTOP,
     CAMERA_FOV_MOBILE,
+    CAMERA_HOVER_DESKTOP_OFFSET,
+    CAMERA_HOVER_PULLBACK_DESKTOP,
     CAMERA_MAX_EDGE_COMPENSATION,
     CAMERA_MOBILE_Y_POSITION,
     CAMERA_MOBILE_Z_POSITION,
@@ -78,7 +80,7 @@ export function useCameraPositioning() {
 
             const absDelta = Math.abs(angleDelta);
             const angleFactor = Math.min(1, absDelta / Math.PI);
-
+            const initialImpulse = 0.2;
             // !! IMPORTANT !! Modify the lerp factor to rotate
             // a bit faster to the cards on the edges
             const adaptiveLerpFactor =
@@ -93,19 +95,40 @@ export function useCameraPositioning() {
                       CAMERA_CLICKED_MAX_LERP_FACTOR,
                       adaptiveLerpFactor * CAMERA_CLICKED_LERP_MULTIPLIER
                   )
-                : adaptiveLerpFactor;
+                : Math.max(initialImpulse, adaptiveLerpFactor);
+            // const effectiveLerpFactor = isClicked
+            //     ? Math.min(
+            //           CAMERA_CLICKED_MAX_LERP_FACTOR,
+            //           adaptiveLerpFactor * CAMERA_CLICKED_LERP_MULTIPLIER
+            //       )
+            //     : adaptiveLerpFactor;
 
-            const newAngle = isClicked
+            let newAngle = isClicked
                 ? desiredAngle
                 : currentCameraAngle + angleDelta * effectiveLerpFactor;
-
+            if (!isClicked && Math.abs(angleDelta) > 0.01) {
+                const initialDirection = angleDelta > 0 ? 1 : -1;
+                const initialPush =
+                    initialDirection *
+                    Math.min(0.05, Math.abs(angleDelta) * 0.1);
+                newAngle += initialPush;
+            }
             // Camera position from the center of the circle
+            // const finalDesiredRadius =
+            //     containerScale +
+            //     CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation) +
+            //     (isMobile
+            //         ? CAMERA_EXTRA_PULLBACK_MOBILE
+            //         : CAMERA_EXTRA_PULLBACK_DESKTOP);
+
             const finalDesiredRadius =
                 containerScale +
                 CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation) +
                 (isMobile
                     ? CAMERA_EXTRA_PULLBACK_MOBILE
-                    : CAMERA_EXTRA_PULLBACK_DESKTOP);
+                    : isClicked
+                    ? CAMERA_EXTRA_PULLBACK_DESKTOP
+                    : CAMERA_HOVER_PULLBACK_DESKTOP);
 
             const camTargetPos = ref.current.position.clone();
 
@@ -134,9 +157,16 @@ export function useCameraPositioning() {
             const rightVector = new Vector3(1, 0, 0);
             rightVector.applyQuaternion(ref.current.quaternion);
 
+            // const offsetDistance =
+            //     (!isMobile && isClicked
+            //         ? CAMERA_CLICKED_DESKTOP_OFFSET
+            //         : CAMERA_CLICKED_MOBILE_OFFSET) *
+            //     (1 - angleFactor * CAMERA_OFFSET_EDGE_ADJUSTMENT);
             const offsetDistance =
-                (!isMobile && isClicked
-                    ? CAMERA_CLICKED_DESKTOP_OFFSET
+                (!isMobile
+                    ? isClicked
+                        ? CAMERA_CLICKED_DESKTOP_OFFSET
+                        : CAMERA_HOVER_DESKTOP_OFFSET
                     : CAMERA_CLICKED_MOBILE_OFFSET) *
                 (1 - angleFactor * CAMERA_OFFSET_EDGE_ADJUSTMENT);
 
