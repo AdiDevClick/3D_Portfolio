@@ -10,7 +10,8 @@ import { frustumChecker } from '@/utils/frustrumChecker';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
-import { ContactShadows, useScroll } from '@react-three/drei';
+import { Center, ContactShadows, useScroll } from '@react-three/drei';
+import { HexCell } from '@/components/3DComponents/Forms/HexCell';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -25,6 +26,14 @@ type HomeTypes = {
 let currentTitlePos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentStackPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let count = 0;
+
+const gridOptions = {
+    columnsNumber: 3,
+    rowOffset: 0.5,
+    marginX: 2.5,
+    marginY: 1.5,
+    windowMargin: 1,
+};
 
 /**
  * Home page component.
@@ -157,13 +166,18 @@ const MemoizedHome = memo(function Home({
                         width={contentWidth ?? 1}
                         icons={iconsWithText}
                         scalar={generalScaleX}
+                        gridOptions={gridOptions}
                         position-y={
                             isMobile
                                 ? -2 * generalScaleX - margin
                                 : -2.5 * generalScaleX - margin
                         }
                         isMobile={isMobile}
-                    />
+                    >
+                        <Center bottom>
+                            <HexCell scalar={generalScaleX} />
+                        </Center>
+                    </MemoizedIconsContainer>
                 </Suspense>
             </group>
             <ContactShadows
