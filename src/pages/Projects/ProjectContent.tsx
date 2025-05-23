@@ -1,21 +1,25 @@
 import { Tags } from '@/components/HTML/tags/Tags';
 import { TagsContainer } from '@/components/HTML/tags/TagsContainer';
 import { ElementType } from '@/hooks/reducers/carouselTypes';
-import { useId } from 'react';
+import { ThreeEvent } from '@react-three/fiber';
+import { MouseEvent, useId } from 'react';
 
 type cardType = {
     card: ElementType;
+    clickEvent: (
+        e: PointerEvent & ThreeEvent<MouseEvent> & MouseEvent<HTMLDivElement>
+    ) => void;
 };
 
 /**
  * Project content component.
  * @param card - Card data.
  */
-export function ProjectContent({ card }: cardType) {
+export function ProjectContent({ card, clickEvent }: cardType) {
     Array.isArray(card.stack) ? card.stack : [card.stack];
     return (
         <>
-            <span className="card__close"></span>
+            <span onClick={clickEvent} className="card__close"></span>
             <h2 className="card__title">{card.title}</h2>
             <TagsContainer>
                 {card.links.map((element) => {

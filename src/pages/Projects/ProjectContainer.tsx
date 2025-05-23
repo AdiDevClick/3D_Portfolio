@@ -30,7 +30,7 @@ export function ProjectContainer({
             onWheel={onScrollHandler}
             {...props}
         >
-            <ProjectContent card={card} {...props} />
+            <ProjectContent clickEvent={onClick} card={card} {...props} />
         </div>
     );
 }
