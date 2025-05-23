@@ -1,5 +1,5 @@
 import { RefObject } from 'react';
-import { Mesh, Texture, Vector3 } from 'three';
+import { Group, Mesh, Texture, Vector3 } from 'three';
 
 export interface CarouselState {
     /** Tableau des cards */
@@ -103,7 +103,7 @@ export interface ElementType extends CardContentType {
     isActive?: boolean;
     isClicked?: boolean;
     /** The 3D object reference of the card */
-    ref?: RefObject<Mesh>;
+    ref?: RefObject<Mesh | Group>;
     animation?:
         | string
         | string[]
@@ -122,6 +122,8 @@ export interface ElementType extends CardContentType {
     texture?: Texture;
     /** The loaded state of the card in the card container */
     _loaded?: boolean;
+    /** Event box for cards hovering */
+    eventBox?: Mesh;
 }
 
 export interface ReducerType {
