@@ -12,9 +12,9 @@ export interface CarouselState {
     /** Tailles du contenu (tableau de largeur et hauteur) */
     contentSizes: number[] | null;
     /** Largeur du contenu normalisée */
-    contentWidth: number | null;
+    contentWidth: number;
     /** Hauteur du contenu normalisée */
-    contentHeight: number | null;
+    contentHeight: number;
     /** Facteur d'échelle sur l'axe X pour adapter à tous les appareils */
     generalScaleX: number;
     /** Facteur d'échelle sur l'axe Y pour adapter à tous les appareils */
@@ -183,7 +183,7 @@ export interface ReducerType {
     /** Store the viewport width and height in pixels*/
     contentSizes: number[] | null;
     /** Store the viewport normalized height for content calculations */
-    contentHeight: number | null;
+    contentHeight: number;
     /** Store the viewport normalized width  for content calculations */
     contentWidth: number;
     /** Store the calculated X-axis Scalar value to fit on all devices */
