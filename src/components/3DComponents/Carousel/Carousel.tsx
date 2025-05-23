@@ -42,7 +42,6 @@ import {
     CARD_ACTIVE_FORWARD_OFFSET,
     CARD_ANIMATION_SPEED,
 } from '@/configs/Cards.config';
-import { distance } from 'maath/dist/declarations/src/vector2';
 
 let animationProgress = 0;
 
