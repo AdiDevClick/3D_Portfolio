@@ -228,74 +228,16 @@ export function onClickHandler(
 export async function onPointerOut(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
-    reducer: ReducerType
+    reducer: ReducerType,
+    endCarouselMovement: () => void
 ) {
     e.stopPropagation();
-
     if (reducer.activeContent?.isClicked) {
-        // hoverPromisesArray.clear();
         return;
     }
 
-    // try {
-    // hoverPromisesArray.set(card.id, await wait(100, 'Hover out card'));
-
-    // if (hoverPromises.has(card.id)) {
-    //     hoverPromises.delete(card.id);
-    // }
-    // hoverPromisesArray.push(waitAndFail(100, 'Hover out card'));
-    // console.log(hoverPromisesArray);
-    // hoverPromisesArray
-    if (!hoverPromisesArray.has(card.id)) {
-        // const r = await promiseState(hoverPromisesArray);
-        // if (r.status === 'fulfilled') {
-        //     // if (r.status === 'fulfilled' && r.value.has(card.id)) {
-        //     hoverPromisesArray.delete(card.id);
-        //     // hoverPromisesArray.set(card.id, await wait(100, 'Hover out card'));
-        //     // if (reducer.activeContent?.id === card.id) {
-        //     throw new Error('Une carte est encore active', {
-        //         cause: {
-        //             status: 403,
-        //             message: {
-        //                 promiseState: r.status,
-        //                 cardId: card.id,
-        //                 activeContentId: reducer.activeContent?.id,
-        //                 message: 'Il ne faut pas désactiver cette carte',
-        //             },
-        //         },
-        //     });
-        //     // }
-        // }
-        // return;
-    }
-    // hoverPromisesArray.delete(card.id);
     reducer.activateElement(card, false);
-    // hoverPromisesArray.delete(card.id);
-    // throw new Error('Je désactive mais jai pas demandé !', {
-    //     cause: {
-    //         status: 403,
-    //         message: {
-    //             promiseState: r.status,
-    //             cardId: card.id,
-    //             activeContentId: reducer.activeContent?.id,
-    //             message: 'Pourquoi je désactive cette carte ?',
-    //         },
-    //     },
-    // });
-    // } catch (error) {
-    //     if (error.cause && error.cause.status === 403) {
-    //         console.warn(
-    //             'Error message: ',
-    //             error.cause.message,
-    //             '\nError status: ',
-    //             error.cause.status
-    //         );
-    //         // hoverPromisesArray.set(card.id, waitAndFail(100, 'Hover out card'));
-    //     } else {
-    //         console.warn('Error message: ', error);
-    //     }
-    // }
-    // if (reducer.activeContent?.id !== card.id) return;
+    endCarouselMovement();
 }
 
 /**
@@ -309,7 +251,14 @@ export function onHover(
     setIsCarouselMoving: (value: boolean) => void
 ) {
     e.stopPropagation();
-    if (isCarouselMoving) return;
+    // console.log('UN HOVER EST EN COURS ?');
+
+    if (isCarouselMoving) {
+        return;
+    }
+    // } else {
+    //     setIsCarouselMoving(true);
+    // }
     if (
         (reducer.activeContent && reducer.activeContent.isClicked) ||
         reducer.isMobile ||
@@ -319,7 +268,10 @@ export function onHover(
     if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
         reducer.activeContent.isActive = false;
     }
+    // console.log('UN HOVER EST EN COURS', console.clear());
+
     reducer.activateElement(card, true);
+    if (!isCarouselMoving) setIsCarouselMoving(true);
 }
 
 /**
