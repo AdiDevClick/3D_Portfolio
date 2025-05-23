@@ -7,13 +7,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import {
-    ColorManagement,
-    DoubleSide,
-    Mesh,
-    Object3DEventMap,
-    Vector3,
-} from 'three';
+import { DoubleSide, Mesh, Object3DEventMap, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import {
@@ -80,11 +74,9 @@ export default function Carousel({
     const [isAnimatingIn, setIsAnimatingIn] = useState(false);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [isCarouselLoaded, setIsCarouselLoaded] = useState(false);
-    const [lastActiveCardIndex, setLastActiveCardIndex] = useState<number>(-1);
 
     const activeURL = location.pathname.includes('projets');
     const activeProject = activeURL && params.id;
-    // const activeProject = activeURL && location.pathname.split('/')[2];
 
     /**
      * Création des propriétés des cartes -
