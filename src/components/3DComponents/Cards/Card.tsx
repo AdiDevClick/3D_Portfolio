@@ -45,35 +45,14 @@ const MemoizedCard = memo(function Card({
 }: PropsWithChildren<CardProps>) {
     const cardRef = useRef<Mesh & ImageProps>(null!);
     const { updateBending, updateWidth, isMobile, visible } = reducer;
-    // const widthRef = useRef(card.baseScale);
-    // const navigate = useNavigate();
-    // const location = useLocation();
+
     const [width, setWidth] = useState(1);
     const [ratio, setRatio] = useState(1);
-    // const [currentRatio, setCurrentRatio] = useState(card.baseScale * 0.7);
-    // const [animatedScale, setAnimatedScale] = useState(card.baseScale);
+
     // mobile Optimisations
     const segments = reducer.isMobile ? 8 : 12;
 
     const { cardScale } = useSpring({
-        // Valeurs cibles qui changent en fonction de l'état clicked
-        // widthSpring: card.isClicked ? card.baseScale + 0.9 : card.baseScale,
-        // bendingValue: card.isClicked ? 0 : SETTINGS.BENDING,
-        // from: {
-        //     cardScale: card.isClicked
-        //         ? 1
-        //         : card.isActive
-        //         ? card.baseScale
-        //         : 1.0,
-        // },
-        // to: {
-        //     cardScale: card.isClicked
-        //         ? 1
-        //         : card.isActive
-        //         ? (card.baseScale * width) / 2
-        //         : 1.0,
-        // },
-        // cardScale: card.isClicked ? 0.8 : card.isActive ? 1 : 1.0,
         cardScale: card.isClicked
             ? 1
             : card.isActive
@@ -83,10 +62,10 @@ const MemoizedCard = memo(function Card({
         // Configuration de l'animation - très importante pour la fluidité
         config: {
             mass: 1.5,
-            tension: 140, // Tension plus basse = animation plus douce
-            friction: 22, // Friction plus haute = moins d'oscillations
-            precision: 0.001, // S'arrête quand les changements sont minimes
-            duration: 200, // Durée de l'animation
+            tension: 140,
+            friction: 22,
+            precision: 0.001,
+            duration: 200,
         },
         delay: 200,
     });
@@ -134,22 +113,6 @@ const MemoizedCard = memo(function Card({
             delta
         );
         easing.damp3(title.scale, !card.isClicked ? 1 : 0.5, 0.1, delta);
-        // easing.damp3(
-        //     scale,
-        //     card.isClicked ? width : cardHoverScale,
-        //     0.3,
-        //     delta
-        // );
-        // easing.damp3(
-        //     scale,
-        //     card.isClicked
-        //         ? width / ratio
-        //         : card.isActive
-        //         ? [cardHoverScale * 1.1, cardHoverScale, 1]
-        //         : [cardHoverScale, cardHoverScale, 1],
-        //     scaleDampingFactor,
-        //     delta
-        // );
 
         easing.damp(
             material,
@@ -226,13 +189,8 @@ const MemoizedCard = memo(function Card({
     }, [card.isActive, card.isClicked]);
 
     return (
-        <animated.group
-            // position={[0, 0, 1]}
-            // position={card.isClicked ? [0, 0, -1] : card.position}
-            scale={cardScale}
-        >
+        <animated.group scale={cardScale}>
             <Image
-                // key={'card-img' + card.id}
                 position={card.position}
                 ref={cardRef}
                 url={import.meta.env.BASE_URL + card.url}
@@ -246,6 +204,7 @@ const MemoizedCard = memo(function Card({
                 ]}
                 // scale={card.currentWidth}
                 // scale={width}
+                // scale={ratio}
                 scale={card.isClicked ? ratio : card.baseScale}
                 {...props}
             >
@@ -257,9 +216,7 @@ const MemoizedCard = memo(function Card({
                         card.baseScale,
                         card.isClicked
                             ? SETTINGS.y_HEIGHT / 2
-                            : // : card.isActive
-                              // ? SETTINGS.y_HEIGHT / 1.3
-                              SETTINGS.y_HEIGHT,
+                            : SETTINGS.y_HEIGHT,
                         segments,
                     ]}
                 />
