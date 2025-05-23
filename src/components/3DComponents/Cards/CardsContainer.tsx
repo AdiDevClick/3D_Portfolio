@@ -186,10 +186,10 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                     i === closestCardIndex + 2
                 ) {
                     item.eventBox.material.color.setRGB(0.5, 1, 0.5);
-                    // item.eventBox.scale.set(1, 1, 1);
+                    item.eventBox.scale.set(1, 1, 1);
                 } else {
                     item.eventBox.material.color.setRGB(1, 0.5, 0.5);
-                    // item.eventBox.scale.set(0.1, 0.1, 0.1);
+                    item.eventBox.scale.set(0.1, 0.1, 0.1);
                 }
             });
         }
