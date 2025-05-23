@@ -25,7 +25,6 @@ const initialState: CarouselState = {
  */
 export function useCarousel(): ReducerType {
     const [state, dispatch] = useReducer(carouselReducer, initialState);
-
     let activeContent = null;
     let loadedCardCount = 0;
     let allCardsLoaded = false;
@@ -43,7 +42,6 @@ export function useCarousel(): ReducerType {
             allCardsLoaded = true;
         }
     }
-
     return {
         allCardsLoaded: allCardsLoaded,
         loadedCount: state.loadedCount,

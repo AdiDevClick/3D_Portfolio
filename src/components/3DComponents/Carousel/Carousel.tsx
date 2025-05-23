@@ -42,6 +42,7 @@ import {
     CARD_ACTIVE_FORWARD_OFFSET,
     CARD_ANIMATION_SPEED,
 } from '@/configs/Cards.config';
+import { distance } from 'maath/dist/declarations/src/vector2';
 
 let animationProgress = 0;
 
@@ -129,7 +130,6 @@ export default function Carousel({
                 CARD_ACTIVE_FORWARD_OFFSET,
                 SETTINGS.THREED
             );
-
             return acc;
         }, {});
         return { itemPositions, activeCard };
@@ -297,82 +297,6 @@ export default function Carousel({
                     SETTINGS.set
                 );
             }
-
-            // Handle event Box scale
-
-            // if (frameCountRef % 20 === 0) {
-            //     // if (SETTINGS.debug && item.eventBox.material) {
-            //     //     item.eventBox.material.color.setRGB(
-            //     //         1.0, // Rouge
-            //     //         visibilityFactor, // Vert (diminue avec la visibilité)
-            //     //         visibilityFactor // Bleu (diminue avec la visibilité)
-            //     //     );
-            //     // }
-            //     if (!item.eventBox) return;
-
-            //     const currentActiveCard =
-            //         activeCard !== -1 ? activeCard : lastActiveCardIndex;
-
-            //     // Si une carte est ou était active récemment
-            //     if (currentActiveCard !== -1) {
-            //         // Mettre à jour l'état avec la dernière carte active
-            //         if (
-            //             activeCard !== -1 &&
-            //             lastActiveCardIndex !== activeCard
-            //         ) {
-            //             setLastActiveCardIndex(activeCard);
-            //         }
-
-            //         if (i === currentActiveCard) {
-            //             // Carte active - eventBox plus grand
-            //             item.eventBox.scale.set(1.2, 1.2, 1.2);
-            //         } else if (
-            //             i === currentActiveCard + 1 ||
-            //             i === currentActiveCard - 1 ||
-            //             i === currentActiveCard + 2 ||
-            //             i === currentActiveCard - 2 ||
-            //             // Gestion des bords du carousel (connexion circulaire)
-            //             (i === 0 &&
-            //                 currentActiveCard === showElements.length - 1) ||
-            //             (i === showElements.length - 1 &&
-            //                 currentActiveCard === 0)
-            //         ) {
-            //             // Cartes adjacentes
-            //             item.eventBox.scale.set(1.2, 1.2, 1.2);
-            //         } else {
-            //             // Autres cartes - petit mais pas nul pour garder une interaction possible
-            //             item.eventBox.scale.set(0.3, 0.3, 0.3);
-            //         }
-            //     } else {
-            //         // DÉMARRAGE INITIAL: toutes les cartes sont interactives
-            //         if (isInitialLoading || !reducer.activeContent) {
-            //             // Au premier chargement, rendre toutes les cartes interactives
-            //             // avec une échelle légèrement adaptée à la position
-            //             const centerPosition = showElements.length / 2;
-            //             const distanceFromCenter = Math.abs(i - centerPosition);
-            //             const maxDistance = showElements.length / 2; // Plus grand rayon d'interaction
-
-            //             // Échelle entre 0.8 et 1.2 selon la distance au centre
-            //             const scale = Math.max(
-            //                 0.8,
-            //                 1.2 - (distanceFromCenter / maxDistance) * 0.4
-            //             );
-            //             item.eventBox.scale.set(scale, scale, scale);
-            //         } else {
-            //             // Après avoir quitté une carte, revenir à l'état avec zones interactives
-            //             const centerPosition = showElements.length / 2;
-            //             const distanceFromCenter = Math.abs(i - centerPosition);
-            //             const maxDistance = showElements.length / 3;
-
-            //             // Toutes les cartes sont au moins un peu interactives
-            //             const scale = Math.max(
-            //                 0.5,
-            //                 1 - (distanceFromCenter / maxDistance) * 0.5
-            //             );
-            //             item.eventBox.scale.set(scale, scale, scale);
-            //         }
-            //     }
-            // }
 
             if (!activeURL) return;
 

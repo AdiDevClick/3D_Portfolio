@@ -59,7 +59,6 @@ export default function App({
     //     const gltfLoader = new GLTFLoader();
     //     gltfLoader.setDRACOLoader(dracoLoader);
     // }, []);
-
     return (
         <main className="main-container">
             <Leva hidden={true} />
