@@ -22,15 +22,30 @@ type IconsContainerTypes = {
     /** @DefaultValue 5 */
     margin?: number;
     isMobile: boolean;
+    /** @defaultValue 100 */
+    iconScale?: number;
+    floatOptions?: {
+        speed?: number;
+        floatIntensity?: number;
+        rotationIntensity?: number;
+        floatRange?: [number, number];
+    };
+    gridOptions?: {
+        columnsNumber: number;
+        rowOffset: number;
+        marginX: number;
+        marginY: number;
+        windowMargin: number;
+    };
 } & JSX.IntrinsicElements['group'];
 
-const gridOptions = {
-    columnsNumber: 3,
-    rowOffset: 0.5,
-    marginX: 2.5,
-    marginY: 1.5,
-    windowMargin: 1,
-};
+// const gridOptions = {
+//     columnsNumber: 3,
+//     rowOffset: 0.5,
+//     marginX: 2.5,
+//     marginY: 1.5,
+//     windowMargin: 1,
+// };
 
 /**
  * IconsContainer component that displays a grid of icons with text.
@@ -41,15 +56,22 @@ const gridOptions = {
  * @param scalar - Scalar value for scaling the icons depending on the screen size
  * @param margin - Margin between icons (default = 0.5)
  * @param isMobile - Indicating if the device is mobile
+ * @param iconScale - Scale of the icon (default = 100)
  * @param props - Additional properties for the 3D group element
+ * @param floatOptions - Options for the floating effect
  * @returns JSX.Element
  */
 const MemoizedIconsContainer = memo(function IconsContainer({
+    children,
     width,
     icons,
     scalar,
     margin = 0.5,
     isMobile,
+    floatOptions,
+    /** @defaultValue 5 */
+    iconScale = 100,
+    gridOptions,
     ...props
 }: IconsContainerTypes) {
     const groupRef = useRef<Group>(null!);
@@ -104,6 +126,8 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                                 name: icon.name,
                             }}
                             name={'icon__content'}
+                            iconScale={iconScale}
+                            floatOptions={floatOptions}
                             position={
                                 isMobile
                                     ? [0.5 * scalar, 1.45 * scalar, -0.15]
@@ -111,9 +135,10 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                             }
                         />
                     </Suspense>
-                    <Center bottom>
+                    {/* <Center bottom>
                         <HexCell scalar={scalar} />
-                    </Center>
+                    </Center> */}
+                    {children}
                 </GridLayout>
             ))}
         </group>
