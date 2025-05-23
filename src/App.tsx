@@ -7,6 +7,7 @@ import { Loader } from '@react-three/drei';
 import { useCarousel } from '@/hooks/reducers/useCarousel';
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
+import MemoizedHudMenu from '@/components/3DComponents/Header/HudMenu';
 
 interface AppProps {
     children: ReactNode;
@@ -101,6 +102,7 @@ export default function App({
                 // onWheel={onScrollHandler}
                 // camera={{ position: [0, 0, 5], fov: 70 }}
             >
+                <MemoizedHudMenu reducer={reducer} />
                 {/* <StatsGl /> */}
                 {/* <Perf position="bottom-right" /> */}
 
