@@ -29,7 +29,6 @@ import { Title } from '@/components/3DComponents/Title/Title';
 import { Billboard, Float } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import datasJson from '@data/projects.json';
 import { ElementType } from '@/hooks/reducers/carouselTypes';
 
@@ -42,6 +41,7 @@ import {
     CARD_ACTIVE_FORWARD_OFFSET,
     CARD_ANIMATION_SPEED,
 } from '@/configs/Cards.config';
+import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
 
 let animationProgress = 0;
 
@@ -228,7 +228,8 @@ export default function Carousel({
         );
 
         // Update title position
-        updateTitlePosition(titleRef, contentHeight ?? 0, delta);
+        if (isCarouselLoaded)
+            updateTitlePosition(titleRef, contentHeight ?? 0, delta);
 
         // Handle animation progress
         if (isAnimatingIn) {
@@ -347,6 +348,7 @@ export default function Carousel({
                             scale={4.2 * generalScaleX}
                             name={'carousel__title'}
                             ref={titleRef}
+                            position={DEFAULT_PROJECTS_POSITION_SETTINGS}
                         >
                             Mes Projets
                         </FallbackText>
