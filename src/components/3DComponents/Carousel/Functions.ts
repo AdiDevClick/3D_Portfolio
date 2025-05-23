@@ -200,19 +200,29 @@ export function onClickHandler(
     reducer: ReducerType,
     location: { pathname: string },
     navigate: any,
-    isCarouselMoving: boolean
+    isCarouselMoving: boolean,
+    setIsCarouselClicked: (value: boolean) => void
 ): void {
     e.stopPropagation();
     // Deny any other clicked elements if one is opened
     if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
         return;
     }
-
+    // console.log(
+    //     'Is Carousel Moving',
+    //     isCarouselMoving,
+    //     '\n event type : ',
+    //     e.type,
+    //     '\n card clicked ? :',
+    //     card.isClicked
+    // );
     if (isCarouselMoving && e.nativeEvent.type === 'pointerup') {
         return;
     }
 
     if (isCarouselMoving && e.nativeEvent.type === 'click') {
+        // console.log('jai  arrêté le clic ! ');
+
         return;
     }
     navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
@@ -220,6 +230,8 @@ export function onClickHandler(
     });
     reducer.activateElement(card, !card.isClicked ? true : false);
     reducer.clickElement(card);
+    // setIsCarouselClicked(false);
+    // console.log('Jai ouvert une carte, je reset le click');
 }
 
 /**
@@ -237,7 +249,7 @@ export async function onPointerOut(
     }
 
     reducer.activateElement(card, false);
-    endCarouselMovement();
+    // endCarouselMovement();
 }
 
 /**
@@ -268,23 +280,24 @@ export function onHover(
     if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
         reducer.activeContent.isActive = false;
     }
+    // console.log('UN HOVER EST EN COURS');
     // console.log('UN HOVER EST EN COURS', console.clear());
 
     reducer.activateElement(card, true);
-    if (!isCarouselMoving) setIsCarouselMoving(true);
+    // if (!isCarouselMoving) setIsCarouselMoving(true);
 }
 
 /**
  * Handles collision detection between cards
  */
 export function handleCardCollisions(
-    currentCard: any,
+    currentCard: ElementType,
     index: number,
-    cardsArray: any[],
+    cardsArray: ElementType[],
     containerScale: number,
     frameCount: number,
     collisionsEnabled: boolean,
-    updateSettings: (settings: any) => void
+    updateSettings: (settings: SettingsType['set']) => void
 ) {
     if (!collisionsEnabled || frameCount % 50 !== 0) return;
 
@@ -305,7 +318,7 @@ export function handleCardCollisions(
             index,
             otherIndex,
             inRangeDistance,
-            otherCard.presenceRadius,
+            otherCard.presenceRadius || 0,
             containerScale
         );
 
