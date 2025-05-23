@@ -48,7 +48,7 @@ export const CAMERA_ANGLE_OFFSET = Math.PI / 28;
  */
 export const CAMERA_EXTRA_PULLBACK_MOBILE = 5.5;
 export const CAMERA_EXTRA_PULLBACK_DESKTOP = 3.5;
-export const CAMERA_HOVER_PULLBACK_DESKTOP = 4.2;
+export const CAMERA_HOVER_PULLBACK_DESKTOP = 6.2;
 
 /**
  * OFFSET for the camera
