@@ -11,6 +11,7 @@ import {
 import { DoubleSide, Mesh } from 'three';
 
 import {
+    CARD_CLICKED_SCALE,
     CARD_HOVER_SCALE,
     DESKTOP_TITLE_POSITION,
     MOBILE_TITLE_POSITION,
@@ -54,19 +55,40 @@ const MemoizedCard = memo(function Card({
     // mobile Optimisations
     const segments = reducer.isMobile ? 8 : 12;
 
-    const { widthSpring, bendingValue, cardScale } = useSpring({
+    const { cardScale } = useSpring({
         // Valeurs cibles qui changent en fonction de l'état clicked
-        widthSpring: card.isClicked ? card.baseScale + 0.9 : card.baseScale,
-        bendingValue: card.isClicked ? 0 : SETTINGS.BENDING,
-        cardScale: card.isClicked ? 0.8 : card.isActive ? 1.05 : 1.0,
-        // cardScale: card.isClicked ? 1.5 : 1.0,
+        // widthSpring: card.isClicked ? card.baseScale + 0.9 : card.baseScale,
+        // bendingValue: card.isClicked ? 0 : SETTINGS.BENDING,
+        // from: {
+        //     cardScale: card.isClicked
+        //         ? 1
+        //         : card.isActive
+        //         ? card.baseScale
+        //         : 1.0,
+        // },
+        // to: {
+        //     cardScale: card.isClicked
+        //         ? 1
+        //         : card.isActive
+        //         ? (card.baseScale * width) / 2
+        //         : 1.0,
+        // },
+        // cardScale: card.isClicked ? 0.8 : card.isActive ? 1 : 1.0,
+        cardScale: card.isClicked
+            ? 1
+            : card.isActive
+            ? card.baseScale
+            : // ? (card.baseScale * width) / 2
+              1.0,
         // Configuration de l'animation - très importante pour la fluidité
         config: {
             mass: 1.5,
-            tension: 170, // Tension plus basse = animation plus douce
+            tension: 140, // Tension plus basse = animation plus douce
             friction: 22, // Friction plus haute = moins d'oscillations
             precision: 0.001, // S'arrête quand les changements sont minimes
+            duration: 200, // Durée de l'animation
         },
+        delay: 200,
     });
 
     const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
@@ -88,7 +110,7 @@ const MemoizedCard = memo(function Card({
 
         const targetScale: [number, number, number] = card.isClicked
             ? // ? [1.5, 1.5, 1.5]
-              [cardHoverScale * 2.5, cardHoverScale * 2.5, 2]
+              [CARD_CLICKED_SCALE * 2.5, CARD_CLICKED_SCALE * 2.5, 2]
             : card.isActive
             ? [cardHoverScale * 1.1, cardHoverScale, 1]
             : [cardHoverScale, cardHoverScale, 1];
@@ -96,7 +118,7 @@ const MemoizedCard = memo(function Card({
         const scaleDampingFactor = card.isClicked
             ? 0.2
             : card.isActive
-            ? 0.3
+            ? 0.1
             : 0.3;
 
         easing.damp3(scale, targetScale, scaleDampingFactor, delta);
@@ -108,7 +130,7 @@ const MemoizedCard = memo(function Card({
                     ? MOBILE_TITLE_POSITION
                     : DESKTOP_TITLE_POSITION
                 : [0, -SETTINGS.y_HEIGHT / 4, 0.1],
-            0.1,
+            0,
             delta
         );
         easing.damp3(title.scale, !card.isClicked ? 1 : 0.5, 0.1, delta);
@@ -187,7 +209,8 @@ const MemoizedCard = memo(function Card({
             bending = 0.01;
         } else if (card.isActive) {
             width = card.baseScale + 0.5;
-            ratio = (card.baseScale * width) / 2.5;
+            // ratio = width;
+            ratio = (card.baseScale * width) / 2;
             bending = 0.01;
         } else {
             width = card.baseScale;
@@ -203,45 +226,45 @@ const MemoizedCard = memo(function Card({
     }, [card.isActive, card.isClicked]);
 
     return (
-        // <animated.group
-        //     // position={[0, 0, 1]}
-        //     // position={card.isClicked ? [0, 0, -1] : card.position}
-        //     scale={cardScale}
-        // >
-        <Image
-            // key={'card-img' + card.id}
-            position={card.position}
-            ref={cardRef}
-            url={import.meta.env.BASE_URL + card.url}
-            // texture={card.texture}
-            transparent
-            side={DoubleSide}
-            rotation={[
-                card.rotation[0] ?? 0,
-                card.rotation[1] ?? 0,
-                card.rotation[2] ?? 0,
-            ]}
-            // scale={card.currentWidth}
-            // scale={width}
-            scale={ratio}
-            {...props}
+        <animated.group
+            // position={[0, 0, 1]}
+            // position={card.isClicked ? [0, 0, -1] : card.position}
+            scale={cardScale}
         >
-            {children}
-
-            <bentPlaneGeometry
-                args={[
-                    card.bending,
-                    card.baseScale,
-                    card.isClicked
-                        ? SETTINGS.y_HEIGHT / 2
-                        : // : card.isActive
-                          // ? SETTINGS.y_HEIGHT / 1.3
-                          SETTINGS.y_HEIGHT,
-                    segments,
+            <Image
+                // key={'card-img' + card.id}
+                position={card.position}
+                ref={cardRef}
+                url={import.meta.env.BASE_URL + card.url}
+                // texture={card.texture}
+                transparent
+                side={DoubleSide}
+                rotation={[
+                    card.rotation[0] ?? 0,
+                    card.rotation[1] ?? 0,
+                    card.rotation[2] ?? 0,
                 ]}
-            />
-        </Image>
-        // </animated.group>
+                // scale={card.currentWidth}
+                // scale={width}
+                scale={card.isClicked ? ratio : card.baseScale}
+                {...props}
+            >
+                {children}
+
+                <bentPlaneGeometry
+                    args={[
+                        card.bending,
+                        card.baseScale,
+                        card.isClicked
+                            ? SETTINGS.y_HEIGHT / 2
+                            : // : card.isActive
+                              // ? SETTINGS.y_HEIGHT / 1.3
+                              SETTINGS.y_HEIGHT,
+                        segments,
+                    ]}
+                />
+            </Image>
+        </animated.group>
     );
 });
 export default MemoizedCard;

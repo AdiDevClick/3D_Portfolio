@@ -169,7 +169,8 @@ export const DEFAULT_CAMERA_POSITION = new Vector3(0, 0, -20);
 
 /** On Hover card scale */
 // export const CARD_HOVER_SCALE = 1.4;
-export const CARD_HOVER_SCALE = 1.15;
+export const CARD_HOVER_SCALE = 0.8;
+export const CARD_CLICKED_SCALE = 1.15;
 // export const CARD_HOVER_SCALE = 1.5;
 
 /** Double PI for common purposes */
