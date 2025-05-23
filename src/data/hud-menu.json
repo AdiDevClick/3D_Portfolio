@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "name": "Home",
+        "optimized": "Homeicon_model.glb",
+        "mobile": "Homeicon_model.glb"
+    },
+    {
+        "id": "2",
+        "name": "A Propos",
+        "optimized": "Portraiticon_model.glb",
+        "mobile": "Portraiticon_model.glb"
+    },
+    {
+        "id": "3",
+        "name": "Projets",
+        "optimized": "Foldericon_model.glb",
+        "mobile": "Foldericon_model.glb"
+    },
+    {
+        "id": "4",
+        "name": "Contact",
+        "optimized": "Contact_model.glb",
+        "mobile": "Contact_model.glb"
+    }
+]
