@@ -260,8 +260,7 @@ export function onClickHandler(
 export async function onPointerOut(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
-    reducer: ReducerType,
-    endCarouselMovement: () => void
+    reducer: ReducerType
 ) {
     e.stopPropagation();
     if (reducer.activeContent?.isClicked) {
@@ -298,6 +297,7 @@ export function onHover(
     )
         return;
     if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
+        // console.log('je clear');
         reducer.activeContent.isActive = false;
     }
     // console.log('UN HOVER EST EN COURS');
