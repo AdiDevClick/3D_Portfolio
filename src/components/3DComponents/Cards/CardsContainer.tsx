@@ -262,7 +262,12 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         };
     }, [reducer, SETTINGS]);
 
-    const debouncedOnHoverHandler = useDebounce(onHover, 200);
+    const debouncedOnHoverHandler = useDebounce((e, card) => {
+        onHover(e, card, reducer, isCarouselMoving, setIsCarouselMoving);
+    }, 50);
+    const debouncedOnHoverOutHandler = useDebounce((e, card) => {
+        onPointerOut(e, card, reducer);
+    }, 50);
 
     return (
         <animated.group
@@ -298,30 +303,33 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                         <mesh
                             key={`eventBox_${card.id}`}
                             ref={(e) => eventBox(e, card)}
-                            onPointerOver={(e) =>
-                                // !isCarouselMoving &&
-                                // // !isCarouselClicked &&
-                                // debouncedOnHoverHandler(
+                            onPointerOver={
+                                (e) =>
+                                    // !isCarouselMoving &&
+                                    // // !isCarouselClicked &&
+                                    // debouncedOnHoverHandler(
+                                    //     e,
+                                    //     card,
+                                    //     reducer,
+                                    //     isCarouselMoving,
+                                    //     setIsCarouselMoving
+                                    // )
+                                    !isCarouselMoving &&
+                                    !isCarouselClicked &&
+                                    debouncedOnHoverHandler(e, card)
+                                // onHover(
                                 //     e,
                                 //     card,
                                 //     reducer,
                                 //     isCarouselMoving,
                                 //     setIsCarouselMoving
                                 // )
-                                !isCarouselMoving &&
-                                !isCarouselClicked &&
-                                onHover(
-                                    e,
-                                    card,
-                                    reducer,
-                                    isCarouselMoving,
-                                    setIsCarouselMoving
-                                )
                             }
                             onPointerMove={(e) =>
                                 !isCarouselMoving &&
                                 !isCarouselClicked &&
                                 card.id !== reducer.activeContent?.id &&
+                                // debouncedOnHoverHandler(e, card)
                                 onHover(
                                     e,
                                     card,
@@ -330,13 +338,14 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     setIsCarouselMoving
                                 )
                             }
-                            onPointerOut={(e) =>
-                                onPointerOut(
-                                    e,
-                                    card,
-                                    reducer,
-                                    endCarouselMovement
-                                )
+                            onPointerOut={
+                                (e) => debouncedOnHoverOutHandler(e, card)
+                                // onPointerOut(
+                                //     e,
+                                //     card,
+                                //     reducer,
+                                //     endCarouselMovement
+                                // )
                             }
                             name={`eventBox_${card.id}`}
                             visible={false}
