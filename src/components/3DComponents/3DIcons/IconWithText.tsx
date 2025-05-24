@@ -1,7 +1,7 @@
 import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
 import { Title } from '@/components/3DComponents/Title/Title';
-import { Center, Float, useCursor } from '@react-three/drei';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { Center, CenterProps, Float, useCursor } from '@react-three/drei';
+import { ThreeEvent, useFrame, useLoader } from '@react-three/fiber';
 import { Group } from 'three';
 import { easing } from 'maath';
 import { JSX, useRef, useState } from 'react';
@@ -17,12 +17,23 @@ type IconsTypes = {
     isMobile: boolean;
     /** @defaultValue 100 */
     iconScale?: number;
+    eventsList?: {
+        onClick?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerOver?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerOut?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerDown?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerUp?: (event: ThreeEvent<MouseEvent>) => void;
+        [key: string]:
+            | ((event: ThreeEvent<MouseEvent | PointerEvent>) => void)
+            | undefined;
+    };
     floatOptions?: {
         speed?: number;
         floatIntensity?: number;
         rotationIntensity?: number;
         floatRange?: [number, number];
     };
+    mobileTextProps?: CenterProps;
 } & JSX.IntrinsicElements['group'];
 
 /**
@@ -39,6 +50,8 @@ type IconsTypes = {
  * @param props - Additional properties for the 3D group element
  * @param iconScale - Scale of the icon **Default=100**
  * @param floatOptions - Options for the floating effect
+ * @param eventsList - List of events to attach to the icon
+ * @param mobileTextProps - Props for the mobile text
  * @returns
  */
 export function IconWithText({
@@ -48,7 +61,9 @@ export function IconWithText({
     index,
     datas,
     isMobile,
+    eventsList,
     floatOptions,
+    mobileTextProps,
     margin = 0.5,
     ...props
 }: IconsTypes) {
@@ -93,9 +108,10 @@ export function IconWithText({
             ref={groupRef as any}
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
+            {...eventsList}
             dispose={null}
-            name={datas.name}
             {...props}
+            name={datas.name}
         >
             <Float {...floatOptions}>
                 <Center
@@ -136,7 +152,7 @@ export function IconWithText({
                         {datas.text}
                     </Title>
                 ) : (
-                    <Center name="icons-Container__title">
+                    <Center {...mobileTextProps} name="icons-Container__title">
                         <FallbackText>{datas.text}</FallbackText>
                     </Center>
                 )}
