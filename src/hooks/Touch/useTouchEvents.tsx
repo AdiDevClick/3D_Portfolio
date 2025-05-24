@@ -70,6 +70,10 @@ export function useTouchEvents(
         setIsOpen,
     };
 
+    /**
+     * Events Creation -
+     * @description Create the events for the button -
+     */
     useEffect(() => {
         const element = node.current;
         if (!element) return;
