@@ -1,10 +1,9 @@
 import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
-import { HexCell } from '@/components/3DComponents/Forms/HexCell';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import { frustumChecker } from '@/utils/frustrumChecker';
-import { Center } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { CenterProps } from '@react-three/drei';
+import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { JSX, memo, Suspense, useRef } from 'react';
 import { Box3, Group } from 'three';
 
@@ -37,6 +36,17 @@ type IconsContainerTypes = {
         marginY: number;
         windowMargin: number;
     };
+    eventsList?: {
+        onClick?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerOver?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerOut?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerDown?: (event: ThreeEvent<MouseEvent>) => void;
+        onPointerUp?: (event: ThreeEvent<MouseEvent>) => void;
+        [key: string]:
+            | ((event: ThreeEvent<MouseEvent | PointerEvent>) => void)
+            | undefined;
+    };
+    mobileTextProps?: CenterProps;
 } & JSX.IntrinsicElements['group'];
 
 // const gridOptions = {
@@ -59,6 +69,10 @@ type IconsContainerTypes = {
  * @param iconScale - Scale of the icon (default = 100)
  * @param props - Additional properties for the 3D group element
  * @param floatOptions - Options for the floating effect
+ * @param gridOptions - Options for the grid layout
+ * @param children - Children elements to be rendered inside the grid
+ * @param eventsList - List of events to attach to the icons
+ * @param mobileTextProps - Props for the mobile text
  * @returns JSX.Element
  */
 const MemoizedIconsContainer = memo(function IconsContainer({
@@ -68,10 +82,12 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     scalar,
     margin = 0.5,
     isMobile,
+    eventsList,
     floatOptions,
     /** @defaultValue 5 */
     iconScale = 100,
     gridOptions,
+    mobileTextProps,
     ...props
 }: IconsContainerTypes) {
     const groupRef = useRef<Group>(null!);
@@ -133,11 +149,10 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                                     ? [0.5 * scalar, 1.45 * scalar, -0.15]
                                     : [0, 0.5 * scalar, 0]
                             }
+                            eventsList={eventsList}
+                            mobileTextProps={mobileTextProps}
                         />
                     </Suspense>
-                    {/* <Center bottom>
-                        <HexCell scalar={scalar} />
-                    </Center> */}
                     {children}
                 </GridLayout>
             ))}
