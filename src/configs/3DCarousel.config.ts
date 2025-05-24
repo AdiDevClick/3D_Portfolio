@@ -119,6 +119,19 @@ export const DESKTOP_HTML_ICONS_POSITION_SETTINGS = (
     margin: number
 ) => new Vector3(width / 2 - margin * 2.5, -(height / 2) + margin, 0);
 
+/** Positions the icons on the left side of the screen with a margin - for DESKTOP*/
+export const DESKTOP_HUD_ICONS_POSITION_SETTINGS = (
+    height: number,
+    width: number,
+    margins: { x: number; y: number }
+) => new Vector3(width / 2 + margins.x, 0 + margins.y, 0);
+
+export const MOBILE_HUD_ICONS_POSITION_SETTINGS = (
+    height: number,
+    width: number,
+    margins: { x: number; y: number }
+) => new Vector3(0 + margins.x, -height / 2 + margins.y, 0);
+
 export const MOBILE_PROJECT_CONTAINER_POSITION = () => {
     // Utiliser le même calcul de hauteur basé sur FOV
     const initialCameraFov = 19;
