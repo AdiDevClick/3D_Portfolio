@@ -21,6 +21,8 @@ const gridStores = new Map<string, Map<number, GridLayoutTypes>>();
  * @param options.marginX - **(default=2.5)** - Horizontal margin between items
  * @param options.marginY - **(default=1.3)** - Vertical margin between items
  * @param options.windowMargin - **(default=1)** - Margin for the window
+ * @param options.dynamicHeightContent - **(default=false)** - If true, the height of the content is dynamic
+ * @param options.forceColumnsNumber - **(default=false)** - If true, forces the number of columns
  */
 export function GridLayout({
     children,
@@ -36,6 +38,7 @@ export function GridLayout({
         marginY: 1.3,
         windowMargin: 1,
         dynamicHeightContent: false,
+        forceColumnsNumber: false,
     },
     ...props
 }: GridLayoutProps) {
@@ -79,7 +82,9 @@ export function GridLayout({
         if (!initialized.current) return;
         const columns = Math.min(
             options.columnsNumber,
-            Math.ceil((width - windowMargin) / 2)
+            options.forceColumnsNumber
+                ? options.columnsNumber
+                : Math.ceil((width - windowMargin) / 2)
         );
         const col = index % columns;
         const row = Math.floor(index / columns);
@@ -157,6 +162,8 @@ export function GridLayout({
                 };
             }
 
+            // Calculate the height of the text
+            // and assign into the store the position of the item
             const store = gridStores.get(groupId);
             if (options.dynamicHeightContent && store) {
                 item.traverse((child: any) => {
