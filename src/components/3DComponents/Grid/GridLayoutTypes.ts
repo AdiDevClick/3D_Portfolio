@@ -26,8 +26,10 @@ export type GridLayoutProps = {
         marginY: number;
         /** Margin for the window - @defaultValue 1 */
         windowMargin: number;
-        /** Specifies if it should compute height */
+        /** Specifies if it should compute height - @defaultValue false*/
         dynamicHeightContent?: boolean;
+        /** Forces the number of columns - @defaultValue false */
+        forceColumnsNumber?: boolean;
     };
 } & JSX.IntrinsicElements['group'];
 
