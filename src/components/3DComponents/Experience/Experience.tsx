@@ -325,7 +325,7 @@ export function Experience({ reducer }: ExperienceProps) {
                 fade
                 speed={1}
             /> */}
-            <ShadowCatcher />
+            {/* <ShadowCatcher /> */}
         </>
     );
 }

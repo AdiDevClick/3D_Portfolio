@@ -71,6 +71,7 @@ rootElement.render(
 const initialCameraFov = 20;
 const vFov = (initialCameraFov * Math.PI) / 180;
 const height = 2 * Math.tan(vFov / 2) * initialCameraFov;
+
 /**
  * Layout de la page -
  * App.JSX est le <main> container et est utilisé pour matérialiser le Outlet -
@@ -115,7 +116,7 @@ export function Root(contentType: { contentType?: string }) {
 
     return (
         <>
-            <Header isMobile={isMobile} />
+            {/* <Header isMobile={isMobile} /> */}
             <App
                 width={width}
                 // cards={cardsMemo}
