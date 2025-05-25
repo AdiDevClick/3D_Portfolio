@@ -3,7 +3,7 @@ import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config'
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { memo, RefObject, Suspense, useLayoutEffect, useRef } from 'react';
+import { memo, Suspense, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker';
@@ -33,6 +33,23 @@ const gridOptions = {
     marginX: 2.5,
     marginY: 1.5,
     windowMargin: 1,
+};
+
+const animations = {
+    propertiesToCheck: ['scale', 'rotation'],
+    // propertiesToCheck: ['scale', 'rotation', 'position'],
+    hovered: true,
+    scale: { hovered: 1.2, default: 1 },
+    rotation: { hovered: [0, -0.5, -0.05], default: [0, 0, 0] },
+    animatePosition: { from: [0, -10, 0], default: [0, 0, 0] },
+    config: {
+        mass: 1.5,
+        tension: 100,
+        friction: 26,
+        precision: 0.001,
+        duration: 200,
+    },
+    delay: 100,
 };
 
 /**
@@ -173,6 +190,7 @@ const MemoizedHome = memo(function Home({
                                 : -2.5 * generalScaleX - margin
                         }
                         isMobile={isMobile}
+                        animations={animations}
                     >
                         <Center bottom>
                             <HexCell scalar={generalScaleX} />
