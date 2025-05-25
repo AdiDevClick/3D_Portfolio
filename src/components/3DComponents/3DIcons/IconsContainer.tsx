@@ -2,9 +2,10 @@ import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import { frustumChecker } from '@/utils/frustrumChecker';
+import { UseSpringProps } from '@react-spring/three';
 import { CenterProps } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
-import { JSX, memo, Suspense, useRef } from 'react';
+import { JSX, memo, ReactNode, Suspense, useRef } from 'react';
 import { Box3, Group } from 'three';
 
 // Extend Object3D to include boundingbox property
@@ -47,6 +48,9 @@ type IconsContainerTypes = {
             | undefined;
     };
     mobileTextProps?: CenterProps;
+    animations?: {} | UseSpringProps;
+    children?: ReactNode;
+    hovered?: boolean;
 } & JSX.IntrinsicElements['group'];
 
 // const gridOptions = {
@@ -73,6 +77,8 @@ type IconsContainerTypes = {
  * @param children - Children elements to be rendered inside the grid
  * @param eventsList - List of events to attach to the icons
  * @param mobileTextProps - Props for the mobile text
+ * @param animations - Animations for the icons
+ * @param hovered - Boolean indicating if the icon is hovered
  * @returns JSX.Element
  */
 const MemoizedIconsContainer = memo(function IconsContainer({
@@ -88,6 +94,8 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     iconScale = 100,
     gridOptions,
     mobileTextProps,
+    hovered,
+    animations,
     ...props
 }: IconsContainerTypes) {
     const groupRef = useRef<Group>(null!);
@@ -151,6 +159,8 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                             }
                             eventsList={eventsList}
                             mobileTextProps={mobileTextProps}
+                            animations={animations}
+                            hovered={hovered}
                         />
                     </Suspense>
                     {children}
