@@ -97,6 +97,23 @@ export function createCardProperties(
             'Créé avec React et TypeScript',
             "Une implémentation responsive de l'expérience 3D",
         ],
+        stack: {
+            JavaScript: 'assets/icons/javascript.svg',
+            CSS: 'assets/icons/css.svg',
+            HTML: 'assets/icons/html.svg',
+        },
+        links: [
+            {
+                name: 'GitHub',
+                link: 'https://github.com/AdiDevClick/OC_SEO',
+                logo: 'assets/icons/github.svg',
+            },
+            {
+                name: 'Visit Website',
+                link: 'https://adidevclick.github.io/OC_SEO/',
+                logo: 'assets/icons/github.svg',
+            },
+        ],
     };
 
     const texturePath = datas[i]?.cover || defaultContent.url;
@@ -171,8 +188,8 @@ export function createCardProperties(
         title: datas[i]?.title || defaultContent.title,
         cardTitle: datas[i]?.cardTitle || defaultContent.cardTitle,
         content: datas[i]?.content || defaultContent.content,
-        stack: datas[i]?.stack || {},
-        links: datas[i]?.links || {},
+        stack: datas[i]?.stack || defaultContent.stack,
+        links: datas[i]?.links || defaultContent.links,
         position,
         velocity: new Vector3(0, 0, 0),
         rotation,
