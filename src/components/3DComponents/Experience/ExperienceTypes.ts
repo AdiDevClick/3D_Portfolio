@@ -15,4 +15,5 @@ export type loadCardByURLProps = {
     setViewMode: ReducerType['setViewMode'];
     navigate: NavigateFunction;
     visible: ReducerType['visible'];
+    setIsURLLoaded: (value: boolean) => void;
 };

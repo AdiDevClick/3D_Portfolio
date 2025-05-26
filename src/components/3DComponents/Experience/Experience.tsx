@@ -5,20 +5,20 @@ import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
 import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
-import { CameraControls, Environment, Stars } from '@react-three/drei';
-import { Suspense, useEffect, useRef } from 'react';
+import { CameraControls, Environment } from '@react-three/drei';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Color, Vector3 } from 'three';
-import {
-    Bloom,
-    ChromaticAberration,
-    EffectComposer,
-    Noise,
-    Vignette,
-    BrightnessContrast,
-    SSAO,
-    ToneMapping,
-} from '@react-three/postprocessing';
+// import {
+//     Bloom,
+//     ChromaticAberration,
+//     EffectComposer,
+//     Noise,
+//     Vignette,
+//     BrightnessContrast,
+//     SSAO,
+//     ToneMapping,
+// } from '@react-three/postprocessing';
 
 let minAngle = -Infinity;
 let maxAngle = Infinity;
@@ -50,6 +50,7 @@ export function Experience({ reducer }: ExperienceProps) {
     const ref = useRef<CameraControls>(null!);
     const prevCamPosRef = useRef(DEFAULT_CAMERA_POSITION.clone());
 
+    const [isURLLoaded, setIsURLLoaded] = useState(false);
     const params = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -156,7 +157,7 @@ export function Experience({ reducer }: ExperienceProps) {
      * if the URLparams contains a card ID -
      */
     useEffect(() => {
-        if (!ref.current || !params.id || activeContent) {
+        if (!ref.current || !params.id || activeContent || isURLLoaded) {
             return;
         }
         const options = {
@@ -166,6 +167,7 @@ export function Experience({ reducer }: ExperienceProps) {
             clickElement,
             setViewMode,
             navigate,
+            setIsURLLoaded,
             visible,
         };
         if (visible !== 'carousel') setViewMode('carousel');
@@ -416,6 +418,4 @@ function SunsetGradientBackground() {
                 `}
                 side={2} // DoubleSide
             />
-        </mesh>
-    );
-}
+     

@@ -39,6 +39,7 @@ export async function loadCardByURL(
         setViewMode,
         navigate,
         visible,
+        setIsURLLoaded,
     } = options;
     try {
         if (visible !== 'carousel') setViewMode('carousel');
@@ -66,6 +67,7 @@ export async function loadCardByURL(
 
         // Activate click after a short delay
         clickElement(targetCard);
+        setIsURLLoaded(true);
     } catch (error) {
         const typedError = error as ErrorWithCause;
 
@@ -79,5 +81,6 @@ export async function loadCardByURL(
             return navigate('/error', { replace: false });
         }
         console.error('Erreur non gérée :', typedError, error);
+        return false;
     }
 }
