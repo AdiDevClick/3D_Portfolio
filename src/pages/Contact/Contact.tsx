@@ -115,6 +115,7 @@ const MemoizedContact = memo(function Contact({
             </FloatingTitle>
 
             <ContactIconsContainer
+                key={`contact-icons`}
                 ref={iconsRef}
                 scalar={generalScaleX}
                 isMobile={isMobile}
