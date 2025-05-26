@@ -42,6 +42,7 @@
         white-space: nowrap;
         // transform: translateY(900%);
         font-family: sans-serif;
+        touch-action: 'none';
     }
 
     @include for-size(mobile) {
