@@ -14,13 +14,6 @@ const floatOptions = {
     floatingRange: [-0.1, 0.1] as [number, number],
 };
 
-// const LinkedIn = `${
-//     import.meta.env.BASE_URL
-// }assets/models/optimized/Linkedin_model.glb`;
-// const GitHub = `${
-//     import.meta.env.BASE_URL
-// }assets/models/optimized/Github_model.glb`;
-
 /**
  * ContactIcons component
  * @description Contains the 3D icons for contact information
@@ -36,8 +29,7 @@ export function ContactIconsContainer({
     scalar,
     isMobile = false,
     tooltips = true,
-}: // iconsPosition,
-ContactIconsContainerProps) {
+}: ContactIconsContainerProps) {
     return (
         <Center ref={ref}>
             <FloatIcons
