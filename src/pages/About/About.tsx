@@ -28,6 +28,7 @@ let count = 0;
  * @param generalScaleX - General scale factor of the viewport scale from the reducer
  * @param contentHeight - Height of the viewport
  * @param margin **@default=0.5** - Margin between the elements
+ * @param isMobile - Is the device mobile
  */
 const MemoizedAbout = memo(function About({
     contentWidth,
@@ -75,23 +76,6 @@ const MemoizedAbout = memo(function About({
                 titlePos[2] ?? 0
             );
             contentPositionRef.current.set(0, contentHeight * 0.1, 0);
-            // contentPositionRef.current.set(
-            //     2.8 * generalScaleX,
-            //     contentHeight * 0.1,
-            //     0
-            // );
-            // contentPositionRef.current.set(0, 0 - margin, 0);
-
-            // const iconPos = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
-            //     contentRef.current.userData.contentSize.y,
-            //     contentWidth,
-            //     margin
-            // );
-            // iconsPositionRef.current.set(
-            //     iconPos[0] ?? 0,
-            //     iconPos[1] ?? 0,
-            //     iconPos[2] ?? 0
-            // );
         } else {
             titlePositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             contentPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
@@ -116,6 +100,11 @@ const MemoizedAbout = memo(function About({
     //     'HTML SETTINGS',
     //     () => settingsConfig
     // );
+    useEffect(() => {
+        if (!iconsRef.current) return;
+        iconsRef.current.position.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
+    }, []);
+
     if (count > 0) count = 0;
 
     useFrame((state, delta) => {
