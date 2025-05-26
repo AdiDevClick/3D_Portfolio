@@ -8,7 +8,7 @@ import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { Color, Vector3 } from 'three';
+import { Vector3 } from 'three';
 // import {
 //     Bloom,
 //     ChromaticAberration,
@@ -97,6 +97,7 @@ export function Experience({ reducer }: ExperienceProps) {
 
             case 'card-opened':
             case 'card-detail':
+            case 'URLRequested':
                 if (activeContent) {
                     prevCamPosRef.current = camera.position.clone();
                     const results = positionCameraToCard(
@@ -135,12 +136,27 @@ export function Experience({ reducer }: ExperienceProps) {
         if (location.pathname === '/') {
             if (visible !== 'home') setViewMode('home');
         } else if (location.pathname.includes('projets')) {
-            if (params.id) {
+            // if (params.id) {
+            if (params.id && activeContent && activeContent?.isClicked) {
                 if (visible !== 'card-detail') setViewMode('card-detail');
-            } else if (activeContent?.isActive && !activeContent?.isClicked) {
+            } else if (
+                activeContent?.isActive &&
+                !activeContent?.isClicked &&
+                !params.id
+            ) {
                 if (visible !== 'card-detail') setViewMode('card-detail');
+            } else if (
+                params.id &&
+                !activeContent &&
+                visible === 'carousel' &&
+                !isURLLoaded &&
+                showElements.length > 0
+            ) {
+                setViewMode('URLRequested');
             } else {
-                if (visible !== 'carousel') setViewMode('carousel');
+                if (visible !== 'carousel' && visible !== 'URLRequested') {
+                    setViewMode('carousel');
+                }
             }
         } else if (location.pathname.includes('a-propos')) {
             if (visible !== 'about') setViewMode('about');
@@ -157,9 +173,16 @@ export function Experience({ reducer }: ExperienceProps) {
      * if the URLparams contains a card ID -
      */
     useEffect(() => {
-        if (!ref.current || !params.id || activeContent || isURLLoaded) {
+        if (
+            !ref.current ||
+            !params.id ||
+            activeContent ||
+            isURLLoaded ||
+            visible !== 'URLRequested'
+        ) {
             return;
         }
+
         const options = {
             id: params.id,
             showElements,
@@ -170,8 +193,7 @@ export function Experience({ reducer }: ExperienceProps) {
             setIsURLLoaded,
             visible,
         };
-        if (visible !== 'carousel') setViewMode('carousel');
-        const initialDelay = 800;
+        const initialDelay = 600;
 
         // Awaits the initialization of the elements (initialDelay)
         // And then activate the card
@@ -179,7 +201,7 @@ export function Experience({ reducer }: ExperienceProps) {
             loadCardByURL(5, initialDelay, options);
         }, initialDelay);
         return () => clearTimeout(timer);
-    }, [showElements]);
+    }, [showElements, visible]);
 
     return (
         <>
