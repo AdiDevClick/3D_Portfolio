@@ -58,7 +58,7 @@ const FloatingTitle = memo(function FloatingTitle({
                     onPointerOut={props.onPointerOut}
                     onClick={props.onClick}
                     name={'clickable-box'}
-                    visible={true}
+                    visible={false}
                 >
                     <boxGeometry />
                 </mesh>
