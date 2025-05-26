@@ -43,7 +43,7 @@ export function FloatIcon({ model, ...props }: FloatIconProps) {
                     <boxGeometry />
                 </mesh>
                 {hovered && (
-                    <Html>
+                    <Html position={[0, 1, 0]}>
                         <div className="about__tooltip">{props.name}</div>
                     </Html>
                 )}
