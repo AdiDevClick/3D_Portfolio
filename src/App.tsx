@@ -102,7 +102,6 @@ export default function App({
                 // onWheel={onScrollHandler}
                 // camera={{ position: [0, 0, 5], fov: 70 }}
             >
-                <MemoizedHudMenu reducer={reducer} />
                 {/* <StatsGl /> */}
                 {/* <Perf position="bottom-right" /> */}
 
@@ -132,6 +131,7 @@ export default function App({
                         {children}
                     </Scene>
                     <Experience reducer={reducer} />
+                    {/* <MemoizedHudMenu reducer={reducer} /> */}
                 </Suspense>
                 {/* </SceneParams> */}
             </Canvas>
