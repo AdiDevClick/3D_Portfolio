@@ -8,7 +8,7 @@ import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment, Stars } from '@react-three/drei';
 import { Suspense, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { Vector3 } from 'three';
+import { Color, Vector3 } from 'three';
 import {
     Bloom,
     ChromaticAberration,
@@ -280,6 +280,7 @@ export function Experience({ reducer }: ExperienceProps) {
                 }
             >
                 {/* <Environment preset="dawn" background blur={0.5} /> */}
+                {/* <Environment blur={0.4} /> */}
                 <Environment preset="sunset" background blur={0.4} />
                 {/* <Environment preset="park" background blur={0.5} /> */}
             </Suspense>
@@ -326,6 +327,7 @@ export function Experience({ reducer }: ExperienceProps) {
                 fade
                 speed={1}
             /> */}
+            {/* <SunsetGradientBackground /> */}
             <ShadowCatcher />
         </>
     );
@@ -373,6 +375,46 @@ function ShadowCatcher() {
                 opacity={0.2}
                 // opacity={0.2}
                 color="#000000"
+            />
+        </mesh>
+    );
+}
+
+function SunsetGradientBackground() {
+    return (
+        <mesh scale={[100, 100, 1]} position={[0, 0, -50]}>
+            <planeGeometry />
+            <shaderMaterial
+                uniforms={{
+                    uTime: { value: 0 },
+                    uTopColor: { value: new Color('#ff6b35') },
+                    uMiddleColor: { value: new Color('#f7931e') },
+                    uBottomColor: { value: new Color('#ffdc00') },
+                }}
+                vertexShader={`
+                    varying vec2 vUv;
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `}
+                fragmentShader={`
+                    uniform vec3 uTopColor;
+                    uniform vec3 uMiddleColor;
+                    uniform vec3 uBottomColor;
+                    varying vec2 vUv;
+                    
+                    void main() {
+                        float mixValue1 = smoothstep(0.0, 0.5, vUv.y);
+                        float mixValue2 = smoothstep(0.5, 1.0, vUv.y);
+                        
+                        vec3 color = mix(uBottomColor, uMiddleColor, mixValue1);
+                        color = mix(color, uTopColor, mixValue2);
+                        
+                        gl_FragColor = vec4(color, 1.0);
+                    }
+                `}
+                side={2} // DoubleSide
             />
         </mesh>
     );
