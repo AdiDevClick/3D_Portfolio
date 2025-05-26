@@ -1,8 +1,9 @@
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { FloatingTitleProps } from '@/components/3DComponents/Title/TitlesTypes';
 import { sharedMatrices } from '@/utils/matrices';
 import { Float } from '@react-three/drei';
-import { memo, useCallback } from 'react';
+import { memo, Suspense, useCallback } from 'react';
 import { Group, Vector3 } from 'three';
 
 const floatOptions = {
@@ -42,15 +43,23 @@ const FloatingTitle = memo(function FloatingTitle({
     }, []);
     return (
         <Float ref={floatRef} {...floatOptions}>
-            <Title
-                rotation={[0, 3.164, 0]}
-                size={size}
-                isMobile={isMobile}
-                textProps={textProps}
-                {...props}
+            <Suspense
+                fallback={
+                    <FallbackText rotation={[0, 3.164, 0]}>
+                        {children}
+                    </FallbackText>
+                }
             >
-                {children}
-            </Title>
+                <Title
+                    rotation={[0, 3.164, 0]}
+                    size={size}
+                    isMobile={isMobile}
+                    textProps={textProps}
+                    {...props}
+                >
+                    {children}
+                </Title>
+            </Suspense>
 
             {isClickable && (
                 <mesh
