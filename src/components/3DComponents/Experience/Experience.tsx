@@ -177,7 +177,7 @@ export function Experience({ reducer }: ExperienceProps) {
             loadCardByURL(5, initialDelay, options);
         }, initialDelay);
         return () => clearTimeout(timer);
-    }, [params.id, showElements]);
+    }, [showElements]);
 
     return (
         <>
