@@ -4,6 +4,7 @@ import {
     Model,
 } from '@/components/3DComponents/Contact/ContactTypes';
 import { Center } from '@react-three/drei';
+import contactIcons from '@data/contact-icons.json';
 
 const floatOptions = {
     autoInvalidate: true,
@@ -13,27 +14,12 @@ const floatOptions = {
     floatingRange: [-0.1, 0.1] as [number, number],
 };
 
-const LinkedIn = `${
-    import.meta.env.BASE_URL
-}assets/models/optimized/Linkedin_model.glb`;
-const GitHub = `${
-    import.meta.env.BASE_URL
-}assets/models/optimized/Github_model.glb`;
-
-const iconsList: Model[] = [
-    {
-        name: 'LinkedIn',
-        model: LinkedIn,
-        rotation: [0, 3, 0],
-        position: [-0.6, 0, 0],
-    },
-    {
-        name: 'GitHub',
-        model: GitHub,
-        rotation: [0, 3, 0],
-        position: [0, 0, 0],
-    },
-];
+// const LinkedIn = `${
+//     import.meta.env.BASE_URL
+// }assets/models/optimized/Linkedin_model.glb`;
+// const GitHub = `${
+//     import.meta.env.BASE_URL
+// }assets/models/optimized/Github_model.glb`;
 
 /**
  * ContactIcons component
@@ -42,10 +28,35 @@ const iconsList: Model[] = [
  *
  * @param ref - Ref to be passed to the component
  */
-export function ContactIconsContainer({ ref }: ContactIconsContainerProps) {
+export function ContactIconsContainer({
+    ref,
+    scalar,
+    isMobile = false,
+}: ContactIconsContainerProps) {
+    // const iconsList: Model[] = [
+    //     {
+    //         name: 'LinkedIn',
+    //         model: LinkedIn,
+    //         rotation: [0, 3, 0],
+    //         position: [isMobile ? -0.5 : -1, 0, 0],
+    //         scale: scalar,
+    //     },
+    //     {
+    //         name: 'GitHub',
+    //         model: GitHub,
+    //         rotation: [0, 3, 0],
+    //         position: [0, 0, 0],
+    //         scale: scalar,
+    //     },
+    // ];
     return (
         <Center ref={ref}>
-            <FloatIcons models={iconsList} floatOptions={floatOptions} />
+            <FloatIcons
+                models={contactIcons as Model[]}
+                scalar={scalar}
+                isMobile={isMobile}
+                floatOptions={floatOptions}
+            />
         </Center>
     );
 }

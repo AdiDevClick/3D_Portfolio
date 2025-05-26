@@ -43,14 +43,16 @@ export function IconMesh({
     }, [data, iconColor]);
 
     return (
-        <mesh {...data} {...props}>
-            <meshStandardMaterial
-                color={hovered ? hoveredIconColor : originalColor}
-                emissive={hovered ? hoveredIconColor : '#000000'}
-                emissiveIntensity={hovered ? emissiveIntensity : 0}
-                roughness={hovered ? 0.5 : 0.8}
-                metalness={hovered ? 0.5 : 0.2}
-            />
-        </mesh>
+        <group>
+            <mesh {...data} {...props}>
+                <meshStandardMaterial
+                    color={hovered ? hoveredIconColor : originalColor}
+                    emissive={hovered ? hoveredIconColor : '#000000'}
+                    emissiveIntensity={hovered ? emissiveIntensity : 0}
+                    roughness={hovered ? 0.5 : 0.8}
+                    metalness={hovered ? 0.5 : 0.2}
+                />
+            </mesh>
+        </group>
     );
 }

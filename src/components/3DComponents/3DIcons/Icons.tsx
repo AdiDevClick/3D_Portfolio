@@ -1,6 +1,5 @@
 import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
-import { Html, useCursor, useGLTF } from '@react-three/drei';
-import { ThreeEvent } from '@react-three/fiber';
+import { useCursor, useGLTF } from '@react-three/drei';
 import { JSX, useState } from 'react';
 
 type IconsTypes = {
@@ -14,27 +13,17 @@ type IconsTypes = {
  * @param props - Props to be passed to the component. Accepts all group props
  * @param model - Model path to be used
  */
-export function Icons({ model, ...props }: IconsTypes) {
+export function Icons({ model }: IconsTypes) {
     const [hovered, set] = useState(false);
     const { nodes } = useGLTF(model);
 
     useCursor(hovered);
 
-    const getServiceName = () => {
-        if (model.includes('github') || model.includes('Github'))
-            return 'GitHub';
-        if (model.includes('linkedin') || model.includes('Linkedin'))
-            return 'LinkedIn';
-        return 'Lien';
-    };
-
     return (
         <group
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
-            onClick={(e) => onClickHandler(e, model)}
             dispose={null}
-            {...props}
         >
             {nodes.Scene?.children.map((node) => {
                 return (
@@ -47,35 +36,8 @@ export function Icons({ model, ...props }: IconsTypes) {
                     />
                 );
             })}
-            {hovered && (
-                <Html>
-                    <div className="about__tooltip">{getServiceName()}</div>
-                </Html>
-            )}
         </group>
     );
-}
-
-/**
- * Sends the user to the corresponding link on click
- * @param e - Event triggered on click
- * @param icon - Icon name to identify the link
- */
-function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>, icon: string) {
-    e.stopPropagation();
-    if (
-        icon.includes('github') ||
-        icon.includes('GitHub') ||
-        icon.includes('Github')
-    ) {
-        window.open('https://www.github.com/AdiDevClick');
-    } else if (
-        icon.includes('linkedin') ||
-        icon.includes('LinkedIn') ||
-        icon.includes('Linkedin')
-    ) {
-        window.open('https://www.linkedin.com/in/adrien-quijo');
-    }
 }
 
 /**

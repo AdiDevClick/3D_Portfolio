@@ -10,8 +10,26 @@ import { FloatIconsProps } from '@/components/3DComponents/Contact/ContactTypes'
  * @param floatOptions - Options for the floating effect
  * @returns
  */
-export function FloatIcons({ models, floatOptions }: FloatIconsProps) {
+export function FloatIcons({
+    models,
+    scalar,
+    isMobile,
+    floatOptions,
+}: FloatIconsProps) {
     return models.map(({ model, ...rest }, index) => (
-        <FloatIcon key={index} model={model} {...rest} {...floatOptions} />
+        <FloatIcon
+            key={index}
+            model={`${import.meta.env.BASE_URL}assets/models/${
+                isMobile ? `mobile/${model}` : `optimized/${model}`
+            }`}
+            position={
+                isMobile
+                    ? rest.modelPosition.mobile
+                    : rest.modelPosition.default
+            }
+            scale={scalar}
+            {...rest}
+            {...floatOptions}
+        />
     ));
 }
