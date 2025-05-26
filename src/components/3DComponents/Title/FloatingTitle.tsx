@@ -1,7 +1,9 @@
 import { Title } from '@/components/3DComponents/Title/Title';
 import { FloatingTitleProps } from '@/components/3DComponents/Title/TitlesTypes';
+import { sharedMatrices } from '@/utils/matrices';
 import { Float } from '@react-three/drei';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
+import { Group, Vector3 } from 'three';
 
 const floatOptions = {
     autoInvalidate: true,
@@ -20,10 +22,26 @@ const FloatingTitle = memo(function FloatingTitle({
     size,
     isMobile,
     textProps,
+    isClickable = false,
     ...props
 }: FloatingTitleProps) {
+    /**
+     * Calculate size of the title
+     * to enable smooth hover & click interactions.
+     */
+    const floatRef = useCallback((node: Group) => {
+        if (!node || !isClickable) return;
+
+        const box = sharedMatrices.box.setFromObject(node);
+        const contentSize = new Vector3();
+        box.getSize(contentSize);
+        const clickageBox = node.getObjectByName('clickable-box');
+        if (clickageBox) {
+            clickageBox.scale.set(contentSize.x, contentSize.y, contentSize.z);
+        }
+    }, []);
     return (
-        <Float {...floatOptions}>
+        <Float ref={floatRef} {...floatOptions}>
             <Title
                 rotation={[0, 3.164, 0]}
                 size={size}
@@ -33,6 +51,18 @@ const FloatingTitle = memo(function FloatingTitle({
             >
                 {children}
             </Title>
+
+            {isClickable && (
+                <mesh
+                    onPointerOver={props.onPointerOver}
+                    onPointerOut={props.onPointerOut}
+                    onClick={props.onClick}
+                    name={'clickable-box'}
+                    visible={true}
+                >
+                    <boxGeometry />
+                </mesh>
+            )}
         </Float>
     );
 });
