@@ -7,6 +7,8 @@ export type ContactIconsContainerProps = {
     ref: Ref<Group>;
     scalar: ReducerType['generalScaleX'];
     isMobile?: ReducerType['isMobile'];
+    /** @defaultValue true */
+    tooltips?: boolean;
 };
 
 export interface Model extends FloatProps {
@@ -19,14 +21,15 @@ export interface Model extends FloatProps {
     link: string;
 }
 
-export interface FloatIconsProps {
+export interface FloatIconsProps
+    extends Omit<ContactIconsContainerProps, 'ref'> {
     models: Model[];
     floatOptions: FloatProps;
-    scalar: ReducerType['generalScaleX'];
-    isMobile?: ReducerType['isMobile'];
 }
 
-export interface FloatIconProps extends Model {}
+export interface FloatIconProps extends Model {
+    tooltips?: boolean;
+}
 
 export interface IconsTypes {
     model: Model['model'];

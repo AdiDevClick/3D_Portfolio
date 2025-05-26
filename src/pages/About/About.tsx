@@ -320,6 +320,7 @@ const MemoizedAbout = memo(function About({
                 ref={iconsRef}
                 scalar={generalScaleX}
                 isMobile={isMobile}
+                tooltips={false}
             />
         </group>
     );

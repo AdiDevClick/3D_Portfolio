@@ -8,6 +8,9 @@ import { FloatIconsProps } from '@/components/3DComponents/Contact/ContactTypes'
  *
  * @param models - List of models to be used
  * @param floatOptions - Options for the floating effect
+ * @param scalar - Scale factor for the icons
+ * @param isMobile - Whether the icons should be displayed in mobile mode
+ * @param tooltips **@default=true** - Whether to show tooltips on hover
  * @returns
  */
 export function FloatIcons({
@@ -15,6 +18,7 @@ export function FloatIcons({
     scalar,
     isMobile,
     floatOptions,
+    tooltips,
 }: FloatIconsProps) {
     return models.map(({ model, ...rest }, index) => (
         <FloatIcon
@@ -28,6 +32,7 @@ export function FloatIcons({
                     : rest.modelPosition.default
             }
             scale={scalar}
+            tooltips={tooltips}
             {...rest}
             {...floatOptions}
         />

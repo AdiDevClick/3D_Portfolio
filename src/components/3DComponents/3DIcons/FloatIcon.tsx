@@ -10,11 +10,10 @@ import { useState } from 'react';
  *
  * @description Creates a floating icon with a 3D model
  * @param model - Model path to be used
- * @param position - Position of the icon
- * @param rotation - Rotation of the icon
+ * @param tooltips - Whether to show a tooltip on hover
  * @param props - Props to be passed to the component. Accepts all group props
  */
-export function FloatIcon({ model, ...props }: FloatIconProps) {
+export function FloatIcon({ model, tooltips, ...props }: FloatIconProps) {
     const [hovered, setHovered] = useState(false);
     const hoveredStyle = useSpring({
         scale: hovered ? 1.2 : 1,
@@ -42,7 +41,7 @@ export function FloatIcon({ model, ...props }: FloatIconProps) {
                 <mesh position={[0.2, 0.2, 0]} visible={false}>
                     <boxGeometry />
                 </mesh>
-                {hovered && (
+                {hovered && tooltips && (
                     <Html position={[0, 1, 0]}>
                         <div className="about__tooltip">{props.name}</div>
                     </Html>

@@ -27,11 +27,15 @@ const floatOptions = {
  * Use the list above to add more icons
  *
  * @param ref - Ref to be passed to the component
+ * @param scalar - Scale factor for the icons
+ * @param isMobile - Whether the icons should be displayed in mobile mode
+ * @param tooltips **@default=true** - Whether to show tooltips on hover
  */
 export function ContactIconsContainer({
     ref,
     scalar,
     isMobile = false,
+    tooltips = true,
 }: // iconsPosition,
 ContactIconsContainerProps) {
     return (
@@ -41,6 +45,7 @@ ContactIconsContainerProps) {
                 scalar={scalar}
                 isMobile={isMobile}
                 floatOptions={floatOptions}
+                tooltips={tooltips}
             />
         </Center>
     );
