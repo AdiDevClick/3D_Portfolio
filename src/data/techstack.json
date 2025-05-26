@@ -2,111 +2,116 @@
     {
         "name": "GitHub",
         "optimized": "Github_model.glb",
-        "mobile": "Github_mobile_model.glb"
+        "mobile": "Github_model.glb"
     },
     {
         "name": "GitLab",
         "optimized": "Gitlab_model.glb",
-        "mobile": "Gitlab_mobile_model.glb"
+        "mobile": "Gitlab_model.glb"
     },
     {
         "name": "Git",
         "optimized": "Git_model.glb",
-        "mobile": "Git_mobile_model.glb"
+        "mobile": "Git_model.glb"
     },
     {
         "name": "HTML5",
         "optimized": "Html_model.glb",
-        "mobile": "Html_mobile_model.glb"
+        "mobile": "Html_model.glb"
     },
     {
         "name": "CSS3",
         "optimized": "Css_model.glb",
-        "mobile": "Css_mobile_model.glb"
+        "mobile": "Css_model.glb"
     },
     {
         "name": "React",
         "optimized": "React_model.glb",
-        "mobile": "React_mobile_model.glb"
+        "mobile": "React_model.glb"
     },
     {
         "name": "Three.js",
         "optimized": "Threejs_model.glb",
-        "mobile": "Threejs_mobile_model.glb"
+        "mobile": "Threejs_model.glb"
     },
     {
         "name": "JavaScript",
         "optimized": "Javascript_model.glb",
-        "mobile": "Javascript_mobile_model.glb"
+        "mobile": "Javascript_model.glb"
     },
     {
         "name": "TypeScript",
         "optimized": "Typescript_model.glb",
-        "mobile": "Typescript_mobile_model.glb"
+        "mobile": "Typescript_model.glb"
     },
     {
         "name": "Node.js",
         "optimized": "Nodejs_model.glb",
-        "mobile": "Nodejs_mobile_model.glb"
+        "mobile": "Nodejs_model.glb"
     },
     {
         "name": "Express.js",
         "optimized": "Express_model.glb",
-        "mobile": "Express_mobile_model.glb"
+        "mobile": "Express_model.glb"
     },
     {
         "name": "MySQL",
         "optimized": "Mysql_model.glb",
-        "mobile": "Mysql_mobile_model.glb"
+        "mobile": "Mysql_model.glb"
     },
     {
         "name": "MongoDB",
         "optimized": "Mongodb_model.glb",
-        "mobile": "Mongodb_mobile_model.glb"
+        "mobile": "Mongodb_model.glb"
     },
     {
         "name": "Mongoose",
         "optimized": "Mongoose_model.glb",
-        "mobile": "Mongoose_mobile_model.glb"
+        "mobile": "Mongoose_model.glb"
     },
     {
         "name": "Bootstrap",
         "optimized": "Bootstrap_model.glb",
-        "mobile": "Bootstrap_mobile_model.glb"
+        "mobile": "Bootstrap_model.glb"
     },
     {
         "name": "Sass",
         "optimized": "Sass_model.glb",
-        "mobile": "Sass_mobile_model.glb"
+        "mobile": "Sass_model.glb"
     },
     {
         "name": "Figma",
         "optimized": "Figma_model.glb",
-        "mobile": "Figma_mobile_model.glb"
+        "mobile": "Figma_model.glb"
     },
     {
         "name": "Docker",
         "optimized": "Docker_model.glb",
-        "mobile": "Docker_mobile_model.glb"
+        "mobile": "Docker_model.glb"
     },
     {
         "name": "Postman",
         "optimized": "Postman_model.glb",
-        "mobile": "Postman_mobile_model.glb"
+        "mobile": "Postman_model.glb"
     },
     {
         "name": "Vite",
         "optimized": "Vite_model.glb",
-        "mobile": "Vite_mobile_model.glb"
+        "mobile": "Vite_model.glb"
     },
     {
         "name": "PHP",
         "optimized": "Php_model.glb",
-        "mobile": "Php_mobile_model.glb"
+        "mobile": "Php_model.glb"
     },
     {
         "name": "Symfony",
         "optimized": "Symfony_model.glb",
-        "mobile": "Symfony_mobile_model.glb"
+        "mobile": "Symfony_model.glb"
+    },
+    {
+        "name": "Blender",
+        "optimized": "Blender_model.glb",
+        "mobile": "Blender_model.glb"
     }
 ]
