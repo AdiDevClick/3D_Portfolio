@@ -335,34 +335,34 @@ export function Experience({ reducer }: ExperienceProps) {
     );
 }
 
-function ParticlesEffect() {
-    // Créer 500 particules dispersées dans l'espace
-    const particleCount = 500;
-    const particlesPositions = new Float32Array(particleCount * 3);
+// function ParticlesEffect() {
+//     // Créer 500 particules dispersées dans l'espace
+//     const particleCount = 500;
+//     const particlesPositions = new Float32Array(particleCount * 3);
 
-    for (let i = 0; i < particleCount; i++) {
-        particlesPositions[i * 3] = (Math.random() - 0.5) * 30; // x
-        particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 15; // y
-        particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 30; // z
-    }
+//     for (let i = 0; i < particleCount; i++) {
+//         particlesPositions[i * 3] = (Math.random() - 0.5) * 30; // x
+//         particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 15; // y
+//         particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 30; // z
+//     }
 
-    return (
-        <points>
-            <bufferGeometry>
-                <float32BufferAttribute
-                    attach="attributes-position"
-                    args={[particlesPositions, 3]}
-                />
-            </bufferGeometry>
-            <pointsMaterial
-                size={0.08}
-                color="#ffffff"
-                transparent
-                opacity={0.6}
-            />
-        </points>
-    );
-}
+//     return (
+//         <points>
+//             <bufferGeometry>
+//                 <float32BufferAttribute
+//                     attach="attributes-position"
+//                     args={[particlesPositions, 3]}
+//                 />
+//             </bufferGeometry>
+//             <pointsMaterial
+//                 size={0.08}
+//                 color="#ffffff"
+//                 transparent
+//                 opacity={0.6}
+//             />
+//         </points>
+//     );
+// }
 function ShadowCatcher() {
     return (
         <mesh
@@ -382,42 +382,42 @@ function ShadowCatcher() {
     );
 }
 
-function SunsetGradientBackground() {
-    return (
-        <mesh scale={[100, 100, 1]} position={[0, 0, -50]}>
-            <planeGeometry />
-            <shaderMaterial
-                uniforms={{
-                    uTime: { value: 0 },
-                    uTopColor: { value: new Color('#ff6b35') },
-                    uMiddleColor: { value: new Color('#f7931e') },
-                    uBottomColor: { value: new Color('#ffdc00') },
-                }}
-                vertexShader={`
-                    varying vec2 vUv;
-                    void main() {
-                        vUv = uv;
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                    }
-                `}
-                fragmentShader={`
-                    uniform vec3 uTopColor;
-                    uniform vec3 uMiddleColor;
-                    uniform vec3 uBottomColor;
-                    varying vec2 vUv;
-                    
-                    void main() {
-                        float mixValue1 = smoothstep(0.0, 0.5, vUv.y);
-                        float mixValue2 = smoothstep(0.5, 1.0, vUv.y);
-                        
-                        vec3 color = mix(uBottomColor, uMiddleColor, mixValue1);
-                        color = mix(color, uTopColor, mixValue2);
-                        
-                        gl_FragColor = vec4(color, 1.0);
-                    }
-                `}
-                side={2} // DoubleSide
-            />
-        </mesh>
-    );
-}
+// function SunsetGradientBackground() {
+//     return (
+//         <mesh scale={[100, 100, 1]} position={[0, 0, -50]}>
+//             <planeGeometry />
+//             <shaderMaterial
+//                 uniforms={{
+//                     uTime: { value: 0 },
+//                     uTopColor: { value: new Color('#ff6b35') },
+//                     uMiddleColor: { value: new Color('#f7931e') },
+//                     uBottomColor: { value: new Color('#ffdc00') },
+//                 }}
+//                 vertexShader={`
+//                     varying vec2 vUv;
+//                     void main() {
+//                         vUv = uv;
+//                         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//                     }
+//                 `}
+//                 fragmentShader={`
+//                     uniform vec3 uTopColor;
+//                     uniform vec3 uMiddleColor;
+//                     uniform vec3 uBottomColor;
+//                     varying vec2 vUv;
+
+//                     void main() {
+//                         float mixValue1 = smoothstep(0.0, 0.5, vUv.y);
+//                         float mixValue2 = smoothstep(0.5, 1.0, vUv.y);
+
+//                         vec3 color = mix(uBottomColor, uMiddleColor, mixValue1);
+//                         color = mix(color, uTopColor, mixValue2);
+
+//                         gl_FragColor = vec4(color, 1.0);
+//                     }
+//                 `}
+//                 side={2} // DoubleSide
+//             />
+//         </mesh>
+//     );
+// }
