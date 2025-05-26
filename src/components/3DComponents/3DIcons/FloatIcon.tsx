@@ -37,7 +37,7 @@ export function FloatIcon({ model, ...props }: FloatIconProps) {
                 floatIntensity={0.5}
                 {...props}
             >
-                <Icons model={model} />
+                <Icons model={model} hovered={hovered} />
 
                 <mesh position={[0.2, 0.2, 0]} visible={false}>
                     <boxGeometry />

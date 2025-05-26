@@ -27,3 +27,8 @@ export interface FloatIconsProps {
 }
 
 export interface FloatIconProps extends Model {}
+
+export interface IconsTypes {
+    model: Model['model'];
+    hovered?: boolean;
+}

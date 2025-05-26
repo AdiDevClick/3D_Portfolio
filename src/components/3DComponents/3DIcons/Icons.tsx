@@ -1,10 +1,6 @@
 import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
+import { IconsTypes } from '@/components/3DComponents/Contact/ContactTypes';
 import { useCursor, useGLTF } from '@react-three/drei';
-import { JSX, useState } from 'react';
-
-type IconsTypes = {
-    model: string;
-} & JSX.IntrinsicElements['group'];
 
 /**
  * Creates a 3D icon component.
@@ -13,18 +9,13 @@ type IconsTypes = {
  * @param props - Props to be passed to the component. Accepts all group props
  * @param model - Model path to be used
  */
-export function Icons({ model }: IconsTypes) {
-    const [hovered, set] = useState(false);
+export function Icons({ model, hovered }: IconsTypes) {
     const { nodes } = useGLTF(model);
 
-    useCursor(hovered);
+    useCursor(hovered || false);
 
     return (
-        <group
-            onPointerOver={() => set(true)}
-            onPointerOut={() => set(false)}
-            dispose={null}
-        >
+        <group dispose={null}>
             {nodes.Scene?.children.map((node) => {
                 return (
                     <IconMesh
