@@ -138,7 +138,7 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                         <IconWithText
                             key={icon.name}
                             scalar={0.8 * scalar}
-                            model={`${import.meta.env.BASE_URL}/assets/models/${
+                            model={`${import.meta.env.BASE_URL}assets/models/${
                                 isMobile
                                     ? `mobile/${icon.mobile}`
                                     : `optimized/${icon.optimized}`
