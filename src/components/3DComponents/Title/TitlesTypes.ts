@@ -16,6 +16,8 @@ export type FloatingTitleProps = {
     isMobile?: boolean;
     scale: number;
     textProps?: {};
+    /** @defaultValue false */
+    isClickable?: boolean;
 } & JSX.IntrinsicElements['group'] & {
         [key: string]: any;
     };
