@@ -33,7 +33,6 @@ export function Icons({ model, ...props }: IconsTypes) {
             onPointerOver={() => set(true)}
             onPointerOut={() => set(false)}
             onClick={(e) => onClickHandler(e, model)}
-            scale={70}
             dispose={null}
             {...props}
         >
