@@ -262,13 +262,14 @@ export function onClickHandler(
             return;
         }
     }
-    navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
+
+    navigate(!card.isClicked ? `/projets/${card.id}` : '/projets', {
+        // navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
         replace: false,
     });
     reducer.activateElement(card, !card.isClicked ? true : false);
     reducer.clickElement(card);
     // setIsCarouselClicked(false);
-    // console.log('Jai ouvert une carte, je reset le click');
 }
 
 /**
