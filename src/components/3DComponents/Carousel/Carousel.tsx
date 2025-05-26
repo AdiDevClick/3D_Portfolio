@@ -185,14 +185,20 @@ export default function Carousel({
             }
 
             // !! IMPORTANT !! Reset any active content
-            if (
-                visible === 'carousel' &&
-                activeContent?.isClicked &&
-                !activeProject
-            ) {
-                activeContent.isActive = false;
-                activeContent.isClicked = false;
-            }
+            // if (
+            //     visible === 'carousel' &&
+            //     activeContent?.isClicked &&
+            //     !activeProject
+            // ) {
+            //     console.log(
+            //         'objects reset:',
+            //         activeContent?.isClicked,
+            //         activeProject,
+            //         visible
+            //     );
+            //     activeContent.isActive = false;
+            //     activeContent.isClicked = false;
+            // }
         }
     }, [activeURL, isInitialLoading, activeProject, visible]);
 
