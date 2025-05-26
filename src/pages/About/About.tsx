@@ -1,10 +1,5 @@
 import '@css/About.scss';
-import {
-    CenterProps,
-    shaderMaterial,
-    Text,
-    useScroll,
-} from '@react-three/drei';
+import { shaderMaterial, Text, useScroll } from '@react-three/drei';
 import { memo, Suspense, useEffect, useRef } from 'react';
 import { Color, Group } from 'three';
 import { extend, useFrame } from '@react-three/fiber';
@@ -23,7 +18,6 @@ import { useSpring, animated } from '@react-spring/three';
 import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
 
 let isActive = false;
-
 let count = 0;
 
 /**
@@ -101,7 +95,6 @@ const MemoizedAbout = memo(function About({
         } else {
             titlePositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             contentPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
-            iconsPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
         }
     }, [contentWidth, contentHeight, visible, isActive, margin]);
 
@@ -168,7 +161,6 @@ const MemoizedAbout = memo(function About({
         }
 
         frustumChecker(
-            // [titleRef.current, iconsRef.current],
             [titleRef.current, iconsRef.current, contentRef.current],
             state,
             frameCountRef.current,
@@ -195,7 +187,13 @@ const MemoizedAbout = memo(function About({
                 ) {
                     const contentSizeY =
                         contentRef.current.userData.contentSize.y;
-                    iconsPositionRef.current.set(0, -contentSizeY - margin, 0);
+                    if (-contentSizeY - margin !== iconsPositionRef.current.y) {
+                        iconsPositionRef.current.set(
+                            0,
+                            -contentSizeY - margin,
+                            0
+                        );
+                    }
                 }
                 easing.damp3(
                     iconsRef.current.position,
@@ -317,7 +315,12 @@ const MemoizedAbout = memo(function About({
                 ))}
             </group>
 
-            <ContactIconsContainer ref={iconsRef} />
+            <ContactIconsContainer
+                key={`about-icons`}
+                ref={iconsRef}
+                scalar={generalScaleX}
+                isMobile={isMobile}
+            />
         </group>
     );
 });
