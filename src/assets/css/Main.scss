@@ -34,7 +34,12 @@
 
 @font-face {
     font-family: Montserrat;
-    src: url(../fonts/Montserrat-VariableFont_wght.ttf);
+    src: url(../fonts/montserrat-variablefont_wght-webfont.woff2) format('woff'),
+        url(../fonts/montserrat-variablefont_wght-webfont.woff) format('woff2');
+    font-display: swap;
+    font-weight: 100 900;
+    // url(../fonts/Montserrat-VariableFont_wght.ttf) format('truetype');
+    // src: url(../fonts/Montserrat-VariableFont_wght.ttf);
 }
 
 html,
