@@ -418,4 +418,6 @@ function SunsetGradientBackground() {
                 `}
                 side={2} // DoubleSide
             />
-     
+        </mesh>
+    );
+}
