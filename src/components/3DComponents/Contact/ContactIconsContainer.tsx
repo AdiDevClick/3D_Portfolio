@@ -32,23 +32,8 @@ export function ContactIconsContainer({
     ref,
     scalar,
     isMobile = false,
-}: ContactIconsContainerProps) {
-    // const iconsList: Model[] = [
-    //     {
-    //         name: 'LinkedIn',
-    //         model: LinkedIn,
-    //         rotation: [0, 3, 0],
-    //         position: [isMobile ? -0.5 : -1, 0, 0],
-    //         scale: scalar,
-    //     },
-    //     {
-    //         name: 'GitHub',
-    //         model: GitHub,
-    //         rotation: [0, 3, 0],
-    //         position: [0, 0, 0],
-    //         scale: scalar,
-    //     },
-    // ];
+}: // iconsPosition,
+ContactIconsContainerProps) {
     return (
         <Center ref={ref}>
             <FloatIcons
