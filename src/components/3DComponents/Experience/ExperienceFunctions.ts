@@ -38,9 +38,10 @@ export async function loadCardByURL(
         clickElement,
         setViewMode,
         navigate,
+        visible,
     } = options;
     try {
-        setViewMode('carousel');
+        if (visible !== 'carousel') setViewMode('carousel');
 
         if (showElements.length === 0) {
             throw createHttpError('Try again', 403);
@@ -71,7 +72,7 @@ export async function loadCardByURL(
         }
 
         if (typedError.cause?.status === 404) {
-            setViewMode('carousel');
+            if (visible !== 'carousel') setViewMode('carousel');
             return navigate('/error', { replace: false });
         }
         console.error('Erreur non gérée :', typedError, error);

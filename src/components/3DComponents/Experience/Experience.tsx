@@ -166,8 +166,9 @@ export function Experience({ reducer }: ExperienceProps) {
             clickElement,
             setViewMode,
             navigate,
+            visible,
         };
-        setViewMode('carousel');
+        if (visible !== 'carousel') setViewMode('carousel');
         const initialDelay = 800;
 
         // Awaits the initialization of the elements (initialDelay)

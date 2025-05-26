@@ -14,4 +14,5 @@ export type loadCardByURLProps = {
     clickElement: ReducerType['clickElement'];
     setViewMode: ReducerType['setViewMode'];
     navigate: NavigateFunction;
+    visible: ReducerType['visible'];
 };
