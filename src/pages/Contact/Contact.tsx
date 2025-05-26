@@ -4,8 +4,12 @@ import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import {
     ACTIVE_PROJECTS_POSITION_SETTINGS,
     DEFAULT_PROJECTS_POSITION_SETTINGS,
-    DESKTOP_HTML_ICONS_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config';
+import {
+    CONTACT_ICONS_POSITION_SETTINGS,
+    DESKTOP_ICONS_MARGINS_POSITION_SETTINGS,
+    MOBILE_ICONS_MARGINS_POSITION_SETTINGS,
+} from '@/configs/ContactIcons.config';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { Html, Sparkles, Stars, useCursor } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
@@ -40,10 +44,12 @@ const MemoizedContact = memo(function Contact({
           DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
     currentIconsPos = isActive
-        ? DESKTOP_HTML_ICONS_POSITION_SETTINGS(
-              contentHeight ?? 1,
+        ? CONTACT_ICONS_POSITION_SETTINGS(
+              contentHeight,
               contentWidth,
-              0.5
+              isMobile
+                  ? MOBILE_ICONS_MARGINS_POSITION_SETTINGS
+                  : DESKTOP_ICONS_MARGINS_POSITION_SETTINGS
           )
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
     useFrame((state, delta) => {
@@ -79,20 +85,18 @@ const MemoizedContact = memo(function Contact({
         }
     });
     return (
-        <group
-            ref={groupRef}
-            onPointerOver={(e) => {
-                e.stopPropagation();
-                setHovered(true);
-            }}
-            onPointerOut={(e) => {
-                e.stopPropagation();
-                setHovered(false);
-            }}
-            onClick={onClickHandler}
-            visible={isActive}
-        >
+        <group ref={groupRef} visible={isActive}>
             <FloatingTitle
+                isClickable={true}
+                onPointerOver={(e) => {
+                    e.stopPropagation();
+                    setHovered(true);
+                }}
+                onPointerOut={(e) => {
+                    e.stopPropagation();
+                    setHovered(false);
+                }}
+                onClick={onClickHandler}
                 scale={generalScaleX}
                 size={30}
                 textProps={{
@@ -101,31 +105,20 @@ const MemoizedContact = memo(function Contact({
                 }}
             >
                 Me contacter sur LinkedIn
+                {hovered && (
+                    <Html position={[0, 2, 0]}>
+                        <div className="about__tooltip">
+                            Visitez mon LinkedIn
+                        </div>
+                    </Html>
+                )}
             </FloatingTitle>
-            {hovered && (
-                <Html position={[0, 2, 0]}>
-                    <div className="about__tooltip">Visitez mon LinkedIn</div>
-                </Html>
-            )}
-            <ContactIconsContainer ref={iconsRef} />
-            {/* <group ref={iconsRef}>
-                <Center>
-                    <Float {...floatOptions}>
-                        <Icons
-                            model={GitIcon}
-                            rotation={[0, 3, 0]}
-                            position={[0, 0, 0]}
-                        />
-                    </Float>
-                    <Float {...floatOptions}>
-                        <Icons
-                            model={LinkedIn}
-                            rotation={[0, 3, 0]}
-                            position={[-0.6, 0, 0]}
-                        />
-                    </Float>
-                </Center>
-            </group> */}
+
+            <ContactIconsContainer
+                ref={iconsRef}
+                scalar={generalScaleX}
+                isMobile={isMobile}
+            />
             <Sparkles count={30} size={6} speed={0.4} color={'blue'} />
             {isActive && (
                 <Stars
