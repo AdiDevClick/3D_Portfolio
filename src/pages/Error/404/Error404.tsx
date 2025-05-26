@@ -10,9 +10,9 @@ import { useLoader } from '@react-three/fiber';
 import { useOutletContext } from 'react-router';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
 import { Object3D } from 'three';
-import modelPath from '@models/Brokenglass_model.glb';
+import modelDesktop from '@models/optimized/Brokenglass_model.glb';
+import modelMobile from '@models/mobile/Brokenglass_model.glb';
 import { Suspense } from 'react';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 
 type ContextType = {
     isMobile: boolean;
@@ -34,14 +34,18 @@ const floatOptions = {
  */
 export function Error404() {
     const { isMobile, scaleX } = useOutletContext<ContextType>();
-    const { nodes } = useLoader(GLTFLoader, modelPath, (loader) => {
-        const gltfLoader = loader as GLTFLoader;
-        const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath(
-            'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
-        );
-        gltfLoader.setDRACOLoader(dracoLoader);
-    });
+    const { nodes } = useLoader(
+        GLTFLoader,
+        isMobile ? modelMobile : modelDesktop,
+        (loader) => {
+            const gltfLoader = loader as GLTFLoader;
+            const dracoLoader = new DRACOLoader();
+            dracoLoader.setDecoderPath(
+                'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+            );
+            gltfLoader.setDRACOLoader(dracoLoader);
+        }
+    );
     // const { nodes } = useLoader(
     //     GLTFLoader,
     //     modelPath,
