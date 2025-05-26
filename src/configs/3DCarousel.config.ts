@@ -112,12 +112,6 @@ export const DESKTOP_HTML_TITLE_POSITION_SETTINGS = (
     margin: number
 ) => [0, height / 2 - margin * 2, 0];
 // ) => new Vector3(0, height / 2 + margin - 1, 0);
-/** Position des icônes des pages */
-export const DESKTOP_HTML_ICONS_POSITION_SETTINGS = (
-    height: number,
-    width: number,
-    margin: number
-) => new Vector3(width / 2 - margin * 2.5, -(height / 2) + margin, 0);
 
 /** Positions the icons on the left side of the screen with a margin - for DESKTOP*/
 export const DESKTOP_HUD_ICONS_POSITION_SETTINGS = (
