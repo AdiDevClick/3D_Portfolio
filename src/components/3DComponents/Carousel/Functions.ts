@@ -116,52 +116,52 @@ export function createCardProperties(
         ],
     };
 
-    const texturePath = datas[i]?.cover || defaultContent.url;
+    // const texturePath = datas[i]?.cover || defaultContent.url;
 
-    let texture;
-    // let startTime;
+    // let texture;
+    // // let startTime;
 
-    Cache.enabled = true;
+    // Cache.enabled = true;
 
-    // Utiliser une texture en cache si disponible
-    if (window._textureCache[texturePath]) {
-        texture = window._textureCache[texturePath];
-        // window._textureCacheStats.hits++;
-        // console.log(`✅ Texture CACHE HIT: ${texturePath}`);
-    } else {
-        // Sinon charger avec des paramètres optimisés
-        const textureLoader = new TextureLoader();
+    // // Utiliser une texture en cache si disponible
+    // if (window._textureCache[texturePath]) {
+    //     texture = window._textureCache[texturePath];
+    //     // window._textureCacheStats.hits++;
+    //     // console.log(`✅ Texture CACHE HIT: ${texturePath}`);
+    // } else {
+    //     // Sinon charger avec des paramètres optimisés
+    //     const textureLoader = new TextureLoader();
 
-        // Réduire la taille des textures pour mobile
-        const url = isMobile
-            ? texturePath.replace('.png', '-small.png')
-            : texturePath;
+    //     // Réduire la taille des textures pour mobile
+    //     const url = isMobile
+    //         ? texturePath.replace('.png', '-small.png')
+    //         : texturePath;
 
-        // Mesurer le temps de chargement
-        // startTime = performance.now();
-        // window._textureCacheStats.misses++;
-        // console.log(`🔄 Loading texture: ${texturePath}`);
+    //     // Mesurer le temps de chargement
+    //     // startTime = performance.now();
+    //     // window._textureCacheStats.misses++;
+    //     // console.log(`🔄 Loading texture: ${texturePath}`);
 
-        texture = textureLoader.load(texturePath, (loadedTexture) => {
-            // Optimiser
-            loadedTexture.generateMipmaps = !isMobile;
-            loadedTexture.minFilter = isMobile
-                ? LinearFilter
-                : LinearMipmapLinearFilter;
-            loadedTexture.anisotropy = isMobile ? 1 : 4;
+    //     texture = textureLoader.load(texturePath, (loadedTexture) => {
+    //         // Optimiser
+    //         loadedTexture.generateMipmaps = !isMobile;
+    //         loadedTexture.minFilter = isMobile
+    //             ? LinearFilter
+    //             : LinearMipmapLinearFilter;
+    //         loadedTexture.anisotropy = isMobile ? 1 : 4;
 
-            // Stocker dans le cache
-            window._textureCache[texturePath] = loadedTexture;
+    //         // Stocker dans le cache
+    //         window._textureCache[texturePath] = loadedTexture;
 
-            // Statistiques
-            // const loadTime = performance.now() - startTime;
-            // window._textureCacheStats.totalLoaded++;
-            // window._textureCacheStats.savedLoadTime += loadTime;
-            // console.log(
-            //     `✅ Texture loaded in ${loadTime.toFixed(2)}ms: ${texturePath}`
-            // );
-        });
-    }
+    //         // Statistiques
+    //         // const loadTime = performance.now() - startTime;
+    //         // window._textureCacheStats.totalLoaded++;
+    //         // window._textureCacheStats.savedLoadTime += loadTime;
+    //         // console.log(
+    //         //     `✅ Texture loaded in ${loadTime.toFixed(2)}ms: ${texturePath}`
+    //         // );
+    //     });
+    // }
 
     // Optimiser la texture
     // texture.generateMipmaps = !isMobile;
@@ -204,7 +204,7 @@ export function createCardProperties(
         currentWidth: 1,
         currentScale: 1,
         bending: SETTINGS.BENDING,
-        texture,
+        // texture,
     };
 }
 
