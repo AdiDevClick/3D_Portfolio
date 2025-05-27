@@ -72,7 +72,7 @@ const MemoizedCard = memo(function Card({
 
     const cardHoverScale = card.isActive ? CARD_HOVER_SCALE : 1;
     const cardHoverRadius = card.isActive ? 0.02 : 0.05;
-    const cardHoverZoom = card.isActive ? 0.9 : 1.1;
+    const cardHoverZoom = card.isActive ? 1 : 1.1;
 
     useCursor(card.isActive || false);
 
@@ -117,7 +117,7 @@ const MemoizedCard = memo(function Card({
         easing.damp(
             material,
             'zoom',
-            card.isClicked ? 0.9 : cardHoverZoom,
+            card.isClicked ? 1 : cardHoverZoom,
             0.3,
             delta
         );
