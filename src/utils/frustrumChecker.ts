@@ -16,7 +16,7 @@ let isVisible = false;
  * Frustum checker function to determine if an object
  * is within the camera's frustum.
  *
- * @param refs - Object3D or array of Object3D to check visibility
+ * @param elements - Object3D or array of Object3D to check visibility
  * @param state - useFrame state containing the camera
  * @param frameCount - Current frame count
  * @param isMobile - Boolean indicating if the device is mobile
@@ -24,7 +24,7 @@ let isVisible = false;
  * @param deepSearching - Boolean indicating if deep searching is enabled
  */
 export function frustumChecker(
-    refs: Object3D | Object3D[],
+    elements: Object3D | Object3D[],
     state: FrustumState,
     frameCount: number,
     isMobile: boolean,
@@ -35,9 +35,9 @@ export function frustumChecker(
     },
     deepSearching = false
 ) {
-    if (!refs || !state) return false;
+    if (!elements || !state) return false;
 
-    const objectsArray = Array.isArray(refs) ? refs : [refs];
+    const objectsArray = Array.isArray(elements) ? elements : [elements];
 
     if (
         frameCount % (isMobile ? options.mobileTime : options.desktopTime) ===
@@ -49,47 +49,58 @@ export function frustumChecker(
                 state.camera.matrixWorldInverse
             )
         );
-
         if (deepSearching) {
-            isVisible = deepSearch(refs as Object3D, options.name);
+            isVisible = deepSearch(elements as Object3D, options.name);
         } else {
             objectsArray.forEach((ref) => {
-                isVisible = checkVisibility(ref);
+                isVisible = updateVisibilityAndSize(ref);
             });
         }
-
         return isVisible;
     }
     return false;
 }
 
+/**
+ * Recursively searches through the children of an Object3D
+ * to find any child with the specified name.
+ * If found, it checks it's visibility and updates it's value.
+ *
+ * @param object - The Object3D to search within
+ * @param name - The name to search for within the object's children
+ */
 function deepSearch(object: Object3D, name: string) {
     let visible = false;
     object.traverse((child) => {
         if (child.name && child.name.includes(name)) {
-            visible = checkVisibility(child);
+            visible = updateVisibilityAndSize(child);
         }
     });
     return visible;
 }
 
-function checkVisibility(object: Object3D) {
+/**
+ * Check visibility of an Object3D within the camera's frustum.
+ * @description This will update its bounding box and content size and
+ * will update it's visibility status.
+ *
+ * @param object - The Object3D to check visibility for
+ */
+function updateVisibilityAndSize(object: Object3D) {
     const obj = object as Object3DWithBoundingBox;
     if (!obj.boundingbox) {
         obj.boundingbox = sharedMatrices.box;
     }
     obj.boundingbox.setFromObject(object);
+
+    // Add content size to userData
     const contentSize = new Vector3();
     obj.boundingbox.getSize(contentSize);
     if (contentSize.x > 0 && contentSize.y > 0 && contentSize.z > 0) {
         obj.userData.contentSize = contentSize.clone();
-
-        // Log de débogage (à supprimer en production)
-        if (object.name.includes('content')) {
-            console.log(`Size updated for ${object.name}:`, contentSize);
-        }
     }
 
+    // Update visibility on intersection
     obj.visible = sharedMatrices.frustum.intersectsBox(obj.boundingbox);
 
     return obj.visible;
