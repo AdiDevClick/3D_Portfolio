@@ -10,11 +10,12 @@ import { Sparkles } from '@react-three/drei';
  */
 export function HomePageTitle({ ref, scale }: HomePageTitleProps) {
     return (
-        <group ref={ref}>
+        <group ref={ref} name="home-page-title-group">
             <FloatingTitle
                 scale={scale}
                 size={80}
                 position-y={1}
+                name="home-page-title"
                 textProps={{
                     height: 40,
                 }}
@@ -28,6 +29,7 @@ export function HomePageTitle({ ref, scale }: HomePageTitleProps) {
                 size={60}
                 position-y={0}
                 back
+                name="home-page-title"
                 textProps={{
                     height: 40,
                 }}
@@ -39,6 +41,7 @@ export function HomePageTitle({ ref, scale }: HomePageTitleProps) {
                 size={80}
                 position-y={-1}
                 back
+                name="home-page-title"
                 textProps={{
                     height: 40,
                 }}
