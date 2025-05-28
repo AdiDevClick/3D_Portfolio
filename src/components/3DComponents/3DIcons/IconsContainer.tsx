@@ -142,46 +142,49 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     });
 
     return (
-        <IconsContainerContext value={contextValue} ref={groupRef} {...props}>
-            {icons.map((icon, index) => (
-                // <Suspense fallback={null}>
-                <GridLayout
-                    width={width}
-                    key={icon.name + '-grid'}
-                    name={icon.name + '-grid'}
-                    length={icons.length}
-                    index={index}
-                    scalar={scalar}
-                    options={gridOptions}
-                >
-                    <Suspense fallback={<PlaceholderIcon />}>
-                        <IconWithText
-                            key={icon.name}
-                            model={`${import.meta.env.BASE_URL}assets/models/${
-                                isMobile
-                                    ? `mobile/${icon.mobile}`
-                                    : `optimized/${icon.optimized}`
-                            }`}
-                            datas={{
-                                text: icon.name,
-                                name: icon.name,
-                            }}
-                            name={'icon__content'}
-                            position={
-                                isMobile
-                                    ? [0.5 * scalar, 1.45 * scalar, -0.15]
-                                    : [0, 0.5 * scalar, 0]
-                            }
-                        />
-                    </Suspense>
-                    {children}
-                    <Center bottom>
-                        <HexCell scalar={scalar} />
-                    </Center>
-                </GridLayout>
-                // </Suspense>
-            ))}
-            {/* </group> */}
+        <IconsContainerContext value={contextValue}>
+            <group name="icon__center-container" ref={groupRef} {...props}>
+                {icons.map((icon, index) => (
+                    // <Suspense fallback={null}>
+                    <GridLayout
+                        width={width}
+                        key={icon.name + '-grid'}
+                        name={icon.name + '-grid'}
+                        length={icons.length}
+                        index={index}
+                        scalar={scalar}
+                        options={gridOptions}
+                    >
+                        <Suspense fallback={<PlaceholderIcon />}>
+                            <IconWithText
+                                key={icon.name}
+                                model={`${
+                                    import.meta.env.BASE_URL
+                                }assets/models/${
+                                    isMobile
+                                        ? `mobile/${icon.mobile}`
+                                        : `optimized/${icon.optimized}`
+                                }`}
+                                datas={{
+                                    text: icon.name,
+                                    name: icon.name,
+                                }}
+                                name={'icon__content'}
+                                position={
+                                    isMobile
+                                        ? [0.5 * scalar, 1.45 * scalar, -0.15]
+                                        : [0, 0.5 * scalar, 0]
+                                }
+                            />
+                        </Suspense>
+                        {children}
+                        <Center bottom>
+                            <HexCell scalar={scalar} />
+                        </Center>
+                    </GridLayout>
+                    // </Suspense>
+                ))}
+            </group>
         </IconsContainerContext>
     );
 });

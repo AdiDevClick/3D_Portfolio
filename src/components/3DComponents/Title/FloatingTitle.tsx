@@ -43,23 +43,23 @@ const FloatingTitle = memo(function FloatingTitle({
     }, []);
     return (
         <Float ref={floatRef} {...floatOptions}>
-            <Suspense
+            {/* <Suspense
                 fallback={
                     <FallbackText rotation={[0, 3.164, 0]}>
                         {children}
                     </FallbackText>
                 }
+            > */}
+            <Title
+                rotation={[0, 3.164, 0]}
+                size={size}
+                isMobile={isMobile}
+                textProps={textProps}
+                {...props}
             >
-                <Title
-                    rotation={[0, 3.164, 0]}
-                    size={size}
-                    isMobile={isMobile}
-                    textProps={textProps}
-                    {...props}
-                >
-                    {children}
-                </Title>
-            </Suspense>
+                {children}
+            </Title>
+            {/* </Suspense> */}
 
             {isClickable && (
                 <mesh
