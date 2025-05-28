@@ -1,9 +1,11 @@
+import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
 import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
+import { HexCell } from '@/components/3DComponents/Forms/HexCell';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { UseSpringProps } from '@react-spring/three';
-import { CenterProps } from '@react-three/drei';
+import { Center, CenterProps } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
 import { JSX, memo, ReactNode, Suspense, useRef } from 'react';
 import { Box3, Group } from 'three';
@@ -23,7 +25,7 @@ type IconsContainerTypes = {
     margin?: number;
     isMobile: boolean;
     /** @defaultValue 100 */
-    iconScale?: number;
+    iconScale: number;
     floatOptions?: {
         speed?: number;
         floatIntensity?: number;
@@ -48,10 +50,18 @@ type IconsContainerTypes = {
             | undefined;
     };
     mobileTextProps?: CenterProps;
-    animations?: {} | UseSpringProps;
+    animations:
+        | {
+              propertiesToCheck?: string[];
+              hovered?: boolean;
+              [key: string]: any;
+          } & UseSpringProps;
     children?: ReactNode;
-    hovered?: boolean;
+    // hovered?: boolean;
 } & JSX.IntrinsicElements['group'];
+
+export interface IconsContainerContextTypes
+    extends Omit<IconsContainerTypes, 'children' | 'icons'> {}
 
 // const gridOptions = {
 //     columnsNumber: 3,
@@ -78,7 +88,6 @@ type IconsContainerTypes = {
  * @param eventsList - List of events to attach to the icons
  * @param mobileTextProps - Props for the mobile text
  * @param animations - Animations for the icons
- * @param hovered - Boolean indicating if the icon is hovered
  * @returns JSX.Element
  */
 const MemoizedIconsContainer = memo(function IconsContainer({
@@ -90,17 +99,27 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     isMobile,
     eventsList,
     floatOptions,
-    /** @defaultValue 5 */
     iconScale = 100,
     gridOptions,
     mobileTextProps,
-    hovered,
-    animations,
+    animations = {} as IconsContainerTypes['animations'],
     ...props
 }: IconsContainerTypes) {
     const groupRef = useRef<Group>(null!);
     const frameCountRef = useRef(0);
 
+    const contextValue = {
+        width,
+        scalar,
+        gridOptions,
+        iconScale,
+        floatOptions,
+        isMobile,
+        eventsList,
+        mobileTextProps,
+        animations,
+        margin,
+    } as IconsContainerContextTypes;
     /**
      * This function is called on each frame to update
      * the visibility of the icons based on the camera's frustum.
@@ -123,8 +142,9 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     });
 
     return (
-        <group name="icon__center-container" ref={groupRef} {...props}>
+        <IconsContainerContext value={contextValue} ref={groupRef} {...props}>
             {icons.map((icon, index) => (
+                // <Suspense fallback={null}>
                 <GridLayout
                     width={width}
                     key={icon.name + '-grid'}
@@ -137,36 +157,32 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                     <Suspense fallback={<PlaceholderIcon />}>
                         <IconWithText
                             key={icon.name}
-                            scalar={0.8 * scalar}
                             model={`${import.meta.env.BASE_URL}assets/models/${
                                 isMobile
                                     ? `mobile/${icon.mobile}`
                                     : `optimized/${icon.optimized}`
                             }`}
-                            index={index}
-                            isMobile={isMobile}
                             datas={{
                                 text: icon.name,
                                 name: icon.name,
                             }}
                             name={'icon__content'}
-                            iconScale={iconScale}
-                            floatOptions={floatOptions}
                             position={
                                 isMobile
                                     ? [0.5 * scalar, 1.45 * scalar, -0.15]
                                     : [0, 0.5 * scalar, 0]
                             }
-                            eventsList={eventsList}
-                            mobileTextProps={mobileTextProps}
-                            animations={animations}
-                            hovered={hovered}
                         />
                     </Suspense>
                     {children}
+                    <Center bottom>
+                        <HexCell scalar={scalar} />
+                    </Center>
                 </GridLayout>
+                // </Suspense>
             ))}
-        </group>
+            {/* </group> */}
+        </IconsContainerContext>
     );
 });
 export default MemoizedIconsContainer;

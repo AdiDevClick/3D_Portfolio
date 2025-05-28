@@ -1,45 +1,47 @@
 import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
 import { Title } from '@/components/3DComponents/Title/Title';
-import { Center, CenterProps, Float, useCursor } from '@react-three/drei';
-import { ThreeEvent, useFrame, useLoader } from '@react-three/fiber';
+import { Center, Float, useCursor } from '@react-three/drei';
+import { useLoader } from '@react-three/fiber';
 import { Group } from 'three';
-import { JSX, useEffect, useMemo, useRef, useState } from 'react';
+import { JSX, use, useMemo, useRef, useState } from 'react';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
-import { useSpring, animated, SpringProps } from '@react-spring/three';
-import { easing } from 'maath';
+import { useSpring, animated } from '@react-spring/three';
+import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
+import { IconsContainerContextTypes } from '@/components/3DComponents/3DIcons/IconsContainer';
+// import { easing } from 'maath';
 type IconsTypes = {
     model: string;
     datas: { name: string; text: string };
-    scalar: number;
-    index: number;
+    // scalar: number;
+    // index: number;
     /** @defaultValue 0.5 */
-    margin?: number;
-    isMobile: boolean;
+    // margin?: number;
+    // isMobile: boolean;
     /** @defaultValue 100 */
-    iconScale?: number;
-    eventsList?: {
-        onClick?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerOver?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerOut?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerDown?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerUp?: (event: ThreeEvent<MouseEvent>) => void;
-        [key: string]:
-            | ((event: ThreeEvent<MouseEvent | PointerEvent>) => void)
-            | undefined;
-    };
-    floatOptions?: {
-        speed?: number;
-        floatIntensity?: number;
-        rotationIntensity?: number;
-        floatRange?: [number, number];
-    };
-    mobileTextProps?: CenterProps;
-    animations?: {
-        propertiesToCheck?: string[];
-        hovered?: boolean;
-        [key: string]: any;
-    } & SpringProps;
+    // iconScale?: number;
+    // eventsList?: {
+    //     onClick?: (event: ThreeEvent<MouseEvent>) => void;
+    //     onPointerOver?: (event: ThreeEvent<MouseEvent>) => void;
+    //     onPointerOut?: (event: ThreeEvent<MouseEvent>) => void;
+    //     onPointerDown?: (event: ThreeEvent<MouseEvent>) => void;
+    //     onPointerUp?: (event: ThreeEvent<MouseEvent>) => void;
+    //     [key: string]:
+    //         | ((event: ThreeEvent<MouseEvent | PointerEvent>) => void)
+    //         | undefined;
+    // };
+    // floatOptions?: {
+    //     speed?: number;
+    //     floatIntensity?: number;
+    //     rotationIntensity?: number;
+    //     floatRange?: [number, number];
+    // };
+    // mobileTextProps?: CenterProps;
+    // animations?: {
+    //     propertiesToCheck?: string[];
+    //     hovered?: boolean;
+    //     [key: string]: any;
+    // } & SpringProps;
     // /** @defaultValue false */
     // hovered?: boolean;
 } & JSX.IntrinsicElements['group'];
@@ -52,35 +54,30 @@ let isComponentMounted = false;
  * @description This container is Floating.
  *
  * @param model - Model URL
- * @param scalar - Scalar value for scaling the icon depending on the screen size
- * @param index - Index of the icon in the grid
- * @param isMobile - Boolean indicating if the device is mobile
- * @param margin - **Default=0.5** - Margin between icons
  * @param props - Additional properties for the 3D group element
- * @param iconScale - Scale of the icon **Default=100**
- * @param floatOptions - Options for the floating effect
- * @param eventsList - List of events to attach to the icon
- * @param mobileTextProps - Props for the mobile text
- * @param animations - Animations for the icon
  * @param datas - Data containing the name and text for the icon
-//  * @param hovered - **Default=false** - Boolean indicating if the icon is hovered
  * @returns
  */
-export function IconWithText({
-    model,
-    scalar,
-    iconScale = 100,
-    index,
-    datas,
-    isMobile,
-    eventsList,
-    floatOptions,
-    mobileTextProps,
-    animations = {} as any,
-    // hovered = false,
-    margin = 0.5,
-    ...props
-}: IconsTypes) {
+export function IconWithText({ model, datas, ...props }: IconsTypes) {
+    const contextValue = use(IconsContainerContext);
+    if (!contextValue) {
+        throw new Error(
+            'IconWithText must be used within IconsContainerProvider'
+        );
+    }
+
+    let {
+        margin,
+        animations,
+        mobileTextProps,
+        floatOptions,
+        eventsList,
+        isMobile,
+        iconScale,
+        scalar,
+    } = contextValue as IconsContainerContextTypes;
+
+    scalar = 0.8 * scalar;
     const [hovered, set] = useState(false);
 
     const newAnimationObject = useMemo(() => {
@@ -102,7 +99,6 @@ export function IconWithText({
     }, [animations, hovered, isComponentMounted]);
 
     const animationSpring = useSpring(newAnimationObject);
-    // const animationSpring = useSpring(newObject);
 
     const { nodes } = useLoader(GLTFLoader, model, (loader) => {
         const gltfLoader = loader as GLTFLoader;
@@ -114,7 +110,7 @@ export function IconWithText({
     });
 
     const groupRef = useRef<Group>(null!);
-    const frameCountRef = useRef(0);
+    // const frameCountRef = useRef(0);
 
     useCursor(hovered);
 
@@ -169,10 +165,11 @@ export function IconWithText({
                     set(false);
                 }}
                 {...eventsList}
-                dispose={null}
                 {...props}
                 name={datas.name}
+                dispose={null}
             >
+                {/* <Suspense fallback={<PlaceholderIcon />}> */}
                 <Float {...floatOptions}>
                     <Center
                         position-y={isMobile ? -0.8 * scalar : 0}
@@ -197,7 +194,6 @@ export function IconWithText({
                             );
                         })}
                     </Center>
-
                     {!isMobile ? (
                         <Title
                             right
@@ -229,6 +225,7 @@ export function IconWithText({
                         <boxGeometry />
                     </mesh>
                 </Float>
+                {/* </Suspense> */}
             </Center>
         </animated.group>
     );
