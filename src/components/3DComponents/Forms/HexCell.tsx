@@ -1,3 +1,7 @@
+import {
+    cylinderGeometry,
+    hexBlackMetalMaterial,
+} from '@/components/3DComponents/Forms/FormsMats';
 import { HexCellProps } from '@/components/3DComponents/Forms/FormsTypes';
 
 /**
@@ -9,15 +13,10 @@ import { HexCellProps } from '@/components/3DComponents/Forms/FormsTypes';
  */
 export function HexCell({ scalar }: HexCellProps) {
     return (
-        <mesh>
-            <cylinderGeometry
-                args={[scalar * 0.6, scalar * 0.6, 0.05 * scalar, 6]}
-            />
-            <meshStandardMaterial
-                color="#2a2a2a"
-                roughness={0.7}
-                metalness={0.3}
-            />
-        </mesh>
+        <mesh
+            scale={scalar * 0.6}
+            geometry={cylinderGeometry}
+            material={hexBlackMetalMaterial}
+        />
     );
 }
