@@ -15,6 +15,8 @@ export function FallbackText({ children, ref, ...props }: FallbackTextTypes) {
             font={importedNormalFont}
             fontSize={0.1}
             color="black"
+            anchorX="center"
+            anchorY="middle"
             outlineWidth={0.004}
             {...props}
         >
