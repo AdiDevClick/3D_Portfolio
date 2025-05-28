@@ -12,6 +12,7 @@ import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
 import { Center, ContactShadows, useScroll } from '@react-three/drei';
 import { HexCell } from '@/components/3DComponents/Forms/HexCell';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -160,9 +161,19 @@ const MemoizedHome = memo(function Home({
                 color="#fff3b0"
             /> */}
 
+            {/* <Suspense
+                fallback={
+                    <FallbackText position-y={1 * generalScaleX}>
+                        Bienvenue sur mon Portfolio !
+                    </FallbackText>
+                }
+            > */}
             <HomePageTitle ref={titleRef} scale={generalScaleX} />
-
+            {/* </Suspense> */}
             <group ref={stackRef}>
+                {/* <Suspense
+                    fallback={<FallbackText>Ma stack technique</FallbackText>}
+                > */}
                 <FloatingTitle
                     scale={generalScaleX}
                     size={30}
@@ -172,6 +183,14 @@ const MemoizedHome = memo(function Home({
                 >
                     Ma stack technique
                 </FloatingTitle>
+                {/* </Suspense> */}
+                {/* <Suspense
+                    fallback={
+                        <PlaceholderIcon
+                            position-y={-1 * generalScaleX - margin}
+                        />
+                    }
+                > */}
                 <Suspense
                     fallback={
                         <PlaceholderIcon
@@ -192,9 +211,11 @@ const MemoizedHome = memo(function Home({
                         isMobile={isMobile}
                         animations={animations}
                     >
+                        {/* {stackRef.current && (
                         <Center bottom>
                             <HexCell scalar={generalScaleX} />
                         </Center>
+                    )} */}
                     </MemoizedIconsContainer>
                 </Suspense>
             </group>

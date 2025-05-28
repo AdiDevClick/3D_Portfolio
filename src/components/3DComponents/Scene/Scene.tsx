@@ -75,7 +75,9 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                 damping={0.5}
             >
                 <Scroll ref={pagesRef}>
+                    {/* <Suspense fallback={null}> */}
                     <MemoizedHome {...pagesMemoProps} />
+                    {/* </Suspense> */}
                     <MemoizedAbout {...pagesMemoProps} />
                 </Scroll>
                 {pagesRef.current && isMobile && <PageScroller />}

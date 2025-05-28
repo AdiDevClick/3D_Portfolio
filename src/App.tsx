@@ -122,17 +122,17 @@ export default function App({
                     <Preload all />
                 </Suspense> */}
                 {/* <SceneParams SETTINGS={SETTINGS} size={size}> */}
-                <Suspense fallback={<PlaceholderIcon />}>
-                    <Scene
-                        SETTINGS={SETTINGS || ({} as SettingsType)}
-                        boundaries={boundaries || { x: 0, y: 0, z: 0 }}
-                        reducer={reducer}
-                    >
-                        {children}
-                    </Scene>
-                    <Experience reducer={reducer} />
-                    {/* <MemoizedHudMenu reducer={reducer} /> */}
-                </Suspense>
+                {/* <Suspense fallback={<PlaceholderIcon />}> */}
+                <Scene
+                    SETTINGS={SETTINGS || ({} as SettingsType)}
+                    boundaries={boundaries || { x: 0, y: 0, z: 0 }}
+                    reducer={reducer}
+                >
+                    {children}
+                </Scene>
+                <Experience reducer={reducer} />
+                {/* <MemoizedHudMenu reducer={reducer} /> */}
+                {/* </Suspense> */}
                 {/* </SceneParams> */}
             </Canvas>
             {/* </Suspense> */}

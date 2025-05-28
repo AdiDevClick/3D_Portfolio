@@ -331,7 +331,14 @@ export default function Carousel({
             </mesh>
             <Billboard rotation={[0, 3.164, 0]}>
                 <Float>
-                    {isCarouselLoaded ? (
+                    <Title
+                        scale={isMobile ? generalScaleX * 1.2 : generalScaleX}
+                        name={'carousel__title'}
+                        ref={titleRef}
+                    >
+                        Mes Projets
+                    </Title>
+                    {/* {isCarouselLoaded ? (
                         <Title
                             scale={
                                 isMobile ? generalScaleX * 1.2 : generalScaleX
@@ -350,7 +357,7 @@ export default function Carousel({
                         >
                             Mes Projets
                         </FallbackText>
-                    )}
+                    )} */}
                 </Float>
             </Billboard>
 
