@@ -24,7 +24,10 @@ import { Group, Mesh, Quaternion, Vector3 } from 'three';
 import useDebounce from '@/hooks/useDebounce';
 import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { useSpring, animated } from '@react-spring/three';
+import { cardEventBoxMaterial } from '@/components/3DComponents/Cards/CardMaterials';
 
+//TODO : fix the event box scale that is not always correct
+// it 's not registering the correct card
 type CardsContainerTypes = {
     reducer: ReducerType;
     SETTINGS: SettingsType;
@@ -155,7 +158,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         frameRateCount.current += 1;
 
         // Handle event Box scale
-        if (frameRateCount.current % 20 === 0) {
+        if (frameRateCount.current % 10 === 0) {
             distancesArray.length = 0;
 
             const camera = state.camera;
@@ -357,13 +360,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     1,
                                     // card.isActive ? 1.5 : 0.5,
                                 ]}
-                            >
-                                <meshStandardMaterial
-                                    color={'white'}
-                                    opacity={0}
-                                    transparent
-                                />
-                            </boxGeometry>
+                                material={cardEventBoxMaterial}
+                            />
                         </mesh>
                         <MemoizedCard
                             onClick={(e) =>

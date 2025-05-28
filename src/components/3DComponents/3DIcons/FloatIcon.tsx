@@ -1,5 +1,6 @@
 import { Icons } from '@/components/3DComponents/3DIcons/Icons';
 import { FloatIconProps } from '@/components/3DComponents/Contact/ContactTypes';
+import { sharedMatrices } from '@/utils/matrices';
 import { useSpring, animated } from '@react-spring/three';
 import { Float, Html } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
@@ -38,9 +39,11 @@ export function FloatIcon({ model, tooltips, ...props }: FloatIconProps) {
             >
                 <Icons model={model} hovered={hovered} />
 
-                <mesh position={[0.2, 0.2, 0]} visible={false}>
-                    <boxGeometry />
-                </mesh>
+                <mesh
+                    position={[0.2, 0.2, 0]}
+                    geometry={sharedMatrices.boxGeometry}
+                    visible={true}
+                />
                 {hovered && tooltips && (
                     <Html position={[0, 1, 0]}>
                         <div className="about__tooltip">{props.name}</div>

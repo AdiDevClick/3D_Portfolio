@@ -29,13 +29,12 @@ import { ElementType } from '@/hooks/reducers/carouselTypes';
 const datas = datasJson as unknown as ElementType[];
 
 import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { CarouselProps } from '@/components/3DComponents/Carousel/FunctionsTypes';
 import {
     CARD_ACTIVE_FORWARD_OFFSET,
     CARD_ANIMATION_SPEED,
 } from '@/configs/Cards.config';
-import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
+import { debugOrangeBox } from '@/components/3DComponents/Carousel/CarouselMaterials';
 
 let animationProgress = 0;
 
@@ -318,15 +317,13 @@ export default function Carousel({
 
     return (
         <group visible={activeURL} ref={projectsRef}>
-            <mesh ref={boundariesRef} visible={SETTINGS.debug}>
+            <mesh
+                ref={boundariesRef}
+                visible={SETTINGS.debug}
+                material={debugOrangeBox}
+            >
                 <boxGeometry
                     args={[boundaries.x, boundaries.y, boundaries.z]}
-                />
-                <meshStandardMaterial
-                    color={'orange'}
-                    transparent
-                    opacity={0.5}
-                    side={DoubleSide}
                 />
             </mesh>
             <Billboard rotation={[0, 3.164, 0]}>
