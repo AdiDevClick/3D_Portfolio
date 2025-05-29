@@ -33,7 +33,7 @@ type CardsContainerTypes = {
     SETTINGS: SettingsType;
 };
 const distancesArray: { index: number; distance: number }[] = [];
-
+const vec = new Vector3();
 /**
  * Conteneur pour les Cards et ses dépendances -
  * Il contient les cartes et les éléments HTML -
@@ -205,7 +205,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         if (!isCarouselClicked || reducer.activeContent?.isActive) return;
 
         // Check previous camera position
-        const positionDelta = new Vector3()
+        const positionDelta = vec
             .copy(camera.position)
             .distanceTo(lastCameraPosition.current);
 
@@ -401,21 +401,22 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     SETTINGS.PRESENCE_RADIUS * card.baseScale,
                                     32,
                                 ]}
-                                color={'red'}
                             />
                             {!reducer.isMobile ? (
                                 <Title
+                                    text={
+                                        card.cardTitle ? card.cardTitle : 'test'
+                                    }
                                     name="card__title"
                                     size={10}
+                                    scalar={reducer.generalScaleX}
                                     textProps={{
                                         scale: 0.01 * reducer.generalScaleX,
                                         bevelSize: 0.2,
                                         bevelOffset: 0.2,
                                         bevelThickness: 0.2,
                                     }}
-                                >
-                                    {card.cardTitle ? card.cardTitle : 'test'}
-                                </Title>
+                                />
                             ) : (
                                 <FallbackText name="card__title">
                                     {card.cardTitle ? card.cardTitle : 'test'}
