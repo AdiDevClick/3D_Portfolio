@@ -6,48 +6,47 @@ import { Sparkles } from '@react-three/drei';
  * Main title of the home page.
  *
  * @param ref - Ref of the group
- * @param scale - Scale of the title from the reducer generalScaleX
+ * @param scalar - Scale of the title from the reducer generalScaleX
  */
-export function HomePageTitle({ ref, scale }: HomePageTitleProps) {
+export function HomePageTitle({ ref, scalar }: HomePageTitleProps) {
     return (
-        <group ref={ref} name="home-page-title-group">
+        <group ref={ref} name="home-page-title-container">
             <FloatingTitle
-                scale={scale}
+                text="Bienvenue"
+                scalar={scalar}
+                front
                 size={80}
-                position-y={1}
+                position={[0, 1 * scalar, 0]}
+                name="home-page-title"
+                textProps={{
+                    height: 40,
+                }}
+            />
+
+            <FloatingTitle
+                text="sur mon"
+                scalar={scalar}
+                size={60}
+                position={[0, 0, 0]}
                 name="home-page-title"
                 textProps={{
                     height: 40,
                 }}
             >
-                <Sparkles count={10} size={6} speed={0.4} color={'blue'} />
-                Bienvenue
+                <Sparkles count={18} size={10} speed={0.4} color={'blue'} />
             </FloatingTitle>
 
             <FloatingTitle
-                scale={scale}
-                size={60}
-                position-y={0}
-                back
-                name="home-page-title"
-                textProps={{
-                    height: 40,
-                }}
-            >
-                sur mon
-            </FloatingTitle>
-            <FloatingTitle
-                scale={scale}
+                text="Portfolio !"
+                scalar={scalar}
                 size={80}
-                position-y={-1}
-                back
+                position={[0.2, -0.6 * scalar, 0]}
                 name="home-page-title"
                 textProps={{
                     height: 40,
                 }}
-            >
-                Portfolio !
-            </FloatingTitle>
+                back
+            />
             {/* <Glow
                 scale={size * 1.2}
                 near={-25}
