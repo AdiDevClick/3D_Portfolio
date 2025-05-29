@@ -10,16 +10,16 @@ export function handleHudClick(
 ) {
     event.stopPropagation();
     switch (event.eventObject.name) {
-        case 'Home':
+        case 'icon__content-Home':
             navigate('/');
             break;
-        case 'A Propos':
+        case 'icon__content-A Propos':
             navigate('/a-propos');
             break;
-        case 'Projets':
+        case 'icon__content-Projets':
             navigate('/projets');
             break;
-        case 'Contact':
+        case 'icon__content-Contact':
             navigate('/contact');
             break;
         default:
