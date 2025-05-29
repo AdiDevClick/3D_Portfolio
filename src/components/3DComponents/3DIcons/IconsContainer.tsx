@@ -76,7 +76,7 @@ const MemoizedIconsContainer = memo(function IconsContainer({
         },
         eventsList: eventsList ?? {},
         textProps: {
-            size: isMobile ? 40 * scalar : 30 * scalar,
+            size: isMobile ? 40 * scalar : 28 * scalar,
         },
         mobileTextProps: mobileTextProps ?? {},
         animations,
