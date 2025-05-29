@@ -1,3 +1,4 @@
+import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
 import { FloatIcon } from '@/components/3DComponents/3DIcons/FloatIcon';
 import { FloatIconsProps } from '@/components/3DComponents/Contact/ContactTypes';
 
@@ -31,7 +32,7 @@ export function FloatIcons({
                     ? rest.modelPosition.mobile
                     : rest.modelPosition.default
             }
-            scale={scalar}
+            scalar={scalar}
             tooltips={tooltips}
             {...rest}
             {...floatOptions}
