@@ -214,7 +214,11 @@ const MemoizedAbout = memo(function About({
                 scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
             />
 
-            <group ref={contentRef} userData={{ preventClipping: true }}>
+            <group
+                ref={contentRef}
+                userData={{ preventClipping: true }}
+                position={DEFAULT_PROJECTS_POSITION_SETTINGS.clone()}
+            >
                 {aboutText.map((text, index) => (
                     <GridLayout
                         width={contentWidth ?? 0}
@@ -310,6 +314,7 @@ const MemoizedAbout = memo(function About({
                 scalar={generalScaleX}
                 isMobile={isMobile}
                 tooltips={false}
+                position={DEFAULT_PROJECTS_POSITION_SETTINGS.clone()}
             />
         </group>
     );
