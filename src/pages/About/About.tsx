@@ -206,13 +206,13 @@ const MemoizedAbout = memo(function About({
     return (
         <group visible={isActive} ref={groupRef}>
             <FloatingTitle
+                text="A propos de moi"
                 ref={titleRef}
                 bottom
                 size={40}
-                scale={isMobile ? generalScaleX * 1.2 : generalScaleX}
-            >
-                A propos de moi
-            </FloatingTitle>
+                name="about-title"
+                scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
+            />
 
             <group ref={contentRef} userData={{ preventClipping: true }}>
                 {aboutText.map((text, index) => (

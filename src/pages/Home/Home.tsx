@@ -1,4 +1,6 @@
-import MemoizedIconsContainer from '@/components/3DComponents/3DIcons/IconsContainer';
+import MemoizedIconsContainer, {
+    IconsContainerContextTypes,
+} from '@/components/3DComponents/3DIcons/IconsContainer';
 import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useFrame } from '@react-three/fiber';
@@ -13,6 +15,7 @@ import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
 import { Center, ContactShadows, useScroll } from '@react-three/drei';
 import { HexCell } from '@/components/3DComponents/Forms/HexCell';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
+import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -131,6 +134,7 @@ const MemoizedHome = memo(function Home({
             );
         }
     });
+
     return (
         <group visible={isActive} ref={groupRef}>
             {/* <SpotLight
@@ -168,21 +172,23 @@ const MemoizedHome = memo(function Home({
                     </FallbackText>
                 }
             > */}
-            <HomePageTitle ref={titleRef} scale={generalScaleX} />
+            <HomePageTitle ref={titleRef} scalar={generalScaleX} />
             {/* </Suspense> */}
-            <group ref={stackRef}>
+            <group name={'stack-container'} ref={stackRef}>
                 {/* <Suspense
                     fallback={<FallbackText>Ma stack technique</FallbackText>}
                 > */}
                 <FloatingTitle
-                    scale={generalScaleX}
+                    text="Ma stack technique"
+                    scalar={generalScaleX}
                     size={30}
                     textProps={{
                         height: 20,
                     }}
-                >
-                    Ma stack technique
-                </FloatingTitle>
+                    name="home-page-stack-title"
+                />
+                {/* Ma stack technique
+                </FloatingTitle> */}
                 {/* </Suspense> */}
                 {/* <Suspense
                     fallback={
@@ -191,33 +197,34 @@ const MemoizedHome = memo(function Home({
                         />
                     }
                 > */}
-                <Suspense
+                {/* <Suspense
                     fallback={
                         <PlaceholderIcon
                             position-y={-1 * generalScaleX - margin}
                         />
                     }
+                > */}
+                <MemoizedIconsContainer
+                    // width={contentWidth ?? 1}
+                    icons={iconsWithText}
+                    // scalar={generalScaleX}
+                    // gridOptions={gridOptions}
+                    position-y={
+                        isMobile
+                            ? -2 * generalScaleX - margin
+                            : -2.5 * generalScaleX - margin
+                    }
+                    isMobile={isMobile}
+                    animations={animations}
+                    rotation={[0, 3.164, 0]}
                 >
-                    <MemoizedIconsContainer
-                        width={contentWidth ?? 1}
-                        icons={iconsWithText}
-                        scalar={generalScaleX}
-                        gridOptions={gridOptions}
-                        position-y={
-                            isMobile
-                                ? -2 * generalScaleX - margin
-                                : -2.5 * generalScaleX - margin
-                        }
-                        isMobile={isMobile}
-                        animations={animations}
-                    >
-                        {/* {stackRef.current && (
+                    {/* {stackRef.current && (
                         <Center bottom>
                             <HexCell scalar={generalScaleX} />
                         </Center>
                     )} */}
-                    </MemoizedIconsContainer>
-                </Suspense>
+                </MemoizedIconsContainer>
+                {/* </Suspense> */}
             </group>
             <ContactShadows
                 frames={1}

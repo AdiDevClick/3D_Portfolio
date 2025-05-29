@@ -87,6 +87,7 @@ const MemoizedContact = memo(function Contact({
     return (
         <group ref={groupRef} visible={isActive}>
             <FloatingTitle
+                text="Me contacter sur LinkedIn"
                 isClickable={true}
                 onPointerOver={(e) => {
                     e.stopPropagation();
@@ -97,14 +98,14 @@ const MemoizedContact = memo(function Contact({
                     setHovered(false);
                 }}
                 onClick={onClickHandler}
-                scale={generalScaleX}
+                scalar={generalScaleX}
                 size={30}
+                name="contact-title"
                 textProps={{
                     height: 20,
                     color: hovered ? '#fffff' : '#000000',
                 }}
             >
-                Me contacter sur LinkedIn
                 {hovered && (
                     <Html position={[0, 2, 0]}>
                         <div className="about__tooltip">
