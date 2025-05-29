@@ -7,6 +7,7 @@ import {
 } from '@react-three/drei';
 import { JSX, ReactNode, RefObject } from 'react';
 import { Group, Mesh, Object3D } from 'three';
+import { TextBufferGeometry } from 'three-stdlib';
 
 export type FallbackTextTypes = {
     children: ReactNode;
@@ -22,7 +23,7 @@ export type FloatingTitleProps = {
     /** @defaultValue false */
     isMobile?: boolean;
     scalar: ReducerType['generalScaleX'];
-    textProps?: Text3DProps;
+    textProps?: TextBufferGeometry & TextProps;
     /** @defaultValue false */
     isClickable?: boolean;
     floatOptions?: FloatProps;

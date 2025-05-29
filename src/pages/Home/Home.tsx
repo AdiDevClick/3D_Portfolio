@@ -1,21 +1,15 @@
-import MemoizedIconsContainer, {
-    IconsContainerContextTypes,
-} from '@/components/3DComponents/3DIcons/IconsContainer';
+import MemoizedIconsContainer from '@/components/3DComponents/3DIcons/IconsContainer';
 import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { memo, Suspense, useRef } from 'react';
+import { memo, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
-import { Center, ContactShadows, useScroll } from '@react-three/drei';
-import { HexCell } from '@/components/3DComponents/Forms/HexCell';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
-import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
+import { ContactShadows, useScroll } from '@react-three/drei';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -41,7 +35,6 @@ const gridOptions = {
 
 const animations = {
     propertiesToCheck: ['scale', 'rotation'],
-    // propertiesToCheck: ['scale', 'rotation', 'position'],
     hovered: true,
     scale: { hovered: 1.2, default: 1 },
     rotation: { hovered: [0, -0.5, -0.05], default: [0, 0, 0] },
@@ -54,7 +47,7 @@ const animations = {
         duration: 200,
     },
     delay: 100,
-};
+} as any;
 
 /**
  * Home page component.
@@ -164,20 +157,8 @@ const MemoizedHome = memo(function Home({
                 scale={10}
                 color="#fff3b0"
             /> */}
-
-            {/* <Suspense
-                fallback={
-                    <FallbackText position-y={1 * generalScaleX}>
-                        Bienvenue sur mon Portfolio !
-                    </FallbackText>
-                }
-            > */}
             <HomePageTitle ref={titleRef} scalar={generalScaleX} />
-            {/* </Suspense> */}
             <group name={'stack-container'} ref={stackRef}>
-                {/* <Suspense
-                    fallback={<FallbackText>Ma stack technique</FallbackText>}
-                > */}
                 <FloatingTitle
                     text="Ma stack technique"
                     scalar={generalScaleX}
@@ -187,23 +168,6 @@ const MemoizedHome = memo(function Home({
                     }}
                     name="home-page-stack-title"
                 />
-                {/* Ma stack technique
-                </FloatingTitle> */}
-                {/* </Suspense> */}
-                {/* <Suspense
-                    fallback={
-                        <PlaceholderIcon
-                            position-y={-1 * generalScaleX - margin}
-                        />
-                    }
-                > */}
-                {/* <Suspense
-                    fallback={
-                        <PlaceholderIcon
-                            position-y={-1 * generalScaleX - margin}
-                        />
-                    }
-                > */}
                 <MemoizedIconsContainer
                     width={contentWidth ?? 1}
                     icons={iconsWithText}
@@ -216,15 +180,9 @@ const MemoizedHome = memo(function Home({
                     }
                     isMobile={isMobile}
                     animations={animations}
+                    iconScale={90 * generalScaleX}
                     rotation={[0, 3.164, 0]}
-                >
-                    {/* {stackRef.current && (
-                        <Center bottom>
-                            <HexCell scalar={generalScaleX} />
-                        </Center>
-                    )} */}
-                </MemoizedIconsContainer>
-                {/* </Suspense> */}
+                ></MemoizedIconsContainer>
             </group>
             <ContactShadows
                 frames={1}
@@ -237,20 +195,3 @@ const MemoizedHome = memo(function Home({
 });
 
 export default MemoizedHome;
-// export default memo(MemoizedHome, (prevProps, nextProps) => {
-//     // Log des changements
-//     if (prevProps.contentWidth !== nextProps.contentWidth)
-//         console.log('width changed');
-//     if (prevProps.contentHeight !== nextProps.contentHeight)
-//         console.log('height changed');
-//     if (prevProps.generalScaleX !== nextProps.generalScaleX)
-//         console.log('scale changed');
-
-//     return (
-//         prevProps.contentWidth === nextProps.contentWidth &&
-//         prevProps.contentHeight === nextProps.contentHeight &&
-//         prevProps.generalScaleX === nextProps.generalScaleX &&
-//         prevProps.isMobile === nextProps.isMobile &&
-//         prevProps.margin === nextProps.margin
-//     );
-// });
