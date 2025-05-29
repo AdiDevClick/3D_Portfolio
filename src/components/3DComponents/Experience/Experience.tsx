@@ -297,17 +297,17 @@ export function Experience({ reducer }: ExperienceProps) {
                 intensity={0.2}
                 // color="#0066ff"
             /> */}
-            <Suspense
+            {/* <Suspense
                 fallback={
                     <SimpleEnvironment />
                     // <Environment preset="city" background={false} />
                 }
-            >
-                {/* <Environment preset="dawn" background blur={0.5} /> */}
-                {/* <Environment blur={0.4} /> */}
-                <Environment preset="sunset" background blur={0.4} />
-                {/* <Environment preset="park" background blur={0.5} /> */}
-            </Suspense>
+            > */}
+            {/* <Environment preset="dawn" background blur={0.5} /> */}
+            {/* <Environment blur={0.4} /> */}
+            <Environment preset="sunset" background blur={0.4} />
+            {/* <Environment preset="park" background blur={0.5} /> */}
+            {/* </Suspense> */}
             {/* <EffectComposer>
                 <Bloom
                     luminanceThreshold={0.2}
@@ -352,7 +352,7 @@ export function Experience({ reducer }: ExperienceProps) {
                 speed={1}
             /> */}
             {/* <SunsetGradientBackground /> */}
-            <ShadowCatcher />
+            {/* <ShadowCatcher /> */}
         </>
     );
 }
@@ -395,7 +395,8 @@ function ShadowCatcher() {
         >
             <planeGeometry />
             <shadowMaterial
-                transparent
+                // transparent
+                alphaTest={0}
                 opacity={0.2}
                 // opacity={0.2}
                 color="#000000"
