@@ -38,10 +38,10 @@ export async function loadCardByURL(
         clickElement,
         setViewMode,
         navigate,
+        setIsURLLoaded,
+        visible,
     } = options;
     try {
-        setViewMode('carousel');
-
         if (showElements.length === 0) {
             throw createHttpError('Try again', 403);
         }
@@ -53,25 +53,26 @@ export async function loadCardByURL(
         if (!targetCard) {
             throw createHttpError('No project found', 404);
         }
-        // Wait for the carousel mode to establish
         await wait(400);
-        // Activate card to focus
+
         activateElement(targetCard, true);
 
-        await wait(600);
+        await wait(800);
 
-        // Activate click after a short delay
         clickElement(targetCard);
+        setIsURLLoaded(true);
     } catch (error) {
         const typedError = error as ErrorWithCause;
 
-        if (retries > 0 && typedError.cause?.status === 403) {
+        if (
+            (retries > 0 && typedError.cause?.status === 403) ||
+            typedError.cause?.status === 500
+        ) {
             await wait(delay, 'Attente pour un nouvel essai');
             return loadCardByURL(retries - 1, delay * 2, options);
         }
 
         if (typedError.cause?.status === 404) {
-            setViewMode('carousel');
             return navigate('/error', { replace: false });
         }
         console.error('Erreur non gérée :', typedError, error);

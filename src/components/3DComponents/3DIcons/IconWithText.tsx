@@ -1,48 +1,14 @@
-import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
-import { Title } from '@/components/3DComponents/Title/Title';
-import { Center, CenterProps, Float, useCursor } from '@react-three/drei';
-import { ThreeEvent, useFrame, useLoader } from '@react-three/fiber';
+import { Center, useCursor } from '@react-three/drei';
 import { Group } from 'three';
-import { JSX, useEffect, useMemo, useRef, useState } from 'react';
-import { DRACOLoader, GLTFLoader } from 'three-stdlib';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
-import { useSpring, animated, SpringProps } from '@react-spring/three';
-import { easing } from 'maath';
-type IconsTypes = {
-    model: string;
-    datas: { name: string; text: string };
-    scalar: number;
-    index: number;
-    /** @defaultValue 0.5 */
-    margin?: number;
-    isMobile: boolean;
-    /** @defaultValue 100 */
-    iconScale?: number;
-    eventsList?: {
-        onClick?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerOver?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerOut?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerDown?: (event: ThreeEvent<MouseEvent>) => void;
-        onPointerUp?: (event: ThreeEvent<MouseEvent>) => void;
-        [key: string]:
-            | ((event: ThreeEvent<MouseEvent | PointerEvent>) => void)
-            | undefined;
-    };
-    floatOptions?: {
-        speed?: number;
-        floatIntensity?: number;
-        rotationIntensity?: number;
-        floatRange?: [number, number];
-    };
-    mobileTextProps?: CenterProps;
-    animations?: {
-        propertiesToCheck?: string[];
-        hovered?: boolean;
-        [key: string]: any;
-    } & SpringProps;
-    // /** @defaultValue false */
-    // hovered?: boolean;
-} & JSX.IntrinsicElements['group'];
+import { use, useMemo, useRef, useState } from 'react';
+import { useSpring, animated } from '@react-spring/three';
+import { Icons } from '@/components/3DComponents/3DIcons/Icons';
+import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
+import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
+import {
+    IconsContainerContextTypes,
+    IconsWithTextProps,
+} from '@/components/3DComponents/3DIcons/IconsTypes';
 
 let isComponentMounted = false;
 
@@ -52,35 +18,20 @@ let isComponentMounted = false;
  * @description This container is Floating.
  *
  * @param model - Model URL
- * @param scalar - Scalar value for scaling the icon depending on the screen size
- * @param index - Index of the icon in the grid
- * @param isMobile - Boolean indicating if the device is mobile
- * @param margin - **Default=0.5** - Margin between icons
  * @param props - Additional properties for the 3D group element
- * @param iconScale - Scale of the icon **Default=100**
- * @param floatOptions - Options for the floating effect
- * @param eventsList - List of events to attach to the icon
- * @param mobileTextProps - Props for the mobile text
- * @param animations - Animations for the icon
  * @param datas - Data containing the name and text for the icon
-//  * @param hovered - **Default=false** - Boolean indicating if the icon is hovered
  * @returns
  */
-export function IconWithText({
-    model,
-    scalar,
-    iconScale = 100,
-    index,
-    datas,
-    isMobile,
-    eventsList,
-    floatOptions,
-    mobileTextProps,
-    animations = {} as any,
-    // hovered = false,
-    margin = 0.5,
-    ...props
-}: IconsTypes) {
+export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
+    const {
+        scalar,
+        isMobile,
+        iconScale,
+        animations,
+        eventsList,
+        floatOptions,
+        textProps,
+    } = use(IconsContainerContext) as IconsContainerContextTypes;
     const [hovered, set] = useState(false);
 
     const newAnimationObject = useMemo(() => {
@@ -102,134 +53,72 @@ export function IconWithText({
     }, [animations, hovered, isComponentMounted]);
 
     const animationSpring = useSpring(newAnimationObject);
-    // const animationSpring = useSpring(newObject);
-
-    const { nodes } = useLoader(GLTFLoader, model, (loader) => {
-        const gltfLoader = loader as GLTFLoader;
-        const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath(
-            'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
-        );
-        gltfLoader.setDRACOLoader(dracoLoader);
-    });
 
     const groupRef = useRef<Group>(null!);
-    const frameCountRef = useRef(0);
 
     useCursor(hovered);
-
-    // useEffect(() => {
-    //     if (!groupRef.current && !animations.animatePosition.from) return;
-
-    //     isComponentMounted = animations.animatePosition.from;
-
-    //     return () => {
-    //         isComponentMounted = animations.animatePosition.default;
-    //     };
-    // }, []);
 
     /**
      * Checks if the icon is in the camera's frustum
      * and enables/disables the scaling ease.
      */
     // useFrame((_, delta) => {
-    //     if (!groupRef.current) return;
-    //     frameCountRef.current += 1;
-    //     if (frameCountRef.current % 4 === 0) {
-    //         // const contentGrid = groupRef.current.parent?.parent;
-    //         if (!animations.animatePosition) return;
-    //         // if (contentGrid?.visible)
-    //         easing.damp3(
-    //             groupRef.current.position,
-    //             isComponentMounted,
-    //             0.3,
-    //             delta
-    //         );
-    //         // easing.damp3(
-    //         //     groupRef.current.position,
-    //         //     !isComponentMounted
-    //         //         ? animations.animatePosition.from
-    //         //         : animations.animatePosition.default,
-    //         //     2000,
-    //         //     delta
-    //         // );
-    //     }
+    //     // if (!groupRef.current) return;
+    //     // frameCountRef.current += 1;
+    //     // if (frameCountRef.current % 4 === 0) {
+    //     //     // const contentGrid = groupRef.current.parent?.parent;
+    //     //     if (!animations.animatePosition) return;
+    //     //     // if (contentGrid?.visible)
+    //     //     easing.damp3(
+    //     //         groupRef.current.position,
+    //     //         isComponentMounted,
+    //     //         0.3,
+    //     //         delta
+    //     //     );
+    //     //     // easing.damp3(
+    //     //     //     groupRef.current.position,
+    //     //     //     !isComponentMounted
+    //     //     //         ? animations.animatePosition.from
+    //     //     //         : animations.animatePosition.default,
+    //     //     //     2000,
+    //     //     //     delta
+    //     //     // );
+    //     // }
     // });
+    // console.log('je rerender iConWithText');
 
     return (
-        <animated.group {...animationSpring}>
-            <Center
-                ref={groupRef as any}
-                onPointerOver={(e) => {
-                    e.stopPropagation();
-                    set(true);
-                }}
-                onPointerOut={(e) => {
-                    e.stopPropagation();
-                    set(false);
-                }}
-                {...eventsList}
-                dispose={null}
-                {...props}
-                name={datas.name}
+        <animated.group
+            name={'icon__content-' + datas.name}
+            ref={groupRef as any}
+            onPointerOver={(e) => {
+                e.stopPropagation();
+                set(true);
+            }}
+            onPointerOut={(e) => {
+                e.stopPropagation();
+                set(false);
+            }}
+            {...eventsList}
+            {...props}
+            {...animationSpring}
+        >
+            <FloatingTitle
+                scalar={scalar}
+                isMobile={isMobile}
+                size={textProps?.size ?? 40 * scalar}
+                isClickable={true}
+                floatOptions={floatOptions}
+                name={'icons-' + datas.name + '__title'}
+                right
+                position-x={0.2 * scalar}
+                text={datas.text}
+                textProps={textProps}
             >
-                <Float {...floatOptions}>
-                    <Center
-                        position-y={isMobile ? -0.8 * scalar : 0}
-                        position-x={isMobile ? 0.1 * scalar : 0}
-                        back
-                        left
-                        bottom={isMobile ? true : false}
-                    >
-                        {nodes.Scene?.children.map((node) => {
-                            return (
-                                <IconMesh
-                                    name="icons-Container__icon"
-                                    key={node.uuid}
-                                    data={node}
-                                    // iconColor={'#000000'}
-                                    // curveSegments={isMobile ? 4 : 32}
-                                    hovered={hovered}
-                                    scale={iconScale * scalar}
-                                    castShadow
-                                    receiveShadow
-                                />
-                            );
-                        })}
-                    </Center>
-
-                    {!isMobile ? (
-                        <Title
-                            right
-                            isMobile={isMobile}
-                            name="icons-Container__title"
-                            position-x={0.2 * scalar}
-                            position-y={-0.1}
-                            size={30}
-                            textProps={{ scale: 0.01 * scalar }}
-                            scalar={scalar}
-                        >
-                            {datas.text}
-                        </Title>
-                    ) : (
-                        <Center
-                            {...mobileTextProps}
-                            name="icons-Container__title"
-                        >
-                            <FallbackText>{datas.text}</FallbackText>
-                        </Center>
-                    )}
-
-                    <mesh
-                        scale={isMobile ? 0.7 * scalar : 1.2 * scalar}
-                        position-y={isMobile ? -0.8 * scalar : 0}
-                        position-x={isMobile ? -0.5 * scalar : 0.2 * scalar}
-                        visible={false}
-                    >
-                        <boxGeometry />
-                    </mesh>
-                </Float>
-            </Center>
+                <Center left>
+                    <Icons model={model} hovered={hovered} scale={iconScale} />
+                </Center>
+            </FloatingTitle>
         </animated.group>
     );
 }

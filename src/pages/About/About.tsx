@@ -1,10 +1,5 @@
 import '@css/About.scss';
-import {
-    CenterProps,
-    shaderMaterial,
-    Text,
-    useScroll,
-} from '@react-three/drei';
+import { shaderMaterial, Text, useScroll } from '@react-three/drei';
 import { memo, Suspense, useEffect, useRef } from 'react';
 import { Color, Group } from 'three';
 import { extend, useFrame } from '@react-three/fiber';
@@ -23,7 +18,6 @@ import { useSpring, animated } from '@react-spring/three';
 import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
 
 let isActive = false;
-
 let count = 0;
 
 /**
@@ -34,6 +28,7 @@ let count = 0;
  * @param generalScaleX - General scale factor of the viewport scale from the reducer
  * @param contentHeight - Height of the viewport
  * @param margin **@default=0.5** - Margin between the elements
+ * @param isMobile - Is the device mobile
  */
 const MemoizedAbout = memo(function About({
     contentWidth,
@@ -81,27 +76,9 @@ const MemoizedAbout = memo(function About({
                 titlePos[2] ?? 0
             );
             contentPositionRef.current.set(0, contentHeight * 0.1, 0);
-            // contentPositionRef.current.set(
-            //     2.8 * generalScaleX,
-            //     contentHeight * 0.1,
-            //     0
-            // );
-            // contentPositionRef.current.set(0, 0 - margin, 0);
-
-            // const iconPos = DESKTOP_HTML_ICONS_POSITION_SETTINGS(
-            //     contentRef.current.userData.contentSize.y,
-            //     contentWidth,
-            //     margin
-            // );
-            // iconsPositionRef.current.set(
-            //     iconPos[0] ?? 0,
-            //     iconPos[1] ?? 0,
-            //     iconPos[2] ?? 0
-            // );
         } else {
             titlePositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
             contentPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
-            iconsPositionRef.current.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
         }
     }, [contentWidth, contentHeight, visible, isActive, margin]);
 
@@ -123,6 +100,11 @@ const MemoizedAbout = memo(function About({
     //     'HTML SETTINGS',
     //     () => settingsConfig
     // );
+    useEffect(() => {
+        if (!iconsRef.current) return;
+        iconsRef.current.position.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
+    }, []);
+
     if (count > 0) count = 0;
 
     useFrame((state, delta) => {
@@ -168,7 +150,6 @@ const MemoizedAbout = memo(function About({
         }
 
         frustumChecker(
-            // [titleRef.current, iconsRef.current],
             [titleRef.current, iconsRef.current, contentRef.current],
             state,
             frameCountRef.current,
@@ -195,7 +176,13 @@ const MemoizedAbout = memo(function About({
                 ) {
                     const contentSizeY =
                         contentRef.current.userData.contentSize.y;
-                    iconsPositionRef.current.set(0, -contentSizeY - margin, 0);
+                    if (-contentSizeY - margin !== iconsPositionRef.current.y) {
+                        iconsPositionRef.current.set(
+                            0,
+                            -contentSizeY - margin,
+                            0
+                        );
+                    }
                 }
                 easing.damp3(
                     iconsRef.current.position,
@@ -219,15 +206,19 @@ const MemoizedAbout = memo(function About({
     return (
         <group visible={isActive} ref={groupRef}>
             <FloatingTitle
+                text="A propos de moi"
                 ref={titleRef}
                 bottom
                 size={40}
-                scale={isMobile ? generalScaleX * 1.2 : generalScaleX}
-            >
-                A propos de moi
-            </FloatingTitle>
+                name="about-title"
+                scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
+            />
 
-            <group ref={contentRef} userData={{ preventClipping: true }}>
+            <group
+                ref={contentRef}
+                userData={{ preventClipping: true }}
+                position={DEFAULT_PROJECTS_POSITION_SETTINGS.clone()}
+            >
                 {aboutText.map((text, index) => (
                     <GridLayout
                         width={contentWidth ?? 0}
@@ -317,7 +308,14 @@ const MemoizedAbout = memo(function About({
                 ))}
             </group>
 
-            <ContactIconsContainer ref={iconsRef} />
+            <ContactIconsContainer
+                key={`about-icons`}
+                ref={iconsRef}
+                scalar={generalScaleX}
+                isMobile={isMobile}
+                tooltips={false}
+                position={DEFAULT_PROJECTS_POSITION_SETTINGS.clone()}
+            />
         </group>
     );
 });

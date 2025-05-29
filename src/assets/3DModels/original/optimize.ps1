@@ -1,7 +1,7 @@
 # Dossiers de travail
-$SOURCE_DIR = "d:\Projets\3D_Portfolio\src\3DModels\original"
-$OUTPUT_DIR = "d:\Projets\3D_Portfolio\src\3DModels\optimized"
-$MOBILE_DIR = "d:\Projets\3D_Portfolio\src\3DModels\mobile"
+$SOURCE_DIR = "d:\Projets\3D_Portfolio\src\assets\3DModels\original"
+$OUTPUT_DIR = "d:\Projets\3D_Portfolio\src\assets\3DModels\optimized"
+$MOBILE_DIR = "d:\Projets\3D_Portfolio\src\assets\3DModels\mobile"
 
 # Créer les dossiers de sortie s'ils n'existent pas
 if (-not (Test-Path $OUTPUT_DIR)) { New-Item -ItemType Directory -Path $OUTPUT_DIR | Out-Null }

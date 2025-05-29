@@ -5,20 +5,20 @@ import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
 import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
-import { CameraControls, Environment, Stars } from '@react-three/drei';
-import { Suspense, useEffect, useRef } from 'react';
+import { CameraControls, Environment } from '@react-three/drei';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { Vector3 } from 'three';
-import {
-    Bloom,
-    ChromaticAberration,
-    EffectComposer,
-    Noise,
-    Vignette,
-    BrightnessContrast,
-    SSAO,
-    ToneMapping,
-} from '@react-three/postprocessing';
+// import {
+//     Bloom,
+//     ChromaticAberration,
+//     EffectComposer,
+//     Noise,
+//     Vignette,
+//     BrightnessContrast,
+//     SSAO,
+//     ToneMapping,
+// } from '@react-three/postprocessing';
 
 let minAngle = -Infinity;
 let maxAngle = Infinity;
@@ -50,6 +50,7 @@ export function Experience({ reducer }: ExperienceProps) {
     const ref = useRef<CameraControls>(null!);
     const prevCamPosRef = useRef(DEFAULT_CAMERA_POSITION.clone());
 
+    const [isURLLoaded, setIsURLLoaded] = useState(false);
     const params = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -96,6 +97,7 @@ export function Experience({ reducer }: ExperienceProps) {
 
             case 'card-opened':
             case 'card-detail':
+            case 'URLRequested':
                 if (activeContent) {
                     prevCamPosRef.current = camera.position.clone();
                     const results = positionCameraToCard(
@@ -134,12 +136,27 @@ export function Experience({ reducer }: ExperienceProps) {
         if (location.pathname === '/') {
             if (visible !== 'home') setViewMode('home');
         } else if (location.pathname.includes('projets')) {
-            if (params.id) {
+            // if (params.id) {
+            if (params.id && activeContent && activeContent?.isClicked) {
                 if (visible !== 'card-detail') setViewMode('card-detail');
-            } else if (activeContent?.isActive && !activeContent?.isClicked) {
+            } else if (
+                activeContent?.isActive &&
+                !activeContent?.isClicked &&
+                !params.id
+            ) {
                 if (visible !== 'card-detail') setViewMode('card-detail');
+            } else if (
+                params.id &&
+                !activeContent &&
+                visible === 'carousel' &&
+                !isURLLoaded &&
+                showElements.length > 0
+            ) {
+                setViewMode('URLRequested');
             } else {
-                if (visible !== 'carousel') setViewMode('carousel');
+                if (visible !== 'carousel' && visible !== 'URLRequested') {
+                    setViewMode('carousel');
+                }
             }
         } else if (location.pathname.includes('a-propos')) {
             if (visible !== 'about') setViewMode('about');
@@ -156,9 +173,16 @@ export function Experience({ reducer }: ExperienceProps) {
      * if the URLparams contains a card ID -
      */
     useEffect(() => {
-        if (!ref.current || !params.id || activeContent) {
+        if (
+            !ref.current ||
+            !params.id ||
+            activeContent ||
+            isURLLoaded ||
+            visible !== 'URLRequested'
+        ) {
             return;
         }
+
         const options = {
             id: params.id,
             showElements,
@@ -166,9 +190,10 @@ export function Experience({ reducer }: ExperienceProps) {
             clickElement,
             setViewMode,
             navigate,
+            setIsURLLoaded,
+            visible,
         };
-        setViewMode('carousel');
-        const initialDelay = 800;
+        const initialDelay = 600;
 
         // Awaits the initialization of the elements (initialDelay)
         // And then activate the card
@@ -176,7 +201,7 @@ export function Experience({ reducer }: ExperienceProps) {
             loadCardByURL(5, initialDelay, options);
         }, initialDelay);
         return () => clearTimeout(timer);
-    }, [params.id, showElements]);
+    }, [showElements, visible]);
 
     return (
         <>
@@ -272,16 +297,17 @@ export function Experience({ reducer }: ExperienceProps) {
                 intensity={0.2}
                 // color="#0066ff"
             /> */}
-            <Suspense
+            {/* <Suspense
                 fallback={
                     <SimpleEnvironment />
                     // <Environment preset="city" background={false} />
                 }
-            >
-                {/* <Environment preset="dawn" background blur={0.5} /> */}
-                <Environment preset="sunset" background blur={0.4} />
-                {/* <Environment preset="park" background blur={0.5} /> */}
-            </Suspense>
+            > */}
+            {/* <Environment preset="dawn" background blur={0.5} /> */}
+            {/* <Environment blur={0.4} /> */}
+            <Environment preset="sunset" background blur={0.4} />
+            {/* <Environment preset="park" background blur={0.5} /> */}
+            {/* </Suspense> */}
             {/* <EffectComposer>
                 <Bloom
                     luminanceThreshold={0.2}
@@ -325,39 +351,40 @@ export function Experience({ reducer }: ExperienceProps) {
                 fade
                 speed={1}
             /> */}
-            {/* <ShadowCatcher /> */}
+            {/* <SunsetGradientBackground /> */}
+            <ShadowCatcher />
         </>
     );
 }
 
-function ParticlesEffect() {
-    // Créer 500 particules dispersées dans l'espace
-    const particleCount = 500;
-    const particlesPositions = new Float32Array(particleCount * 3);
+// function ParticlesEffect() {
+//     // Créer 500 particules dispersées dans l'espace
+//     const particleCount = 500;
+//     const particlesPositions = new Float32Array(particleCount * 3);
 
-    for (let i = 0; i < particleCount; i++) {
-        particlesPositions[i * 3] = (Math.random() - 0.5) * 30; // x
-        particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 15; // y
-        particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 30; // z
-    }
+//     for (let i = 0; i < particleCount; i++) {
+//         particlesPositions[i * 3] = (Math.random() - 0.5) * 30; // x
+//         particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 15; // y
+//         particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 30; // z
+//     }
 
-    return (
-        <points>
-            <bufferGeometry>
-                <float32BufferAttribute
-                    attach="attributes-position"
-                    args={[particlesPositions, 3]}
-                />
-            </bufferGeometry>
-            <pointsMaterial
-                size={0.08}
-                color="#ffffff"
-                transparent
-                opacity={0.6}
-            />
-        </points>
-    );
-}
+//     return (
+//         <points>
+//             <bufferGeometry>
+//                 <float32BufferAttribute
+//                     attach="attributes-position"
+//                     args={[particlesPositions, 3]}
+//                 />
+//             </bufferGeometry>
+//             <pointsMaterial
+//                 size={0.08}
+//                 color="#ffffff"
+//                 transparent
+//                 opacity={0.6}
+//             />
+//         </points>
+//     );
+// }
 function ShadowCatcher() {
     return (
         <mesh
@@ -368,7 +395,8 @@ function ShadowCatcher() {
         >
             <planeGeometry />
             <shadowMaterial
-                transparent
+                // transparent
+                alphaTest={0}
                 opacity={0.2}
                 // opacity={0.2}
                 color="#000000"
@@ -376,3 +404,43 @@ function ShadowCatcher() {
         </mesh>
     );
 }
+
+// function SunsetGradientBackground() {
+//     return (
+//         <mesh scale={[100, 100, 1]} position={[0, 0, -50]}>
+//             <planeGeometry />
+//             <shaderMaterial
+//                 uniforms={{
+//                     uTime: { value: 0 },
+//                     uTopColor: { value: new Color('#ff6b35') },
+//                     uMiddleColor: { value: new Color('#f7931e') },
+//                     uBottomColor: { value: new Color('#ffdc00') },
+//                 }}
+//                 vertexShader={`
+//                     varying vec2 vUv;
+//                     void main() {
+//                         vUv = uv;
+//                         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//                     }
+//                 `}
+//                 fragmentShader={`
+//                     uniform vec3 uTopColor;
+//                     uniform vec3 uMiddleColor;
+//                     uniform vec3 uBottomColor;
+//                     varying vec2 vUv;
+
+//                     void main() {
+//                         float mixValue1 = smoothstep(0.0, 0.5, vUv.y);
+//                         float mixValue2 = smoothstep(0.5, 1.0, vUv.y);
+
+//                         vec3 color = mix(uBottomColor, uMiddleColor, mixValue1);
+//                         color = mix(color, uTopColor, mixValue2);
+
+//                         gl_FragColor = vec4(color, 1.0);
+//                     }
+//                 `}
+//                 side={2} // DoubleSide
+//             />
+//         </mesh>
+//     );
+// }

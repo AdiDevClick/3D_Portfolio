@@ -1,9 +1,8 @@
-import { Object3D, Mesh, MeshStandardMaterial } from 'three';
-import { JSX, useMemo } from 'react';
-import {
-    emissiveIntensity,
-    hoveredIconColor,
-} from '@/configs/3DCarousel.config';
+import { Material, Mesh, Object3D } from 'three';
+import { JSX } from 'react';
+import { hoveredIconMateral } from '@/components/3DComponents/3DIcons/IconsMaterials';
+import { Geometry } from 'three-stdlib';
+import { Object3DNode } from 'three/webgpu';
 
 /**
  * Creates a 3D icon mesh component
@@ -18,7 +17,7 @@ export function IconMesh({
     iconColor,
     ...props
 }: {
-    data: Object3D;
+    data: Object3D | Mesh | Geometry | Material | Object3DNode;
     hovered?: boolean;
     curveSegments?: number;
     iconColor?: string;
@@ -29,28 +28,28 @@ export function IconMesh({
      * @returns The provided icon color or the original color of the material
      * if not specified.
      */
-    const originalColor = useMemo(() => {
-        try {
-            const { material } = data as Mesh;
-            if (iconColor) return iconColor;
-            if (material && material instanceof MeshStandardMaterial) {
-                return `#${material.color.getHexString()}`;
-            }
-        } catch (e) {
-            console.warn('Error extracting material color:', e);
-            return iconColor || '#ffffff';
-        }
-    }, [data, iconColor]);
+    // const originalColor = useMemo(() => {
+    //     try {
+    //         const { material } = data as Mesh;
+    //         if (iconColor) return iconColor;
+    //         if (material && material instanceof MeshStandardMaterial) {
+    //             return `#${material.color.getHexString()}`;
+    //         }
+    //     } catch (e) {
+    //         console.warn('Error extracting material color:', e);
+    //         return iconColor || '#ffffff';
+    //     }
+    // }, [data, iconColor]);
 
     return (
-        <mesh {...data} {...props}>
-            <meshStandardMaterial
-                color={hovered ? hoveredIconColor : originalColor}
-                emissive={hovered ? hoveredIconColor : '#000000'}
-                emissiveIntensity={hovered ? emissiveIntensity : 0}
-                roughness={hovered ? 0.5 : 0.8}
-                metalness={hovered ? 0.5 : 0.2}
+        <group>
+            <mesh
+                {...(data as Object3DNode)}
+                {...props}
+                material={
+                    hovered ? hoveredIconMateral : (data as Mesh).material
+                }
             />
-        </mesh>
+        </group>
     );
 }

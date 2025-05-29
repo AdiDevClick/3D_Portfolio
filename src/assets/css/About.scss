@@ -40,8 +40,9 @@
         border-radius: 3px;
         font-size: 12px;
         white-space: nowrap;
-        transform: translateY(900%);
+        // transform: translateY(900%);
         font-family: sans-serif;
+        touch-action: 'none';
     }
 
     @include for-size(mobile) {

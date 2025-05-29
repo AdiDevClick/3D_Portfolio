@@ -7,11 +7,10 @@ import { memo, Suspense, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
-import { Center, ContactShadows, useScroll } from '@react-three/drei';
-import { HexCell } from '@/components/3DComponents/Forms/HexCell';
+import { ContactShadows, useScroll } from '@react-three/drei';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -37,7 +36,6 @@ const gridOptions = {
 
 const animations = {
     propertiesToCheck: ['scale', 'rotation'],
-    // propertiesToCheck: ['scale', 'rotation', 'position'],
     hovered: true,
     scale: { hovered: 1.2, default: 1 },
     rotation: { hovered: [0, -0.5, -0.05], default: [0, 0, 0] },
@@ -50,7 +48,7 @@ const animations = {
         duration: 200,
     },
     delay: 100,
-};
+} as any;
 
 /**
  * Home page component.
@@ -130,6 +128,7 @@ const MemoizedHome = memo(function Home({
             );
         }
     });
+
     return (
         <group visible={isActive} ref={groupRef}>
             {/* <SpotLight
@@ -159,26 +158,18 @@ const MemoizedHome = memo(function Home({
                 scale={10}
                 color="#fff3b0"
             /> */}
-
-            <HomePageTitle ref={titleRef} scale={generalScaleX} />
-
-            <group ref={stackRef}>
-                <FloatingTitle
-                    scale={generalScaleX}
-                    size={30}
-                    textProps={{
-                        height: 20,
-                    }}
-                >
-                    Ma stack technique
-                </FloatingTitle>
-                <Suspense
-                    fallback={
-                        <PlaceholderIcon
-                            position-y={-1 * generalScaleX - margin}
-                        />
-                    }
-                >
+            <HomePageTitle ref={titleRef} scalar={generalScaleX} />
+            <Suspense fallback={<PlaceholderIcon ref={stackRef} />}>
+                <group name={'stack-container'} ref={stackRef}>
+                    <FloatingTitle
+                        text="Ma stack technique"
+                        scalar={generalScaleX}
+                        size={30}
+                        textProps={{
+                            height: 20,
+                        }}
+                        name="home-page-stack-title"
+                    />
                     <MemoizedIconsContainer
                         width={contentWidth ?? 1}
                         icons={iconsWithText}
@@ -191,13 +182,12 @@ const MemoizedHome = memo(function Home({
                         }
                         isMobile={isMobile}
                         animations={animations}
-                    >
-                        <Center bottom>
-                            <HexCell scalar={generalScaleX} />
-                        </Center>
-                    </MemoizedIconsContainer>
-                </Suspense>
-            </group>
+                        iconScale={90 * generalScaleX}
+                        rotation={[0, 3.164, 0]}
+                    />
+                </group>
+            </Suspense>
+
             <ContactShadows
                 frames={1}
                 position={[0, -2.3, 0]}
@@ -209,20 +199,3 @@ const MemoizedHome = memo(function Home({
 });
 
 export default MemoizedHome;
-// export default memo(MemoizedHome, (prevProps, nextProps) => {
-//     // Log des changements
-//     if (prevProps.contentWidth !== nextProps.contentWidth)
-//         console.log('width changed');
-//     if (prevProps.contentHeight !== nextProps.contentHeight)
-//         console.log('height changed');
-//     if (prevProps.generalScaleX !== nextProps.generalScaleX)
-//         console.log('scale changed');
-
-//     return (
-//         prevProps.contentWidth === nextProps.contentWidth &&
-//         prevProps.contentHeight === nextProps.contentHeight &&
-//         prevProps.generalScaleX === nextProps.generalScaleX &&
-//         prevProps.isMobile === nextProps.isMobile &&
-//         prevProps.margin === nextProps.margin
-//     );
-// });

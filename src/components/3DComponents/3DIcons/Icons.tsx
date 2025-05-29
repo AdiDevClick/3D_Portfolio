@@ -1,42 +1,29 @@
+import { dracoConfig } from '@/api/draco/dracoConfig';
 import { IconMesh } from '@/components/3DComponents/3DIcons/IconMesh';
-import { Html, useCursor, useGLTF } from '@react-three/drei';
-import { ThreeEvent } from '@react-three/fiber';
-import { JSX, useState } from 'react';
-
-type IconsTypes = {
-    model: string;
-} & JSX.IntrinsicElements['group'];
+import { IconsTypes } from '@/components/3DComponents/Contact/ContactTypes';
+import { useCursor } from '@react-three/drei';
+import { useLoader } from '@react-three/fiber';
+import { GLTFLoader } from 'three-stdlib';
 
 /**
  * Creates a 3D icon component.
  * - Hover effect and click event to open a link
  * - A tooltip is displayed on hover
- * @param props - Props to be passed to the component. Accepts all group props
  * @param model - Model path to be used
+ * @param hovered - Whether the icon is hovered
+ * @param scale - **@default=100** - Scale of the icon
  */
-export function Icons({ model, ...props }: IconsTypes) {
-    const [hovered, set] = useState(false);
-    const { nodes } = useGLTF(model);
+export function Icons({ model, hovered, scale = 100 }: IconsTypes) {
+    const { nodes } = useLoader(GLTFLoader, model, (loader) => {
+        const dracoLoader = dracoConfig();
 
-    useCursor(hovered);
+        loader.setDRACOLoader(dracoLoader);
+    });
 
-    const getServiceName = () => {
-        if (model.includes('github') || model.includes('Github'))
-            return 'GitHub';
-        if (model.includes('linkedin') || model.includes('Linkedin'))
-            return 'LinkedIn';
-        return 'Lien';
-    };
+    useCursor(hovered || false);
 
     return (
-        <group
-            onPointerOver={() => set(true)}
-            onPointerOut={() => set(false)}
-            onClick={(e) => onClickHandler(e, model)}
-            scale={70}
-            dispose={null}
-            {...props}
-        >
+        <group>
             {nodes.Scene?.children.map((node) => {
                 return (
                     <IconMesh
@@ -45,47 +32,21 @@ export function Icons({ model, ...props }: IconsTypes) {
                         iconColor={'#000000'}
                         curveSegments={32}
                         hovered={hovered}
+                        scale={scale}
                     />
                 );
             })}
-            {hovered && (
-                <Html>
-                    <div className="about__tooltip">{getServiceName()}</div>
-                </Html>
-            )}
         </group>
     );
-}
-
-/**
- * Sends the user to the corresponding link on click
- * @param e - Event triggered on click
- * @param icon - Icon name to identify the link
- */
-function onClickHandler(e: ThreeEvent<globalThis.MouseEvent>, icon: string) {
-    e.stopPropagation();
-    if (
-        icon.includes('github') ||
-        icon.includes('GitHub') ||
-        icon.includes('Github')
-    ) {
-        window.open('https://www.github.com/AdiDevClick');
-    } else if (
-        icon.includes('linkedin') ||
-        icon.includes('LinkedIn') ||
-        icon.includes('Linkedin')
-    ) {
-        window.open('https://www.linkedin.com/in/adrien-quijo');
-    }
 }
 
 /**
  * Allow to preload the icon models
  * @param modelPaths - Array of model paths to preload
  */
-export function preloadIcons(modelPaths: string[]) {
-    const paths = Array.isArray(modelPaths) ? modelPaths : [modelPaths];
-    paths.forEach((path) => {
-        useGLTF.preload(path);
-    });
-}
+// export function preloadIcons(modelPaths: string[]) {
+//     const paths = Array.isArray(modelPaths) ? modelPaths : [modelPaths];
+//     paths.forEach((path) => {
+//         useGLTF.preload(path);
+//     });
+// }

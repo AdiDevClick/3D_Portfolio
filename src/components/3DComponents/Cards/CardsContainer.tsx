@@ -24,13 +24,16 @@ import { Group, Mesh, Quaternion, Vector3 } from 'three';
 import useDebounce from '@/hooks/useDebounce';
 import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { useSpring, animated } from '@react-spring/three';
+import { cardEventBoxMaterial } from '@/components/3DComponents/Cards/CardMaterials';
 
+//TODO : fix the event box scale that is not always correct
+// it 's not registering the correct card
 type CardsContainerTypes = {
     reducer: ReducerType;
     SETTINGS: SettingsType;
 };
 const distancesArray: { index: number; distance: number }[] = [];
-
+const vec = new Vector3();
 /**
  * Conteneur pour les Cards et ses dépendances -
  * Il contient les cartes et les éléments HTML -
@@ -155,7 +158,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         frameRateCount.current += 1;
 
         // Handle event Box scale
-        if (frameRateCount.current % 20 === 0) {
+        if (frameRateCount.current % 10 === 0) {
             distancesArray.length = 0;
 
             const camera = state.camera;
@@ -202,7 +205,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         if (!isCarouselClicked || reducer.activeContent?.isActive) return;
 
         // Check previous camera position
-        const positionDelta = new Vector3()
+        const positionDelta = vec
             .copy(camera.position)
             .distanceTo(lastCameraPosition.current);
 
@@ -357,13 +360,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     1,
                                     // card.isActive ? 1.5 : 0.5,
                                 ]}
-                            >
-                                <meshStandardMaterial
-                                    color={'white'}
-                                    opacity={0}
-                                    transparent
-                                />
-                            </boxGeometry>
+                                material={cardEventBoxMaterial}
+                            />
                         </mesh>
                         <MemoizedCard
                             onClick={(e) =>
@@ -403,26 +401,26 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     SETTINGS.PRESENCE_RADIUS * card.baseScale,
                                     32,
                                 ]}
-                                color={'red'}
                             />
-                            {!reducer.isMobile ? (
-                                <Title
-                                    name="card__title"
-                                    size={10}
-                                    textProps={{
-                                        scale: 0.01 * reducer.generalScaleX,
-                                        bevelSize: 0.2,
-                                        bevelOffset: 0.2,
-                                        bevelThickness: 0.2,
-                                    }}
-                                >
-                                    {card.cardTitle ? card.cardTitle : 'test'}
-                                </Title>
-                            ) : (
-                                <FallbackText name="card__title">
-                                    {card.cardTitle ? card.cardTitle : 'test'}
-                                </FallbackText>
-                            )}
+                            {/* {reducer.isMobile ? ( */}
+                            <Title
+                                text={card.cardTitle ? card.cardTitle : 'test'}
+                                name="card__title"
+                                size={reducer.isMobile ? 20 : 12}
+                                scalar={reducer.generalScaleX}
+                                isMobile={reducer.isMobile}
+                                // textProps={{
+                                //     // scale: 0.01 * reducer.generalScaleX,
+                                //     bevelSize: 0.2,
+                                //     bevelOffset: 0.2,
+                                //     bevelThickness: 0.2,
+                                // }}
+                            />
+                            {/* // ) : (
+                            //     <FallbackText name="card__title">
+                            //         {card.cardTitle ? card.cardTitle : 'test'}
+                            //     </FallbackText>
+                            // )} */}
 
                             {card.isClicked && (
                                 <group name="htmlContainer">

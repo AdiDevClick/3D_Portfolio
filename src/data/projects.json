@@ -3,7 +3,7 @@
         "id": "1",
         "title": "Portfolio HTML",
         "cardTitle": "Portfolio HTML",
-        "cover": "assets/images/Portfolio.jpg",
+        "cover": "assets/images/Portfolio.webp",
         "description": "Un portfolio HTML/CSS responsive qui présente une utilisation robuste du CSS ainsi que de la structure HTML",
         "content": [
             "Utilisation du CSS pour styler le site",
@@ -34,7 +34,7 @@
         "id": "2",
         "title": "Partage de recettes",
         "cardTitle": "Site de Recettes",
-        "cover": "assets/images/Recettes.jpg",
+        "cover": "assets/images/Recettes.webp",
         "description": "Un site de partage de recettes dynamique. Un projet de développement web complet qui met en avant mes compétences en PHP et JavaScript. Il s'articule autour d'un CRUD complet permettant une communiation AJAX entre le front-end et le back-end. Un projet qui est voué à une constante évolution !",
         "content": [
             "Créé avec PHP et JavaScript",
@@ -77,7 +77,7 @@
         "id": "3",
         "title": "Mon Portfolio 3D",
         "cardTitle": "Portfolio 3D",
-        "cover": "assets/images/Portfolio3D.jpg",
+        "cover": "assets/images/Portfolio3D.webp",
         "description": "Un portfolio personnel qui exploîte la puissance du développement 3D moderne. Un avant-goût de ce que peut être site web 3D ainsi que mes compétences et projets.",
         "content": [
             "Intégration du Canvas avec ThreeJS et React Three Fiber",
@@ -114,7 +114,7 @@
         "id": "4",
         "title": "Développement d'une API",
         "cardTitle": "Mon Vieux Grimoire",
-        "cover": "assets/images/Grimoire.jpg",
+        "cover": "assets/images/Grimoire.webp",
         "description": "Développement Back-End API RESTful pour le site 'Mon Vieux Grimoire', une plateforme de référencement et de notation de livres créée avec React.",
         "content": [
             "Mise en place d'une API RESTful robuste et sécurisée",
@@ -144,7 +144,7 @@
         "id": "5",
         "title": "Développement Front-end React",
         "cardTitle": "Kasa",
-        "cover": "assets/images/Kasa.jpg",
+        "cover": "assets/images/Kasa.webp",
         "description": "Développement d'une application de location de logements avec React. Un projet demandant l'implémentation d'une maquette Figma responsive",
         "content": [
             "Créé avec React",
@@ -172,7 +172,7 @@
         "id": "6",
         "title": "Portfolio Architecte d'Intérieur",
         "cardTitle": "Sophie Bluel",
-        "cover": "assets/images/Bluel.jpg",
+        "cover": "assets/images/Bluel.webp",
         "description": "Un projet consistant à développer le portfolio d'une architecte d'intérieur. Articuté autour d'une modale dynamique pour la gestion des projets, il demande une validation des inputs ainsi qu'une intéraction avec le back-end.",
         "content": [
             "Créé avec HTML, CSS et JavaScript",
@@ -201,7 +201,7 @@
         "id": "7",
         "title": "Intégration d'une interface web",
         "cardTitle": "Booki",
-        "cover": "assets/images/Booki.jpg",
+        "cover": "assets/images/Booki.webp",
         "description": "Développement d'une interface web pour un site de réservation de logements. Une intégration demandedant une attention particulière aux détails et à la mise en page depuis la maquette Figma.",
         "content": [
             "Créé avec HTML et CSS",
@@ -230,7 +230,7 @@
         "id": "8",
         "title": "Corrections du Site Nina Carducci",
         "cardTitle": "Optimisation SEO",
-        "cover": "assets/images/Nina.jpg",
+        "cover": "assets/images/Nina.webp",
         "description": "Un projet consistant à optimiser le site de Nina Carducci pour améliorer son référencement naturel, ses performances et la correction de bugs existants",
         "content": [
             "Utilisation d'outils d'accessibilité tels que WAVE et Lighthouse",
