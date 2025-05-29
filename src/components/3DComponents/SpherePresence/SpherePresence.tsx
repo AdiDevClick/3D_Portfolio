@@ -1,3 +1,4 @@
+import { redSphereMaterial } from '@/components/3DComponents/SpherePresence/SpherePresenceMaterials';
 import { SpherePresenceTypes } from '@/components/3DComponents/SpherePresence/SpherePresenceTypes';
 
 /**
@@ -5,19 +6,12 @@ import { SpherePresenceTypes } from '@/components/3DComponents/SpherePresence/Sp
  */
 export function SpherePresenceHelper({
     radius,
-    color,
     visible = false,
     ...props
 }: SpherePresenceTypes) {
     return (
-        <mesh visible={visible} {...props}>
+        <mesh visible={visible} material={redSphereMaterial} {...props}>
             <sphereGeometry args={radius} />
-            <meshStandardMaterial
-                color={color}
-                wireframe
-                transparent
-                opacity={0.5}
-            />
         </mesh>
     );
 }

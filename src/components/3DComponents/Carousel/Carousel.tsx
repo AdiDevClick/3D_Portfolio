@@ -20,7 +20,7 @@ import {
 } from '@/components/3DComponents/Carousel/Functions';
 import { useLocation, useParams } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
-import { Billboard, Float } from '@react-three/drei';
+import { Billboard } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import datasJson from '@data/projects.json';
@@ -29,13 +29,13 @@ import { ElementType } from '@/hooks/reducers/carouselTypes';
 const datas = datasJson as unknown as ElementType[];
 
 import MemoizedCardsContainer from '@/components/3DComponents/Cards/CardsContainer';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { CarouselProps } from '@/components/3DComponents/Carousel/FunctionsTypes';
 import {
     CARD_ACTIVE_FORWARD_OFFSET,
     CARD_ANIMATION_SPEED,
 } from '@/configs/Cards.config';
-import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config';
+import { debugOrangeBox } from '@/components/3DComponents/Carousel/CarouselMaterials';
+import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 
 let animationProgress = 0;
 
@@ -318,20 +318,35 @@ export default function Carousel({
 
     return (
         <group visible={activeURL} ref={projectsRef}>
-            <mesh ref={boundariesRef} visible={SETTINGS.debug}>
+            <mesh
+                ref={boundariesRef}
+                visible={SETTINGS.debug}
+                material={debugOrangeBox}
+            >
                 <boxGeometry
                     args={[boundaries.x, boundaries.y, boundaries.z]}
                 />
-                <meshStandardMaterial
-                    color={'orange'}
-                    transparent
-                    opacity={0.5}
-                    side={DoubleSide}
-                />
             </mesh>
-            <Billboard rotation={[0, 3.164, 0]}>
-                <Float>
-                    {isCarouselLoaded ? (
+            <Billboard>
+                {/* <Billboard rotation={[0, 3.164, 0]}> */}
+                <FloatingTitle
+                    text="Mes Projets"
+                    scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
+                    name={'carousel__title'}
+                    ref={titleRef}
+                    // size={40}
+                    rotation={[0, 3.164, 0]}
+                />
+                {/* <Float> */}
+                {/* <Title
+                        scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
+                        name={'carousel__title'}
+                        ref={titleRef}
+                        text="Mes Projets"
+                    /> */}
+                {/* Mes Projets
+                    </Title> */}
+                {/* {isCarouselLoaded ? (
                         <Title
                             scale={
                                 isMobile ? generalScaleX * 1.2 : generalScaleX
@@ -350,8 +365,8 @@ export default function Carousel({
                         >
                             Mes Projets
                         </FallbackText>
-                    )}
-                </Float>
+                    )} */}
+                {/* </Float> */}
             </Billboard>
 
             <Suspense fallback={null}>

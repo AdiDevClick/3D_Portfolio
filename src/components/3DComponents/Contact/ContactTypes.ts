@@ -1,6 +1,6 @@
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { FloatProps } from '@react-three/drei';
-import { Ref } from 'react';
+import { Ref, JSX } from 'react';
 import { Group } from 'three';
 
 export type ContactIconsContainerProps = {
@@ -21,17 +21,18 @@ export interface Model extends FloatProps {
     link: string;
 }
 
-export interface FloatIconsProps
-    extends Omit<ContactIconsContainerProps, 'ref'> {
-    models: Model[];
-    floatOptions: FloatProps;
-}
-
-export interface FloatIconProps extends Model {
-    tooltips?: boolean;
-}
+export interface FloatIconProps
+    extends Model,
+        Omit<JSX.IntrinsicElements['group'], 'ref' | keyof FloatProps> {}
 
 export interface IconsTypes {
     model: Model['model'];
     hovered?: boolean;
+    scale?: number;
+}
+
+export interface ContactIconsContainerProviderTypes
+    extends Omit<ContactIconsContainerProps, 'ref'> {
+    floatOptions: FloatProps;
+    models: Model[];
 }

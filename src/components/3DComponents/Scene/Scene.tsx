@@ -1,10 +1,9 @@
 import { ScrollControls, Scroll } from '@react-three/drei';
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import '../../../utils/util.tsx';
 import Carousel from '@/components/3DComponents/Carousel/Carousel';
 import MemoizedAbout from '@/pages/About/About';
 import { PageScroller } from '@/components/3DComponents/Html/PageScroller';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import MemoizedHome from '@/pages/Home/Home';
 import MemoizedContact from '@/pages/Contact/Contact';
 import { SceneProps } from '@/components/3DComponents/Scene/SceneTypes';
@@ -68,14 +67,16 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
         <>
             {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
             {/* <Preload all /> */}
-
+            {/* <Perf /> */}
             <ScrollControls
                 pages={virtualPageCount}
                 distance={0.3}
                 damping={0.5}
             >
                 <Scroll ref={pagesRef}>
+                    {/* <Suspense fallback={null}> */}
                     <MemoizedHome {...pagesMemoProps} />
+                    {/* </Suspense> */}
                     <MemoizedAbout {...pagesMemoProps} />
                 </Scroll>
                 {pagesRef.current && isMobile && <PageScroller />}
@@ -98,13 +99,13 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                         metalness={0.5}
                     />
                 </mesh> */}
-            <Suspense fallback={null}>
-                <Carousel
-                    reducer={reducer}
-                    boundaries={boundaries}
-                    SETTINGS={SETTINGS}
-                />
-            </Suspense>
+            {/* <Suspense fallback={null}> */}
+            <Carousel
+                reducer={reducer}
+                boundaries={boundaries}
+                SETTINGS={SETTINGS}
+            />
+            {/* </Suspense> */}
 
             {children}
         </>

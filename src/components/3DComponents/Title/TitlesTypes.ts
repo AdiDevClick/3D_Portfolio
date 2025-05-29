@@ -1,6 +1,13 @@
-import { CenterProps, Text3DProps, TextProps } from '@react-three/drei';
+import { ReducerType } from '@/hooks/reducers/carouselTypes';
+import {
+    CenterProps,
+    FloatProps,
+    Text3DProps,
+    TextProps,
+} from '@react-three/drei';
 import { JSX, ReactNode, RefObject } from 'react';
 import { Group, Mesh, Object3D } from 'three';
+import { TextBufferGeometry } from 'three-stdlib';
 
 export type FallbackTextTypes = {
     children: ReactNode;
@@ -11,19 +18,22 @@ export type FallbackTextTypes = {
  * FloatingTitle component types.
  */
 export type FloatingTitleProps = {
-    children: ReactNode;
-    size: number;
+    text: string;
+    // size: number;
+    /** @defaultValue false */
     isMobile?: boolean;
-    scale: number;
-    textProps?: {};
+    scalar: ReducerType['generalScaleX'];
+    textProps?: TextBufferGeometry & TextProps;
     /** @defaultValue false */
     isClickable?: boolean;
-} & JSX.IntrinsicElements['group'] & {
+    floatOptions?: FloatProps;
+} & JSX.IntrinsicElements['group'] &
+    CenterProps & {
         [key: string]: any;
     };
 
 export type TitleTypes = {
-    children: string | string[] | ReactNode;
+    text: string;
     size?: number;
     textProps?: Omit<Text3DProps, 'children' | 'font' | 'size'>;
     [key: string]: any;
@@ -31,5 +41,5 @@ export type TitleTypes = {
 
 export type HomePageTitleProps = {
     ref: RefObject<Group | null>;
-    scale: number;
+    scalar: ReducerType['generalScaleX'];
 };

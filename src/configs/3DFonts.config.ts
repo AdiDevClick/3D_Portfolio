@@ -5,12 +5,14 @@ import normalMontFont from '@assets/fonts/montserrat-variablefont_wght-webfont.w
 // import normalMontFont from '@assets/fonts/Montserrat-VariableFont_wght.ttf';
 
 import { FontData } from '@react-three/drei';
+import { FontLoader } from 'three-stdlib';
 
 /**
  * 3D Font for titles
  */
-export const importedFont = helveticFont as unknown as FontData;
-
+export const importedFont = new FontLoader().parse(
+    helveticFont as unknown as FontData
+);
 /**
  * Text Fallback font for titles
  */
