@@ -1,27 +1,34 @@
 import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
 import { Icons } from '@/components/3DComponents/3DIcons/Icons';
-import { FloatIconProps } from '@/components/3DComponents/Contact/ContactTypes';
+import {
+    ContactIconsContainerProviderTypes,
+    FloatIconProps,
+} from '@/components/3DComponents/Contact/ContactTypes';
 import { sharedMatrices } from '@/utils/matrices';
 import { useSpring, animated } from '@react-spring/three';
 import { Float, Html } from '@react-three/drei';
 import { ThreeEvent } from '@react-three/fiber';
-import { useState } from 'react';
+import { use, useState } from 'react';
 
 /**
- * Floating Icon component
+ * @component Floating Icon
  *
- * @description Creates a floating icon with a 3D model
+ * @description
+ * Creates a floating icon with a 3D model.
+ * - The icon will scale up on hover.
+ * - The icon can be clicked to open a link if specified in the props.
+ * - If a tooltip is enabled in the parent provider, it will display the name of the icon on hover.
+ *
  * @param model - Model path to be used
- * @param tooltips - Whether to show a tooltip on hover
  * @param props - Props to be passed to the component. Accepts all group props
  */
-export function FloatIcon({
-    model,
-    scalar,
-    tooltips,
-    ...props
-}: FloatIconProps) {
+export function FloatIcon({ model, ...props }: FloatIconProps) {
+    const { scalar, tooltips, floatOptions } = use(
+        IconsContainerContext
+    ) as ContactIconsContainerProviderTypes;
+
     const [hovered, setHovered] = useState(false);
+
     const hoveredStyle = useSpring({
         scale: hovered ? 1.2 : 1,
         config: { mass: 1, tension: 170, friction: 26 },
@@ -39,9 +46,7 @@ export function FloatIcon({
                     setHovered(false);
                 }}
                 onClick={(e) => onClickHandler(e, props.link)}
-                speed={1}
-                rotationIntensity={0.5}
-                floatIntensity={0.5}
+                {...floatOptions}
                 {...props}
             >
                 <Icons

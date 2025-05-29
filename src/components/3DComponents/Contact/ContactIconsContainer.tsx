@@ -5,6 +5,7 @@ import {
 } from '@/components/3DComponents/Contact/ContactTypes';
 import { Center } from '@react-three/drei';
 import contactIcons from '@data/contact-icons.json';
+import { IconsContainerProvider } from '@/api/contexts/IconsContainerProvider';
 
 const floatOptions = {
     autoInvalidate: true,
@@ -15,11 +16,12 @@ const floatOptions = {
 };
 
 /**
- * ContactIcons component
- * @description Contains the 3D icons for contact information
- * Use the list above to add more icons
+ * @component ContactIconsContainer
+ * @description
+ * - Contains the 3D icons for contact information
+ * - Use the list contactIcons list .JSON above the component to add more icons
  *
- * @param ref - Ref to be passed to the component
+ * @param ref - Ref to be passed to the component in order to manipulate it
  * @param scalar - Scale factor for the icons
  * @param isMobile - Whether the icons should be displayed in mobile mode
  * @param tooltips **@default=true** - Whether to show tooltips on hover
@@ -30,15 +32,19 @@ export function ContactIconsContainer({
     isMobile = false,
     tooltips = true,
 }: ContactIconsContainerProps) {
+    const iconsContainerValue = {
+        floatOptions,
+        models: contactIcons as Model[],
+        scalar,
+        isMobile,
+        tooltips,
+    };
+
     return (
         <Center ref={ref}>
-            <FloatIcons
-                models={contactIcons as Model[]}
-                scalar={scalar}
-                isMobile={isMobile}
-                floatOptions={floatOptions}
-                tooltips={tooltips}
-            />
+            <IconsContainerProvider value={iconsContainerValue}>
+                <FloatIcons />
+            </IconsContainerProvider>
         </Center>
     );
 }

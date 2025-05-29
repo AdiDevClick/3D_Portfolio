@@ -1,26 +1,23 @@
 import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
 import { FloatIcon } from '@/components/3DComponents/3DIcons/FloatIcon';
-import { FloatIconsProps } from '@/components/3DComponents/Contact/ContactTypes';
+import { ContactIconsContainerProviderTypes } from '@/components/3DComponents/Contact/ContactTypes';
+import { use } from 'react';
 
 /**
- * FloatIcons component -
- * @description : This component will create a floating effect for the icons
- * you pass to it.
+ * @component FloatIcons
  *
- * @param models - List of models to be used
- * @param floatOptions - Options for the floating effect
- * @param scalar - Scale factor for the icons
- * @param isMobile - Whether the icons should be displayed in mobile mode
- * @param tooltips **@default=true** - Whether to show tooltips on hover
- * @returns
+ * @description
+ * - This component will create a floating effect for the icons
+ * you pass to it.
+ * - Use the Model to define the icon models and their properties.
+ * - The icons can be clicked to open a link if its specified in the Model.
+ * - The icons will be hovered and a color will trigger.
  */
-export function FloatIcons({
-    models,
-    scalar,
-    isMobile,
-    floatOptions,
-    tooltips,
-}: FloatIconsProps) {
+export function FloatIcons() {
+    const { models, isMobile } = use(
+        IconsContainerContext
+    ) as ContactIconsContainerProviderTypes;
+
     return models.map(({ model, ...rest }, index) => (
         <FloatIcon
             key={index}
@@ -32,10 +29,7 @@ export function FloatIcons({
                     ? rest.modelPosition.mobile
                     : rest.modelPosition.default
             }
-            scalar={scalar}
-            tooltips={tooltips}
             {...rest}
-            {...floatOptions}
         />
     ));
 }
