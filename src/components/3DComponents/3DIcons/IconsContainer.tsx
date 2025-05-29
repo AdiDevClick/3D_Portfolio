@@ -1,13 +1,11 @@
-import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
 import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import { HexCell } from '@/components/3DComponents/Forms/HexCell';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { UseSpringProps } from '@react-spring/three';
 import { Center, CenterProps } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
-import { JSX, memo, ReactNode, Suspense, useRef } from 'react';
+import { JSX, memo, ReactNode, useRef } from 'react';
 import { Box3, Group } from 'three';
 
 // Extend Object3D to include boundingbox property
@@ -108,18 +106,6 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     const groupRef = useRef<Group>(null!);
     const frameCountRef = useRef(0);
 
-    const contextValue = {
-        width,
-        scalar,
-        gridOptions,
-        iconScale,
-        floatOptions,
-        isMobile,
-        eventsList,
-        mobileTextProps,
-        animations,
-        margin,
-    } as IconsContainerContextTypes;
     /**
      * This function is called on each frame to update
      * the visibility of the icons based on the camera's frustum.
@@ -142,50 +128,52 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     });
 
     return (
-        <IconsContainerContext value={contextValue}>
-            <group name="icon__center-container" ref={groupRef} {...props}>
-                {icons.map((icon, index) => (
-                    // <Suspense fallback={null}>
-                    <GridLayout
-                        width={width}
-                        key={icon.name + '-grid'}
-                        name={icon.name + '-grid'}
-                        length={icons.length}
-                        index={index}
-                        scalar={scalar}
-                        options={gridOptions}
-                    >
-                        <Suspense fallback={<PlaceholderIcon />}>
-                            <IconWithText
-                                key={icon.name}
-                                model={`${
-                                    import.meta.env.BASE_URL
-                                }assets/models/${
-                                    isMobile
-                                        ? `mobile/${icon.mobile}`
-                                        : `optimized/${icon.optimized}`
-                                }`}
-                                datas={{
-                                    text: icon.name,
-                                    name: icon.name,
-                                }}
-                                name={'icon__content'}
-                                position={
-                                    isMobile
-                                        ? [0.5 * scalar, 1.45 * scalar, -0.15]
-                                        : [0, 0.5 * scalar, 0]
-                                }
-                            />
-                        </Suspense>
-                        {children}
-                        <Center bottom>
-                            <HexCell scalar={scalar} />
-                        </Center>
-                    </GridLayout>
-                    // </Suspense>
-                ))}
-            </group>
-        </IconsContainerContext>
+        <group name="icon__center-container" ref={groupRef} {...props}>
+            {icons.map((icon, index) => (
+                // <Suspense fallback={null}>
+                <GridLayout
+                    width={width}
+                    key={icon.name + '-grid'}
+                    name={icon.name + '-grid'}
+                    length={icons.length}
+                    index={index}
+                    scalar={scalar}
+                    options={gridOptions}
+                >
+                    <IconWithText
+                        key={icon.name}
+                        model={`${import.meta.env.BASE_URL}assets/models/${
+                            isMobile
+                                ? `mobile/${icon.mobile}`
+                                : `optimized/${icon.optimized}`
+                        }`}
+                        datas={{
+                            text: icon.name,
+                            name: icon.name,
+                        }}
+                        name={'icon__content'}
+                        position={
+                            // isMobile ? [0, 0, 0] : [0, 0.5 * scalar, 0]
+                            [0, 0.5 * scalar, 0]
+                            // isMobile
+                            //     ? [0, 0.5 * scalar, -0.15]
+                            //     : [0, 0.5 * scalar, 0]
+                            // isMobile
+                            //     ? [0.5 * scalar, 1.45 * scalar, -0.15]
+                            //     : [0, 0.5 * scalar, 0]
+                        }
+                    />
+                    {/* <Suspense fallback={<PlaceholderIcon />}> */}
+
+                    {/* </Suspense> */}
+                    {children}
+                    <Center bottom>
+                        <HexCell scalar={scalar} />
+                    </Center>
+                </GridLayout>
+                // </Suspense>
+            ))}
+        </group>
     );
 });
 export default MemoizedIconsContainer;
