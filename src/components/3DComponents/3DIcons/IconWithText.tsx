@@ -213,9 +213,9 @@ export function IconWithText({
                 size={30}
                 isClickable={true}
                 floatOptions={floatOptions}
-                textProps={{
-                    scale: 0.01 * scalar,
-                }}
+                // textProps={{
+                //     scale: 0.01 * scalar,
+                // }}
                 name={'icons-' + datas.name + '__title'}
                 right
                 position-x={0.2 * scalar}
