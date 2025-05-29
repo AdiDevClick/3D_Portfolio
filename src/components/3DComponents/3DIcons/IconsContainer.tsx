@@ -152,6 +152,13 @@ const MemoizedIconsContainer = memo(function IconsContainer({
                             name: icon.name,
                         }}
                         name={'icon__content'}
+                        animations={animations}
+                        scalar={scalar}
+                        iconScale={iconScale}
+                        isMobile={isMobile}
+                        eventsList={eventsList}
+                        floatOptions={floatOptions}
+                        mobileTextProps={mobileTextProps}
                         position={
                             // isMobile ? [0, 0, 0] : [0, 0.5 * scalar, 0]
                             [0, 0.5 * scalar, 0]

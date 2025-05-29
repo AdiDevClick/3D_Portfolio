@@ -62,8 +62,8 @@ let isComponentMounted = false;
 export function IconWithText({
     model,
     scalar,
-    iconScale = 100,
-    index,
+    iconScale,
+    // index,
     datas,
     isMobile,
     eventsList,
@@ -71,7 +71,7 @@ export function IconWithText({
     mobileTextProps,
     animations,
     // hovered = false,
-    margin = 0.5,
+    // margin,
     ...props
 }: IconsTypes) {
     const [hovered, set] = useState(false);

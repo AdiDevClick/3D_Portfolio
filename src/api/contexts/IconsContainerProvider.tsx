@@ -1,12 +1,14 @@
 import { IconsContainerContextTypes } from '@/components/3DComponents/3DIcons/IconsContainer';
+import { ContactIconsContainerProviderTypes } from '@/components/3DComponents/Contact/ContactTypes';
 import { createContext, ReactNode } from 'react';
 
 type IconsContainerProviderProps = {
     children: ReactNode;
-    value: IconsContainerContextTypes;
+    value: ContactIconsContainerProviderTypes | IconsContainerContextTypes;
 };
-export const IconsContainerContext =
-    createContext<IconsContainerContextTypes | null>(null);
+export const IconsContainerContext = createContext<
+    IconsContainerProviderProps['value']
+>(null!);
 export function IconsContainerProvider({
     children,
     value,

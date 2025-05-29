@@ -78,12 +78,12 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                     {/* <Suspense fallback={null}> */}
                     <MemoizedHome {...pagesMemoProps} />
                     {/* </Suspense> */}
-                    <MemoizedAbout {...pagesMemoProps} />
+                    {/* <MemoizedAbout {...pagesMemoProps} /> */}
                 </Scroll>
                 {pagesRef.current && isMobile && <PageScroller />}
             </ScrollControls>
 
-            <MemoizedContact {...pagesMemoProps} />
+            {/* <MemoizedContact {...pagesMemoProps} /> */}
 
             {/* <mesh rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[50, 50]} />
@@ -100,13 +100,13 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                         metalness={0.5}
                     />
                 </mesh> */}
-            <Suspense fallback={null}>
+            {/* <Suspense fallback={null}>
                 <Carousel
                     reducer={reducer}
                     boundaries={boundaries}
                     SETTINGS={SETTINGS}
                 />
-            </Suspense>
+            </Suspense> */}
 
             {children}
         </>

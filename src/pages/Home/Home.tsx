@@ -205,10 +205,10 @@ const MemoizedHome = memo(function Home({
                     }
                 > */}
                 <MemoizedIconsContainer
-                    // width={contentWidth ?? 1}
+                    width={contentWidth ?? 1}
                     icons={iconsWithText}
-                    // scalar={generalScaleX}
-                    // gridOptions={gridOptions}
+                    scalar={generalScaleX}
+                    gridOptions={gridOptions}
                     position-y={
                         isMobile
                             ? -2 * generalScaleX - margin
