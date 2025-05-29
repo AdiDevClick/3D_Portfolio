@@ -3,13 +3,14 @@ import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config'
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { memo, useRef } from 'react';
+import { memo, Suspense, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
 import { ContactShadows, useScroll } from '@react-three/drei';
+import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -158,32 +159,35 @@ const MemoizedHome = memo(function Home({
                 color="#fff3b0"
             /> */}
             <HomePageTitle ref={titleRef} scalar={generalScaleX} />
-            <group name={'stack-container'} ref={stackRef}>
-                <FloatingTitle
-                    text="Ma stack technique"
-                    scalar={generalScaleX}
-                    size={30}
-                    textProps={{
-                        height: 20,
-                    }}
-                    name="home-page-stack-title"
-                />
-                <MemoizedIconsContainer
-                    width={contentWidth ?? 1}
-                    icons={iconsWithText}
-                    scalar={generalScaleX}
-                    gridOptions={gridOptions}
-                    position-y={
-                        isMobile
-                            ? -2 * generalScaleX - margin
-                            : -2.5 * generalScaleX - margin
-                    }
-                    isMobile={isMobile}
-                    animations={animations}
-                    iconScale={90 * generalScaleX}
-                    rotation={[0, 3.164, 0]}
-                ></MemoizedIconsContainer>
-            </group>
+            <Suspense fallback={<PlaceholderIcon ref={stackRef} />}>
+                <group name={'stack-container'} ref={stackRef}>
+                    <FloatingTitle
+                        text="Ma stack technique"
+                        scalar={generalScaleX}
+                        size={30}
+                        textProps={{
+                            height: 20,
+                        }}
+                        name="home-page-stack-title"
+                    />
+                    <MemoizedIconsContainer
+                        width={contentWidth ?? 1}
+                        icons={iconsWithText}
+                        scalar={generalScaleX}
+                        gridOptions={gridOptions}
+                        position-y={
+                            isMobile
+                                ? -2 * generalScaleX - margin
+                                : -2.5 * generalScaleX - margin
+                        }
+                        isMobile={isMobile}
+                        animations={animations}
+                        iconScale={90 * generalScaleX}
+                        rotation={[0, 3.164, 0]}
+                    />
+                </group>
+            </Suspense>
+
             <ContactShadows
                 frames={1}
                 position={[0, -2.3, 0]}
