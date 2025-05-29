@@ -1,17 +1,8 @@
-import { Title } from '@/components/3DComponents/Title/Title';
-import { Center, Float, useCursor, useGLTF } from '@react-three/drei';
+import { Center, useCursor } from '@react-three/drei';
 import { Group } from 'three';
-import { JSX, Suspense, use, useMemo, useRef, useState } from 'react';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
+import { JSX, useMemo, useRef, useState } from 'react';
 import { useSpring, animated } from '@react-spring/three';
-import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
-import { IconsContainerContextTypes } from '@/components/3DComponents/3DIcons/IconsContainer';
-import { sharedMatrices } from '@/utils/matrices';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import { Icons } from '@/components/3DComponents/3DIcons/Icons';
-import { useFrame, useLoader } from '@react-three/fiber';
-import { FontLoader } from 'three-stdlib';
-import { importedFont } from '@/configs/3DFonts.config';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 
 //TODO: Fix sizing for the bbox of the icon with text
@@ -19,6 +10,42 @@ type IconsTypes = {
     model: string;
     datas: { name: string; text: string };
 } & JSX.IntrinsicElements['group'];
+
+// type IconsTypes = {
+//     model: string;
+//     datas: { name: string; text: string };
+//     scalar: number;
+//     index: number;
+//     /** @defaultValue 0.5 */
+//     margin?: number;
+//     isMobile: boolean;
+//     /** @defaultValue 100 */
+//     iconScale?: number;
+//     eventsList?: {
+//         onClick?: (event: ThreeEvent<MouseEvent>) => void;
+//         onPointerOver?: (event: ThreeEvent<MouseEvent>) => void;
+//         onPointerOut?: (event: ThreeEvent<MouseEvent>) => void;
+//         onPointerDown?: (event: ThreeEvent<MouseEvent>) => void;
+//         onPointerUp?: (event: ThreeEvent<MouseEvent>) => void;
+//         [key: string]:
+//             | ((event: ThreeEvent<MouseEvent | PointerEvent>) => void)
+//             | undefined;
+//     };
+//     floatOptions?: {
+//         speed?: number;
+//         floatIntensity?: number;
+//         rotationIntensity?: number;
+//         floatRange?: [number, number];
+//     };
+//     mobileTextProps?: CenterProps;
+//     animations?: {
+//         propertiesToCheck?: string[];
+//         hovered?: boolean;
+//         [key: string]: any;
+//     } & SpringProps;
+//     // /** @defaultValue false */
+//     // hovered?: boolean;
+// } & JSX.IntrinsicElements['group'];
 
 let isComponentMounted = false;
 
@@ -32,27 +59,21 @@ let isComponentMounted = false;
  * @param datas - Data containing the name and text for the icon
  * @returns
  */
-export function IconWithText({ model, datas, ...props }: IconsTypes) {
-    const contextValue = use(IconsContainerContext);
-    if (!contextValue) {
-        throw new Error(
-            'IconWithText must be used within IconsContainerProvider'
-        );
-    }
-
-    let {
-        margin,
-        animations,
-        mobileTextProps,
-        floatOptions,
-        eventsList,
-        isMobile,
-        iconScale,
-        scalar,
-        isClickable,
-    } = contextValue as IconsContainerContextTypes;
-
-    scalar = 0.8 * scalar;
+export function IconWithText({
+    model,
+    scalar,
+    iconScale = 100,
+    index,
+    datas,
+    isMobile,
+    eventsList,
+    floatOptions,
+    mobileTextProps,
+    animations,
+    // hovered = false,
+    margin = 0.5,
+    ...props
+}: IconsTypes) {
     const [hovered, set] = useState(false);
 
     const newAnimationObject = useMemo(() => {
@@ -130,29 +151,29 @@ export function IconWithText({ model, datas, ...props }: IconsTypes) {
      * Checks if the icon is in the camera's frustum
      * and enables/disables the scaling ease.
      */
-    useFrame((_, delta) => {
-        // if (!groupRef.current) return;
-        // frameCountRef.current += 1;
-        // if (frameCountRef.current % 4 === 0) {
-        //     // const contentGrid = groupRef.current.parent?.parent;
-        //     if (!animations.animatePosition) return;
-        //     // if (contentGrid?.visible)
-        //     easing.damp3(
-        //         groupRef.current.position,
-        //         isComponentMounted,
-        //         0.3,
-        //         delta
-        //     );
-        //     // easing.damp3(
-        //     //     groupRef.current.position,
-        //     //     !isComponentMounted
-        //     //         ? animations.animatePosition.from
-        //     //         : animations.animatePosition.default,
-        //     //     2000,
-        //     //     delta
-        //     // );
-        // }
-    });
+    // useFrame((_, delta) => {
+    //     // if (!groupRef.current) return;
+    //     // frameCountRef.current += 1;
+    //     // if (frameCountRef.current % 4 === 0) {
+    //     //     // const contentGrid = groupRef.current.parent?.parent;
+    //     //     if (!animations.animatePosition) return;
+    //     //     // if (contentGrid?.visible)
+    //     //     easing.damp3(
+    //     //         groupRef.current.position,
+    //     //         isComponentMounted,
+    //     //         0.3,
+    //     //         delta
+    //     //     );
+    //     //     // easing.damp3(
+    //     //     //     groupRef.current.position,
+    //     //     //     !isComponentMounted
+    //     //     //         ? animations.animatePosition.from
+    //     //     //         : animations.animatePosition.default,
+    //     //     //     2000,
+    //     //     //     delta
+    //     //     // );
+    //     // }
+    // });
     // console.log('je rerender iConWithText');
 
     return (
