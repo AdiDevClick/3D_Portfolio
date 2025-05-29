@@ -1,5 +1,10 @@
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
-import { CenterProps, Text3DProps, TextProps } from '@react-three/drei';
+import {
+    CenterProps,
+    FloatProps,
+    Text3DProps,
+    TextProps,
+} from '@react-three/drei';
 import { JSX, ReactNode, RefObject } from 'react';
 import { Group, Mesh, Object3D } from 'three';
 
@@ -13,13 +18,16 @@ export type FallbackTextTypes = {
  */
 export type FloatingTitleProps = {
     text: string;
-    size: number;
+    // size: number;
+    /** @defaultValue false */
     isMobile?: boolean;
-    scalar: number;
-    textProps?: {};
+    scalar: ReducerType['generalScaleX'];
+    textProps?: Text3DProps;
     /** @defaultValue false */
     isClickable?: boolean;
-} & JSX.IntrinsicElements['group'] & {
+    floatOptions?: FloatProps;
+} & JSX.IntrinsicElements['group'] &
+    CenterProps & {
         [key: string]: any;
     };
 
