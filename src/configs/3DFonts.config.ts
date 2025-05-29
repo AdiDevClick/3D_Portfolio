@@ -10,7 +10,6 @@ import { FontLoader } from 'three-stdlib';
 /**
  * 3D Font for titles
  */
-// export const importedFont = helveticFont as unknown as FontData;
 export const importedFont = new FontLoader().parse(
     helveticFont as unknown as FontData
 );
