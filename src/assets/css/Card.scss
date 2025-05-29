@@ -24,22 +24,21 @@
 
     &__title {
         font-size: var(--fs-big);
-        font-weight: var(--font-weight-large);
+        font-weight: var(--font-weight-medium);
     }
 
     &__description {
         font-size: var(--fs-bigger-medium);
         color: #a3a3a3;
-        font-weight: var(--font-weight-large);
+        font-weight: var(--font-weight-medium);
     }
 
     &__content {
-
         .content__item {
             display: grid;
             grid-template-columns: 0.5fr 4fr;
             padding: 5px;
-            font-weight: var(--font-weight-xtra-large);
+            font-weight: 600;
 
             svg {
                 grid-column: 1/1;
