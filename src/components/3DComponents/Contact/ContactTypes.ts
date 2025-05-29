@@ -9,7 +9,7 @@ export type ContactIconsContainerProps = {
     isMobile?: ReducerType['isMobile'];
     /** @defaultValue true */
     tooltips?: boolean;
-};
+} & Omit<JSX.IntrinsicElements['group'], 'ref'>;
 
 export interface Model extends FloatProps {
     model: string;

@@ -31,6 +31,7 @@ export function ContactIconsContainer({
     scalar,
     isMobile = false,
     tooltips = true,
+    ...props
 }: ContactIconsContainerProps) {
     const iconsContainerValue = {
         floatOptions,
@@ -41,7 +42,7 @@ export function ContactIconsContainer({
     };
 
     return (
-        <Center ref={ref}>
+        <Center ref={ref} {...props}>
             <IconsContainerProvider value={iconsContainerValue}>
                 <FloatIcons />
             </IconsContainerProvider>
