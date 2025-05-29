@@ -1,3 +1,4 @@
+import { IconsContainerContext } from '@/api/contexts/IconsContainerProvider';
 import { Icons } from '@/components/3DComponents/3DIcons/Icons';
 import { FloatIconProps } from '@/components/3DComponents/Contact/ContactTypes';
 import { sharedMatrices } from '@/utils/matrices';
@@ -14,12 +15,18 @@ import { useState } from 'react';
  * @param tooltips - Whether to show a tooltip on hover
  * @param props - Props to be passed to the component. Accepts all group props
  */
-export function FloatIcon({ model, tooltips, ...props }: FloatIconProps) {
+export function FloatIcon({
+    model,
+    scalar,
+    tooltips,
+    ...props
+}: FloatIconProps) {
     const [hovered, setHovered] = useState(false);
     const hoveredStyle = useSpring({
         scale: hovered ? 1.2 : 1,
         config: { mass: 1, tension: 170, friction: 26 },
     });
+
     return (
         <animated.group scale={hoveredStyle.scale.to((s) => [s, s, s])}>
             <Float
@@ -37,12 +44,17 @@ export function FloatIcon({ model, tooltips, ...props }: FloatIconProps) {
                 floatIntensity={0.5}
                 {...props}
             >
-                <Icons model={model} hovered={hovered} />
+                <Icons
+                    key={'float-icon' + model}
+                    model={model}
+                    hovered={hovered}
+                    scale={100 * scalar}
+                />
 
                 <mesh
                     position={[0.2, 0.2, 0]}
                     geometry={sharedMatrices.boxGeometry}
-                    visible={true}
+                    visible={false}
                 />
                 {hovered && tooltips && (
                     <Html position={[0, 1, 0]}>
