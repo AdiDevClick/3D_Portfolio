@@ -1,16 +1,15 @@
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { FloatingTitleProps } from '@/components/3DComponents/Title/TitlesTypes';
 import { sharedMatrices } from '@/utils/matrices';
-import { Float } from '@react-three/drei';
-import { memo, Suspense, useCallback } from 'react';
+import { Center, Float } from '@react-three/drei';
+import { memo, useCallback } from 'react';
 import { Group, Vector3 } from 'three';
 
 const floatOptions = {
     autoInvalidate: true,
     speed: 1.5,
-    rotationIntensity: 0.5,
-    floatIntensity: 0.5,
+    rotationIntensity: Math.random(),
+    floatIntensity: Math.random(),
     floatingRange: [-0.1, 0.1] as [number, number],
 };
 
@@ -20,10 +19,12 @@ const floatOptions = {
  */
 const FloatingTitle = memo(function FloatingTitle({
     children,
+    scalar,
+    text,
     size,
     isMobile,
     textProps,
-    isClickable = false,
+    isClickable,
     ...props
 }: FloatingTitleProps) {
     /**
@@ -32,45 +33,84 @@ const FloatingTitle = memo(function FloatingTitle({
      */
     const floatRef = useCallback((node: Group) => {
         if (!node || !isClickable) return;
-
-        const box = sharedMatrices.box.setFromObject(node);
-        const contentSize = new Vector3();
-        box.getSize(contentSize);
-        const clickageBox = node.getObjectByName('clickable-box');
-        if (clickageBox) {
-            clickageBox.scale.set(contentSize.x, contentSize.y, contentSize.z);
+        let ancestorContent;
+        node.traverseAncestors((ancestor) => {
+            if (ancestor.name.includes('-grid')) {
+                ancestorContent = ancestor.userData.contentSize;
+            }
+        });
+        // console.log(ancestorContent);
+        // console.log(node);
+        // const clickageBox = node.getObjectByName('clickable-box');
+        const floatContainer = node.parent.parent;
+        // node.parent.parent.getObjectByName('clickable-box');
+        // console.log(floatContainer);
+        if (floatContainer) {
+            if (!ancestorContent) {
+                const box = sharedMatrices.box.setFromObject(floatContainer);
+                const contentSize = new Vector3();
+                box.getSize(contentSize);
+                node.scale.set(contentSize.x, contentSize.y, contentSize.z);
+            } else {
+                node.scale.set(
+                    ancestorContent.x,
+                    ancestorContent.y,
+                    ancestorContent.z
+                );
+            }
         }
     }, []);
+    // console.log(scalar, text, size, isMobile, textProps, isClickable, props);
     return (
-        <Float ref={floatRef} {...floatOptions}>
+        <Float
+            rotation={[0, 3.164, 0]}
+            name={props.name + '-float-container'}
+            {...floatOptions}
+        >
+            <Center position={props.position}>
+                {children}
+                <Title
+                    size={size}
+                    isMobile={isMobile}
+                    textProps={textProps}
+                    text={text}
+                    scalar={scalar}
+                    {...props}
+                />
+            </Center>
             {/* <Suspense
                 fallback={
                     <FallbackText rotation={[0, 3.164, 0]}>
                         {children}
                     </FallbackText>
                 }
+                    
             > */}
-            <Tigtle
+
+            {/* <Title
                 rotation={[0, 3.164, 0]}
                 size={size}
                 isMobile={isMobile}
                 textProps={textProps}
+                text={text}
                 {...props}
             >
                 {children}
-            </Tigtle>
+            </Title> */}
             {/* </Suspense> */}
-
             {isClickable && (
+                // <Center>
                 <mesh
                     onPointerOver={props.onPointerOver}
                     onPointerOut={props.onPointerOut}
                     onClick={props.onClick}
                     name={'clickable-box'}
                     visible={false}
-                >
-                    <boxGeometry />
-                </mesh>
+                    ref={floatRef}
+                    // scale={[2, 1, 1]}
+                    geometry={sharedMatrices.boxGeometry}
+                />
+                // </Center>
             )}
         </Float>
     );
