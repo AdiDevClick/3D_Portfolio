@@ -8,7 +8,7 @@ import contactIcons from '@data/contact-icons.json';
 
 const floatOptions = {
     autoInvalidate: true,
-    speed: 1.5,
+    speed: 1,
     rotationIntensity: 0.5,
     floatIntensity: 0.5,
     floatingRange: [-0.1, 0.1] as [number, number],
