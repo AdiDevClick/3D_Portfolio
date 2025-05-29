@@ -20,7 +20,7 @@ import {
 } from '@/components/3DComponents/Carousel/Functions';
 import { useLocation, useParams } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
-import { Billboard, Float } from '@react-three/drei';
+import { Billboard } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import datasJson from '@data/projects.json';
@@ -35,6 +35,7 @@ import {
     CARD_ANIMATION_SPEED,
 } from '@/configs/Cards.config';
 import { debugOrangeBox } from '@/components/3DComponents/Carousel/CarouselMaterials';
+import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 
 let animationProgress = 0;
 
@@ -326,16 +327,26 @@ export default function Carousel({
                     args={[boundaries.x, boundaries.y, boundaries.z]}
                 />
             </mesh>
-            <Billboard rotation={[0, 3.164, 0]}>
-                <Float>
-                    <Title
-                        scale={isMobile ? generalScaleX * 1.2 : generalScaleX}
+            <Billboard>
+                {/* <Billboard rotation={[0, 3.164, 0]}> */}
+                <FloatingTitle
+                    text="Mes Projets"
+                    scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
+                    name={'carousel__title'}
+                    ref={titleRef}
+                    // size={40}
+                    rotation={[0, 3.164, 0]}
+                />
+                {/* <Float> */}
+                {/* <Title
+                        scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
                         name={'carousel__title'}
                         ref={titleRef}
-                    >
-                        Mes Projets
-                    </Title>
-                    {/* {isCarouselLoaded ? (
+                        text="Mes Projets"
+                    /> */}
+                {/* Mes Projets
+                    </Title> */}
+                {/* {isCarouselLoaded ? (
                         <Title
                             scale={
                                 isMobile ? generalScaleX * 1.2 : generalScaleX
@@ -355,7 +366,7 @@ export default function Carousel({
                             Mes Projets
                         </FallbackText>
                     )} */}
-                </Float>
+                {/* </Float> */}
             </Billboard>
 
             <Suspense fallback={null}>
