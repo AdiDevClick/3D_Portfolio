@@ -402,26 +402,25 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     32,
                                 ]}
                             />
-                            {!reducer.isMobile ? (
-                                <Title
-                                    text={
-                                        card.cardTitle ? card.cardTitle : 'test'
-                                    }
-                                    name="card__title"
-                                    size={10}
-                                    scalar={reducer.generalScaleX}
-                                    textProps={{
-                                        scale: 0.01 * reducer.generalScaleX,
-                                        bevelSize: 0.2,
-                                        bevelOffset: 0.2,
-                                        bevelThickness: 0.2,
-                                    }}
-                                />
-                            ) : (
-                                <FallbackText name="card__title">
-                                    {card.cardTitle ? card.cardTitle : 'test'}
-                                </FallbackText>
-                            )}
+                            {/* {reducer.isMobile ? ( */}
+                            <Title
+                                text={card.cardTitle ? card.cardTitle : 'test'}
+                                name="card__title"
+                                size={reducer.isMobile ? 20 : 12}
+                                scalar={reducer.generalScaleX}
+                                isMobile={reducer.isMobile}
+                                // textProps={{
+                                //     // scale: 0.01 * reducer.generalScaleX,
+                                //     bevelSize: 0.2,
+                                //     bevelOffset: 0.2,
+                                //     bevelThickness: 0.2,
+                                // }}
+                            />
+                            {/* // ) : (
+                            //     <FallbackText name="card__title">
+                            //         {card.cardTitle ? card.cardTitle : 'test'}
+                            //     </FallbackText>
+                            // )} */}
 
                             {card.isClicked && (
                                 <group name="htmlContainer">
