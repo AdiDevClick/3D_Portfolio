@@ -52,15 +52,6 @@ export default function App({
         });
     }, [size[0]]);
 
-    // Global Draco config
-    // useEffect(() => {
-    //     const dracoLoader = new DRACOLoader();
-    //     dracoLoader.setDecoderPath(
-    //         'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
-    //     );
-    //     const gltfLoader = new GLTFLoader();
-    //     gltfLoader.setDRACOLoader(dracoLoader);
-    // }, []);
     return (
         <main className="main-container">
             <Leva hidden={true} />
@@ -80,7 +71,9 @@ export default function App({
                     antialias: isMobile ? false : true,
                     // preserveDrawingBuffer: true,
                     precision: isMobile ? 'lowp' : 'highp',
-                    // powerPreference: 'high-performance',
+                    powerPreference: reducer.allCardsLoaded
+                        ? 'default'
+                        : 'high-performance',
                 }}
                 style={{
                     position: 'relative',
