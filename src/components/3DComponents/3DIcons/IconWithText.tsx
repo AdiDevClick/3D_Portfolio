@@ -60,6 +60,7 @@ export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
 
     return (
         <animated.group
+            position={isMobile ? [0, 0.5 * scalar, 0] : [0, 0.5 * scalar, 0]}
             name={'icon__content-' + datas.name}
             ref={groupRef as any}
             onPointerOver={(e) => {
@@ -71,37 +72,46 @@ export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
                 set(false);
             }}
             {...eventsList}
-            {...props}
+            // {...props}
             {...animationSpring}
         >
-            <Center>
-                <Center>
-                    <FloatingTitle
-                        scalar={scalar}
-                        isMobile={isMobile}
-                        size={textProps?.size ?? 40 * scalar}
-                        isClickable={true}
-                        floatOptions={floatOptions}
-                        name={'icons-' + datas.name + '__title'}
-                        // position-x={-0.2 * scalar}
-                        top={isMobile}
-                        position={
-                            isMobile
-                                ? [1.5 * scalar, 0.6 * scalar, 0]
-                                : [0, 0, 0]
-                        }
-                        text={datas.text}
-                        textProps={textProps}
-                    />
-                </Center>
+            {/* <Center> */}
+            <Center
+                left={!isMobile}
+                // right={isMobile}
+                position={isMobile ? [-1 * scalar, 0.5 * scalar, 0] : [0, 0, 0]}
+            >
+                {/* <Center left={!isMobile}> */}
+                <FloatingTitle
+                    // position={isMobile ? [0, 2.5 * scalar, 0] : [0, 0, 0]}
+                    scalar={scalar}
+                    isMobile={isMobile}
+                    size={textProps?.size ?? 40 * scalar}
+                    isClickable={true}
+                    floatOptions={floatOptions}
+                    name={'icons-' + datas.name + '__title'}
+                    // position-x={-0.2 * scalar}
+                    // top={isMobile}
+                    // left
+                    // left={isMobile}
+                    // top={isMobile}
+                    text={datas.text}
+                    textProps={textProps}
+                    // position={isMobile ? [0, 4 * scalar, 0] : [0, 0, 0]}
+                />
+            </Center>
 
-                <Center
-                    left
-                    position-x={isMobile ? 0.2 * scalar : 0.2}
-                    rotation={[0, 3.164, 0]}
-                >
+            {/* <Center
+            // right={isMobile}
+            // top={isMobile}
+            // position-x={isMobile ? -0.2 * scalar : 0.3}
+            // position-y={isMobile ? 3 * scalar : 0}
+            > */}
+            <Center right>
+                <group rotation={[0, 3.164, 0]}>
                     <Icons model={model} hovered={hovered} scale={iconScale} />
-                </Center>
+                </group>
+                {/* </Center> */}
             </Center>
         </animated.group>
     );
