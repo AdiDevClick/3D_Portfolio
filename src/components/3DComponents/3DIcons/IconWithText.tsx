@@ -58,35 +58,6 @@ export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
 
     useCursor(hovered);
 
-    /**
-     * Checks if the icon is in the camera's frustum
-     * and enables/disables the scaling ease.
-     */
-    // useFrame((_, delta) => {
-    //     // if (!groupRef.current) return;
-    //     // frameCountRef.current += 1;
-    //     // if (frameCountRef.current % 4 === 0) {
-    //     //     // const contentGrid = groupRef.current.parent?.parent;
-    //     //     if (!animations.animatePosition) return;
-    //     //     // if (contentGrid?.visible)
-    //     //     easing.damp3(
-    //     //         groupRef.current.position,
-    //     //         isComponentMounted,
-    //     //         0.3,
-    //     //         delta
-    //     //     );
-    //     //     // easing.damp3(
-    //     //     //     groupRef.current.position,
-    //     //     //     !isComponentMounted
-    //     //     //         ? animations.animatePosition.from
-    //     //     //         : animations.animatePosition.default,
-    //     //     //     2000,
-    //     //     //     delta
-    //     //     // );
-    //     // }
-    // });
-    // console.log('je rerender iConWithText');
-
     return (
         <animated.group
             name={'icon__content-' + datas.name}
@@ -103,22 +74,35 @@ export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
             {...props}
             {...animationSpring}
         >
-            <FloatingTitle
-                scalar={scalar}
-                isMobile={isMobile}
-                size={textProps?.size ?? 40 * scalar}
-                isClickable={true}
-                floatOptions={floatOptions}
-                name={'icons-' + datas.name + '__title'}
-                right
-                position-x={0.2 * scalar}
-                text={datas.text}
-                textProps={textProps}
-            >
-                <Center left>
+            <Center>
+                <Center>
+                    <FloatingTitle
+                        scalar={scalar}
+                        isMobile={isMobile}
+                        size={textProps?.size ?? 40 * scalar}
+                        isClickable={true}
+                        floatOptions={floatOptions}
+                        name={'icons-' + datas.name + '__title'}
+                        // position-x={-0.2 * scalar}
+                        top={isMobile}
+                        position={
+                            isMobile
+                                ? [1.5 * scalar, 0.6 * scalar, 0]
+                                : [0, 0, 0]
+                        }
+                        text={datas.text}
+                        textProps={textProps}
+                    />
+                </Center>
+
+                <Center
+                    left
+                    position-x={isMobile ? 0.2 * scalar : 0.2}
+                    rotation={[0, 3.164, 0]}
+                >
                     <Icons model={model} hovered={hovered} scale={iconScale} />
                 </Center>
-            </FloatingTitle>
+            </Center>
         </animated.group>
     );
 }
