@@ -69,6 +69,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
             {/* <Preload all /> */}
             {/* <Perf /> */}
             <ScrollControls
+                key={`scroll-${isMobile ? 'mobile' : 'desktop'}-${visible}`}
                 pages={virtualPageCount}
                 distance={0.3}
                 damping={0.5}
