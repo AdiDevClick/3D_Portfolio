@@ -49,7 +49,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
 
             return () => clearTimeout(timer);
         }
-    }, [isMobile, stableIsMobile]);
+    }, [isMobile]);
 
     /**
      * Detect route change -
@@ -85,26 +85,22 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
             {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
             {/* <Preload all /> */}
             {/* <Perf /> */}
-            <ScrollControls
-                key={'scroll-controls'}
-                pages={virtualPageCount}
-                distance={0.3}
-                damping={0.5}
-            >
-                <Scroll key={'scroll-controls__scroller'} ref={pagesRef}>
-                    {/* <Suspense fallback={null}> */}
-                    {!isTransitioning && (
-                        <>
-                            <MemoizedHome {...pagesMemoProps} />
-                            <MemoizedAbout {...pagesMemoProps} />
-                        </>
+            {!isTransitioning && (
+                <ScrollControls
+                    key={'scroll-controls'}
+                    pages={virtualPageCount}
+                    distance={0.3}
+                    damping={0.5}
+                >
+                    <Scroll key={'scroll-controls__scroller'} ref={pagesRef}>
+                        <MemoizedHome {...pagesMemoProps} />
+                        <MemoizedAbout {...pagesMemoProps} />
+                    </Scroll>
+                    {pagesRef.current && isMobile && (
+                        <PageScroller key={'scroll-controls__page-croller'} />
                     )}
-                </Scroll>
-                {pagesRef.current && isMobile && (
-                    <PageScroller key={'scroll-controls__page-croller'} />
-                )}
-            </ScrollControls>
-            {/* )} */}
+                </ScrollControls>
+            )}
 
             <MemoizedContact {...pagesMemoProps} />
 
