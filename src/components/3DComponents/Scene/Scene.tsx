@@ -32,6 +32,24 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
     const pagesRef = useRef(null!);
 
     const [virtualPageCount, setVirtualPageCount] = useState(0);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [stableIsMobile, setStableIsMobile] = useState(isMobile);
+
+    useEffect(() => {
+        if (isMobile !== stableIsMobile) {
+            setIsTransitioning(true);
+
+            const timer = setTimeout(() => {
+                setStableIsMobile(isMobile);
+                setIsTransitioning(false);
+                // setTimeout(() => {
+                //     setScrollControlsEnabled(true);
+                // }, 100);
+            }, 100);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isMobile, stableIsMobile]);
 
     /**
      * Detect route change -
@@ -62,26 +80,31 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
         }),
         [contentWidth, contentHeight, isMobile, generalScaleX, visible]
     );
-
     return (
-        <>
+        <group key={'scene-group'}>
             {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
             {/* <Preload all /> */}
             {/* <Perf /> */}
             <ScrollControls
-                key={`scroll-${isMobile ? 'mobile' : 'desktop'}-${visible}`}
+                key={'scroll-controls'}
                 pages={virtualPageCount}
                 distance={0.3}
                 damping={0.5}
             >
-                <Scroll ref={pagesRef}>
+                <Scroll key={'scroll-controls__scroller'} ref={pagesRef}>
                     {/* <Suspense fallback={null}> */}
-                    <MemoizedHome {...pagesMemoProps} />
-                    <MemoizedAbout {...pagesMemoProps} />
-                    {/* </Suspense> */}
+                    {!isTransitioning && (
+                        <>
+                            <MemoizedHome {...pagesMemoProps} />
+                            <MemoizedAbout {...pagesMemoProps} />
+                        </>
+                    )}
                 </Scroll>
-                {pagesRef.current && isMobile && <PageScroller />}
+                {pagesRef.current && isMobile && (
+                    <PageScroller key={'scroll-controls__page-croller'} />
+                )}
             </ScrollControls>
+            {/* )} */}
 
             <MemoizedContact {...pagesMemoProps} />
 
@@ -109,6 +132,6 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
             {/* </Suspense> */}
 
             {children}
-        </>
+        </group>
     );
 }
