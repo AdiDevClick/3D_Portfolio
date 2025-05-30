@@ -212,7 +212,6 @@ const MemoizedAbout = memo(function About({
             }
         }
     });
-
     return (
         <group visible={isActive} ref={groupRef}>
             <FloatingTitle
