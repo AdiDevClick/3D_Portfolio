@@ -31,7 +31,10 @@ export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
         eventsList,
         floatOptions,
         textProps,
+        mobileTextProps,
     } = use(IconsContainerContext) as IconsContainerContextTypes;
+    const { name, text, id, iconPosition, textPosition } = datas;
+    const iconPos = isMobile ? iconPosition?.mobile : iconPosition?.default;
     const [hovered, set] = useState(false);
 
     const newAnimationObject = useMemo(() => {
@@ -86,10 +89,9 @@ export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
     //     // }
     // });
     // console.log('je rerender iConWithText');
-
     return (
         <animated.group
-            name={'icon__content-' + datas.name}
+            name={'icon__content-' + name}
             ref={groupRef as any}
             onPointerOver={(e) => {
                 e.stopPropagation();
@@ -109,13 +111,15 @@ export function IconWithText({ model, datas, ...props }: IconsWithTextProps) {
                 size={textProps?.size ?? 40 * scalar}
                 isClickable={true}
                 floatOptions={floatOptions}
-                name={'icons-' + datas.name + '__title'}
+                name={'icons-' + name + '__title'}
                 right
                 position-x={0.2 * scalar}
-                text={datas.text}
+                text={text}
                 textProps={textProps}
+                mobileTextProps={mobileTextProps}
+                textPosition={textPosition}
             >
-                <Center left>
+                <Center {...iconPos} left>
                     <Icons model={model} hovered={hovered} scale={iconScale} />
                 </Center>
             </FloatingTitle>
