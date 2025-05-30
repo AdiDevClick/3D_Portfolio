@@ -52,8 +52,8 @@ const MemoizedHudMenu = memo(function HudMenu({
     const gridOptions = {
         columnsNumber: isMobile ? 4 : 1,
         rowOffset: 0,
-        marginX: isMobile ? 2.5 : 2.5,
-        marginY: isMobile ? 0.5 : 1.5,
+        marginX: isMobile ? 1.5 : 2.5,
+        marginY: isMobile ? 0.5 : 1.2,
         windowMargin: 1,
         forceColumnsNumber: isMobile ? true : false,
     };
@@ -90,13 +90,13 @@ const MemoizedHudMenu = memo(function HudMenu({
     const iconsPos = DESKTOP_HUD_ICONS_POSITION_SETTINGS(
         calculatedHeight,
         contentWidth,
-        { x: -0.5, y: 0.5 }
+        { x: -0.6, y: 1 }
     );
 
     const iconsPosMobile = MOBILE_HUD_ICONS_POSITION_SETTINGS(
         contentHeight,
         contentWidth,
-        { x: 0.2, y: 0.25 }
+        { x: 0, y: 0.25 }
     );
 
     const { camera, viewport } = useThree();
@@ -119,20 +119,22 @@ const MemoizedHudMenu = memo(function HudMenu({
                 }
             >
                 <MemoizedIconsContainer
-                    width={contentWidth ?? 1}
+                    width={contentWidth}
                     icons={iconsWithText}
-                    scalar={0.4 * generalScaleX}
+                    // scalar={generalScaleX}
+                    scalar={generalScaleX}
                     gridOptions={gridOptions}
-                    iconScale={10}
+                    iconScale={isMobile ? 2 * generalScaleX : generalScaleX}
                     floatOptions={floatOptions}
                     isMobile={isMobile}
                     eventsList={eventsList}
                     mobileTextProps={{
-                        right: true,
-                        position: [-0.1, 0, 0],
+                        left: true,
+                        position: [0, 0, 0],
                     }}
                     // hovered={hovered}
                     animations={animations}
+                    rotation={[0, 3.164, 0]}
                 />
             </group>
         </Hud>
