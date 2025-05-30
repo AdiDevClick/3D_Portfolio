@@ -1,12 +1,14 @@
 import { TitleTypes } from '@/components/3DComponents/Title/TitlesTypes';
 import { importedFont } from '@/configs/3DFonts.config';
-import { Center } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import { Group, MeshPhysicalMaterial } from 'three';
-import { TextBufferGeometry, TextGeometry } from 'three-stdlib';
+import { TextBufferGeometry } from 'three-stdlib';
 
-extend({ TextBufferGeometry, TextGeometry });
+extend({ TextBufferGeometry });
+
+// const textGeometryCreator = new TextGeometryFactory();
+// let textGeometryInstance: TextGeometryFactory | null = null;
 export const metalBlack = new MeshPhysicalMaterial({
     // export const metalBlack = new MeshStandardMaterial({
     envMapIntensity: 3,
@@ -17,6 +19,39 @@ export const metalBlack = new MeshPhysicalMaterial({
     clearcoat: 1.0,
     clearcoatRoughness: 0.1,
 });
+
+// const geometryDefaultConfig = {
+//     font: importedFont,
+//     size: 40,
+//     letterSpacing: 2,
+//     height: 3,
+//     depth: 1,
+//     curveSegments: 12,
+//     bevelEnabled: true,
+//     bevelThickness: 0.2,
+//     bevelSize: 1,
+//     bevelOffset: 0.2,
+//     bevelSegments: 4,
+// };
+
+// const geometryMobileConfig = {
+//     font: importedFont,
+//     size: 40,
+//     letterSpacing: 2,
+//     height: 0.5,
+//     depth: 0,
+//     curveSegments: 2,
+//     bevelEnabled: false,
+//     bevelThickness: 0,
+//     bevelSize: 0,
+//     bevelOffset: 0,
+//     bevelSegments: 0,
+// };
+
+// let config = ['test', geometryDefaultConfig];
+
+// export const textBufferGeometry = new TextBufferGeometry(config);
+
 /**
  * 3D Title component that displays a 3D text in the center of the screen.
  * It uses the Montserrat font and allows for customization of size and other properties.
@@ -37,14 +72,13 @@ export function Title({
     isMobile = false,
     textProps = {},
     scalar,
-    options = { priority: 'low', enabled: true },
     ...props
 }: TitleTypes) {
     const textRef = useRef<Group>(null);
     const actualRef = ref || textRef;
 
-    const geometryConfig = useMemo(
-        () => [
+    const geometryConfig = useMemo(() => {
+        return [
             text,
             {
                 font: importedFont,
@@ -60,42 +94,14 @@ export function Title({
                 bevelSegments: isMobile ? 0 : 4,
                 ...textProps,
             },
-        ],
-        [isMobile]
-    );
+        ];
+    }, [isMobile, text]);
+
     return (
-        <Center ref={actualRef} name={name} {...props}>
-            <mesh
-                scale={0.008 * scalar}
-                material={metalBlack}
-                frustumCulled={true}
-            >
+        <group ref={actualRef} name={name} {...props}>
+            <mesh scale={0.008 * scalar} material={metalBlack}>
                 <textBufferGeometry args={geometryConfig} />
-                {/* <textGeometry
-                    args={[
-                        text,
-                        {
-                            font: importedFont,
-                            size: size,
-                            height: 1,
-                            depth: isMobile ? 0.3 : 1,
-                            smooth: 1,
-                            letterSpacing: 2,
-                            curveSegments: isMobile ? 4 : 12,
-                            // curveSegments: isMobile ? 4 : 32,
-                            bevelEnabled: true,
-                            bevelThickness: isMobile ? 0 : 0.2,
-                            // bevelThickness: 1,
-                            bevelSize: isMobile ? 0 : 1,
-                            // bevelSize: 1.5:,
-                            bevelOffset: 0.2,
-                            // bevelOffset: 0.5,
-                            bevelSegments: isMobile ? 2 : 4,
-                            ...textProps,
-                        },
-                    ]}
-                /> */}
             </mesh>
-        </Center>
+        </group>
     );
 }
