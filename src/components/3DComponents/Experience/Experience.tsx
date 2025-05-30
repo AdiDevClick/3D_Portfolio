@@ -352,7 +352,7 @@ export function Experience({ reducer }: ExperienceProps) {
                 speed={1}
             /> */}
             {/* <SunsetGradientBackground /> */}
-            <ShadowCatcher />
+            {/* <ShadowCatcher /> */}
         </>
     );
 }
