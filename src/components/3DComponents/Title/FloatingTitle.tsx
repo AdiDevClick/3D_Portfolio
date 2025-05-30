@@ -42,7 +42,6 @@ const FloatingTitle = memo(function FloatingTitle({
     },
     ...props
 }: FloatingTitleProps) {
-    console.log('FloatingTitle rendered', props.name);
     return (
         // <Center >
         <group>
