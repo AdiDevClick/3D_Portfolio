@@ -23,7 +23,7 @@ export function Icons({ model, hovered, scale = 100 }: IconsTypes) {
     useCursor(hovered || false);
 
     return (
-        <group>
+        <>
             {nodes.Scene?.children.map((node) => {
                 return (
                     <IconMesh
@@ -36,7 +36,7 @@ export function Icons({ model, hovered, scale = 100 }: IconsTypes) {
                     />
                 );
             })}
-        </group>
+        </>
     );
 }
 

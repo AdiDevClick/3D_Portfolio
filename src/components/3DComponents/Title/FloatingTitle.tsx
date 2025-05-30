@@ -1,9 +1,9 @@
+import { ClickableBox } from '@/components/3DComponents/Forms/ClickableBox';
+import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { FloatingTitleProps } from '@/components/3DComponents/Title/TitlesTypes';
-import { sharedMatrices } from '@/utils/matrices';
-import { Center, Float } from '@react-three/drei';
-import { memo, useCallback } from 'react';
-import { Group, Vector3 } from 'three';
+import { Float } from '@react-three/drei';
+import { memo } from 'react';
 
 /**
  * @component FloatingTitle
@@ -24,6 +24,7 @@ import { Group, Vector3 } from 'three';
  * @param floatOptions - Options for the floating effect
  * @param props - Additional properties for the 3D group element
  */
+// function FloatingTitle({
 const FloatingTitle = memo(function FloatingTitle({
     children,
     scalar,
@@ -43,70 +44,43 @@ const FloatingTitle = memo(function FloatingTitle({
     textPosition = {},
     ...props
 }: FloatingTitleProps) {
-    const textPos = isMobile ? textPosition?.mobile : textPosition?.default;
-    /**
-     * Calculate size of the title
-     * to enable smooth hover & click interactions.
-     */
-    const floatRef = useCallback((node: Group) => {
-        if (!node || !isClickable) return;
-        let ancestorContent: Vector3 | undefined;
-        node.traverseAncestors((ancestor) => {
-            if (ancestor.name.includes('-grid')) {
-                ancestorContent = ancestor.userData.contentSize;
-            }
-        });
-
-        // const clickageBox = node.getObjectByName('clickable-box');
-        const floatContainer = node.parent?.parent;
-        // node.parent.parent.getObjectByName('clickable-box');
-        if (floatContainer) {
-            if (!ancestorContent) {
-                const box = sharedMatrices.box.setFromObject(floatContainer);
-                const contentSize = new Vector3();
-                box.getSize(contentSize);
-                node.scale.set(contentSize.x, contentSize.y, contentSize.z);
-            } else {
-                node.scale.set(
-                    ancestorContent.x,
-                    ancestorContent.y,
-                    ancestorContent.z
-                );
-            }
-        }
-    }, []);
     return (
-        <Float
-            rotation={[0, 3.164, 0]}
-            name={props.name + '-float-container'}
-            {...floatOptions}
-        >
-            <Center position={props.position}>
-                {children}
-                <Title
-                    size={size}
-                    isMobile={isMobile}
-                    textProps={textProps}
-                    text={text}
-                    scalar={scalar}
-                    {...props}
-                    {...mobileTextProps}
-                    {...textPos}
-                />
-            </Center>
+        // <Center >
+        <group>
+            <Float
+                name={props.name + '-float-container'}
+                rotation={[0, 3.164, 0]}
+                // position={isMobile ? [-0.5, 0.5, 0] : [0, 0, 0]}
+                {...floatOptions}
+            >
+                {/* <group> */}
+                {/* <Center> */}
+                {/* <Center position={props.position}> */}
+                {/* <Center position={isMobile ? [0.3, 0.5, 0] : props.position}> */}
+                {!isMobile && (
+                    <Title
+                        size={size}
+                        isMobile={isMobile}
+                        textProps={textProps}
+                        text={text}
+                        scalar={scalar}
+                        {...props}
+                    />
+                )}
+                {isMobile && <FallbackText>{text}</FallbackText>}
+                {/* </Center> */}
 
-            {isClickable && (
-                <mesh
-                    onPointerOver={props.onPointerOver}
-                    onPointerOut={props.onPointerOut}
-                    onClick={props.onClick}
-                    name={'clickable-box'}
-                    visible={false}
-                    ref={floatRef}
-                    geometry={sharedMatrices.boxGeometry}
-                />
-            )}
-        </Float>
+                {isClickable && (
+                    <ClickableBox
+                        onPointerOver={props.onPointerOver}
+                        onPointerOut={props.onPointerOut}
+                        onClick={props.onClick}
+                    />
+                )}
+                {/* </group> */}
+            </Float>
+        </group>
+        // </Center>
     );
 });
 

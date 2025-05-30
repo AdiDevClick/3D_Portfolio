@@ -9,18 +9,20 @@ import { Text } from '@react-three/drei';
  */
 export function FallbackText({ children, ref, ...props }: FallbackTextTypes) {
     return (
-        <Text
-            ref={ref}
-            castShadow
-            font={importedNormalFont}
-            fontSize={0.1}
-            color="black"
-            anchorX="center"
-            anchorY="middle"
-            outlineWidth={0.004}
-            {...props}
-        >
-            {children}
-        </Text>
+        <group>
+            <Text
+                ref={ref}
+                castShadow
+                font={importedNormalFont}
+                fontSize={0.1}
+                color="black"
+                anchorX="center"
+                anchorY="middle"
+                outlineWidth={0.004}
+                {...props}
+            >
+                {children}
+            </Text>
+        </group>
     );
 }

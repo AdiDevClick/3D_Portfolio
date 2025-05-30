@@ -24,6 +24,7 @@ export function HomePageTitle({ ref, scalar }: HomePageTitleProps) {
             />
 
             <FloatingTitle
+                back
                 text="sur mon"
                 scalar={scalar}
                 size={60}
@@ -45,7 +46,6 @@ export function HomePageTitle({ ref, scalar }: HomePageTitleProps) {
                 textProps={{
                     height: 40,
                 }}
-                back
             />
             {/* <Glow
                 scale={size * 1.2}
