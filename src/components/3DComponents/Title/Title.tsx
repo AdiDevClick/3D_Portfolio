@@ -1,5 +1,6 @@
 import { TitleTypes } from '@/components/3DComponents/Title/TitlesTypes';
 import { importedFont } from '@/configs/3DFonts.config';
+import { Center } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import { Group, MeshPhysicalMaterial } from 'three';
@@ -98,10 +99,10 @@ export function Title({
     }, [isMobile, text]);
 
     return (
-        <group ref={actualRef} name={name} {...props}>
+        <Center ref={actualRef} name={name} {...props}>
             <mesh scale={0.008 * scalar} material={metalBlack}>
                 <textBufferGeometry args={geometryConfig} />
             </mesh>
-        </group>
+        </Center>
     );
 }
