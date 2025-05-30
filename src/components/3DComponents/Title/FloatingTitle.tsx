@@ -39,8 +39,11 @@ const FloatingTitle = memo(function FloatingTitle({
         floatIntensity: Math.random(),
         floatingRange: [-0.1, 0.1] as [number, number],
     },
+    mobileTextProps = {},
+    textPosition = {},
     ...props
 }: FloatingTitleProps) {
+    const textPos = isMobile ? textPosition?.mobile : textPosition?.default;
     /**
      * Calculate size of the title
      * to enable smooth hover & click interactions.
@@ -87,6 +90,8 @@ const FloatingTitle = memo(function FloatingTitle({
                     text={text}
                     scalar={scalar}
                     {...props}
+                    {...mobileTextProps}
+                    {...textPos}
                 />
             </Center>
 
