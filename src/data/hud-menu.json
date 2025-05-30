@@ -3,24 +3,56 @@
         "id": "1",
         "name": "Home",
         "optimized": "Homeicon_model.glb",
-        "mobile": "Homeicon_model.glb"
+        "mobile": "Homeicon_model.glb",
+        "textPosition": {
+            "mobile": { "bottom": true },
+            "default": { "right": true }
+        },
+        "iconPosition": {
+            "mobile": { "top": true, "scale": 2 },
+            "default": { "left": true }
+        }
     },
     {
         "id": "2",
         "name": "A Propos",
         "optimized": "Portraiticon_model.glb",
-        "mobile": "Portraiticon_model.glb"
+        "mobile": "Portraiticon_model.glb",
+        "textPosition": {
+            "mobile": { "bottom": true, "visible": false },
+            "default": { "right": true }
+        },
+        "iconPosition": {
+            "mobile": { "top": true, "scale": 2, "position-x": -0.11 },
+            "default": { "left": true }
+        }
     },
     {
         "id": "3",
         "name": "Projets",
         "optimized": "Foldericon_model.glb",
-        "mobile": "Foldericon_model.glb"
+        "mobile": "Foldericon_model.glb",
+        "textPosition": {
+            "mobile": { "bottom": true },
+            "default": { "right": true }
+        },
+        "iconPosition": {
+            "mobile": { "top": true, "scale": 2 },
+            "default": { "left": true }
+        }
     },
     {
         "id": "4",
         "name": "Contact",
         "optimized": "Contact_model.glb",
-        "mobile": "Contact_model.glb"
+        "mobile": "Contact_model.glb",
+        "textPosition": {
+            "mobile": { "bottom": true },
+            "default": { "right": true }
+        },
+        "iconPosition": {
+            "mobile": { "top": true, "scale": 2 },
+            "default": { "left": true }
+        }
     }
 ]
