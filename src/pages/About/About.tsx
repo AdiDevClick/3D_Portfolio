@@ -127,28 +127,6 @@ const MemoizedAbout = memo(function About({
             count = 0;
         }
 
-        if (materials.current instanceof Map) {
-            materials.current.forEach((material) => {
-                if (material && material.uniforms) {
-                    material.uniforms.time.value = state.clock.getElapsedTime();
-
-                    // animating the gradient colors
-                    const t = state.clock.getElapsedTime() * 0.2;
-                    material.uniforms.color1.value.setHSL(
-                        Math.sin(t) * 0.1 + 0.6,
-                        0.7,
-                        0.5
-                    );
-
-                    material.uniforms.color2.value.setHSL(
-                        Math.cos(t) * 0.1 + 0.8,
-                        0.8,
-                        0.6
-                    );
-                }
-            });
-        }
-
         frustumChecker(
             [titleRef.current, iconsRef.current, contentRef.current],
             state,
@@ -157,10 +135,16 @@ const MemoizedAbout = memo(function About({
         );
 
         if (
-            frameCountRef.current %
-                (isActive || groupRef.current.visible ? 1 : 200) ===
-            0
+            // frameCountRef.current %
+            isActive ||
+            groupRef.current.visible
+            // 0
         ) {
+            // if (
+            //     frameCountRef.current %
+            //         (isActive || groupRef.current.visible ? 1 : 200) ===
+            //     0
+            // ) {
             if (contentRef.current.visible || groupRef.current.visible) {
                 easing.damp3(
                     contentRef.current.position,
@@ -184,6 +168,7 @@ const MemoizedAbout = memo(function About({
                         );
                     }
                 }
+
                 easing.damp3(
                     iconsRef.current.position,
                     iconsPositionRef.current,
@@ -199,6 +184,31 @@ const MemoizedAbout = memo(function About({
                     0.3,
                     delta
                 );
+            }
+
+            if (frameCountRef.current % 40 === 0) {
+                if (materials.current instanceof Map) {
+                    materials.current.forEach((material) => {
+                        if (material && material.uniforms) {
+                            material.uniforms.time.value =
+                                state.clock.getElapsedTime();
+
+                            // animating the gradient colors
+                            const t = state.clock.getElapsedTime() * 0.2;
+                            material.uniforms.color1.value.setHSL(
+                                Math.sin(t) * 0.1 + 0.6,
+                                0.7,
+                                0.5
+                            );
+
+                            material.uniforms.color2.value.setHSL(
+                                Math.cos(t) * 0.1 + 0.8,
+                                0.8,
+                                0.6
+                            );
+                        }
+                    });
+                }
             }
         }
     });
@@ -222,7 +232,8 @@ const MemoizedAbout = memo(function About({
                 {aboutText.map((text, index) => (
                     <GridLayout
                         width={contentWidth ?? 0}
-                        key={'about-' + index * Math.random() + '-grid'}
+                        key={'about-' + index + '-grid'}
+                        // key={'about-' + index * Math.random() + '-grid'}
                         name={'about-' + index + '-grid'}
                         length={aboutText.length}
                         index={index}
@@ -254,7 +265,8 @@ const MemoizedAbout = memo(function About({
                                             generalScaleX
                                         }
                                         outlineWidth={isMobile ? 0.002 : 0.002}
-                                        outlineColor="rgba(0, 0, 0, 0.01)"
+                                        outlineColor="black"
+                                        // outlineColor="rgba(0, 0, 0, 0.01)"
                                         anchorY="top"
                                         maxWidth={contentWidth - 0.5}
                                         font={importedNormalFont}
@@ -286,7 +298,8 @@ const MemoizedAbout = memo(function About({
                                             generalScaleX
                                         }
                                         outlineWidth={isMobile ? 0.002 : 0.002}
-                                        outlineColor="rgba(0, 0, 0, 0.01)"
+                                        outlineColor="black"
+                                        // outlineColor="rgba(0, 0, 0, 0.01)"
                                         color={'black'}
                                         textAlign="justify"
                                         anchorY="top"
@@ -309,12 +322,12 @@ const MemoizedAbout = memo(function About({
             </group>
 
             <ContactIconsContainer
-                key={`about-icons`}
+                // key={`about-icons`}
                 ref={iconsRef}
                 scalar={generalScaleX}
                 isMobile={isMobile}
                 tooltips={false}
-                position={DEFAULT_PROJECTS_POSITION_SETTINGS.clone()}
+                // position={DEFAULT_PROJECTS_POSITION_SETTINGS.clone()}
             />
         </group>
     );
@@ -341,6 +354,7 @@ const GradientTextMaterial = shaderMaterial(
         uniform vec3 color1;
         uniform vec3 color2;
         uniform float time;
+        uniform float opacity;
         varying vec2 vUv;
         void main() {
             float mixValue = sin(vUv.y * 3.14 + time * 0.5) * 0.5 + 0.5;
