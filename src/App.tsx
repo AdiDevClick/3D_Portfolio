@@ -54,7 +54,7 @@ export default function App({
 
     return (
         <main className="main-container">
-            <Leva hidden={false} />
+            <Leva hidden={true} />
 
             {/* <Suspense fallback={null}> */}
 
@@ -125,7 +125,7 @@ export default function App({
                     {children}
                 </Scene>
                 <Experience reducer={reducer} />
-                {/* <MemoizedHudMenu reducer={reducer} /> */}
+                <MemoizedHudMenu reducer={reducer} />
                 {/* </Suspense> */}
                 {/* </SceneParams> */}
             </Canvas>
