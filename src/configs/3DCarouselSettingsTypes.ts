@@ -31,6 +31,7 @@ export interface CardsSettings {
 
 export interface PresenceSettings {
     PRESENCE_CIRCLE: boolean;
+    DEBUG_SPHERE_WIREFRAME: boolean;
     COLLISIONS: boolean;
     PRESENCE_RADIUS: number;
     CARD_WIREFRAME: boolean;
