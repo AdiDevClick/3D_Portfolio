@@ -104,6 +104,8 @@ export interface ElementType extends CardContentType {
     isClicked?: boolean;
     /** The 3D object reference of the card */
     ref?: RefObject<Mesh | Group>;
+    /** The 3D object reference of the presence Sphere for the card */
+    presenceSphere?: Mesh | Group;
     animation?:
         | string
         | string[]
