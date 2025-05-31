@@ -48,7 +48,7 @@ export function HtmlContainer({
         // Update every 20 frames or 200 on mobile
         if (
             frameCountRef.current %
-                (props.isMobile ? FOCUS_DELAY_MOBILE / 2 : 20) ===
+                (props.isMobile ? FOCUS_DELAY_MOBILE / 2 : 30) ===
             0
         ) {
             // if (frameCountRef.current % 50 === 0) {
