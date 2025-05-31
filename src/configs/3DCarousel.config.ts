@@ -56,6 +56,7 @@ export const cardsSettings = {
  */
 export const presenceSettings = {
     PRESENCE_CIRCLE: true,
+    DEBUG_SPHERE_WIREFRAME: false,
     COLLISIONS: true,
     PRESENCE_RADIUS: { value: 0.5, min: 0, max: 10, step: 0.1 },
     CARD_WIREFRAME: false,
