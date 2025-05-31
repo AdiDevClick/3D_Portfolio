@@ -18,4 +18,5 @@ export type HtmlContainerTypes = {
     dynamicContent?: boolean;
     forceMeasure?: boolean;
     distanceFactor?: number;
+    isMobile?: boolean;
 } & Omit<HtmlProps, 'ref'>;
