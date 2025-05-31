@@ -60,6 +60,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
     const { camera } = useThree();
     const lastCameraPosition = useRef(new Vector3());
     const lastCameraRotation = useRef(new Quaternion());
+
     const cameraMovementThreshold = 0.25;
     // const cameraMovementThreshold = 0.15;
     const pointerThreshold = 0.9;
@@ -394,7 +395,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             {...cardsPropsMemo}
                         >
                             <SpherePresenceHelper
-                                position={[0, -0.2, 0]}
+                                castShadow={false}
+                                receiveShadow={false}
                                 name="card__spherePresenceHelper"
                                 visible={SETTINGS.PRESENCE_CIRCLE}
                                 radius={[
@@ -433,9 +435,10 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                                       (card.currentWidth ?? 0) /
                                                           2,
                                                       0,
-                                                      DESKTOP_HTML_CONTAINER_DEPTH,
+                                                      0,
                                                   ]
                                         }
+                                        isMobile={reducer.isMobile}
                                         rotation={htmlContentRotation}
                                         dynamicContent={true}
                                     >
