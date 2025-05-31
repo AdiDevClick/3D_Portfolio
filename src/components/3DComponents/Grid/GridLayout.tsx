@@ -133,6 +133,10 @@ export function GridLayout({
         const fontSize = textComponent.fontSize || 0.2;
         const maxWidth = textComponent.maxWidth || 2;
         const text = textComponent.text;
+        const lineHeight =
+            textComponent.lineHeight === 'normal'
+                ? 1.0
+                : textComponent.lineHeight || 1;
         const avgCharWidth = fontSize * 0.5;
 
         // Char number
@@ -140,9 +144,8 @@ export function GridLayout({
 
         // Ligne number
         const lines = Math.ceil(text.length / charsPerLine);
-
         // Height total
-        return lines * fontSize * 1.2;
+        return lines * fontSize * lineHeight;
     };
 
     const itemRef = useCallback((item: Group) => {
