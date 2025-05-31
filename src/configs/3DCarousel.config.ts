@@ -55,7 +55,7 @@ export const cardsSettings = {
  * Configure la zone de collision -
  */
 export const presenceSettings = {
-    PRESENCE_CIRCLE: false,
+    PRESENCE_CIRCLE: true,
     COLLISIONS: true,
     PRESENCE_RADIUS: { value: 0.5, min: 0, max: 10, step: 0.1 },
     CARD_WIREFRAME: false,
