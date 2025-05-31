@@ -44,9 +44,11 @@ const MemoizedCard = memo(function Card({
     ...props
 }: PropsWithChildren<CardProps>) {
     const cardRef = useRef<Mesh & ImageProps>(null!);
+    const sphereRef = useRef<Mesh>(null!);
+
     const { updateBending, updateWidth, isMobile, visible } = reducer;
 
-    const [width, setWidth] = useState(1);
+    // const [width, setWidth] = useState(1);
     const [ratio, setRatio] = useState(1);
 
     // mobile Optimisations
@@ -133,10 +135,16 @@ const MemoizedCard = memo(function Card({
     useEffect(() => {
         if (cardRef.current) {
             const positions = getSidesPositions(card, cardRef);
+
+            const sphere = cardRef.current.getObjectByName(
+                'card__spherePresenceHelper'
+            );
+
             reducer.updateElements({
                 ...card,
                 ref: cardRef,
                 presenceRadius: SETTINGS.PRESENCE_RADIUS,
+                presenceSphere: sphere as Mesh,
                 spacePositions: positions || undefined,
                 bending: SETTINGS.BENDING,
                 _loaded: true,
@@ -182,7 +190,7 @@ const MemoizedCard = memo(function Card({
             bending = SETTINGS.BENDING;
         }
 
-        setWidth(width);
+        // setWidth(width);
         setRatio(ratio);
         updateWidth(card, width);
         updateBending(card, bending);
@@ -209,7 +217,6 @@ const MemoizedCard = memo(function Card({
                 {...props}
             >
                 {children}
-
                 <bentPlaneGeometry
                     args={[
                         card.bending,
