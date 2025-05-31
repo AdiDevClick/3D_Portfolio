@@ -4,17 +4,28 @@
  */
 
 /**
+ * Focus time when a card is clicked on mobile -
+ * @description Used to delay the focus on the card
+ * - This will zoom out the camera to let the user see the enter card
+ * - This is based on the presenceSphere radius attached to the card
+ * @constant {boolean}
+ */
+export const FOCUS_DELAY_MOBILE = 400;
+
+/**
  * Camera Z position for the mobile version
  * when a card is clicked
  * @constant {number}
  */
-export const CAMERA_MOBILE_Z_POSITION = -0.9;
+export const CAMERA_MOBILE_Z_POSITION = 0;
+// export const CAMERA_MOBILE_Z_POSITION = -0.9;
 
 /**
  * Camera Y position for the mobile version
  * when a card is clicked
  */
-export const CAMERA_MOBILE_Y_POSITION = -0.2;
+export const CAMERA_MOBILE_Y_POSITION = 0;
+// export const CAMERA_MOBILE_Y_POSITION = -0.2;
 // export const CAMERA_MOBILE_Y_POSITION = -0.8;
 
 export const CAMERA_FOV_MOBILE = 19;
