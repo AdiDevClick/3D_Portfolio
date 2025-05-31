@@ -1,5 +1,6 @@
 import { measure } from '@/components/3DComponents/Html/Functions';
 import { HtmlContainerTypes } from '@/components/3DComponents/Html/HtmlPagesTypes';
+import { FOCUS_DELAY_MOBILE } from '@/configs/Camera.config';
 import { animated, useSpring } from '@react-spring/three';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -30,20 +31,27 @@ export function HtmlContainer({
 
     // Scale animation
     const springProps = useSpring({
-        scale: scaleRatio,
+        from: { scale: scaleRatio / 2 },
+        to: { scale: scaleRatio },
+        // scale: scaleRatio,
         config: {
             mass: 1,
             tension: 120,
             friction: 14,
         },
-        delay: 100,
+        delay: props.isMobile ? FOCUS_DELAY_MOBILE : 100,
     });
 
     useFrame(() => {
         if (done || !htmlRef.current) return;
         frameCountRef.current += 1;
-        // Update every 50 frames
-        if (frameCountRef.current % 50 === 0) {
+        // Update every 20 frames or 200 on mobile
+        if (
+            frameCountRef.current %
+                (props.isMobile ? FOCUS_DELAY_MOBILE / 2 : 20) ===
+            0
+        ) {
+            // if (frameCountRef.current % 50 === 0) {
             measure(htmlRef.current, {
                 scaleRatio,
                 setScaleRatio,
