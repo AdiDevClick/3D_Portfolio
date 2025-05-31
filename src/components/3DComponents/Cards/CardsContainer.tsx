@@ -395,15 +395,15 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             {...cardsPropsMemo}
                         >
                             <SpherePresenceHelper
-                                castShadow={false}
-                                receiveShadow={false}
                                 name="card__spherePresenceHelper"
                                 visible={SETTINGS.PRESENCE_CIRCLE}
+                                debug={SETTINGS.DEBUG_SPHERE_WIREFRAME}
                                 radius={[
                                     SETTINGS.PRESENCE_RADIUS * card.baseScale,
                                     32,
                                 ]}
                             />
+
                             {/* {reducer.isMobile ? ( */}
                             <Title
                                 text={card.cardTitle ? card.cardTitle : 'test'}
