@@ -10,7 +10,9 @@
     background: var(--bg-color);
     padding: 40px 0;
     border-radius: 5px;
+    // width: clamp(min(100%, 52%), 100%, 52vw);
     width: clamp(min(52%, 100%), 100%, 52vw);
+
     max-height: 80vh;
     color: black;
     transform: translate(-10%);
@@ -75,19 +77,29 @@
 
     @include for-size(tablet) {
         transform: translate(-40%);
+        column-gap: 0;
         width: min(100%, 60%);
     }
 
     @include for-size(smalltablet) {
-        max-height: 50vh;
-        transform: translate(-50%, 85%);
+        // max-height: 50vh;
+        transform: translate(-50%, 100%);
+        // transform: translate(-50%, 85%);
         width: 100%;
+        // touch-action: none;
+        // touch-action: none;
+        // pointer-events: auto;
     }
 
     @include for-size(mobile) {
         grid-template-columns: 0.3fr 4fr 0.3fr;
+        transform: translate(-50%, 85%);
         column-gap: 0;
         padding: 20px 0;
+        height: 100%;
+        // min-height: max-content;
+        // touch-action: auto;
+        // pointer-events: auto;
         // background: var(--dark-bg-color);
 
         &__title {
