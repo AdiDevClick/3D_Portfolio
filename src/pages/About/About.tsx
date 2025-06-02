@@ -1,8 +1,8 @@
 import '@css/About.scss';
 import { shaderMaterial, Text, useScroll } from '@react-three/drei';
-import { memo, Suspense, useEffect, useRef } from 'react';
+import { memo, Suspense, useEffect, useRef, useState } from 'react';
 import { Color, Group } from 'three';
-import { extend, useFrame } from '@react-three/fiber';
+import { extend, useFrame, useThree } from '@react-three/fiber';
 import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
@@ -60,7 +60,10 @@ const MemoizedAbout = memo(function About({
         DEFAULT_PROJECTS_POSITION_SETTINGS.clone()
     );
 
+    const { viewport } = useThree();
+    const [animationsEnabled, setAnimationsEnabled] = useState(false);
     const scroll = useScroll();
+
     isActive = visible === 'about';
 
     useEffect(() => {
@@ -103,6 +106,7 @@ const MemoizedAbout = memo(function About({
     useEffect(() => {
         if (!iconsRef.current) return;
         iconsRef.current.position.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
+        setAnimationsEnabled(true);
     }, []);
 
     if (count > 0) count = 0;
@@ -119,8 +123,11 @@ const MemoizedAbout = memo(function About({
 
         if (isActive && count <= 0) {
             scroll.offset = 0;
+            scroll.delta = 0;
             scroll.el.scrollTo({ top: 0, behavior: 'instant' });
             count++;
+            // groupRef.current.position.y = 0;
+            // groupRef.current.updateMatrixWorld(true);
         }
 
         if (!isActive && count > 0) {
@@ -228,96 +235,112 @@ const MemoizedAbout = memo(function About({
                 userData={{ preventClipping: true }}
                 position={DEFAULT_PROJECTS_POSITION_SETTINGS.clone()}
             >
-                {aboutText.map((text, index) => (
-                    <GridLayout
-                        width={contentWidth ?? 0}
-                        key={'about-' + index + '-grid'}
-                        // key={'about-' + index * Math.random() + '-grid'}
-                        name={'about-' + index + '-grid'}
-                        length={aboutText.length}
-                        index={index}
-                        scalar={generalScaleX}
-                        type={text.type}
-                        options={gridOptions}
-                    >
-                        <animated.group
-                            {...useSpring({
-                                from: {
-                                    scale: 0.1,
-                                    opacity: 0,
-                                },
-                                to: { scale: 1, opacity: 1 },
-                                delay: index * 500,
-                                config: {
-                                    mass: 1,
-                                    tension: 280,
-                                    friction: 30,
-                                },
-                            })}
+                {aboutText.map((text, index) => {
+                    return (
+                        <GridLayout
+                            width={contentWidth ?? 0}
+                            key={'about-' + index + '-grid'}
+                            // key={'about-' + index * Math.random() + '-grid'}
+                            name={'about-' + index + '-grid'}
+                            length={aboutText.length}
+                            index={index}
+                            scalar={generalScaleX}
+                            type={text.type}
+                            options={gridOptions}
                         >
-                            <Suspense fallback={null}>
-                                {text.type === 'title' && (
-                                    <Text
-                                        position={[0, 0, -0.1]}
-                                        fontSize={
-                                            (isMobile ? 0.6 : 0.5) *
-                                            generalScaleX
-                                        }
-                                        outlineWidth={isMobile ? 0.002 : 0.002}
-                                        outlineColor="black"
-                                        // outlineColor="rgba(0, 0, 0, 0.01)"
-                                        anchorY="top"
-                                        maxWidth={contentWidth - 0.5}
-                                        font={importedNormalFont}
-                                        userData={{ isWrappedText: true }}
-                                    >
-                                        {text.text}
-                                        {/* <meshStandardMaterial
-                                        color="#2a5298"
-                                        metalness={0.8}
-                                        roughness={0.2}
-                                        envMapIntensity={2.5}
-                                    /> */}
-                                        <gradientTextMaterial
-                                            ref={(ref) => {
-                                                if (ref)
-                                                    materials.current.set(
-                                                        index,
-                                                        ref
-                                                    );
-                                            }}
-                                        />
-                                    </Text>
-                                )}
-                                {text.type === 'text' && (
-                                    <Text
-                                        position={[0, 0, -0.3]}
-                                        fontSize={
-                                            (isMobile ? 0.4 : 0.2) *
-                                            generalScaleX
-                                        }
-                                        outlineWidth={isMobile ? 0.002 : 0.002}
-                                        outlineColor="black"
-                                        // outlineColor="rgba(0, 0, 0, 0.01)"
-                                        color={'black'}
-                                        textAlign="justify"
-                                        anchorY="top"
-                                        fontWeight={700}
-                                        maxWidth={
-                                            isMobile
-                                                ? contentWidth - 0.7
-                                                : contentWidth / 2
-                                        }
-                                        font={importedNormalFont}
-                                        userData={{ isWrappedText: true }}
-                                    >
-                                        {text.text}
-                                    </Text>
-                                )}
-                            </Suspense>
-                        </animated.group>
-                    </GridLayout>
-                ))}
+                            <animated.group
+                                // {...animation}
+                                {...useSpring({
+                                    from: {
+                                        // transform:
+                                        // 'scale(0.1) translateY(-20px)',
+                                        // scale: 1,
+                                        // scale: 0.1,
+                                        position: [-20, 10, -80],
+                                        opacity: 0,
+                                    },
+                                    to: {
+                                        // transform: 'scale(1) translateY(0px)',
+                                        // scale: 1,
+                                        position: [0, 0, 0],
+                                        opacity: 1,
+                                    },
+                                    delay: index * 500,
+                                    config: {
+                                        mass: 1,
+                                        tension: 280,
+                                        friction: 30,
+                                    },
+                                })}
+                            >
+                                <Suspense fallback={null}>
+                                    {text.type === 'title' && (
+                                        <Text
+                                            // lineHeight={1.3}
+                                            position={[-0.05, 0, -0.1]}
+                                            fontSize={
+                                                (isMobile ? 0.6 : 0.5) *
+                                                generalScaleX
+                                            }
+                                            outlineWidth={
+                                                isMobile ? 0.002 : 0.002
+                                            }
+                                            outlineColor="black"
+                                            // outlineColor="rgba(0, 0, 0, 0.01)"
+                                            anchorY="top"
+                                            textAlign="center"
+                                            anchorX="center"
+                                            maxWidth={contentWidth - 0.6}
+                                            // maxWidth={viewport.width - 0.5}
+                                            font={importedNormalFont}
+                                            userData={{ isWrappedText: true }}
+                                        >
+                                            {text.text}
+                                            <gradientTextMaterial
+                                                ref={(ref) => {
+                                                    if (ref)
+                                                        materials.current.set(
+                                                            index,
+                                                            ref
+                                                        );
+                                                }}
+                                            />
+                                        </Text>
+                                    )}
+                                    {text.type === 'text' && (
+                                        <Text
+                                            lineHeight={isMobile ? 1.3 : 1.4}
+                                            position={[0, 0, -0.3]}
+                                            fontSize={
+                                                (isMobile ? 0.4 : 0.2) *
+                                                generalScaleX
+                                            }
+                                            outlineWidth={
+                                                isMobile ? 0.002 : 0.002
+                                            }
+                                            outlineColor="black"
+                                            // outlineColor="rgba(0, 0, 0, 0.01)"
+                                            color={'black'}
+                                            textAlign="left"
+                                            anchorY="top"
+                                            anchorX="center"
+                                            fontWeight={700}
+                                            maxWidth={
+                                                isMobile
+                                                    ? contentWidth - 0.7
+                                                    : contentWidth / 2
+                                            }
+                                            font={importedNormalFont}
+                                            userData={{ isWrappedText: true }}
+                                        >
+                                            {text.text}
+                                        </Text>
+                                    )}
+                                </Suspense>
+                            </animated.group>
+                        </GridLayout>
+                    );
+                })}
             </group>
 
             <ContactIconsContainer

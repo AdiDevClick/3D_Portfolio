@@ -1,4 +1,4 @@
-import { ScrollControls, Scroll } from '@react-three/drei';
+import { ScrollControls, Scroll, useScroll } from '@react-three/drei';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import '../../../utils/util.tsx';
 import Carousel from '@/components/3DComponents/Carousel/Carousel';
@@ -7,6 +7,8 @@ import { PageScroller } from '@/components/3DComponents/Html/PageScroller';
 import MemoizedHome from '@/pages/Home/Home';
 import MemoizedContact from '@/pages/Contact/Contact';
 import { SceneProps } from '@/components/3DComponents/Scene/SceneTypes';
+import { useFrame } from '@react-three/fiber';
+import { easing } from 'maath';
 
 /**
  * Scene component
@@ -27,6 +29,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
         contentWidth,
         isMobile,
         visible,
+        activeContent,
     } = reducer;
 
     const pagesRef = useRef(null!);
@@ -64,6 +67,12 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
             case 'about':
                 setVirtualPageCount(isMobile ? 6.5 : 6);
                 break;
+            // case 'card-detail':
+            //     if (isMobile && activeContent?.isClicked) {
+            //         console.log('true');
+            //         setVirtualPageCount(1.5);
+            //     }
+            //     break;
             default:
                 setVirtualPageCount(0);
         }
@@ -80,6 +89,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
         }),
         [contentWidth, contentHeight, isMobile, generalScaleX, visible]
     );
+
     return (
         <group key={'scene-group'}>
             {/* <Perf minimal={true} antialias={false} position={'bottom-left'} /> */}
@@ -93,7 +103,10 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                     damping={0.5}
                 >
                     <Scroll key={'scroll-controls__scroller'} ref={pagesRef}>
+                        {/* <Rig rotation={[0, 0, 0]}> */}
                         <MemoizedHome {...pagesMemoProps} />
+                        {/* </Rig> */}
+
                         <MemoizedAbout {...pagesMemoProps} />
                     </Scroll>
                     {pagesRef.current && isMobile && (
@@ -120,14 +133,75 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                     />
                 </mesh> */}
             {/* <Suspense fallback={null}> */}
-            <Carousel
-                reducer={reducer}
-                boundaries={boundaries}
-                SETTINGS={SETTINGS}
-            />
+            <Rig rotation={[0, 0, 0]} reducer={reducer}>
+                <Carousel
+                    reducer={reducer}
+                    boundaries={boundaries}
+                    SETTINGS={SETTINGS}
+                />
+            </Rig>
             {/* </Suspense> */}
 
             {children}
         </group>
     );
+}
+
+let positionX = 0;
+let count = 0; // Counter to track if the camera control has been activated
+function Rig(props) {
+    const ref = useRef(null);
+    const { visible, activeContent } = props.reducer || {};
+    // const scroll = useScroll();
+    useFrame((state, delta) => {
+        if (!ref.current) return;
+        // ✅ Si carte cliquée sur mobile, activer contrôle Y caméra
+        // if (visible === 'card-detail' && activeContent?.isClicked) {
+        //     if (count === 0) {
+        //         count++;
+        //         positionX = state.camera.position.x;
+        //     }
+        //     // Contrôle Y via touches ou gestes
+        //     // const keys = state.events.connected; // Accès aux events
+        //     // ✅ Scroll via pointer/touch Y movement
+        //     // const pointerY = state.pointer.y;
+        //     // console.log(positionX, '📍 positionX');
+        //     // state.camera.position.x = positionX;
+        //     // const smoothY = (state.camera.position.x = state.camera.position.x);
+        //     // Smooth camera Y movement basé sur pointer
+        //     if (state.camera.position.x !== positionX) {
+        //         state.camera.position.x = positionX;
+        //         // easing.damp(
+        //         //     state.camera.position,
+        //         //     'x',
+        //         //     positionX,
+        //         //     // positionX * 3, // ✅ Facteur de scroll
+        //         //     0,
+        //         //     delta
+        //         // );
+        //         // e.target.truckSpeed = 0;
+        //     }
+        //     // easing.damp(
+        //     //     state.camera.position,
+        //     //     'x',
+        //     //     positionX,
+        //     //     // positionX * 3, // ✅ Facteur de scroll
+        //     //     0,
+        //     //     delta
+        //     // );
+        //     // const xDrift = Math.abs(state.camera.position.x - positionX);
+        //     // if (xDrift > 0.1) {
+        //     // Seuil de tolérance
+        //     // state.camera.position.x = positionX;
+        //     // console.log('🔄 X corrected, drift was:', xDrift);
+        //     // }
+        //     // console.log('📍 Camera Y control active:', state.camera.position.y);
+        // } else {
+        //     // Reset positionX and count when not in card-detail view
+        //     if (count > 0) {
+        //         count = 0;
+        //     }
+        // }
+    });
+    return <group ref={ref} {...props} />;
 }

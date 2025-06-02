@@ -20,7 +20,7 @@ import {
 } from '@/components/3DComponents/Carousel/Functions';
 import { useLocation, useParams } from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
-import { Billboard } from '@react-three/drei';
+import { Billboard, useScroll } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import datasJson from '@data/projects.json';
@@ -46,7 +46,7 @@ const bezierPos = new Vector3();
 
 let frameCountRef = 0;
 // let isCarouselLoaded = false;
-
+let count = 0;
 export default function Carousel({
     boundaries,
     reducer,
@@ -69,6 +69,7 @@ export default function Carousel({
     const location = useLocation();
     const params = useParams();
     const id = useId();
+    const scroll = useScroll();
 
     // États pour l'animation
     const [isAnimatingIn, setIsAnimatingIn] = useState(false);
@@ -201,10 +202,43 @@ export default function Carousel({
             // }
         }
     }, [activeURL, isInitialLoading, activeProject, visible]);
-
+    if (count > 0) count = 0;
     useFrame((state, delta) => {
         if (!projectsRef.current) return;
 
+        // if (activeURL && count <= 0) {
+        //     scroll.offset = 0;
+        //     scroll.delta = 0;
+        //     scroll.el.scrollTo({ top: 0, behavior: 'instant' });
+        //     // state.camera.position.set(
+        //     //     2.4492935982947065e-15, // ≈ 0
+        //     //     1.2246467991473533e-15, // ≈ 0
+        //     //     -20
+        //     // );
+        //     // ✅ AJOUTER : Reset caméra position
+        //     // state.camera.position.set(0, 0, -20);
+
+        //     // ✅ AJOUTER : Reset controls si présents
+        //     // if (state.controls) {
+        //     //     state.controls.target.set(0, 0, 0);
+        //     //     state.controls.update();
+        //     // }
+        //     count++;
+        //     // projectsRef.current.position.y = 0;
+        //     // projectsRef.current.updateMatrixWorld(true);
+        //     console.log('❌ Scroll reset conditions not met:', {
+        //         scroll: !!scroll,
+        //         scrollEl: !!scroll?.el,
+        //         pagesRef: projectsRef.current,
+        //         camera: state.camera,
+        //         control: state.controls,
+        //     });
+        //     if (state.controls) console.log('CONTROLS OK');
+        // }
+
+        // if (!activeURL && count > 0) {
+        //     count = 0;
+        // }
         frameCountRef += 1;
 
         frustumChecker(

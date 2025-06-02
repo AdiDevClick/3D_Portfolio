@@ -7,6 +7,7 @@ import {
 import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
+import { f } from 'node_modules/react-router/dist/development/route-data-5OzAzQtT.d.mts';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Group } from 'three';
@@ -63,9 +64,9 @@ export function BillboardPageContainer({
         <Billboard
             ref={groupRef}
             follow={true}
-            lockX={false}
-            lockY={false}
-            lockZ={false}
+            // lockX={false}
+            // lockY={true}
+            // lockZ={true}
         >
             <HtmlContainer key={pageName} className="html-container">
                 {children}

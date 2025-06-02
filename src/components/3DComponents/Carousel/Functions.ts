@@ -257,11 +257,13 @@ export function onClickHandler(
     ) {
         if (
             !e.nativeEvent.target ||
+            // !(e.nativeEvent.target as HTMLElement).closest('.card__close')
             !(e.nativeEvent.target as HTMLElement).closest('.card')
         ) {
             return;
         }
     }
+    console.log(e.nativeEvent.target.closest('.card__close'));
 
     navigate(!card.isClicked ? `/projets/${card.id}` : '/projets', {
         // navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
@@ -684,24 +686,46 @@ export function handleCollisions(
  */
 export function onScrollHandler(e: WheelEvent) {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    // e.stopPropagation();
+    // e.preventDefault();
+    // console.log(scrollTop, scrollHeight, clientHeight, e.deltaY, e);
     if (
         (scrollTop + e.deltaY > 0 && e.deltaY < 0) ||
         (scrollHeight - (scrollTop + e.deltaY) > clientHeight && e.deltaY > 0)
     ) {
         e.stopPropagation();
     }
+
+    // if (e.targetTouches[0]) {
+    //     const card = e.currentTarget.parentNode?.querySelector('.card');
+    //     if (
+    //         scrollTop - 1 < 0 ||
+    //         (scrollHeight - (scrollTop + e.deltaY) > clientHeight &&
+    //             e.deltaY > 0)
+    //     ) {
+    //         console.log('Je touche le top');
+    //         // e.preventDefault();
+    //         // e.stopPropagation();
+    //         card.style.touchAction = 'none';
+    //     } else {
+    //         card?.removeAttribute('style');
+    //     }
+    // }
     // e.stopPropagation();
     // e.preventDefault();
     // Ne bloquer le scroll que si nécessaire pour le contenu HTML
 
     // Si on est au début/fin du contenu et qu'on essaie de défiler plus loin
-    //     if (
-    //         (scrollTop === 0 && e.deltaY < 0) || // Haut du contenu + scroll vers le haut
-    //         (scrollTop + clientHeight >= scrollHeight && e.deltaY > 0) // Bas du contenu + scroll vers le bas
-    //     ) {
-    //         // Laisser l'événement se propager au canvas pour le scroll global
-    //         return;
-    //     }
+    // if (
+    //     (scrollTop === 0 && e.deltaY < 0) || // Haut du contenu + scroll vers le haut
+    //     (scrollTop + clientHeight >= scrollHeight && e.deltaY > 0) // Bas du contenu + scroll vers le bas
+    // ) {
+    //     // Laisser l'événement se propager au canvas pour le scroll global
+    //     console.log('test');
+    //     // e.stopPropagation();
+    //     //
+    //     return;
+    // }
 
     //     // Sinon, garder le scroll dans le contenu HTML
     //     e.stopPropagation();

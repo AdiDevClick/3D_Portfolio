@@ -94,8 +94,11 @@ const MemoizedHome = memo(function Home({
 
         if (isActive && count <= 0) {
             scroll.offset = 0;
-            scroll.el.scrollTo({ top: 0, behavior: 'smooth' });
+            scroll.delta = 0;
+            scroll.el.scrollTo({ top: 0, behavior: 'instant' });
             count++;
+            // groupRef.current.position.y = 0;
+            groupRef.current.updateMatrixWorld(true);
         }
 
         if (!isActive && count > 0) {

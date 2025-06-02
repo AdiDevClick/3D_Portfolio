@@ -106,26 +106,27 @@ const MemoizedIconsContainer = memo(function IconsContainer({
     return (
         <IconsContainerProvider value={iconsContainerContext}>
             <group name="icon__center-container" ref={groupRef} {...props}>
-                {icons.map((icon, index) => (
+                {icons.map(({ name, mobile, optimized, ...rest }, index) => (
                     <GridLayout
                         width={width}
-                        key={icon.name + '-grid'}
-                        name={icon.name + '-grid'}
+                        key={name + '-grid'}
+                        name={name + '-grid'}
                         length={icons.length}
                         index={index}
                         scalar={scalar}
                         options={gridOptions}
                     >
                         <IconWithText
-                            key={icon.name}
+                            key={name}
                             model={`${import.meta.env.BASE_URL}assets/models/${
                                 isMobile
-                                    ? `mobile/${icon.mobile}`
-                                    : `optimized/${icon.optimized}`
+                                    ? `mobile/${mobile}`
+                                    : `optimized/${optimized}`
                             }`}
                             datas={{
-                                text: icon.name,
-                                name: icon.name,
+                                text: name,
+                                name: name,
+                                ...rest,
                             }}
                             position={[0, 0.5 * scalar, 0]}
                         />

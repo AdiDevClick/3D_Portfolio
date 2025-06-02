@@ -99,8 +99,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             if (card.ref?.current?.position) {
                 node.position.copy(card.ref.current.position);
                 node.rotation.copy(card.ref.current.rotation);
-                // node.rotation.set(card.ref.current.rotation.x, 0, 0);
-                // node.rotation.set(0, card.ref.current.rotation.y, 0);
             }
         },
         [isCarouselMoving]

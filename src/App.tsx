@@ -60,7 +60,7 @@ export default function App({
             <Canvas
                 // frameloop={isMobile ? 'demand' : 'always'}
                 // eventSource={document.getElementById('root')}
-                eventPrefix="client"
+                // eventPrefix="client"
                 onTouchStart={(e) => {
                     // Empêcher le comportement par défaut uniquement sur le canvas
                     if (e.target === e.currentTarget) {
@@ -81,6 +81,7 @@ export default function App({
                     width: '100%',
                 }}
                 id="canva"
+                // camera={{ position: [100, 110, 1400], fov: 50 }}
                 camera={{ position: [0, 0, -14], fov: 50 }}
                 // camera={{ position: [0, 0, -20], fov: 20 }}
                 // dpr={[0.9, 1]}

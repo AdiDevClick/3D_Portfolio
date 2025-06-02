@@ -1,14 +1,15 @@
 import { loadCardByURL } from '@/components/3DComponents/Experience/ExperienceFunctions';
 import { ExperienceProps } from '@/components/3DComponents/Experience/ExperienceTypes';
-import { SimpleEnvironment } from '@/components/Loaders/Loader';
 import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
 import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { easing } from 'maath';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
-import { Vector3 } from 'three';
+import { Box3, Vector3 } from 'three';
 // import {
 //     Bloom,
 //     ChromaticAberration,
@@ -23,6 +24,8 @@ import { Vector3 } from 'three';
 let minAngle = -Infinity;
 let maxAngle = Infinity;
 const initialCameraFov = 20;
+
+let cameraResults;
 
 const cameraPositions = {
     home: {
@@ -45,6 +48,7 @@ export function Experience({ reducer }: ExperienceProps) {
         setViewMode,
         activateElement,
         clickElement,
+        contentHeight,
         visible,
     } = reducer;
     const ref = useRef<CameraControls>(null!);
@@ -69,10 +73,32 @@ export function Experience({ reducer }: ExperienceProps) {
         cameraPositions.home.fov = isMobile
             ? CAMERA_FOV_MOBILE
             : CAMERA_FOV_DESKTOP;
-
+        // const cameraPosOnRoute = async () => {
         switch (visible) {
             case 'home':
+                cameraLookAt(
+                    new Vector3(0, 0, -200),
+                    cameraPositions.home,
+                    ref.current
+                );
+                // setTimeout(() => {
+                //     const timer = cameraLookAt(
+                //         cameraPositions.home.position,
+                //         cameraPositions.home,
+                //         ref.current
+                //     );
+
+                //     return () => {
+                //         clearTimeout(timer);
+                //     };
+                // }, 1000);
+                break;
             case 'about':
+                cameraLookAt(
+                    new Vector3(0, 0, -200),
+                    cameraPositions.home,
+                    ref.current
+                );
             case 'contact':
             case 'error':
                 cameraLookAt(
@@ -99,14 +125,18 @@ export function Experience({ reducer }: ExperienceProps) {
             case 'card-detail':
             case 'URLRequested':
                 if (activeContent) {
+                    console.log('jappelle combien de fois ?');
                     prevCamPosRef.current = camera.position.clone();
                     const results = positionCameraToCard(
                         ref,
-                        activeContent,
+                        { ...activeContent, viewportHeight: contentHeight },
                         isMobile,
                         activeContent.isClicked
                     );
+
+                    cameraResults = results;
                     // Set the max camera angles to the active card
+                    // Forbids the user to rotate the camera more than the angle limit !
                     if (activeContent.isClicked && results?.angleLimits) {
                         // !! IMPORTANT FOR CLICKED CARD !! - Forces the camera to rotate without
                         // animation to avoid a clipping bug when the camera is not in its right position
@@ -117,6 +147,24 @@ export function Experience({ reducer }: ExperienceProps) {
                         );
                         ref.current.minAzimuthAngle = results.angleLimits.min;
                         ref.current.maxAzimuthAngle = results.angleLimits.max;
+
+                        if (isMobile && results.truckLimits) {
+                            const boundary = new Box3(
+                                new Vector3(
+                                    results.truckLimits.minX,
+                                    results.truckLimits.minY,
+                                    results.truckLimits.minZ
+                                ),
+                                new Vector3(
+                                    results.truckLimits.maxX,
+                                    results.truckLimits.maxY,
+                                    results.truckLimits.maxZ
+                                )
+                            );
+
+                            ref.current.setBoundary(boundary);
+                            ref.current.truckSpeed = 3;
+                        }
                     }
                     break;
                 }
@@ -124,7 +172,16 @@ export function Experience({ reducer }: ExperienceProps) {
                     // useEffect Camera positioning on URL loading will take effect
                 }
                 break;
+            default:
+                cameraLookAt(
+                    new Vector3(0, 0, -200),
+                    cameraPositions.home,
+                    ref.current
+                );
+                break;
         }
+        // };
+        // cameraPosOnRoute();
     }, [visible, activeContent, isMobile]);
 
     /**
@@ -203,6 +260,72 @@ export function Experience({ reducer }: ExperienceProps) {
         return () => clearTimeout(timer);
     }, [showElements, visible]);
 
+    // useEffect(() => {
+    //     if (ref.current) {
+    //         // ✅ Reset via CameraControls API
+    //         ref.current.setPosition(0, 0, -20, true);
+    //         ref.current.setTarget(0, 0, 0, true);
+
+    //         console.log('✅ Camera reset via CameraControls');
+    //     }
+    // }, [visible]);
+    // Dans Experience.tsx - Ajouter debug
+    // useEffect(() => {
+    //     if (!ref.current) return;
+
+    //     if (visible === 'card-detail' && activeContent?.isClicked) {
+    //         setTimeout(() => {
+    //             const finalCameraX = ref.current.camera.position.x;
+
+    //             const boundary = new Box3(
+    //                 new Vector3(finalCameraX - 0.3, -20, -60),
+    //                 new Vector3(finalCameraX + 0.3, 20, 60)
+    //             );
+
+    //             ref.current.setBoundary(boundary);
+    //             ref.current.truckSpeed = 2;
+
+    //             // ✅ UTILISER la target calculée par positioning
+    //             ref.current.setTarget(
+    //                 cameraResults.cameraTarget.x,
+    //                 cameraResults.cameraTarget.y,
+    //                 cameraResults.cameraTarget.z,
+    //                 false
+    //             );
+
+    //             console.log(
+    //                 '✅ Boundary + target from positioning:',
+    //                 cameraResults.cameraTarget
+    //             );
+    //         }, 1000);
+
+    //         // setTimeout(() => {
+    //         //     // ✅ FORCER l'arrêt de toutes les animations
+    //         //     ref.current.enabled = false; // Désactiver CameraControls
+    //         //     setTimeout(() => {
+    //         //         // ✅ Capturer position après arrêt des animations
+    //         //         const stableX = ref.current.camera.position.x;
+    //         //         const boundary = new Box3(
+    //         //             new Vector3(stableX - 0.5, -30, -60),
+    //         //             new Vector3(stableX + 0.5, 30, 60)
+    //         //         );
+    //         //         ref.current.setBoundary(boundary);
+    //         //         ref.current.truckSpeed = 3;
+    //         //         // ✅ Réactiver CameraControls APRÈS boundary
+    //         //         ref.current.enabled = true;
+    //         //         console.log('✅ Boundary set after forcing stability:', {
+    //         //             stableX: stableX.toFixed(3),
+    //         //             isInBounds: boundary.containsPoint(
+    //         //                 ref.current.camera.position
+    //         //             ),
+    //         //         });
+    //         //     }, 200); // Court délai pour laisser tout s'arrêter
+    //         // }, 2000); // Délai plus long initial
+    //     } else if (ref.current) {
+    //         ref.current.setBoundary(null!);
+    //     }
+    // }, [visible, activeContent?.isClicked, showElements]);
+
     return (
         <>
             <directionalLight
@@ -225,17 +348,32 @@ export function Experience({ reducer }: ExperienceProps) {
                 />
                 <CameraControls
                     // attach="shadow-camera"
-                    // makeDefault
+                    makeDefault
                     // azimuthRotateSpeed={0.5}
                     // no Y-axis
                     polarRotateSpeed={0}
                     // no zoom
-                    dollySpeed={0}
+                    dollySpseed={0}
                     // Max angle on active is given by the camera
                     maxAzimuthAngle={maxAngle}
                     // Min angle on active is given by the camera
                     minAzimuthAngle={minAngle}
                     ref={ref}
+                    // truckControls={true}
+                    // enableTruckX={false}
+                    // minDistance={5}
+                    // maxDistance={50}
+                    // minDistance={5}
+                    // maxDistance={30}
+                    // boundary={
+                    //     new Box3(
+                    //         new Vector3(-0.1, -10, -50), // Min bounds [x, y, z] - X limité
+                    //         new Vector3(0.1, 10, 50) // Max bounds [x, y, z] - X limité
+                    //     )
+                    // }
+                    // minDistance={0}
+                    // maxDistance={0}
+
                     mouseButtons={{
                         // Activate left click for rotation
                         left: 1,
@@ -247,10 +385,35 @@ export function Experience({ reducer }: ExperienceProps) {
                     }}
                     touches={{
                         // Allows 1 finger touch for rotation
-                        one: 1,
+                        // one: 2,
+                        one:
+                            visible === 'card-detail' &&
+                            activeContent?.isClicked
+                                ? 2
+                                : 1,
                         two: 0,
                         three: 0,
                     }}
+                    // onStart={(e) =>
+                    // onControlStart(e, activeContent, isMobile, visible)
+                    // }
+                    // onChange={(e) =>
+                    //     onControlStart(e, activeContent, isMobile, visible)
+                    // }
+                    // setBoundary={
+                    //     visible === 'card-detail' && activeContent?.isClicked
+                    //         ? new Box3(
+                    //               new Vector3(-0.1, -15, -30), // Min bounds
+                    //               new Vector3(0.1, 15, 30) // Max bounds
+                    //           )
+                    //         : undefined
+                    // }
+                    // setBoundary={
+                    //     new Box3(
+                    //         new Vector3(-1, -10, -20), // Min bounds plus larges pour test
+                    //         new Vector3(1, 10, 20) // Max bounds plus larges pour test
+                    //     )
+                    // }
                 />
             </directionalLight>
             <ambientLight intensity={0.4} color="#fff6f0" />
@@ -444,3 +607,60 @@ function ShadowCatcher() {
 //         </mesh>
 //     );
 // }
+let positionX = 0;
+let count = 0;
+function onControlStart(e, activeContent, isMobile, visible) {
+    // useFrame((state, delta) => {
+    if (!e.target) return;
+    if (isMobile && visible === 'card-detail' && activeContent?.isClicked) {
+        // Prevent camera rotation on card detail view
+        console.log(e, '📍 onControlStart');
+
+        if (count === 0) {
+            count++;
+            positionX = e.target.camera.position.x;
+        }
+        // if (e.target.camera.position.x !== positionX) {
+        //     console.log('truckSpeed', e.target.truckSpeed);
+        //     e.target.camera.position.x = positionX;
+        //     // e.target.truckSpeed = 0;
+        // if (state.camera.position.x !== positionX) {
+        // state.camera.position.x = positionX;
+        easing.damp(
+            e.target.camera.position,
+            'x',
+            positionX,
+            // positionX * 3, // ✅ Facteur de scroll
+            0.5,
+            0.1
+        );
+        // e.target.truckSpeed = 0;
+        // }
+    } else {
+        // Reset positionX and count when not in card-detail view
+        if (count > 0) {
+            count = 0;
+        }
+    }
+    // });
+    // let positionX = 0;
+    // if (visible === 'card-detail' && activeContent?.isClicked) {
+    // Prevent camera rotation on card detail view
+    // console.log(e, '📍 onControlStart');
+
+    // if (count === 0) {
+    //     count++;
+    //     positionX = e.target.camera.position.x;
+    // }
+    // if (e.target.camera.position.x !== positionX) {
+    //     console.log('truckSpeed', e.target.truckSpeed);
+    //     e.target.camera.position.x = positionX;
+    //     // e.target.truckSpeed = 0;
+    // }
+    // } else {
+    //     // Reset positionX and count when not in card-detail view
+    //     if (count > 0) {
+    //         count = 0;
+    //     }
+    // }
+}
