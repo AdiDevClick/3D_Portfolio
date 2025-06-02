@@ -263,7 +263,6 @@ export function onClickHandler(
             return;
         }
     }
-    console.log(e.nativeEvent.target.closest('.card__close'));
 
     navigate(!card.isClicked ? `/projets/${card.id}` : '/projets', {
         // navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {

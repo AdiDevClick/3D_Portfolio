@@ -76,11 +76,11 @@ export function Experience({ reducer }: ExperienceProps) {
         // const cameraPosOnRoute = async () => {
         switch (visible) {
             case 'home':
-                cameraLookAt(
-                    new Vector3(0, 0, -200),
-                    cameraPositions.home,
-                    ref.current
-                );
+                // cameraLookAt(
+                //     new Vector3(0, 0, -200),
+                //     cameraPositions.home,
+                //     ref.current
+                // );
                 // setTimeout(() => {
                 //     const timer = cameraLookAt(
                 //         cameraPositions.home.position,
@@ -94,11 +94,11 @@ export function Experience({ reducer }: ExperienceProps) {
                 // }, 1000);
                 break;
             case 'about':
-                cameraLookAt(
-                    new Vector3(0, 0, -200),
-                    cameraPositions.home,
-                    ref.current
-                );
+            // cameraLookAt(
+            //     new Vector3(0, 0, -200),
+            //     cameraPositions.home,
+            //     ref.current
+            // );
             case 'contact':
             case 'error':
                 cameraLookAt(
@@ -125,7 +125,6 @@ export function Experience({ reducer }: ExperienceProps) {
             case 'card-detail':
             case 'URLRequested':
                 if (activeContent) {
-                    console.log('jappelle combien de fois ?');
                     prevCamPosRef.current = camera.position.clone();
                     const results = positionCameraToCard(
                         ref,

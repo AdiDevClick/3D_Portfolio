@@ -237,7 +237,7 @@ function handleMobileFitToSphere(
                 true
             );
         }, FOCUS_DELAY_MOBILE + 50);
-    }, FOCUS_DELAY_MOBILE + 3000);
+    }, FOCUS_DELAY_MOBILE + 100);
 
     return undefined; // Placeholder pour la position mobile
 }
