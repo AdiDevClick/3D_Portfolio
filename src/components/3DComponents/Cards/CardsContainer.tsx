@@ -6,7 +6,6 @@ import {
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer';
 import { ProjectContainer } from '@/pages/Projects/ProjectContainer';
 import {
-    DESKTOP_HTML_CONTAINER_DEPTH,
     DESKTOP_HTML_CONTAINER_ROTATION,
     MOBILE_HTML_CONTAINER_POSITION,
     MOBILE_HTML_CONTAINER_ROTATION,
@@ -19,7 +18,6 @@ import { Title } from '@/components/3DComponents/Title/Title';
 import MemoizedCard from '@/components/3DComponents/Cards/Card';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { ContactShadows } from '@react-three/drei';
-import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { Group, Mesh, Quaternion, Vector3 } from 'three';
 import useDebounce from '@/hooks/useDebounce';
 import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
@@ -32,7 +30,8 @@ type CardsContainerTypes = {
     reducer: ReducerType;
     SETTINGS: SettingsType;
 };
-const distancesArray: { index: number; distance: number }[] = [];
+const distancesArray: { index: string; distance: number; title?: string }[] =
+    [];
 const vec = new Vector3();
 /**
  * Conteneur pour les Cards et ses dépendances -
@@ -168,35 +167,25 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                 const distanceFromCamera = item.ref.current.position.distanceTo(
                     camera.position
                 );
-
                 distancesArray.push({
-                    index: i,
+                    index: String(item.id),
                     distance: distanceFromCamera,
+                    title: item.cardTitle,
                 });
             });
 
             distancesArray.sort((a, b) => a.distance - b.distance);
 
-            const closestCardIndex =
-                distancesArray.length > 0 && distancesArray[0]
-                    ? distancesArray[0].index
-                    : -1;
-
-            reducer.showElements.forEach((item, i) => {
+            reducer.showElements.forEach((item) => {
                 if (!item.eventBox) return;
 
-                if (
-                    i === closestCardIndex ||
-                    i === closestCardIndex - 1 ||
-                    i === closestCardIndex - 2 ||
-                    i === closestCardIndex + 1 ||
-                    i === closestCardIndex + 2
-                ) {
-                    // item.eventBox.material.color.setRGB(0.5, 1, 0.5);
-                    item.eventBox.scale.set(1, 1, 1);
-                } else {
-                    // item.eventBox.material.color.setRGB(1, 0.5, 0.5);
-                    item.eventBox.scale.set(0.1, 0.1, 0.1);
+                for (let i = 0; i < distancesArray.length; i++) {
+                    if (i <= 4 && item.id === distancesArray[i].index) {
+                        item.eventBox.scale.set(1, 1, 1);
+                        break;
+                    } else {
+                        item.eventBox.scale.set(0.1, 0.1, 0.1);
+                    }
                 }
             });
         }
