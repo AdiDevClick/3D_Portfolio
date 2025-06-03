@@ -162,7 +162,7 @@ export function Experience({ reducer }: ExperienceProps) {
                             );
 
                             ref.current.setBoundary(boundary);
-                            ref.current.truckSpeed = 3;
+                            // ref.current.truckSpeed = 3;
                         }
                     }
                     break;
