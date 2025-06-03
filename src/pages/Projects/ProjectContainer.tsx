@@ -58,14 +58,6 @@ export function ProjectContainer({
         const isAtTop = scrollTop <= 0;
         const isAtBottom = scrollTop >= scrollHeight - clientHeight;
 
-        // const pressionPoint = e.targetTouches[0];
-
-        // const translate = {
-        //     x: pressionPoint.screenX - origin.x,
-        //     y: pressionPoint.screenY - origin.y,
-        // };
-
-        // setLastTranslate(translate);
         if ((isMovingUp && isAtBottom) || (isMovingDown && isAtTop)) {
             (card as HTMLElement).style.touchAction = 'none';
         } else {
