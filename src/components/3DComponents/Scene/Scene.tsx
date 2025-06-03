@@ -133,13 +133,13 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                     />
                 </mesh> */}
             {/* <Suspense fallback={null}> */}
-            <Rig rotation={[0, 0, 0]} reducer={reducer}>
-                <Carousel
-                    reducer={reducer}
-                    boundaries={boundaries}
-                    SETTINGS={SETTINGS}
-                />
-            </Rig>
+            {/* <Rig rotation={[0, 0, 0]} reducer={reducer}> */}
+            <Carousel
+                reducer={reducer}
+                boundaries={boundaries}
+                SETTINGS={SETTINGS}
+            />
+            {/* </Rig> */}
             {/* </Suspense> */}
 
             {children}
