@@ -76,23 +76,23 @@ export function Experience({ reducer }: ExperienceProps) {
         // const cameraPosOnRoute = async () => {
         switch (visible) {
             case 'home':
-                // cameraLookAt(
-                //     new Vector3(0, 0, -200),
-                //     cameraPositions.home,
-                //     ref.current
-                // );
-                // setTimeout(() => {
-                //     const timer = cameraLookAt(
-                //         cameraPositions.home.position,
-                //         cameraPositions.home,
-                //         ref.current
-                //     );
+            // cameraLookAt(
+            //     new Vector3(0, 0, -200),
+            //     cameraPositions.home,
+            //     ref.current
+            // );
+            // setTimeout(() => {
+            //     const timer = cameraLookAt(
+            //         cameraPositions.home.position,
+            //         cameraPositions.home,
+            //         ref.current
+            //     );
 
-                //     return () => {
-                //         clearTimeout(timer);
-                //     };
-                // }, 1000);
-                break;
+            //     return () => {
+            //         clearTimeout(timer);
+            //     };
+            // }, 1000);
+            // break;
             case 'about':
             // cameraLookAt(
             //     new Vector3(0, 0, -200),

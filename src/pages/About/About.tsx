@@ -16,6 +16,7 @@ import aboutText from '@data/about-texts.json';
 import { importedNormalFont } from '@/configs/3DFonts.config';
 import { useSpring, animated } from '@react-spring/three';
 import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
+import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
 
 let isActive = false;
 let count = 0;
@@ -121,18 +122,14 @@ const MemoizedAbout = memo(function About({
             return;
         frameCountRef.current += 1;
 
-        if (isActive && count <= 0) {
-            scroll.offset = 0;
-            scroll.delta = 0;
-            scroll.el.scrollTo({ top: 0, behavior: 'instant' });
-            count++;
-            // groupRef.current.position.y = 0;
-            // groupRef.current.updateMatrixWorld(true);
-        }
-
         if (!isActive && count > 0) {
             count = 0;
         }
+
+        // if (isActive && count > 0) {
+        //     scroll.offset = 0;
+        //     scroll.delta = 0;
+        // }
 
         frustumChecker(
             [titleRef.current, iconsRef.current, contentRef.current],
@@ -152,6 +149,28 @@ const MemoizedAbout = memo(function About({
             //         (isActive || groupRef.current.visible ? 1 : 200) ===
             //     0
             // ) {
+            if (count <= 0) {
+                scroll.scroll.current = 0;
+                // scroll.offset = 0;
+                // scroll.delta = 0;
+                // scroll.current = 0;
+                // scroll.el.scrollTo({ top: 0, behavior: 'instant' });
+                count++;
+                // groupRef.current.position.y = 0;
+                // groupRef.current.updateMatrixWorld(true);
+                // console.log(
+                //     'offset :',
+                //     scroll.offset,
+                //     '\n delta : ',
+                //     scroll.delta,
+                //     '\n element scrolltop :',
+                //     scroll.el.scrollTop,
+                //     '\n scroll ? :',
+                //     scroll,
+                //     '\n scroll current :',
+                //     scroll.scroll.current
+                // );
+            }
             if (contentRef.current.visible || groupRef.current.visible) {
                 easing.damp3(
                     contentRef.current.position,

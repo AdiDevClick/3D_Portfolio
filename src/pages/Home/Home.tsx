@@ -93,12 +93,13 @@ const MemoizedHome = memo(function Home({
         frameCountRef.current += 1;
 
         if (isActive && count <= 0) {
-            scroll.offset = 0;
-            scroll.delta = 0;
-            scroll.el.scrollTo({ top: 0, behavior: 'instant' });
+            scroll.scroll.current = 0;
+            // scroll.offset = 0;
+            // scroll.delta = 0;
+            // scroll.el.scrollTo({ top: 0, behavior: 'instant' });
             count++;
             // groupRef.current.position.y = 0;
-            groupRef.current.updateMatrixWorld(true);
+            // groupRef.current.updateMatrixWorld(true);
         }
 
         if (!isActive && count > 0) {
