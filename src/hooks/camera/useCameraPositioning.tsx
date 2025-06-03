@@ -1,5 +1,5 @@
 import { RefObject, useCallback } from 'react';
-import { Box3, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { ElementType } from '@/hooks/reducers/carouselTypes';
 import { CameraControls } from '@react-three/drei';
 import { shortestAnglePath } from '@/components/3DComponents/Carousel/Functions';
@@ -25,31 +25,19 @@ import {
     CAMERA_VERTICAL_CENTER_DIVISOR,
     FOCUS_DELAY_MOBILE,
 } from '@/configs/Camera.config';
+import { sharedMatrices } from '@/utils/matrices';
+import {
+    CameraCalculationParams,
+    CameraPositionResult,
+    TargetCalculationParams,
+} from '@/hooks/camera/cameraTypes';
 
-// ✅ Types pour plus de clarté
-interface CameraCalculationParams {
-    currentCameraAngle: number;
-    desiredAngle: number;
-    angleDelta: number;
-    isClicked: boolean;
-    lerpFactor: number;
-    isMobile: boolean;
-}
-
-interface CameraPositionResult {
-    newAngle: number;
-    effectiveLerpFactor: number;
-    edgeCompensation: number;
-}
-
-interface TargetCalculationParams {
-    ref: ElementType['ref'];
-    isClicked: boolean;
-    isMobile: boolean;
-    angleFactor: number;
-}
-
-// ✅ Fonction pour calculer les paramètres d'angle et de lerp
+/**
+ * Calculates the new camera angle and effective lerp factor
+ * based on the current and desired angles.
+ *
+ * @param params - Parameters for camera angle and lerp calculation
+ */
 function calculateCameraAngleAndLerp(
     params: CameraCalculationParams
 ): CameraPositionResult {
@@ -66,7 +54,7 @@ function calculateCameraAngleAndLerp(
     const angleFactor = Math.min(1, absDelta / Math.PI);
     const initialImpulse = 0.2;
 
-    // Calcul du lerp factor adaptatif
+    // Adaptive lerp factor and edge compensation
     const adaptiveLerpFactor =
         lerpFactor * (1 + angleFactor * CAMERA_EDGE_LERP_FACTOR);
     const edgeCompensation = Math.min(
@@ -81,12 +69,12 @@ function calculateCameraAngleAndLerp(
           )
         : Math.max(initialImpulse, adaptiveLerpFactor);
 
-    // Calcul du nouvel angle
+    // New angle calculation
     let newAngle = isClicked
         ? desiredAngle
         : currentCameraAngle + angleDelta * effectiveLerpFactor;
 
-    // Ajustement pour la direction initiale si pas cliqué
+    // Not clicked ? Apply initial push based on angle delta
     if (!isClicked && Math.abs(angleDelta) > 0.01) {
         const initialDirection = angleDelta > 0 ? 1 : -1;
         const initialPush =
@@ -97,7 +85,17 @@ function calculateCameraAngleAndLerp(
     return { newAngle, effectiveLerpFactor, edgeCompensation };
 }
 
-// ✅ Fonction pour calculer la position de la caméra
+/**
+ * Calculates the camera position based on the new angle and other parameters.
+ *
+ * @param newAngle - The new angle for the camera
+ * @param edgeCompensation - Compensation for edge effects based on angle
+ * @param containerScale - Scale of the container for camera positioning
+ * @param camTargetPos - The target position of the camera, typically the center of the card
+ * @param ref - Reference to the card element
+ * @param isMobile - Boolean indicating if the device is mobile
+ * @param isClicked - Boolean indicating if the card is clicked
+ */
 function calculateCameraPosition(
     newAngle: number,
     edgeCompensation: number,
@@ -107,6 +105,7 @@ function calculateCameraPosition(
     isMobile: boolean,
     isClicked: boolean
 ): Vector3 {
+    if (!ref?.current) return new Vector3(0, 0, 0);
     const finalDesiredRadius =
         containerScale +
         CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation) +
@@ -116,44 +115,49 @@ function calculateCameraPosition(
             ? CAMERA_EXTRA_PULLBACK_DESKTOP
             : CAMERA_HOVER_PULLBACK_DESKTOP);
 
-    // Calcul offset pour centrage vertical
-    const bbox = new Box3().setFromObject(ref.current);
+    // Vertical center offset calculation
+    const bbox = sharedMatrices.box.setFromObject(ref.current);
     const sizeObj = new Vector3();
     bbox.getSize(sizeObj);
     const verticalCenterOffset = sizeObj.y / CAMERA_VERTICAL_CENTER_DIVISOR;
 
-    // ✅ FIX MOBILE : Position perpendiculaire si mobile cliqué
+    // Mobile fix : Perpendicular camera position when clicked
     if (isMobile && isClicked) {
-        // ✅ Position carte dans l'espace monde
-        const cardWorldPos = new Vector3();
-        ref.current.getWorldPosition(cardWorldPos);
+        ref.current.getWorldPosition(sizeObj);
 
-        // ✅ Position caméra FACE à la carte (perpendiculaire)
-        return new Vector3(
-            cardWorldPos.x, // ✅ Centré X sur la carte
-            camTargetPos.y + verticalCenterOffset, // ✅ Hauteur normale
-            cardWorldPos.z + finalDesiredRadius // ✅ DEVANT la carte
+        // Front facing camera position
+        return sizeObj.set(
+            sizeObj.x,
+            camTargetPos.y + verticalCenterOffset,
+            sizeObj.z + finalDesiredRadius
         );
     }
 
-    return new Vector3(
+    return sizeObj.set(
         Math.sin(newAngle) * finalDesiredRadius,
         camTargetPos.y + verticalCenterOffset,
         Math.cos(newAngle) * finalDesiredRadius
     );
 }
 
-// ✅ Fonction pour calculer la target avec offset
+/**
+ * Calculates the target position for the camera with an offset.
+ *
+ * @description Adjusts the target position based on whether the camera is clicked or hovered
+ * @param params - Parameters for target calculation
+ */
 function calculateTargetWithOffset(params: TargetCalculationParams): Vector3 {
     const { ref, isClicked, isMobile, angleFactor } = params;
+    const rightVector = new Vector3(1, 0, 0);
+
+    if (!ref?.current) return rightVector;
 
     const camTargetPos = ref.current.position.clone();
 
-    // Calcul du vecteur droit
-    const rightVector = new Vector3(1, 0, 0);
+    // Right vector adjustment
     rightVector.applyQuaternion(ref.current.quaternion);
 
-    // Calcul de la distance d'offset
+    // Offset distance calculation
     const offsetDistance =
         (!isMobile
             ? isClicked
@@ -167,7 +171,14 @@ function calculateTargetWithOffset(params: TargetCalculationParams): Vector3 {
     return camTargetPos.clone().add(rightOffset);
 }
 
-// ✅ Fonction pour appliquer la sécurité de distance
+/**
+ * Applies a safety distance to the camera position
+ *
+ * @description Ensures the camera won't get too close to the center of the container
+ *
+ * @param newCamPos - The new camera position to adjust
+ * @param containerScale - The scale of the container to ensure the camera is positioned safely
+ */
 function applySafetyDistance(
     newCamPos: Vector3,
     containerScale: number
@@ -186,7 +197,15 @@ function applySafetyDistance(
     return newCamPos;
 }
 
-// ✅ Fonction pour calculer les limites d'angle
+/**
+ * Calculates the angle limits for the camera based on whether the card is clicked or not.
+ *
+ * @description If the card is clicked, the user won't freely move
+ * the camera above a certain angle.
+ *
+ * @param isClicked - Boolean indicating if the card is clicked
+ * @param desiredAngle - The desired angle for the camera
+ */
 function calculateAngleLimits(isClicked: boolean, desiredAngle: number) {
     return isClicked
         ? {
@@ -197,11 +216,18 @@ function calculateAngleLimits(isClicked: boolean, desiredAngle: number) {
         : { min: -Infinity, max: Infinity };
 }
 
-// ✅ Fonction pour calculer les limites de truck
+/**
+ * Calculates the limits for the truck movement based on the card's position.
+ *
+ * @description Enabled only when the card is clicked
+ *
+ * @param cardRef - Reference to the card element
+ */
 function calculateTruckLimits(cardRef: ElementType['ref']) {
+    if (!cardRef?.current) return {};
     return {
-        minX: cardRef.current.position.x,
-        maxX: cardRef.current.position.x,
+        minX: cardRef?.current.position.x,
+        maxX: cardRef?.current.position.x,
         minY: cardRef.current.position.y - 20,
         maxY: cardRef.current.position.y + 0.1,
         minZ: cardRef.current.position.z - 0.1,
@@ -209,7 +235,15 @@ function calculateTruckLimits(cardRef: ElementType['ref']) {
     };
 }
 
-// ✅ Fonction fitToSphere séparée et simplifiée
+/**
+ * Handles the fitToSphere logic for mobile devices
+ *
+ * @description Timed execution to ensure the camera fits the sphere
+ * then lowers the camera to focus a part of the HTML content.
+ *
+ * @param controlsRef - Reference to the CameraControls
+ * @param cardProps - Properties of the card element
+ */
 function handleMobileFitToSphere(
     controlsRef: RefObject<CameraControls>,
     cardProps: ElementType
@@ -217,11 +251,17 @@ function handleMobileFitToSphere(
     if (!cardProps.presenceSphere) return undefined;
 
     setTimeout(() => {
-        controlsRef.current.fitToSphere(cardProps.presenceSphere, true);
+        if (cardProps.presenceSphere && controlsRef.current) {
+            controlsRef.current.fitToSphere(cardProps.presenceSphere, true);
+        }
 
         setTimeout(() => {
+            if (!cardProps.ref?.current) return;
+
             const contentHeight = cardProps.viewportHeight || 10;
-            const cardBounds = new Box3().setFromObject(cardProps.ref.current);
+            const cardBounds = sharedMatrices.box.setFromObject(
+                cardProps.ref.current
+            );
             const cardTop = cardBounds.max.y;
             const currentPos = controlsRef.current.camera.position.clone();
             const targetYOffset = contentHeight / 2 - cardTop;
@@ -239,10 +279,14 @@ function handleMobileFitToSphere(
         }, FOCUS_DELAY_MOBILE + 50);
     }, FOCUS_DELAY_MOBILE + 100);
 
-    return undefined; // Placeholder pour la position mobile
+    return undefined;
 }
 
-// ✅ Hook principal refactorisé
+/**
+ * Positionning hook for the camera on the card
+ *
+ * @returns the hook function
+ */
 export function useCameraPositioning() {
     const positionCameraToCard = useCallback(
         (
@@ -252,13 +296,12 @@ export function useCameraPositioning() {
             isClicked = false,
             lerpFactor = 0.6
         ) => {
-            // ✅ Validation des paramètres
             if (!cardProps.ref?.current || !controlsRef?.current) return;
 
             const { camera } = controlsRef.current;
             const { cardAngles, ref, containerScale } = cardProps;
 
-            // ✅ Calcul de l'angle actuel de la caméra
+            // Actual angle of the camera
             const currentCameraAngle = Math.atan2(
                 camera.position.x,
                 camera.position.z
@@ -269,7 +312,7 @@ export function useCameraPositioning() {
                 desiredAngle
             );
 
-            // ✅ Calcul des paramètres d'angle et de lerp
+            // Lerp and angle calculations
             const cameraCalculation = calculateCameraAngleAndLerp({
                 currentCameraAngle,
                 desiredAngle,
@@ -283,7 +326,7 @@ export function useCameraPositioning() {
                 cameraCalculation;
             const angleFactor = Math.min(1, Math.abs(angleDelta) / Math.PI);
 
-            // ✅ Calcul de la position de la caméra
+            // Camera positioning
             const camTargetPos = ref.current.position.clone();
             const camPos = calculateCameraPosition(
                 newAngle,
@@ -295,12 +338,12 @@ export function useCameraPositioning() {
                 isClicked
             );
 
-            // ✅ Interpolation de la position
+            // New lerp factor based on click state
             const newCamPos = isClicked
                 ? camPos.clone()
                 : camera.position.clone().lerp(camPos, effectiveLerpFactor);
 
-            // ✅ Calcul de la target avec offset
+            // Adding an offset to the target position when clicked
             const shiftedTarget = calculateTargetWithOffset({
                 ref,
                 isClicked,
@@ -308,16 +351,16 @@ export function useCameraPositioning() {
                 angleFactor,
             });
 
-            // ✅ Modification du FOV selon le device
+            // Fov adjustment based on device type
             camera.fov = isMobile ? CAMERA_FOV_MOBILE : CAMERA_FOV_DESKTOP;
 
-            // ✅ Application de la sécurité de distance
+            // Never too close from the center to avoid clipping
             const safeCameraPos = applySafetyDistance(
                 newCamPos,
                 containerScale
             );
 
-            // ✅ Application du positionnement principal
+            // Final camera position and target setting
             controlsRef.current.setLookAt(
                 safeCameraPos.x,
                 safeCameraPos.y,
@@ -328,17 +371,15 @@ export function useCameraPositioning() {
                 !(isClicked && isMobile) // Animation désactivée pour mobile cliqué
             );
 
-            // ✅ Gestion du mode mobile avec fitToSphere
+            // Mobile specific handling
             let mobilePos;
             if (isMobile && isClicked) {
                 mobilePos = handleMobileFitToSphere(controlsRef, cardProps);
             }
 
-            // ✅ Mise à jour de la projection
             camera.updateProjectionMatrix();
             const finalTarget = controlsRef.current.getTarget(new Vector3());
 
-            // ✅ Retour des résultats
             return {
                 cameraPosition: mobilePos ?? safeCameraPos,
                 cameraTarget: finalTarget,
