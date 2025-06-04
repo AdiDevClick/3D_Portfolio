@@ -5,7 +5,7 @@
     },
     {
         "type": "text",
-        "text": "J'ai débuté comme prothésiste dentaire, façonnant des pièces avec précision et minutie. \nCette rigueur reste au cœur de ma pratique aujourd'hui ! \n\nFace à la contraction du marché, j'ai pivoté vers la vente et réparation de matériel informatique, concrétisant ma passion de longue date pour la technologie."
+        "text": "J'ai débuté comme prothésiste dentaire, façonnant des pièces avec précision et minutie, ne pouvant laisser place à l'approximation et dont la livraison doit être conforme aux spécifications. \n\nCette rigueur reste au cœur de ma pratique aujourd'hui ! \n\nFace à la contraction du marché, j'ai pivoté vers la vente et réparation de matériel informatique, concrétisant ma passion de longue date pour la technologie."
     },
     {
         "type": "title",
@@ -13,7 +13,7 @@
     },
     {
         "type": "text",
-        "text": "Ce qui enrichit vraiment mon approche, c'est l'expérience client acquise pendant mes années de vente. \n\nAprès avoir maintenu un site Symfony pour l'entreprise dans laquelle j'évoluais, j'ai été chargé de refaire le site vitrine ; \nCe qui m'a permis d'observer directement l'interaction des utilisateurs avec mes interfaces et l'impact qu'il pouvait avoir. \n\nL'UI/UX était alors devenu un aspect fondamental de l'application que je développais, et améliorer mes compétences CSS/HTML devenait primordial. \nAfin de dynamiser cette expérience utilisateur, j'ai commencé à apprendre le JavaScript. \nA ce stade, il m'apparut clair que je prennais du plaisir à développer des applications ! \n\nAprès maintenant plusieurs années de code quotidien, ma stack technique s'articule autour de React, Three.js, TypeScript, VanillaJS, PHP et Node.js."
+        "text": "Mon expérience client de la vente enrichit directement mon approche développement. \n\nResponsable de la refonte complète du site vitrine de l'entreprise dont j'assurais la maintenance sur Symfony jusqu'alors, j'ai observé l'impact UX direct sur les utilisateurs. \n\nL'UI/UX était alors devenu un aspect fondamental de l'application que je développais. \n\nAméliorer mes compétences CSS/HTML devenait primordial et l'apprentissage du JavaScript s'est imposé pour enrichir ces interfaces. \nÀ ce moment, il est devenu évident que le développement était ma voie. \n\nAprès maintenant près de 3 années de code quotidien, ma stack technique : React/TypeScript, Three.js, PHP/Node.js."
     },
     {
         "type": "title",
@@ -21,7 +21,7 @@
     },
     {
         "type": "text",
-        "text": "Ma philosophie de développement place l'expérience utilisateur au premier plan. \nJe me pose systématiquement la question : \n' Comment l'utilisateur s'attend-il à interagir ici ? ' \n\nCette perspective guide ma résolution de problèmes et me permet d'anticiper les défis techniques avec une vision claire de l'objectif final."
+        "text": "Ma philosophie de développement place l'expérience utilisateur au premier plan. \n\nJe me pose systématiquement la question : \n' Comment l'utilisateur s'attend-il à interagir ici ? ' \n\nCette perspective guide ma résolution de problèmes et me permet d'anticiper les défis techniques avec une vision claire de l'objectif final."
     },
     {
         "type": "title",
@@ -29,15 +29,7 @@
     },
     {
         "type": "text",
-        "text": "Mon parcours de vendeur m'a doté d'un esprit critique affûté et d'une obsession pour la précision des besoins. \nDans la vente comme dans le code, le résultat final et la satisfaction de l'utilisateur sont les véritables mesures du succès. \n\nMon défi quotidien est de trouver l'équilibre parfait entre créativité visuelle et fonctionnalité intuitive, entre l'émerveillement et l'efficacité."
-    },
-    {
-        "type": "title",
-        "text": "Au-delà des écrans"
-    },
-    {
-        "type": "text",
-        "text": "Les voyages, particulièrement en Asie, nourrissent ma créativité et élargissent mes perspectives. \nChaque culture apporte son lot d'inspirations uniques que j'intègre subtilement dans mes projets. \nPassionné de jeux vidéo, j'y puise constamment des idées pour améliorer mes interfaces. \nAprès tout, quelle meilleure école d'expérience utilisateur qu'un médium où l'engagement est la clé de la réussite ?"
+        "text": "Mon parcours de vendeur m'a doté d'un esprit critique affûté et d'une obsession pour la précision des besoins. \n\nDans la vente comme dans le code, le résultat final et la satisfaction de l'utilisateur sont les véritables mesures du succès. \n\nMon défi quotidien est de trouver l'équilibre parfait entre créativité visuelle et fonctionnalité intuitive, entre l'émerveillement et l'efficacité."
     },
     {
         "type": "title",
@@ -45,6 +37,6 @@
     },
     {
         "type": "text",
-        "text": "Mes projets sont avant tout des laboratoires d'expérimentation et d'apprentissage. \nJe trouve une joie particulière à découvrir de nouvelles technologies et à les implémenter dans des situations concrètes. \n\nCette curiosité insatiable me pousse à constamment repousser les limites de ce que je peux créer."
+        "text": "Chaque projet est une opportunité d'expérimentation technique. \n\nJe trouve une joie particulière à découvrir de nouvelles technologies et à les implémenter dans des situations concrètes. \n\nCette expertise me permet de réduire les coûts de développement tout en maximisant l'engagement utilisateur."
     }
 ]
