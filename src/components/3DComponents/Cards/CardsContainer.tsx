@@ -24,8 +24,6 @@ import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { useSpring, animated } from '@react-spring/three';
 import { cardEventBoxMaterial } from '@/components/3DComponents/Cards/CardMaterials';
 
-//TODO : fix the event box scale that is not always correct
-// it 's not registering the correct card
 type CardsContainerTypes = {
     reducer: ReducerType;
     SETTINGS: SettingsType;
