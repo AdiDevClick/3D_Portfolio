@@ -171,11 +171,6 @@ const MemoizedAbout = memo(function About({
             count = 0;
         }
 
-        // if (isActive && count > 0) {
-        //     scroll.offset = 0;
-        //     scroll.delta = 0;
-        // }
-
         frustumChecker(
             [titleRef.current, iconsRef.current, contentRef.current],
             state,
@@ -183,38 +178,10 @@ const MemoizedAbout = memo(function About({
             false
         );
 
-        if (
-            // frameCountRef.current %
-            isActive ||
-            groupRef.current.visible
-            // 0
-        ) {
-            // if (
-            //     frameCountRef.current %
-            //         (isActive || groupRef.current.visible ? 1 : 200) ===
-            //     0
-            // ) {
+        if (isActive || groupRef.current.visible) {
             if (count <= 0) {
                 scroll.scroll.current = 0;
-                // scroll.offset = 0;
-                // scroll.delta = 0;
-                // scroll.current = 0;
-                // scroll.el.scrollTo({ top: 0, behavior: 'instant' });
                 count++;
-                // groupRef.current.position.y = 0;
-                // groupRef.current.updateMatrixWorld(true);
-                // console.log(
-                //     'offset :',
-                //     scroll.offset,
-                //     '\n delta : ',
-                //     scroll.delta,
-                //     '\n element scrolltop :',
-                //     scroll.el.scrollTop,
-                //     '\n scroll ? :',
-                //     scroll,
-                //     '\n scroll current :',
-                //     scroll.scroll.current
-                // );
             }
             if (contentRef.current.visible || groupRef.current.visible) {
                 easing.damp3(
@@ -257,16 +224,16 @@ const MemoizedAbout = memo(function About({
                 );
             }
 
-            // if (frameCountRef.current % 5 === 0) {
-            if (materials.current instanceof Map) {
-                materials.current.forEach((material) => {
-                    if (material && material.uniforms) {
-                        material.uniforms.time.value =
-                            state.clock.getElapsedTime();
-                    }
-                });
+            if (frameCountRef.current % 10 === 0) {
+                if (materials.current instanceof Map) {
+                    materials.current.forEach((material) => {
+                        if (material && material.uniforms) {
+                            material.uniforms.time.value =
+                                state.clock.getElapsedTime();
+                        }
+                    });
+                }
             }
-            // }
         }
     });
     return (
