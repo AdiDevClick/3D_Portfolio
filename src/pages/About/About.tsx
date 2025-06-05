@@ -16,7 +16,52 @@ import aboutText from '@data/about-texts.json';
 import { importedNormalFont } from '@/configs/3DFonts.config';
 import { useSpring, animated } from '@react-spring/three';
 import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
-import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
+
+const GradientTextMaterial = shaderMaterial(
+    {
+        color1: new Color('#0d47a1'),
+        color2: new Color('#FFFFFF'),
+        time: 0,
+    },
+    // Vertex shader -
+    `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    // Fragment shader -
+    `
+    uniform vec3 color1;
+    uniform vec3 color2;
+    uniform float time;
+    varying vec2 vUv;
+    void main() {
+            float u_time = time;
+            float cycleTime = mod(u_time, 8.0);
+
+            if (cycleTime <= 3.0) {
+                float wavePosition = (cycleTime / 3.0) * 2.0 - 0.5; // -0.5 à 1.5
+                float distance = abs(vUv.x - wavePosition);
+                float wave = 1.0 - smoothstep(0.0, 0.3, distance); // Vague localisée
+                
+                float fadeIn = smoothstep(0.0, 0.5, cycleTime);
+                float fadeOut = 1.0;
+                if (cycleTime > 2.5) {
+                    fadeOut = 1.0 - smoothstep(2.5, 3.0, cycleTime);
+                }
+                
+                float mixValue = wave * fadeIn * fadeOut;
+                gl_FragColor = vec4(mix(color1, color2, mixValue), 1.0);
+            } else {
+                gl_FragColor = vec4(color1, 1.0);
+            }
+        }
+    `
+);
+
+extend({ GradientTextMaterial });
 
 let isActive = false;
 let count = 0;
@@ -212,30 +257,16 @@ const MemoizedAbout = memo(function About({
                 );
             }
 
-            if (frameCountRef.current % 40 === 0) {
-                if (materials.current instanceof Map) {
-                    materials.current.forEach((material) => {
-                        if (material && material.uniforms) {
-                            material.uniforms.time.value =
-                                state.clock.getElapsedTime();
-
-                            // animating the gradient colors
-                            const t = state.clock.getElapsedTime() * 0.2;
-                            material.uniforms.color1.value.setHSL(
-                                Math.sin(t) * 0.1 + 0.6,
-                                0.7,
-                                0.5
-                            );
-
-                            material.uniforms.color2.value.setHSL(
-                                Math.cos(t) * 0.1 + 0.8,
-                                0.8,
-                                0.6
-                            );
-                        }
-                    });
-                }
+            // if (frameCountRef.current % 5 === 0) {
+            if (materials.current instanceof Map) {
+                materials.current.forEach((material) => {
+                    if (material && material.uniforms) {
+                        material.uniforms.time.value =
+                            state.clock.getElapsedTime();
+                    }
+                });
             }
+            // }
         }
     });
     return (
@@ -302,7 +333,7 @@ const MemoizedAbout = memo(function About({
                                                 generalScaleX
                                             }
                                             outlineWidth={
-                                                isMobile ? 0.002 : 0.002
+                                                isMobile ? 0.005 : 0.004
                                             }
                                             outlineColor="black"
                                             // outlineColor="rgba(0, 0, 0, 0.01)"
@@ -375,34 +406,3 @@ const MemoizedAbout = memo(function About({
 });
 
 export default MemoizedAbout;
-
-const GradientTextMaterial = shaderMaterial(
-    {
-        color1: new Color('#4a6fa5'),
-        color2: new Color('#6a5acd'),
-        time: 0,
-    },
-    // Vertex shader -
-    `
-        varying vec2 vUv;
-        void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `,
-    // Fragment shader -
-    `
-        uniform vec3 color1;
-        uniform vec3 color2;
-        uniform float time;
-        uniform float opacity;
-        varying vec2 vUv;
-        void main() {
-            float mixValue = sin(vUv.y * 3.14 + time * 0.5) * 0.5 + 0.5;
-            vec3 color = mix(color1, color2, mixValue);
-            gl_FragColor = vec4(color, 1.0);
-        }
-    `
-);
-
-extend({ GradientTextMaterial });
