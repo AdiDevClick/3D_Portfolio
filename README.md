@@ -1,102 +1,124 @@
 # Portfolio 3D Interactif
 
-Un portfolio moderne utilisant React, Three.js et TypeScript pour créer une expérience utilisateur immersive en 3D.
+> Portfolio moderne avec React Three Fiber et expérience 3D immersive
 
-## 🌟 Caractéristiques
+## 🌐 Demo
+**Live Demo**: [https://adidevclick.github.io/3D_Portfolio/](https://adidevclick.github.io/3D_Portfolio/)
 
-### Carrousel 3D
-- Affichage dynamique des projets en cercle
-- Animations fluides et interactives
-- Système de positionnement intelligent avec gestion des collisions
-- Effets de courbure des cartes (bending)
+## 🛠 Tech Stack
 
-### Interactions
-- Hover : Mise en avant de la carte avec animations
-- Click : Ouverture détaillée du projet
-- Navigation fluide entre les projets
-- Adaptation responsive (mobile/desktop)
+### Core
+- **React 19** + **TypeScript**
+- **Three.js** + **@react-three/fiber** + **@react-three/drei**
+- **Maath** (animations easing)
+- **React Spring**
+- **Vite** (build tool)
 
-## 🛠 Technologies
+### State Management
+- **Hooks/Reducers** (migration Zustand en cours)
+- **React Query** (API layer prévu)
 
-- React + TypeScript
-- Three.js
-- @react-three/fiber & @react-three/drei
-- Maath (animations)
-- Vite (build tool)
+### Performance
+- **Frustum Culling** actif
+- **Custom Animation Hooks** réutilisables
+- **Conditional useFrame** optimization
 
-## 📁 Structure du Projet
+## ✨ Features
+
+### 🎮 Navigation 3D Immersive
+- **Scroll/Drag naturel** (mobile/desktop)
+- **Camera transitions** fluides entre sections
+- **HUD 3D menu** (en développement)
+
+### 🎨 Carousel 3D Projets
+- **Cards 3D** avec profondeur (box geometry)
+- **Animations interactives** (hover, click)
+- **Collision system** intelligent
+- **SVG → Modèles 3D** pipeline
+
+### 🎭 Interface Moderne
+- **Custom mesh text 3D** optimisé
+- **CSS Houdini toggle** (light/dark mode)
+- **Responsive design** adaptatif
+- **Touch interactions** natives
+
+## 🚀 Quick Start
+
+```bash
+# Clone
+git clone <repository-url>
+cd 3d-portfolio
+
+# Install
+npm install
+
+# Dev server
+npm run dev
+```
+
+## 📁 Architecture
 
 ```
 src/
 ├── components/
-│   ├── 3DComponents/
-│   │   ├── Carousel/
-│   │   │   ├── Carousel.tsx    # Composant principal
-│   │   │   └── Functions.ts    # Logique d'animation
-│   │   ├── Cards/
-│   │   │   ├── CardContainer.tsx
-│   │   │   └── CardMainTitle.tsx
-│   │   └── Html/
-│   │       └── HtmlContainer.tsx
-│   └── projects/
-│       └── ProjectContainer.tsx
+│   ├── 3DComponents/     # Three.js components
+│   │   ├── Scene/        # Main 3D scene
+│   │   ├── Carousel/     # 3D project carousel
+│   │   └── Cards/        # Interactive 3D cards
+├── pages/
+│   ├── Home/             # Landing 3D
+│   ├── About/            # About section
+│   └── Contact/          # Contact interface
 ├── hooks/
-│   └── reducers/
-│       └── carouselTypes.ts
-└── configs/
-    └── 3DCarousel.config.ts
+│   ├── animation/        # Custom animation system
+│   └── reducers/         # State management
+├── api/
+│   ├── contexts/         # React contexts
+│   └── draco/            # 3D compression config
+└── configs/              # App configurations
 ```
 
-## 🎮 Fonctionnalités Principales
+## ⚡ Performance Features
 
-### Système de Carrousel
+### Frustum Culling
+- **Automatic visibility check** sur tous éléments
+- **useFrame conditionnel** seulement si page active
+- **frameCount optimization** pour throttling
+
+### Animation System
 ```typescript
-export function createCardProperties(
-    SETTINGS: SettingsType,
-    datas: ElementType[],
-    i: number,
-    self: ElementType[],
-    id: string
-) {
-    // Configuration des propriétés de chaque carte
-}
+// Custom reusable animation hook
+const itemsToAnimate: AnimationItemType[] = [
+    {
+        ref: titleRef,
+        type: 'position',
+        effectOn: currentTitlePos,
+        time: 0.3,
+        animationType: easing.damp3
+    }
+];
+
+useAnimateItems(itemsToAnimate, isActive, groupRef);
 ```
 
-### Animations
+### Conditional Rendering
 ```typescript
-handleNormalAnimation(
-    material,
-    scale,
-    rotation,
-    cardHoverScale,
-    cardHoverRadius,
-    cardHoverZoom,
-    delta
-);
-```
-
-## 🚀 Installation
-
-1. Cloner le repository
-```bash
-git clone <repository-url>
-```
-
-2. Installer les dépendances
-```bash
-npm install
-```
-
-3. Lancer en développement
-```bash
-npm run dev
+// Performance-first approach
+useFrame((state, delta) => {
+    frameCountRef.current += 1;
+    
+    // Only execute when needed
+    if (frameCountRef.current % 60 === 0) {
+        frustumChecker([refs], state, frameCountRef.current, isMobile);
+    }
+});
 ```
 
 ## ⚙️ Configuration
 
-Les paramètres du carrousel sont configurables via le fichier `3DCarousel.config.ts` :
-
+### Carousel Settings
 ```typescript
+// src/configs/3DCarousel.config.ts
 export const SETTINGS = {
     CARDS_COUNT: 10,
     CARD_SCALE: 1,
@@ -107,25 +129,70 @@ export const SETTINGS = {
 };
 ```
 
-## 📝 Notes de Développement
+### Debug Mode
+```typescript
+// Dev mode toggle (coming soon)
+const DEV_MODE = {
+    showFPS: true,
+    liveSettings: true,
+    performanceMonitor: true
+};
+```
 
-### Gestion des États
-- Utilisation d'un reducer pour la gestion globale des cartes
-- État local pour les animations spécifiques
-- Système de référence pour les interactions 3D
+## 🔮 Roadmap
 
-### Optimisations
-- Throttling des mises à jour de position
-- Gestion efficace des collisions
-- Animations optimisées avec Maath
+### v1.1 - HUD System (Q1 2025)
+- [x] HUD 3D buttons créés (Blender)
+- [ ] Migration complète Zustand
+- [ ] HUD menu intégré (4 pages navigation)
+- [ ] Mobile carousel positioning fix
+- [ ] Debug mode avec FPS counter
 
-## 🔜 Améliorations Prévues
+### v1.2 - Camera Experience (Q2 2025)
+- [ ] **Camera pans** entre sections (+ scroll hybrid)
+- [ ] Header removal (remplacé par HUD)
+- [ ] Light/Dark mode 3D avec Houdini toggle
+- [ ] Box geometry cards (6 faces + profondeur)
 
-- [x] Optimisation des performances
-- [ ] Nouveaux effets de transition
-- [ ] Amélioration du système de collision
-- [ ] Support pour plus de types de contenu
+### v2.0 - Full Stack 3D (Q3-Q4 2025)
+- [ ] **Express/Fastify API** + dashboard
+- [ ] **React Query** integration
+- [ ] Advanced 3D effects & shaders
+- [ ] Tests unitaires complets
+- [ ] Performance target: Lighthouse 85+
+
+## 🎨 3D Assets Pipeline
+
+### Custom Creations
+- **Modèles 3D**: Créations Blender originales
+- **Icons SVG → 3D**: Pipeline de conversion
+- **Mesh Text**: Optimisé pour load instantané
+- **Materials**: Couleurs procedurales (pas de textures)
+
+### Optimization
+- **Draco compression** pour modèles
+- **Conditional loading** basé sur device
+- **LOD system** (prévu v2.0)
+
+## 🏆 Key Innovations
+
+### Architecture Decisions
+- **Configuration over Code** approach
+- **Custom hooks** pour animations réutilisables
+- **Separation of concerns** (3D/Logic/State)
+- **Performance-first** development
+
+### Technical Highlights
+- **Zero HTML UI** (objectif v2.0)
+- **Camera-driven UX** au lieu de scroll tricks
+- **Real-time 3D debugging** tools
+- **Immersive portfolio experience**
 
 ## 📄 License
 
 MIT License
+
+---
+
+**Built with ❤️ and lots of ☕**
+*Parce qu'on est en 3D bordel !* 🚀
