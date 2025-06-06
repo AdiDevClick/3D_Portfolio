@@ -29,7 +29,7 @@ let currentStackPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 const ANIM_CONFIG_BASE = {
     animationType: easing.damp3,
     time: 0.2,
-    type: 'position',
+    type: 'position' as const,
 };
 
 const gridOptions = {
