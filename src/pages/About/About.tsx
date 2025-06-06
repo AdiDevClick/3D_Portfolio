@@ -16,6 +16,7 @@ import aboutText from '@data/about-texts.json';
 import { importedNormalFont } from '@/configs/3DFonts.config';
 import { useSpring, animated } from '@react-spring/three';
 import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
+import { animateItem } from '@/hooks/animation/useAnimateItems';
 
 const GradientTextMaterial = shaderMaterial(
     {
@@ -64,7 +65,12 @@ const GradientTextMaterial = shaderMaterial(
 extend({ GradientTextMaterial });
 
 let isActive = false;
-let count = 0;
+
+const ANIM_CONFIG_BASE = {
+    animationType: easing.damp3,
+    time: 0.3,
+    type: 'position' as const,
+};
 
 /**
  * Contains the about page content/informations.
@@ -108,7 +114,6 @@ const MemoizedAbout = memo(function About({
 
     const { viewport } = useThree();
     const [animationsEnabled, setAnimationsEnabled] = useState(false);
-    const scroll = useScroll();
 
     isActive = visible === 'about';
 
@@ -155,8 +160,6 @@ const MemoizedAbout = memo(function About({
         setAnimationsEnabled(true);
     }, []);
 
-    if (count > 0) count = 0;
-
     useFrame((state, delta) => {
         if (
             !groupRef.current ||
@@ -167,30 +170,19 @@ const MemoizedAbout = memo(function About({
             return;
         frameCountRef.current += 1;
 
-        if (!isActive && count > 0) {
-            count = 0;
-        }
-
         frustumChecker(
-            [titleRef.current, iconsRef.current, contentRef.current],
+            [
+                groupRef.current,
+                titleRef.current,
+                iconsRef.current,
+                contentRef.current,
+            ],
             state,
             frameCountRef.current,
             false
         );
 
-        if (isActive || groupRef.current.visible) {
-            if (count <= 0) {
-                scroll.scroll.current = 0;
-                count++;
-            }
-            if (contentRef.current.visible || groupRef.current.visible) {
-                easing.damp3(
-                    contentRef.current.position,
-                    contentPositionRef.current,
-                    0.3,
-                    delta
-                );
-            }
+        if (isActive) {
             if (iconsRef.current.visible || groupRef.current.visible) {
                 if (
                     contentRef.current.userData.contentSize &&
@@ -206,22 +198,6 @@ const MemoizedAbout = memo(function About({
                         );
                     }
                 }
-
-                easing.damp3(
-                    iconsRef.current.position,
-                    iconsPositionRef.current,
-                    0.3,
-                    delta
-                );
-            }
-
-            if (titleRef.current.visible || groupRef.current.visible) {
-                easing.damp3(
-                    titleRef.current.position,
-                    titlePositionRef.current,
-                    0.3,
-                    delta
-                );
             }
 
             if (frameCountRef.current % 10 === 0) {
@@ -235,7 +211,41 @@ const MemoizedAbout = memo(function About({
                 }
             }
         }
+
+        animateItem({
+            item: {
+                ...ANIM_CONFIG_BASE,
+                ref: contentRef,
+                effectOn: contentPositionRef.current,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
+
+        animateItem({
+            item: {
+                ...ANIM_CONFIG_BASE,
+                ref: titleRef,
+                effectOn: titlePositionRef.current,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
+
+        animateItem({
+            item: {
+                ...ANIM_CONFIG_BASE,
+                ref: iconsRef,
+                effectOn: iconsPositionRef.current,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
     });
+
     return (
         <group visible={isActive} ref={groupRef}>
             <FloatingTitle
