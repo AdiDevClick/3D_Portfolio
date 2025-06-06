@@ -11,6 +11,7 @@ import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
 import { ContactShadows, useScroll } from '@react-three/drei';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
+import { animateItem } from '@/hooks/animation/useAnimateItems';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -24,7 +25,12 @@ type HomeTypes = {
 
 let currentTitlePos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentStackPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-let count = 0;
+
+const ANIM_CONFIG_BASE = {
+    animationType: easing.damp3,
+    time: 0.2,
+    type: 'position',
+};
 
 const gridOptions = {
     columnsNumber: 3,
@@ -77,7 +83,6 @@ const MemoizedHome = memo(function Home({
     const titleRef = useRef<Group>(null);
     const groupRef = useRef<Group>(null);
     const stackRef = useRef<Group>(null);
-    const scroll = useScroll();
 
     currentTitlePos = isActive
         ? currentTitlePos.set(0, 0, 0)
@@ -86,82 +91,43 @@ const MemoizedHome = memo(function Home({
         ? currentStackPos.set(0, yPosition, 0)
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
-    if (count > 0) count = 0;
-
     useFrame((state, delta) => {
         if (!groupRef.current || !titleRef.current || !stackRef.current) return;
         frameCountRef.current += 1;
 
-        if (isActive && count <= 0) {
-            scroll.scroll.current = 0;
-            // scroll.offset = 0;
-            // scroll.delta = 0;
-            // scroll.el.scrollTo({ top: 0, behavior: 'instant' });
-            count++;
-            // groupRef.current.position.y = 0;
-            // groupRef.current.updateMatrixWorld(true);
-        }
-
-        if (!isActive && count > 0) {
-            count = 0;
-        }
-
         // Check if the objects are in the frustum
         frustumChecker(
-            [stackRef.current, titleRef.current],
+            [groupRef.current, stackRef.current, titleRef.current],
             state,
             frameCountRef.current,
             isMobile
         );
 
-        if (stackRef.current.visible || isActive) {
-            easing.damp3(
-                stackRef.current.position,
-                currentStackPos,
-                0.2,
-                delta
-            );
-        }
+        animateItem({
+            item: {
+                ...ANIM_CONFIG_BASE,
+                ref: stackRef,
+                effectOn: currentStackPos,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
 
-        if (titleRef.current.visible || isActive) {
-            easing.damp3(
-                titleRef.current.position,
-                currentTitlePos,
-                0.2,
-                delta
-            );
-        }
+        animateItem({
+            item: {
+                ...ANIM_CONFIG_BASE,
+                ref: titleRef,
+                effectOn: currentTitlePos,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
     });
 
     return (
         <group visible={isActive} ref={groupRef}>
-            {/* <SpotLight
-                castShadow
-                position={[-3.5, 4.5, -1.5]}
-                distance={10}
-                intensity={10}
-                angle={0.5}
-                attenuation={5}
-                anglePower={5}
-            /> */}
-
-            {/* <Stars
-                radius={100}
-                depth={100}
-                count={4000}
-                factor={4}
-                saturation={0}
-                fade
-                speed={0.2}
-            /> */}
-            {/* <Sparkles
-                count={300}
-                size={3}
-                speed={0.02}
-                opacity={1}
-                scale={10}
-                color="#fff3b0"
-            /> */}
             <HomePageTitle ref={titleRef} scalar={generalScaleX} />
             <Suspense fallback={<PlaceholderIcon ref={stackRef} />}>
                 <group name={'stack-container'} ref={stackRef}>
