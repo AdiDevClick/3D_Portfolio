@@ -1,4 +1,4 @@
-import { ScrollControls, Scroll, useScroll } from '@react-three/drei';
+import { ScrollControls, Scroll } from '@react-three/drei';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import '../../../utils/util.tsx';
 import Carousel from '@/components/3DComponents/Carousel/Carousel';
@@ -8,7 +8,7 @@ import MemoizedHome from '@/pages/Home/Home';
 import MemoizedContact from '@/pages/Contact/Contact';
 import { SceneProps } from '@/components/3DComponents/Scene/SceneTypes';
 import { useFrame } from '@react-three/fiber';
-import { easing } from 'maath';
+import { ScrollReset } from '@/components/3DComponents/Scrolling/ScrollReset';
 
 /**
  * Scene component
@@ -102,6 +102,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                     distance={0.3}
                     damping={0.5}
                 >
+                    <ScrollReset visible={visible} />
                     <Scroll key={'scroll-controls__scroller'} ref={pagesRef}>
                         {/* <Rig rotation={[0, 0, 0]}> */}
                         <MemoizedHome {...pagesMemoProps} />
