@@ -10,6 +10,7 @@ import {
     DESKTOP_ICONS_MARGINS_POSITION_SETTINGS,
     MOBILE_ICONS_MARGINS_POSITION_SETTINGS,
 } from '@/configs/ContactIcons.config';
+import { animateItem } from '@/hooks/animation/useAnimateItems';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { Html, Sparkles, Stars, useCursor } from '@react-three/drei';
 import { ThreeEvent, useFrame } from '@react-three/fiber';
@@ -19,6 +20,17 @@ import { Group } from 'three';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentIconsPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+
+const ANIM_CONFIG_BASE = {
+    animationType: easing.damp3,
+    time: 0.3,
+    type: 'position' as const,
+};
+const ANIM_SCALE_CONFIG_BASE = {
+    animationType: easing.damp3,
+    time: 0.2,
+    type: 'scale' as const,
+};
 
 const MemoizedContact = memo(function Contact({
     isMobile,
@@ -40,8 +52,7 @@ const MemoizedContact = memo(function Contact({
 
     currentGroupPos = isActive
         ? ACTIVE_PROJECTS_POSITION_SETTINGS.clone()
-        : // ? currentGroupPos.set(0, 0, 0)
-          DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+        : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
     currentIconsPos = isActive
         ? CONTACT_ICONS_POSITION_SETTINGS(
@@ -52,6 +63,7 @@ const MemoizedContact = memo(function Contact({
                   : DESKTOP_ICONS_MARGINS_POSITION_SETTINGS
           )
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+
     useFrame((state, delta) => {
         if (!groupRef.current || !iconsRef.current) return;
         frameCountRef.current += 1;
@@ -64,26 +76,39 @@ const MemoizedContact = memo(function Contact({
             isMobile
         );
 
-        if (groupRef.current.visible) {
-            easing.damp3(
-                groupRef.current.position,
-                currentGroupPos,
-                0.2,
-                delta
-            );
-            easing.damp3(groupRef.current.scale, scale, 0.2, delta);
-
-            if (iconsRef.current.visible || groupRef.current.visible) {
-                // if (iconsRef.current.visible) {
-                easing.damp3(
-                    iconsRef.current.position,
-                    currentIconsPos,
-                    0.3,
-                    delta
-                );
-            }
-        }
+        animateItem({
+            item: {
+                ...ANIM_CONFIG_BASE,
+                ref: groupRef,
+                effectOn: currentGroupPos,
+                time: 0.2,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
+        animateItem({
+            item: {
+                ...ANIM_CONFIG_BASE,
+                ref: iconsRef,
+                effectOn: currentIconsPos,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
+        animateItem({
+            item: {
+                ...ANIM_SCALE_CONFIG_BASE,
+                ref: groupRef,
+                effectOn: scale,
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
     });
+
     return (
         <group ref={groupRef} visible={isActive}>
             <FloatingTitle
