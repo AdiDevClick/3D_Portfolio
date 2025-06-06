@@ -348,7 +348,6 @@ export function Experience({ reducer }: ExperienceProps) {
                 <CameraControls
                     // attach="shadow-camera"
                     makeDefault
-                    // azimuthRotateSpeed={0.5}
                     // no Y-axis
                     polarRotateSpeed={0}
                     // no zoom
@@ -358,21 +357,6 @@ export function Experience({ reducer }: ExperienceProps) {
                     // Min angle on active is given by the camera
                     minAzimuthAngle={minAngle}
                     ref={ref}
-                    // truckControls={true}
-                    // enableTruckX={false}
-                    // minDistance={5}
-                    // maxDistance={50}
-                    // minDistance={5}
-                    // maxDistance={30}
-                    // boundary={
-                    //     new Box3(
-                    //         new Vector3(-0.1, -10, -50), // Min bounds [x, y, z] - X limité
-                    //         new Vector3(0.1, 10, 50) // Max bounds [x, y, z] - X limité
-                    //     )
-                    // }
-                    // minDistance={0}
-                    // maxDistance={0}
-
                     mouseButtons={{
                         // Activate left click for rotation
                         left: 1,
@@ -393,26 +377,6 @@ export function Experience({ reducer }: ExperienceProps) {
                         two: 0,
                         three: 0,
                     }}
-                    // onStart={(e) =>
-                    // onControlStart(e, activeContent, isMobile, visible)
-                    // }
-                    // onChange={(e) =>
-                    //     onControlStart(e, activeContent, isMobile, visible)
-                    // }
-                    // setBoundary={
-                    //     visible === 'card-detail' && activeContent?.isClicked
-                    //         ? new Box3(
-                    //               new Vector3(-0.1, -15, -30), // Min bounds
-                    //               new Vector3(0.1, 15, 30) // Max bounds
-                    //           )
-                    //         : undefined
-                    // }
-                    // setBoundary={
-                    //     new Box3(
-                    //         new Vector3(-1, -10, -20), // Min bounds plus larges pour test
-                    //         new Vector3(1, 10, 20) // Max bounds plus larges pour test
-                    //     )
-                    // }
                 />
             </directionalLight>
             <ambientLight intensity={0.4} color="#fff6f0" />
