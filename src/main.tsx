@@ -12,7 +12,6 @@ import useResize from '@/hooks/useResize';
 import datas from '@data/projects.json';
 import { useSettings } from '@/hooks/useSettings';
 import { Error404 } from '@/pages/Error/404/Error404';
-import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 
 const baseUrl = import.meta.env.BASE_URL;
 
