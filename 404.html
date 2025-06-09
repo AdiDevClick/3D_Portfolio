@@ -44,6 +44,11 @@
             //     l.replace('/');
             //     return;
             // }
+            if (path.includes('/spa-route/')) {
+                console.warn('🛡️ Anti-loop: spa-route detected, going home');
+                l.replace('/');
+                return;
+            }
             // ✅ Construire l'URL de redirection avec tous les paramètres
             // const redirectUrl = '/?spa-route/' +
             const redirectUrl = l.origin + '/spa-route/' +
