@@ -3,15 +3,16 @@ import { DEFAULT_PROJECTS_POSITION_SETTINGS } from '@/configs/3DCarousel.config'
 import { ReducerType } from '@/hooks/reducers/carouselTypes';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { memo, Suspense, useRef } from 'react';
+import { memo, Suspense, useEffect, useRef } from 'react';
 import { Group } from 'three';
 import iconsWithText from '@data/techstack.json';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { HomePageTitle } from '@/components/3DComponents/Title/HomePageTitle';
-import { ContactShadows, useScroll } from '@react-three/drei';
+import { ContactShadows } from '@react-three/drei';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import { animateItem } from '@/hooks/animation/useAnimateItems';
+import { useVirtualPageCount } from '@/hooks/pageScrolling/useVirtualPageCount';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -77,12 +78,13 @@ const MemoizedHome = memo(function Home({
 }: HomeTypes) {
     const frameCountRef = useRef(0);
     const yPosition = -(contentHeight ?? 10) * generalScaleX - margin;
-
+    const { calculateVirtualPageCount, setIsPageActive } =
+        useVirtualPageCount();
     const isActive = visible === 'home';
 
-    const titleRef = useRef<Group>(null);
-    const groupRef = useRef<Group>(null);
-    const stackRef = useRef<Group>(null);
+    const titleRef = useRef<Group>(null!);
+    const ref = useRef<Group>(null!);
+    const stackRef = useRef<Group>(null!);
 
     currentTitlePos = isActive
         ? currentTitlePos.set(0, 0, 0)
@@ -91,13 +93,25 @@ const MemoizedHome = memo(function Home({
         ? currentStackPos.set(0, yPosition, 0)
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
+    useEffect(() => {
+        if (isActive) {
+            calculateVirtualPageCount({
+                groupRef: ref,
+                contentHeight,
+                isActive,
+            });
+        } else {
+            setIsPageActive(false);
+        }
+    }, [visible, isActive]);
+
     useFrame((state, delta) => {
-        if (!groupRef.current || !titleRef.current || !stackRef.current) return;
+        if (!ref.current || !titleRef.current || !stackRef.current) return;
         frameCountRef.current += 1;
 
         // Check if the objects are in the frustum
         frustumChecker(
-            [groupRef.current, stackRef.current, titleRef.current],
+            [ref.current, stackRef.current, titleRef.current],
             state,
             frameCountRef.current,
             isMobile
@@ -110,7 +124,7 @@ const MemoizedHome = memo(function Home({
                 effectOn: currentStackPos,
             },
             isActive,
-            groupRef,
+            groupRef: ref,
             delta,
         });
 
@@ -121,13 +135,13 @@ const MemoizedHome = memo(function Home({
                 effectOn: currentTitlePos,
             },
             isActive,
-            groupRef,
+            groupRef: ref,
             delta,
         });
     });
 
     return (
-        <group visible={isActive} ref={groupRef}>
+        <group visible={isActive} ref={ref}>
             <HomePageTitle ref={titleRef} scalar={generalScaleX} />
             <Suspense fallback={<PlaceholderIcon ref={stackRef} />}>
                 <group name={'stack-container'} ref={stackRef}>
