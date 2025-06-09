@@ -38,7 +38,7 @@
         const hash = l.hash;
         console.log(l)
         // ✅ Construire l'URL de redirection avec tous les paramètres
-        const redirectUrl = l.origin +
+        const redirectUrl = l.origin + "?p=" +
             encodeURIComponent(path + search + hash);
 
         console.log('SPA Redirect:', path, '→', redirectUrl);
