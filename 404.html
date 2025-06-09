@@ -44,8 +44,8 @@
         //     return;
         // }
         // ✅ Construire l'URL de redirection avec tous les paramètres
-        const redirectUrl = '/spa-route/' +
-            // const redirectUrl = l.origin + '/spa-route/' +
+        // const redirectUrl = '/?spa-route/' +
+        const redirectUrl = l.origin + '/?spa-route=' +
             encodeURIComponent(path + search + hash);
         // const redirectUrl = l.origin + "?p=" +
         //     encodeURIComponent(path);
@@ -58,9 +58,9 @@
         console.log('SPA Redirect:', path, '→', redirectUrl);
 
         // ✅ Rediriger vers la racine avec la route encodée
-        l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-            redirectUrl);
-        // l.replace(redirectUrl);
+        // l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        //     redirectUrl);
+        l.replace(redirectUrl);
     </script>
     <!-- <script>
         // ✅ SPA Router Friendly Redirect
