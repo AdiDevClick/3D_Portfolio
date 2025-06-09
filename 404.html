@@ -9,10 +9,7 @@
     <script>
         (function () {
             const l = window.location;
-            const path = l.pathname
-            // const path = l.pathname.split('/')[1]
-            const search = l.search;
-            const hash = l.hash;
+            const path = l.pathname.split('/').slice(1);
 
             if (path.includes('spa-route')) {
                 console.warn('🛡️ Anti-loop: spa-route detected, going home');
@@ -20,10 +17,27 @@
                 return;
             }
 
+            const pathSegments = path.slice(1);
+            const joinedPathSegments = path.join('/');
+            const search = l.search;
+            const hash = l.hash;
+
             const redirectUrl = l.origin + '/?spa-route=' +
-                encodeURIComponent(path + search + hash);
+                encodeURIComponent(joinedPathSegments + search + hash);
 
             l.replace(redirectUrl);
+
+            // const pathSegments = l.pathname.split('/');
+            // const basePathSegments = pathSegments.slice(0, segmentCount + 1);
+            // const basePath = basePathSegments.join('/');
+            // const restPath = pathSegments.slice(segmentCount + 1).join('/');
+            // const restPath = '/' + pathSegments.slice(segmentCount + 1).join('/');
+            // console.log(restPath)
+            // Redirecter vers la page principale avec un paramètre encodé
+            // l.replace(
+            //     l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            //     basePath + '?p=' + encodeURIComponent(restPath + l.search)
+            // );
         })();
     </script>
 </head>
