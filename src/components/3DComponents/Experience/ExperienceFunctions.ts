@@ -41,6 +41,7 @@ export async function loadCardByURL(
         setIsURLLoaded,
         visible,
     } = options;
+
     try {
         if (showElements.length === 0) {
             throw createHttpError('Try again', 403);
