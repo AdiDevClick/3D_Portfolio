@@ -7,7 +7,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { DoubleSide, Mesh, Object3DEventMap, Vector3 } from 'three';
+import { Mesh, Object3DEventMap, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import {
@@ -19,7 +19,6 @@ import {
     updateTitlePosition,
 } from '@/components/3DComponents/Carousel/Functions';
 import { useLocation, useParams } from 'react-router';
-import { Title } from '@/components/3DComponents/Title/Title';
 import { Billboard, useScroll } from '@react-three/drei';
 import { Group } from 'three';
 import { frustumChecker } from '@/utils/frustrumChecker';
@@ -184,24 +183,20 @@ export default function Carousel({
                 setIsAnimatingIn(true);
                 return;
             }
-
             // !! IMPORTANT !! Reset any active content
-            // if (
-            //     visible === 'carousel' &&
-            //     activeContent?.isClicked &&
-            //     !activeProject
-            // ) {
-            //     console.log(
-            //         'objects reset:',
-            //         activeContent?.isClicked,
-            //         activeProject,
-            //         visible
-            //     );
-            //     activeContent.isActive = false;
-            //     activeContent.isClicked = false;
-            // }
+            if (
+                visible === 'card-detail' &&
+                !activeProject &&
+                activeContent?.isClicked
+            ) {
+                if (activeContent) {
+                    activeContent.isActive = false;
+                    activeContent.isClicked = false;
+                }
+            }
         }
     }, [activeURL, isInitialLoading, activeProject, visible]);
+
     if (count > 0) count = 0;
     useFrame((state, delta) => {
         if (!projectsRef.current) return;
