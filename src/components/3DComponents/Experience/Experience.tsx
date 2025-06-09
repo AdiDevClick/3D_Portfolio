@@ -5,7 +5,6 @@ import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -192,24 +191,27 @@ export function Experience({ reducer }: ExperienceProps) {
         if (location.pathname === '/') {
             if (visible !== 'home') setViewMode('home');
         } else if (location.pathname.includes('projets')) {
-            // if (params.id) {
-            if (params.id && activeContent && activeContent?.isClicked) {
-                if (visible !== 'card-detail') setViewMode('card-detail');
-            } else if (
-                activeContent?.isActive &&
-                !activeContent?.isClicked &&
-                !params.id
-            ) {
-                if (visible !== 'card-detail') setViewMode('card-detail');
-            } else if (
-                params.id &&
-                !activeContent &&
-                visible === 'carousel' &&
-                !isURLLoaded &&
-                showElements.length > 0
-            ) {
-                setViewMode('URLRequested');
-            } else {
+            if (activeContent) {
+                if (params.id && activeContent.isClicked) {
+                    if (visible !== 'card-detail') setViewMode('card-detail');
+                }
+                if (
+                    !params.id &&
+                    activeContent.isActive &&
+                    !activeContent.isClicked
+                ) {
+                    if (visible !== 'card-detail') setViewMode('card-detail');
+                }
+            }
+
+            if (!activeContent) {
+                if (
+                    params.id &&
+                    visible === 'carousel' &&
+                    showElements.length > 0
+                ) {
+                    setViewMode('URLRequested');
+                }
                 if (visible !== 'carousel' && visible !== 'URLRequested') {
                     setViewMode('carousel');
                 }
@@ -233,12 +235,11 @@ export function Experience({ reducer }: ExperienceProps) {
             !ref.current ||
             !params.id ||
             activeContent ||
-            isURLLoaded ||
+            // isURLLoaded ||
             visible !== 'URLRequested'
         ) {
             return;
         }
-
         const options = {
             id: params.id,
             showElements,
