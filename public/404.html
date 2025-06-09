@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adrien Quijo - 3D Portfolio - Redirection</title>
+
+    <script>
+        (function () {
+            const l = window.location;
+            const path = l.pathname.split('/').slice(1);
+
+            if (path.includes('spa-route')) {
+                console.warn('🛡️ Anti-loop: spa-route detected, going home');
+                l.replace('/');
+                return;
+            }
+
+            const pathSegments = path.slice(1);
+            const joinedPathSegments = path.join('/');
+            const search = l.search;
+            const hash = l.hash;
+
+            const redirectUrl = l.origin + '/?spa-route=' +
+                encodeURIComponent(joinedPathSegments + search + hash);
+
+            l.replace(redirectUrl);
+
+        })();
+    </script>
+</head>
+
+<body>
+    <h2>Redirection en cours...</h2>
+    <p>Si la redirection ne fonctionne pas, <a href="https://www.adrien-quijo.fr/">JavaScript requis - Cliquez ici pour
+            l'accueil</a>.</p>
+</body>
+
+</html>
