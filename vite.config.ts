@@ -6,8 +6,8 @@ import dns from 'node:dns';
 dns.setDefaultResultOrder('verbatim');
 export default defineConfig({
     plugins: [react()],
-    base: '/3D_Portfolio/',
-    // base: '/',
+    // base: '/3D_Portfolio/',
+    base: '/',
     css: {
         devSourcemap: true,
     },
