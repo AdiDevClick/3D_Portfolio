@@ -1,8 +1,8 @@
 import '@css/About.scss';
-import { shaderMaterial, Text, useScroll } from '@react-three/drei';
+import { shaderMaterial, Text } from '@react-three/drei';
 import { memo, Suspense, useEffect, useRef, useState } from 'react';
 import { Color, Group } from 'three';
-import { extend, useFrame, useThree } from '@react-three/fiber';
+import { extend, useFrame } from '@react-three/fiber';
 import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
@@ -17,6 +17,7 @@ import { importedNormalFont } from '@/configs/3DFonts.config';
 import { useSpring, animated } from '@react-spring/three';
 import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
 import { animateItem } from '@/hooks/animation/useAnimateItems';
+import { useVirtualPageCount } from '@/hooks/pageScrolling/useVirtualPageCount';
 
 const GradientTextMaterial = shaderMaterial(
     {
@@ -99,11 +100,14 @@ const MemoizedAbout = memo(function About({
         dynamicHeightContent: true,
     };
 
+    const { calculateVirtualPageCount, setIsPageActive } =
+        useVirtualPageCount();
+
     const frameCountRef = useRef(0);
-    const contentRef = useRef<Group>(null);
-    const titleRef = useRef<Group>(null);
-    const iconsRef = useRef<Group>(null);
-    const groupRef = useRef<Group>(null);
+    const contentRef = useRef<Group>(null!);
+    const titleRef = useRef<Group>(null!);
+    const iconsRef = useRef<Group>(null!);
+    const ref = useRef<Group>(null!);
     const materials = useRef(new Map());
 
     const titlePositionRef = useRef(DEFAULT_PROJECTS_POSITION_SETTINGS.clone());
@@ -112,10 +116,21 @@ const MemoizedAbout = memo(function About({
         DEFAULT_PROJECTS_POSITION_SETTINGS.clone()
     );
 
-    const { viewport } = useThree();
     const [animationsEnabled, setAnimationsEnabled] = useState(false);
 
     isActive = visible === 'about';
+
+    useEffect(() => {
+        if (isActive) {
+            calculateVirtualPageCount({
+                groupRef: ref,
+                contentHeight,
+                isActive,
+            });
+        } else {
+            setIsPageActive(false);
+        }
+    }, [visible, isActive]);
 
     useEffect(() => {
         if (isActive && contentHeight && contentWidth && contentRef.current) {
@@ -155,14 +170,14 @@ const MemoizedAbout = memo(function About({
     //     () => settingsConfig
     // );
     useEffect(() => {
-        if (!iconsRef.current) return;
+        if (!iconsRef.current || isActive) return;
         iconsRef.current.position.copy(DEFAULT_PROJECTS_POSITION_SETTINGS);
         setAnimationsEnabled(true);
-    }, []);
+    }, [isActive]);
 
     useFrame((state, delta) => {
         if (
-            !groupRef.current ||
+            !ref.current ||
             !titleRef.current ||
             !contentRef.current ||
             !iconsRef.current
@@ -172,7 +187,7 @@ const MemoizedAbout = memo(function About({
 
         frustumChecker(
             [
-                groupRef.current,
+                ref.current,
                 titleRef.current,
                 iconsRef.current,
                 contentRef.current,
@@ -183,7 +198,7 @@ const MemoizedAbout = memo(function About({
         );
 
         if (isActive) {
-            if (iconsRef.current.visible || groupRef.current.visible) {
+            if (iconsRef.current.visible || ref.current.visible) {
                 if (
                     contentRef.current.userData.contentSize &&
                     frameCountRef.current % 60 === 0
@@ -200,7 +215,7 @@ const MemoizedAbout = memo(function About({
                 }
             }
 
-            if (frameCountRef.current % 10 === 0) {
+            if (frameCountRef.current % 5 === 0) {
                 if (materials.current instanceof Map) {
                     materials.current.forEach((material) => {
                         if (material && material.uniforms) {
@@ -219,7 +234,7 @@ const MemoizedAbout = memo(function About({
                 effectOn: contentPositionRef.current,
             },
             isActive,
-            groupRef,
+            groupRef: ref,
             delta,
         });
 
@@ -230,7 +245,7 @@ const MemoizedAbout = memo(function About({
                 effectOn: titlePositionRef.current,
             },
             isActive,
-            groupRef,
+            groupRef: ref,
             delta,
         });
 
@@ -241,13 +256,13 @@ const MemoizedAbout = memo(function About({
                 effectOn: iconsPositionRef.current,
             },
             isActive,
-            groupRef,
+            groupRef: ref,
             delta,
         });
     });
 
     return (
-        <group visible={isActive} ref={groupRef}>
+        <group visible={isActive} ref={ref}>
             <FloatingTitle
                 text="A propos de moi"
                 ref={titleRef}
