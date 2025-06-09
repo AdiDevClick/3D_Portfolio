@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adrien Quijo - 3D Portfolio - Redirection</title>
-    <script>
+    <!-- <script>
         // Segment dans l'URL avant le reste du chemin (/3D_Portfolio/)
         let segmentCount = 1;
 
         // Variables pour le script de redirection
         let l = window.location;
-        console.log(l)
+        console.log(l.origin)
         const pathSegments = l.pathname.split('/');
         const basePathSegments = pathSegments.slice(0, segmentCount + 1);
         const basePath = basePathSegments.join('/');
@@ -25,6 +25,24 @@
             l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
             basePath + '?p=' + encodeURIComponent(restPath + l.search)
         );
+    </script> -->
+    <script>
+        // ✅ SPA Router Friendly Redirect
+        (function () {
+            const l = window.location;
+            const path = l.pathname;
+            const search = l.search;
+            const hash = l.hash;
+
+            // ✅ Construire l'URL de redirection avec tous les paramètres
+            const redirectUrl = l.origin + '/?spa-route=' +
+                encodeURIComponent(path + search + hash);
+
+            console.log('SPA Redirect:', path, '→', redirectUrl);
+
+            // ✅ Rediriger vers la racine avec la route encodée
+            l.replace(redirectUrl);
+        })();
     </script>
     <!-- <script>window.location.replace('/');</script> -->
 </head>
