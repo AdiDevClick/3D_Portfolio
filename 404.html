@@ -5,96 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adrien Quijo - 3D Portfolio - Redirection</title>
-    <!-- <script>
-        // Segment dans l'URL avant le reste du chemin (/3D_Portfolio/)
-        let segmentCount = 1;
 
-        // Variables pour le script de redirection
-        const l = window.location;
-        const path = l.pathname;
-
-        console.log(l.origin + path)
-
-        const pathSegments = l.pathname.split('/');
-        const basePathSegments = pathSegments.slice(0, segmentCount + 1);
-        const basePath = basePathSegments.join('/');
-        const restPath = pathSegments.slice(segmentCount + 1).join('/');
-        // const restPath = '/' + pathSegments.slice(segmentCount + 1).join('/');
-        console.log('restPath', restPath);
-        console.log('basePath', basePath);
-
-        // Redirecter vers la page principale avec un paramètre encodé
-        l.replace(
-            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-            basePath + '?p=' + encodeURIComponent(restPath + l.search)
-        );
-    </script> -->
     <script>
         (function () {
-            // ✅ SPA Router Friendly Redirect
-
             const l = window.location;
-
-            const path = l.pathname.split('/')[1]
+            const path = l.pathname
+            // const path = l.pathname.split('/')[1]
             const search = l.search;
             const hash = l.hash;
-            console.log(l)
-            console.log("path before building => ", path)
-            // if (path.includes('/spa-route/')) {
-            //     console.warn('🛡️ Anti-loop: spa-route detected, going home');
-            //     l.replace('/');
-            //     return;
-            // }
+
             if (path.includes('spa-route')) {
                 console.warn('🛡️ Anti-loop: spa-route detected, going home');
                 l.replace('/');
                 return;
             }
-            // ✅ Construire l'URL de redirection avec tous les paramètres
-            // const redirectUrl = '/?spa-route/' +
-            const redirectUrl = l.origin + '/?spa-route=' +
-                // const redirectUrl = l.origin + '/?spa-route=' +
-                encodeURIComponent(path + search + hash);
-            // const redirectUrl = l.origin + "?p=" +
-            //     encodeURIComponent(path);
-            // encodeURIComponent(path + search + hash);
-            // if (l.pathname.includes('/spa-route/')) {
-            //     // Si l'URL contient déjà le segment /spa-route/, ne rien faire
-            //     console.log('Already on SPA route:', l.pathname);
-            //     return;
-            // }
-            console.log('SPA Redirect:', path, '→', redirectUrl);
 
-            // ✅ Rediriger vers la racine avec la route encodée
-            // l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-            //     redirectUrl);
+            const redirectUrl = l.origin + '/?spa-route=' +
+                encodeURIComponent(path + search + hash);
+
             l.replace(redirectUrl);
         })();
     </script>
-    <!-- <script>
-        // ✅ SPA Router Friendly Redirect
-        (function () {
-            const l = window.location;
-            const path = l.pathname;
-            const search = l.search;
-            const hash = l.hash;
-
-            // ✅ Construire l'URL de redirection avec tous les paramètres
-            const redirectUrl = l.origin + '/?spa-route=' +
-                encodeURIComponent(path + search + hash);
-
-            console.log('SPA Redirect:', path, '→', redirectUrl);
-
-            // ✅ Rediriger vers la racine avec la route encodée
-            l.replace(redirectUrl);
-        })();
-    </script> -->
-    <!-- <script>window.location.replace('/');</script> -->
 </head>
 
 <body>
     <h2>Redirection en cours...</h2>
-    <p>Si la redirection ne fonctionne pas, <a href="https://www.adrien-quijo.fr/">cliquez ici</a>.</p>
+    <p>Si la redirection ne fonctionne pas, <a href="https://www.adrien-quijo.fr/">JavaScript requis - Cliquez ici pour
+            l'accueil</a>.</p>
 </body>
 
 </html>
