@@ -5,30 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adrien Quijo - 3D Portfolio - Redirection</title>
-    <!-- <script>
+    <script>
         // Segment dans l'URL avant le reste du chemin (/3D_Portfolio/)
         let segmentCount = 1;
 
         // Variables pour le script de redirection
         let l = window.location;
+        console.log(l)
         const pathSegments = l.pathname.split('/');
         const basePathSegments = pathSegments.slice(0, segmentCount + 1);
         const basePath = basePathSegments.join('/');
         const restPath = pathSegments.slice(segmentCount + 1).join('/');
         // const restPath = '/' + pathSegments.slice(segmentCount + 1).join('/');
-        console.log(restPath)
+        console.log('restPath', restPath);
+        console.log('basePath', basePath);
+
         // Redirecter vers la page principale avec un paramètre encodé
         l.replace(
             l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
             basePath + '?p=' + encodeURIComponent(restPath + l.search)
         );
-    </script> -->
-    <script>window.location.replace('/');</script>
+    </script>
+    <!-- <script>window.location.replace('/');</script> -->
 </head>
 
 <body>
     <h2>Redirection en cours...</h2>
-    <p>Si la redirection ne fonctionne pas, <a href="/3D_Portfolio/">cliquez ici</a>.</p>
+    <p>Si la redirection ne fonctionne pas, <a href=".../">cliquez ici</a>.</p>
 </body>
 
 </html>
