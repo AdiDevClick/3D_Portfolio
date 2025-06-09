@@ -33,6 +33,11 @@
         // ✅ SPA Router Friendly Redirect
 
         const l = window.location;
+        if (l.pathname.includes('/spa-route/')) {
+            // Si l'URL contient déjà le segment /spa-route/, ne rien faire
+            console.log('Already on SPA route:', l.pathname);
+            return;
+        }
         const path = l.pathname.split('/')[1]
         const search = l.search;
         const hash = l.hash;
