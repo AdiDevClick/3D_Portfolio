@@ -10,8 +10,11 @@
         let segmentCount = 1;
 
         // Variables pour le script de redirection
-        let l = window.location;
-        console.log(l.origin)
+        const l = window.location;
+        const path = l.pathname;
+
+        console.log(l.origin + path)
+
         const pathSegments = l.pathname.split('/');
         const basePathSegments = pathSegments.slice(0, segmentCount + 1);
         const basePath = basePathSegments.join('/');
@@ -28,6 +31,24 @@
     </script> -->
     <script>
         // ✅ SPA Router Friendly Redirect
+
+        const l = window.location;
+        const path = l.pathname;
+        const search = l.search;
+        const hash = l.hash;
+        console.log(l)
+        // ✅ Construire l'URL de redirection avec tous les paramètres
+        const redirectUrl = l.origin +
+            encodeURIComponent(path + search + hash);
+
+        console.log('SPA Redirect:', path, '→', redirectUrl);
+
+        // ✅ Rediriger vers la racine avec la route encodée
+        l.replace(redirectUrl);
+        ;
+    </script>
+    <!-- <script>
+        // ✅ SPA Router Friendly Redirect
         (function () {
             const l = window.location;
             const path = l.pathname;
@@ -43,7 +64,7 @@
             // ✅ Rediriger vers la racine avec la route encodée
             l.replace(redirectUrl);
         })();
-    </script>
+    </script> -->
     <!-- <script>window.location.replace('/');</script> -->
 </head>
 
