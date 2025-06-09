@@ -269,62 +269,6 @@ export function Experience({ reducer }: ExperienceProps) {
     //         console.log('✅ Camera reset via CameraControls');
     //     }
     // }, [visible]);
-    // Dans Experience.tsx - Ajouter debug
-    // useEffect(() => {
-    //     if (!ref.current) return;
-
-    //     if (visible === 'card-detail' && activeContent?.isClicked) {
-    //         setTimeout(() => {
-    //             const finalCameraX = ref.current.camera.position.x;
-
-    //             const boundary = new Box3(
-    //                 new Vector3(finalCameraX - 0.3, -20, -60),
-    //                 new Vector3(finalCameraX + 0.3, 20, 60)
-    //             );
-
-    //             ref.current.setBoundary(boundary);
-    //             ref.current.truckSpeed = 2;
-
-    //             // ✅ UTILISER la target calculée par positioning
-    //             ref.current.setTarget(
-    //                 cameraResults.cameraTarget.x,
-    //                 cameraResults.cameraTarget.y,
-    //                 cameraResults.cameraTarget.z,
-    //                 false
-    //             );
-
-    //             console.log(
-    //                 '✅ Boundary + target from positioning:',
-    //                 cameraResults.cameraTarget
-    //             );
-    //         }, 1000);
-
-    //         // setTimeout(() => {
-    //         //     // ✅ FORCER l'arrêt de toutes les animations
-    //         //     ref.current.enabled = false; // Désactiver CameraControls
-    //         //     setTimeout(() => {
-    //         //         // ✅ Capturer position après arrêt des animations
-    //         //         const stableX = ref.current.camera.position.x;
-    //         //         const boundary = new Box3(
-    //         //             new Vector3(stableX - 0.5, -30, -60),
-    //         //             new Vector3(stableX + 0.5, 30, 60)
-    //         //         );
-    //         //         ref.current.setBoundary(boundary);
-    //         //         ref.current.truckSpeed = 3;
-    //         //         // ✅ Réactiver CameraControls APRÈS boundary
-    //         //         ref.current.enabled = true;
-    //         //         console.log('✅ Boundary set after forcing stability:', {
-    //         //             stableX: stableX.toFixed(3),
-    //         //             isInBounds: boundary.containsPoint(
-    //         //                 ref.current.camera.position
-    //         //             ),
-    //         //         });
-    //         //     }, 200); // Court délai pour laisser tout s'arrêter
-    //         // }, 2000); // Délai plus long initial
-    //     } else if (ref.current) {
-    //         ref.current.setBoundary(null!);
-    //     }
-    // }, [visible, activeContent?.isClicked, showElements]);
 
     return (
         <>
