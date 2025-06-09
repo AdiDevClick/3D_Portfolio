@@ -17,6 +17,8 @@ export function ScrollReset({ visible }: ScrollResetProps) {
      * @description : This is a workaround to reset the scroll position
      */
     useEffect(() => {
+        scroll.offset = 0;
+        scroll.el.scrollTop = 0;
         scroll.scroll.current = 0;
     }, [visible]);
 
