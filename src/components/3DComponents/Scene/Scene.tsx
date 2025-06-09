@@ -7,7 +7,6 @@ import { PageScroller } from '@/components/3DComponents/Html/PageScroller';
 import MemoizedHome from '@/pages/Home/Home';
 import MemoizedContact from '@/pages/Contact/Contact';
 import { SceneProps } from '@/components/3DComponents/Scene/SceneTypes';
-import { useFrame } from '@react-three/fiber';
 import { ScrollReset } from '@/components/3DComponents/Scrolling/ScrollReset';
 
 /**
@@ -58,24 +57,22 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
      * Detect route change -
      * @description : This will automatically
      * apply virtual page count to enable scroll and scroll damping
+     * or disable it based on the page.
      */
     useEffect(() => {
+        let pageCount = 0;
         switch (visible) {
             case 'home':
-                setVirtualPageCount(isMobile ? 2.8 : 3.6);
+                pageCount = 4;
                 break;
             case 'about':
-                setVirtualPageCount(isMobile ? 6.5 : 6);
+                pageCount = 4;
                 break;
-            // case 'card-detail':
-            //     if (isMobile && activeContent?.isClicked) {
-            //         console.log('true');
-            //         setVirtualPageCount(1.5);
-            //     }
-            //     break;
             default:
-                setVirtualPageCount(0);
+                pageCount = 0;
+                break;
         }
+        setVirtualPageCount(pageCount);
     }, [visible, isMobile]);
 
     const pagesMemoProps = useMemo(
