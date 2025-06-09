@@ -44,11 +44,11 @@
         // const redirectUrl = l.origin + "?p=" +
         //     encodeURIComponent(path);
         // encodeURIComponent(path + search + hash);
-        if (l.pathname.includes('/spa-route/')) {
-            // Si l'URL contient déjà le segment /spa-route/, ne rien faire
-            console.log('Already on SPA route:', l.pathname);
-            return;
-        }
+        // if (l.pathname.includes('/spa-route/')) {
+        //     // Si l'URL contient déjà le segment /spa-route/, ne rien faire
+        //     console.log('Already on SPA route:', l.pathname);
+        //     return;
+        // }
         console.log('SPA Redirect:', path, '→', redirectUrl);
 
         // ✅ Rediriger vers la racine avec la route encodée
