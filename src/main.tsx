@@ -77,6 +77,7 @@ const height = 2 * Math.tan(vFov / 2) * initialCameraFov;
  */
 export function Root(contentType: { contentType?: string }) {
     const errorContent = contentType.contentType === 'error';
+
     const { size } = useResize(100);
     const isTouchDevice = (size[0] ?? 1) < 1024;
     const isMobile = (size[0] ?? 1) < 576;
