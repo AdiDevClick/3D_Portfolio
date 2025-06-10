@@ -58,6 +58,11 @@ export default function App({
 
             {/* <Suspense fallback={null}> */}
             <Canvas
+                // shadows={{
+                //     enabled: true,
+                //     type: 'soft', // soft, basic, variance
+                //     autoUpdate: true,
+                // }}
                 // frameloop={isMobile ? 'demand' : 'always'}
                 // eventSource={document.getElementById('root')}
                 // eventPrefix="client"
@@ -74,6 +79,11 @@ export default function App({
                     powerPreference: reducer.allCardsLoaded
                         ? 'default'
                         : 'high-performance',
+                    // shadowMap: {
+                    //     enabled: true,
+                    //     type: isMobile ? 'basic' : 'PCFSoftShadowMap',
+                    //     autoUpdate: true,
+                    // },
                 }}
                 style={{
                     position: 'relative',
