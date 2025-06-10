@@ -24,7 +24,6 @@ import { memo } from 'react';
  * @param floatOptions - Options for the floating effect
  * @param props - Additional properties for the 3D group element
  */
-// function FloatingTitle({
 const FloatingTitle = memo(function FloatingTitle({
     children,
     scalar,
@@ -43,18 +42,14 @@ const FloatingTitle = memo(function FloatingTitle({
     ...props
 }: FloatingTitleProps) {
     return (
-        // <Center >
         <group>
             <Float
                 name={props.name + '-float-container'}
                 rotation={[0, 3.164, 0]}
-                // position={isMobile ? [-0.5, 0.5, 0] : [0, 0, 0]}
+                castShadow={false}
+                receiveShadow={false}
                 {...floatOptions}
             >
-                {/* <group> */}
-                {/* <Center> */}
-                {/* <Center position={props.position}> */}
-                {/* <Center position={isMobile ? [0.3, 0.5, 0] : props.position}> */}
                 {!isMobile && (
                     <Title
                         size={size}
@@ -66,7 +61,6 @@ const FloatingTitle = memo(function FloatingTitle({
                     />
                 )}
                 {isMobile && <FallbackText>{text}</FallbackText>}
-                {/* </Center> */}
 
                 {isClickable && (
                     <ClickableBox
@@ -75,10 +69,8 @@ const FloatingTitle = memo(function FloatingTitle({
                         onClick={props.onClick}
                     />
                 )}
-                {/* </group> */}
             </Float>
         </group>
-        // </Center>
     );
 });
 
