@@ -19,6 +19,8 @@ export const metalBlack = new MeshPhysicalMaterial({
     color: 'black',
     clearcoat: 1.0,
     clearcoatRoughness: 0.1,
+    ior: 1.5,
+    thickness: 0,
 });
 
 // const geometryDefaultConfig = {
