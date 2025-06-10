@@ -67,6 +67,10 @@ export function Experience({ reducer }: ExperienceProps) {
     useEffect(() => {
         if (!ref.current) return;
         const { camera } = ref.current;
+
+        // camera.layers.enable(0); // Scene normale
+        // camera.layers.enable(2); // Carousel layer
+
         cameraPositions.carousel.fov = isMobile
             ? CAMERA_FOV_MOBILE
             : CAMERA_FOV_DESKTOP;
@@ -279,11 +283,15 @@ export function Experience({ reducer }: ExperienceProps) {
     return (
         <>
             <directionalLight
-                castShadow
+                castShadow={false}
                 intensity={0.8}
                 position={[10, 5, 3]}
                 shadow-mapSize={[2048, 2048]}
                 color="grey"
+                shadow-bias={-0.0001}
+                shadow-normalBias={0.02}
+                shadow-camera-near={0.1}
+                shadow-camera-far={50}
             >
                 {/* <orthographicCamera
                     // attach="shadow-camera"
@@ -464,19 +472,38 @@ export function Experience({ reducer }: ExperienceProps) {
 // }
 function ShadowCatcher() {
     return (
+        // <mesh
+        //     receiveShadow
+        //     position={[0, -1.6, 0]}
+        //     rotation={[-Math.PI / 2, 0, 0]}
+        //     scale={[30, 30, 1]}
+        // >
+        //     <planeGeometry />
+        //     <shadowMaterial
+        //         // transparent
+        //         alphaTest={0}
+        //         opacity={0.2}
+        //         // opacity={0.2}
+        //         color="#000000"
+        //     />
+        // </mesh>
         <mesh
+            name="shadow-catcher"
             receiveShadow
-            position={[0, -1.6, 0]}
+            castShadow={false}
+            position={[0, -1, 0]}
             rotation={[-Math.PI / 2, 0, 0]}
-            scale={[30, 30, 1]}
+            scale={[40, 40, 1]}
         >
-            <planeGeometry />
+            {/* <planeGeometry /> */}
             <shadowMaterial
+                // clipShadows
                 // transparent
                 alphaTest={0}
-                opacity={0.2}
+                opacity={0.3}
                 // opacity={0.2}
                 color="#000000"
+                depthWrite={false}
             />
         </mesh>
     );
