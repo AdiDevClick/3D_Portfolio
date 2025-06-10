@@ -315,6 +315,8 @@ export default function Carousel({
     return (
         <group visible={activeURL} ref={projectsRef}>
             <mesh
+                receiveShadow={false}
+                castShadow={false}
                 ref={boundariesRef}
                 visible={SETTINGS.debug}
                 material={debugOrangeBox}
@@ -324,7 +326,6 @@ export default function Carousel({
                 />
             </mesh>
             <Billboard>
-                {/* <Billboard rotation={[0, 3.164, 0]}> */}
                 <FloatingTitle
                     text="Mes Projets"
                     scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
@@ -333,40 +334,9 @@ export default function Carousel({
                     // size={40}
                     rotation={[0, 3.164, 0]}
                 />
-                {/* <Float> */}
-                {/* <Title
-                        scalar={isMobile ? generalScaleX * 1.2 : generalScaleX}
-                        name={'carousel__title'}
-                        ref={titleRef}
-                        text="Mes Projets"
-                    /> */}
-                {/* Mes Projets
-                    </Title> */}
-                {/* {isCarouselLoaded ? (
-                        <Title
-                            scale={
-                                isMobile ? generalScaleX * 1.2 : generalScaleX
-                            }
-                            name={'carousel__title'}
-                            ref={titleRef}
-                        >
-                            Mes Projets
-                        </Title>
-                    ) : (
-                        <FallbackText
-                            scale={4.2 * generalScaleX}
-                            name={'carousel__title'}
-                            ref={titleRef}
-                            position={DEFAULT_PROJECTS_POSITION_SETTINGS}
-                        >
-                            Mes Projets
-                        </FallbackText>
-                    )} */}
-                {/* </Float> */}
             </Billboard>
 
             <Suspense fallback={null}>
-                {/* <Suspense fallback={<PlaceholderIcon />}> */}
                 <MemoizedCardsContainer
                     reducer={reducer}
                     SETTINGS={SETTINGS}
@@ -427,7 +397,6 @@ export default function Carousel({
                     metalness={0.1}
                 />
             </mesh> */}
-
             {/* <ContactShadows
                 frames={1}
                 position={[0, -1, 0]}
@@ -437,6 +406,7 @@ export default function Carousel({
         </group>
     );
 }
+
 // Ajouter avant votre composant ParticlesEffect
 function GradientFloor() {
     return (
