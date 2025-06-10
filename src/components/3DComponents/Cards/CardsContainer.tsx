@@ -290,6 +290,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                 return (
                     <group key={card.url + i}>
                         <mesh
+                            castShadow={false}
+                            receiveShadow={false}
                             key={`eventBox_${card.id}`}
                             ref={(e) => eventBox(e, card)}
                             onPointerOver={
@@ -453,14 +455,20 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             )}
                         </MemoizedCard>
 
-                        <ContactShadows
-                            key={card.id + i + 'shadow'}
-                            frames={120}
-                            position={[0, -1.02, 0]}
-                            // scale={card.isClicked || card.isActive ? 10 : 5}
-                            blur={1}
-                            opacity={0.6}
-                        />
+                        {(reducer.visible === 'carousel' ||
+                            reducer.visible === 'card-detail') && (
+                            <ContactShadows
+                                key={card.id + i + 'shadow'}
+                                frames={120}
+                                position={[0, -1.02, 0]}
+                                // scale={card.isClicked || card.isActive ? 10 : 5}
+                                blur={1}
+                                opacity={0.4}
+                                // scale={card.isActive ? 3 : 2}
+                                smooth={true}
+                                // far={1}
+                            />
+                        )}
                         {/* <mesh
                             receiveShadow
                             position={[
