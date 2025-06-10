@@ -199,6 +199,7 @@ const MemoizedCard = memo(function Card({
     return (
         <animated.group scale={cardScale}>
             <Image
+                castShadow
                 position={card.position}
                 ref={cardRef}
                 url={import.meta.env.BASE_URL + card.url}
