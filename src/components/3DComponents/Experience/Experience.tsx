@@ -199,19 +199,19 @@ export function Experience({ reducer }: ExperienceProps) {
             if (visible !== 'home') setViewMode('home');
         } else if (location.pathname.includes('projets')) {
             if (activeContent) {
-                if (params.id && activeContent.isClicked) {
-                    if (visible !== 'card-detail') setViewMode('card-detail');
-                }
+                // if (params.id && activeContent.isClicked) {
+                if (visible !== 'card-detail') setViewMode('card-detail');
+                // }
                 // if (params.id && activeContent.isActive) {
                 //     activeContent.isActive = false;
                 // }
-                if (
-                    !params.id &&
-                    activeContent.isActive &&
-                    !activeContent.isClicked
-                ) {
-                    if (visible !== 'card-detail') setViewMode('card-detail');
-                }
+                // if (
+                //     !params.id &&
+                //     activeContent.isActive &&
+                //     !activeContent.isClicked
+                // ) {
+                // if (visible !== 'card-detail') setViewMode('card-detail');
+                // }
             }
 
             if (!activeContent) {
