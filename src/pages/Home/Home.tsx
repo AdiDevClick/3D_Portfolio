@@ -172,12 +172,14 @@ const MemoizedHome = memo(function Home({
                 </group>
             </Suspense>
 
-            <ContactShadows
-                frames={1}
-                position={[0, -2.3, 0]}
-                blur={1}
-                opacity={0.6}
-            />
+            {visible === 'home' && (
+                <ContactShadows
+                    frames={60}
+                    position={[0, -2.5, 0]}
+                    blur={1}
+                    opacity={0.6}
+                />
+            )}
         </group>
     );
 });
