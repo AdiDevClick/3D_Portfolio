@@ -5,6 +5,7 @@ import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
+import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
 import { easing } from 'maath';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -72,6 +73,10 @@ export function Experience({ reducer }: ExperienceProps) {
         cameraPositions.home.fov = isMobile
             ? CAMERA_FOV_MOBILE
             : CAMERA_FOV_DESKTOP;
+
+        // Resets the max camera angles to infinity
+        ref.current.minAzimuthAngle = minAngle;
+        ref.current.maxAzimuthAngle = maxAngle;
         // const cameraPosOnRoute = async () => {
         switch (visible) {
             case 'home':
@@ -115,9 +120,7 @@ export function Experience({ reducer }: ExperienceProps) {
                     cameraPositions.carousel,
                     ref.current
                 );
-                // Resets the max camera angles to infinity
-                ref.current.minAzimuthAngle = minAngle;
-                ref.current.maxAzimuthAngle = maxAngle;
+
                 break;
 
             case 'card-opened':
@@ -195,6 +198,9 @@ export function Experience({ reducer }: ExperienceProps) {
                 if (params.id && activeContent.isClicked) {
                     if (visible !== 'card-detail') setViewMode('card-detail');
                 }
+                // if (params.id && activeContent.isActive) {
+                //     activeContent.isActive = false;
+                // }
                 if (
                     !params.id &&
                     activeContent.isActive &&
