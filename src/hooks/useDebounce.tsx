@@ -32,10 +32,12 @@ type useDebounce = (func: () => void, delay: number) => () => void;
 // }
 
 /**
- * Hook qui retourne une version debounced d'une fonction
- * @param callback Fonction à debouncer
- * @param delay Délai en millisecondes
- * @returns Fonction debounced
+ * Returns a debounced version of the provided callback function.
+ *
+ * @param callback Function to debounce
+ * @template T Type of the callback function
+ * @param delay delay in milliseconds before the callback is executed
+ * @returns Debounced function
  */
 export default function useDebounce<T extends (...args: any[]) => void>(
     callback: T,
