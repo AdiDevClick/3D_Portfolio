@@ -93,7 +93,7 @@ export default function App({
                 id="canva"
                 // camera={{ position: [100, 110, 1400], fov: 50 }}
                 // camera={{ position: [0, 0, -14], fov: 50 }}
-                camera={{ position: [0, 0, -20], fov: 20 }}
+                // camera={{ position: [0, 0, 0], fov: 20 }}
                 // dpr={[0.9, 1]}
                 dpr={window.devicePixelRatio}
                 // flat={isMobile ? true : false}
