@@ -37,6 +37,7 @@ import {
 import { SettingsType } from '@/configs/3DCarouselSettingsTypes.tsx';
 import { effectiveRadius, isNeighbor } from '@/functions/collisions.ts';
 import { MathPos } from '@/functions/positionning.ts';
+import { wait } from '@/functions/promises';
 import { ElementType, ReducerType } from '@/hooks/reducers/carouselTypes.ts';
 import { RootState, ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
@@ -219,7 +220,7 @@ export function createCardProperties(
 /**
  * Gère le clic sur une carte
  */
-export function onClickHandler(
+export async function onClickHandler(
     e: ThreeEvent<MouseEvent>,
     card: ElementType,
     reducer: ReducerType,
@@ -228,24 +229,13 @@ export function onClickHandler(
     isMobile: boolean,
     isCarouselMoving: boolean,
     isCarouselClicked: boolean
-): void {
+): Promise<void> {
     e.stopPropagation();
     // Deny any other clicked elements if one is opened
     if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
         return;
     }
-    // console.log(
-    //     'Is Carousel Moving',
-    //     isCarouselMoving,
-    //     '\n event type : ',
-    //     e.type,
-    //     '\n card clicked ? :',
-    //     card.isClicked,
-    //     '\n carousel clicked ? :',
-    //     isCarouselClicked,
-    //     '\n target ?',
-    //     e.nativeEvent.target
-    // );
+
     if (isCarouselMoving && e.nativeEvent.type === 'pointerup') {
         return;
     }
@@ -264,29 +254,43 @@ export function onClickHandler(
         }
     }
 
+    if (card.isClicked && card.isActive) {
+        reducer.activateElement(card, false);
+    } else {
+        reducer.activateElement(card, true);
+        await wait(300);
+    }
+
+    reducer.clickElement(card);
     navigate(!card.isClicked ? `/projets/${card.id}` : '/projets', {
         // navigate(!card.isClicked ? `${location.pathname}/${card.id}` : '/projets', {
         replace: false,
     });
-    reducer.activateElement(card, !card.isClicked ? true : false);
-    reducer.clickElement(card);
-    // setIsCarouselClicked(false);
 }
 
 /**
  * Gère la sortie du pointeur d'une carte
  */
-export async function onPointerOut(
+export function onPointerOut(
     e: ThreeEvent<PointerEvent>,
     card: ElementType,
-    reducer: ReducerType
+    reducer: ReducerType,
+    isCarouselMoving: boolean
 ) {
     e.stopPropagation();
-    if (reducer.activeContent?.isClicked) {
-        return;
+    if (reducer.activeContent?.isClicked || isCarouselMoving) return;
+    // console.log('activeCard', reducer.activeContent?.id);
+
+    if (reducer.activeContent?.id === card.id && !card.isClicked) {
+        // console.log(
+        //     'POINTER OUT EFFECTUE',
+        //     card.id,
+        //     reducer.activeContent?.id,
+        //     card.ref?.current.position
+        // );
+        reducer.activateElement(card, false);
     }
-    // console.log('POINTER OUT EFFECTUE');
-    reducer.activateElement(card, false);
+
     // endCarouselMovement();
 }
 
@@ -298,31 +302,46 @@ export function onHover(
     card: ElementType,
     reducer: ReducerType,
     isCarouselMoving: boolean,
-    setIsCarouselMoving: (value: boolean) => void
+    isCarouselClicked: boolean
 ) {
     e.stopPropagation();
-    // console.log('UN HOVER EST EN COURS ?');
 
-    if (isCarouselMoving) {
+    // Moving Carousel ?
+    if (
+        isCarouselMoving ||
+        isCarouselClicked ||
+        reducer.activeContent?.isClicked ||
+        reducer.activeContent?.isActive ||
+        reducer.isMobile ||
+        reducer.activeContent?.id === card.id
+    ) {
         return;
     }
     // } else {
     //     setIsCarouselMoving(true);
     // }
-    if (
-        (reducer.activeContent && reducer.activeContent.isClicked) ||
-        reducer.isMobile ||
-        (reducer.activeContent && reducer.activeContent?.id === card.id)
-    )
-        return;
-    if (reducer.activeContent && reducer.activeContent?.id !== card.id) {
-        // console.log('je clear');
+
+    // Card is already active but a new hover is triggered ?
+    if (reducer.activeContent && reducer.activeContent.id !== card.id) {
+        // console.log("JE CLEAR L'ACTIVE CONTENT", card.id);
+        // reducer.activeContent = null;
         reducer.activeContent.isActive = false;
     }
-    // console.log('UN HOVER EST EN COURS');
     // console.log('UN HOVER EST EN COURS', console.clear());
 
-    reducer.activateElement(card, true);
+    if (!reducer.activeContent?.isActive) {
+        // console.log(
+        //     'UN HOVER EST EN COURS sur carte : ',
+        //     card.id,
+        //     '\n card isActive ? ',
+        //     card.isActive,
+        //     '\n activeContent id :',
+        //     reducer.activeContent?.id,
+        //     isCarouselMoving
+        // );
+        // console.log('Je hover la carte', card.id, card.ref?.current.position);
+        reducer.activateElement(card, true);
+    }
     // if (!isCarouselMoving) setIsCarouselMoving(true);
 }
 
