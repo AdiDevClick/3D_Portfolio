@@ -5,7 +5,6 @@ import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
-import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
 import { easing } from 'maath';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
@@ -60,6 +59,22 @@ export function Experience({ reducer }: ExperienceProps) {
     const location = useLocation();
     const { positionCameraToCard } = useCameraPositioning();
 
+    // useCameraDebug(
+    //     ref,
+    //     ref.current?.camera,
+    //     reducer.activeContent,
+    //     reducer.activeContent?.isClicked ?? false,
+    //     isMobile
+    // );
+    // useEffect(() => {
+    //     if (ref.current) {
+    //         // cameraLookAt(
+    //         //     new Vector3(200, 0, -2000),
+    //         //     cameraPositions.home,
+    //         //     ref.current
+    //         // );
+    //     }
+    // }, []);
     /**
      * Camera positioning -
      * @description : Camera is positionned on the active page or content
@@ -67,9 +82,10 @@ export function Experience({ reducer }: ExperienceProps) {
     useEffect(() => {
         if (!ref.current) return;
         const { camera } = ref.current;
-
-        // camera.layers.enable(0); // Scene normale
-        // camera.layers.enable(2); // Carousel layer
+        // Scene normale
+        // camera.layers.enable(0);
+        // Carousel layer
+        // camera.layers.enable(2);
 
         cameraPositions.carousel.fov = isMobile
             ? CAMERA_FOV_MOBILE
@@ -81,39 +97,38 @@ export function Experience({ reducer }: ExperienceProps) {
         // Resets the max camera angles to infinity
         ref.current.minAzimuthAngle = minAngle;
         ref.current.maxAzimuthAngle = maxAngle;
+
         // const cameraPosOnRoute = async () => {
         switch (visible) {
-            case 'home':
-            // cameraLookAt(
-            //     new Vector3(0, 0, -200),
-            //     cameraPositions.home,
-            //     ref.current
-            // );
-            // setTimeout(() => {
-            //     const timer = cameraLookAt(
-            //         cameraPositions.home.position,
-            //         cameraPositions.home,
-            //         ref.current
-            //     );
-
-            //     return () => {
-            //         clearTimeout(timer);
-            //     };
-            // }, 1000);
-            // break;
             case 'about':
-            // cameraLookAt(
-            //     new Vector3(0, 0, -200),
-            //     cameraPositions.home,
-            //     ref.current
-            // );
-            case 'contact':
-            case 'error':
                 cameraLookAt(
-                    cameraPositions.home.position,
+                    new Vector3(0, 0, -150),
                     cameraPositions.home,
                     ref.current
                 );
+                setTimeout(() => {
+                    cameraLookAt(
+                        cameraPositions.home.position,
+                        cameraPositions.home,
+                        ref.current
+                    );
+                }, 250);
+                break;
+            case 'contact':
+            case 'home':
+            case 'error':
+                cameraLookAt(
+                    new Vector3(5, -2, 100),
+                    cameraPositions.home,
+                    ref.current
+                );
+                setTimeout(() => {
+                    cameraLookAt(
+                        cameraPositions.home.position,
+                        cameraPositions.home,
+                        ref.current
+                    );
+                }, 250);
                 break;
 
             case 'carousel':
@@ -132,14 +147,20 @@ export function Experience({ reducer }: ExperienceProps) {
             case 'URLRequested':
                 if (activeContent) {
                     prevCamPosRef.current = camera.position.clone();
+                    if (!activeContent.ref?.current) {
+                        console.warn(
+                            '⚠️ activeContent.ref not ready, skipping camera positioning'
+                        );
+                        break;
+                    }
                     const results = positionCameraToCard(
                         ref,
                         { ...activeContent, viewportHeight: contentHeight },
                         isMobile,
                         activeContent.isClicked
                     );
-
                     cameraResults = results;
+                    // console.log(cameraResults, '📍 cameraResults');
                     // Set the max camera angles to the active card
                     // Forbids the user to rotate the camera more than the angle limit !
                     if (activeContent.isClicked && results?.angleLimits) {
@@ -198,20 +219,33 @@ export function Experience({ reducer }: ExperienceProps) {
         if (location.pathname === '/') {
             if (visible !== 'home') setViewMode('home');
         } else if (location.pathname.includes('projets')) {
+            // console.log(
+            //     '📍 Projects route detected ',
+            //     '\n activeCard id:',
+            //     activeContent?.id,
+            //     '\n clicked ? :',
+            //     activeContent?.isClicked,
+            //     '\n active ? :',
+            //     activeContent?.isActive,
+            //     '\n params.id :',
+            //     params.id,
+            //     '\n visible :',
+            //     visible
+            // );
             if (activeContent) {
-                // if (params.id && activeContent.isClicked) {
-                if (visible !== 'card-detail') setViewMode('card-detail');
-                // }
+                if (params.id && activeContent.isClicked) {
+                    if (visible !== 'card-detail') setViewMode('card-detail');
+                }
                 // if (params.id && activeContent.isActive) {
                 //     activeContent.isActive = false;
                 // }
-                // if (
-                //     !params.id &&
-                //     activeContent.isActive &&
-                //     !activeContent.isClicked
-                // ) {
-                // if (visible !== 'card-detail') setViewMode('card-detail');
-                // }
+                if (
+                    !params.id &&
+                    activeContent.isActive &&
+                    !activeContent.isClicked
+                ) {
+                    if (visible !== 'card-detail') setViewMode('card-detail');
+                }
             }
 
             if (!activeContent) {
@@ -226,6 +260,27 @@ export function Experience({ reducer }: ExperienceProps) {
                     setViewMode('carousel');
                 }
             }
+            // if (params.id && activeContent && activeContent?.isClicked) {
+            //     if (visible !== 'card-detail') setViewMode('card-detail');
+            // } else if (
+            //     activeContent?.isActive &&
+            //     !activeContent?.isClicked &&
+            //     !params.id
+            // ) {
+            //     if (visible !== 'card-detail') setViewMode('card-detail');
+            // } else if (
+            //     params.id &&
+            //     !activeContent &&
+            //     visible === 'carousel' &&
+            //     !isURLLoaded &&
+            //     showElements.length > 0
+            // ) {
+            //     setViewMode('URLRequested');
+            // } else {
+            //     if (visible !== 'carousel' && visible !== 'URLRequested') {
+            //         setViewMode('carousel');
+            //     }
+            // }
         } else if (location.pathname.includes('a-propos')) {
             if (visible !== 'about') setViewMode('about');
         } else if (location.pathname.includes('contact')) {
