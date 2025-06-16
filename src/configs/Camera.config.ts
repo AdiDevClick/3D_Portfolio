@@ -174,3 +174,8 @@ export const CAMERA_VERTICAL_CENTER_DIVISOR = 5;
 //  */
 // export const CAMERA_MIN_TRANSITION_DURATION = 0.4;
 // export const CAMERA_EDGE_TRANSITION_FACTOR = 0.5;
+export const CAMERA_CLICKED_MIN_RATIO_DESKTOP = 6.5; // Ratio Z/containerScale minimum
+export const CAMERA_CLICKED_MIN_RATIO_MOBILE = 5.5; // Version mobile
+export const CAMERA_CLICKED_SAFETY_MARGIN = 1;
+export const CAMERA_DISTANCE_MOBILE_MULTIPLIER = 1.2; // Multiplier pour la distance mobile
+export const CAMERA_DISTANCE_DESKTOP_MULTIPLIER = 1.5; // Multiplier pour la distance desktop
