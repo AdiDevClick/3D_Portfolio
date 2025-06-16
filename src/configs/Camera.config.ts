@@ -83,7 +83,8 @@ export const CAMERA_ANGLELIMITS = Math.PI / 9;
  * Higher value = more safety margin
  * @constant {number}
  */
-export const CAMERA_SAFETY_MARGIN = 8;
+export const CAMERA_SAFETY_MARGIN = 4;
+export const CAMERA_CLICKED_DESKTOP_CARD_SAFETY_MARGIN = 6.5;
 
 /**
  *
