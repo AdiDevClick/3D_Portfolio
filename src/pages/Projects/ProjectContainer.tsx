@@ -37,7 +37,6 @@ export function ProjectContainer({
     // });
     const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
         if (e.targetTouches[0]) {
-            e.preventDefault();
             e.stopPropagation();
 
             const eventPoint = e.targetTouches[0];
