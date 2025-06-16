@@ -23,6 +23,7 @@ import useDebounce from '@/hooks/useDebounce';
 import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { useSpring, animated } from '@react-spring/three';
 import { cardEventBoxMaterial } from '@/components/3DComponents/Cards/CardMaterials';
+import { useThrottle } from '@/hooks/useThrottle';
 
 type CardsContainerTypes = {
     reducer: ReducerType;
@@ -31,6 +32,7 @@ type CardsContainerTypes = {
 const distancesArray: { index: string; distance: number; title?: string }[] =
     [];
 const vec = new Vector3();
+
 /**
  * Conteneur pour les Cards et ses dépendances -
  * Il contient les cartes et les éléments HTML -
@@ -47,8 +49,8 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         // reducer.activeContent?.isActive || false
     );
     const [isCarouselClicked, setIsCarouselClicked] = useState(
-        false
-        // reducer.activeContent?.isClicked || false
+        // false
+        reducer.activeContent?.isClicked || false
     );
     const frameRateCount = useRef(0);
 
@@ -83,7 +85,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
     }
 
     /**
-     * Allows to set the position of the event box
+     * Sets the position of the event box
      *
      * @param node - The event box
      * @param card - The card to set the position
@@ -102,16 +104,19 @@ const MemoizedCardsContainer = memo(function CardsContainer({
     );
 
     const endCarouselMovement = useDebounce(() => {
-        // console.log('END MOVEMENT');
-
         setIsCarouselMoving(false);
     }, endMovementDebounceDelay);
 
+    /**
+     * Handles pointer move on the carousel.
+     * @description If the pointer moves more than a threshold,
+     * it sets the carousel as moving
+     * @param e - The pointer event
+     */
     const handlePointerMove = useCallback(
         (e: ThreeEvent<PointerEvent>) => {
             if (reducer.isMobile) return;
             e.stopPropagation();
-
             const distanceX = Math.abs(
                 e.point.x - lastPointerPosition.current.x
             );
@@ -121,10 +126,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             const totalDistance = distanceX + distanceY;
             if (totalDistance > pointerThreshold) {
                 setIsCarouselMoving(true);
-                // console.log(
-                //     'POINTER TRANSITION EN COURS, TOTAL DISTANCE :',
-                //     totalDistance
-                // );
                 endCarouselMovement();
             }
 
@@ -133,37 +134,22 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         [reducer.isMobile]
     );
 
-    const startCarouselMovement = (e) => {
+    const startCarouselMovement = (e: ThreeEvent<PointerEvent>) => {
         e.stopPropagation();
-        // setIsCarouselClicked(true);
         setIsCarouselMoving(true);
     };
-    const carouselClick = (e) => {
+    const carouselClick = (e: ThreeEvent<PointerEvent>) => {
         e.stopPropagation();
-        // console.log(
-        //     'PointerDown called : \n',
-        //     ' isMoving ? :',
-        //     isCarouselMoving,
-        //     '\n isClicked ?',
-        //     isCarouselClicked
-        // );
         if (!isCarouselClicked) setIsCarouselClicked(true);
     };
 
-    const endCarouselClick = (e) => {
+    const endCarouselClick = (e: ThreeEvent<PointerEvent>) => {
         e.stopPropagation();
-        // console.log(
-        //     'Pointer UP called : \n',
-        //     ' isMoving ? :',
-        //     isCarouselMoving,
-        //     '\n isClicked ?',
-        //     isCarouselClicked
-        // );
         if (isCarouselClicked) setIsCarouselClicked(false);
     };
 
     const debouncedStartCarouselClick = useDebounce(carouselClick, 110);
-    const debouncedEndCarouselClick = useDebounce(endCarouselClick, 110);
+    const debouncedEndCarouselClick = useDebounce(endCarouselClick, 150);
     // const debouncedStartCarouselMovement = useDebounce(
     //     startCarouselMovement,
     //     110
@@ -202,7 +188,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                         item.eventBox.scale.set(1, 1, 1);
                         break;
                     } else {
-                        item.eventBox.scale.set(0.1, 0.1, 0.1);
+                        item.eventBox.scale.set(0, 0, 0);
                     }
                 }
             });
@@ -225,14 +211,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
             rotationDelta > rotationThreshold
         ) {
             setIsCarouselMoving(true);
-            // console.log(
-            //     'CAMERA TRANSITION EN COURS, DELTA :',
-            //     positionDelta,
-            //     '\n ROTATION DELTA :',
-            //     rotationDelta
-            // );
             endCarouselMovement();
-            // }
         }
         // if (isCarouselClicked || isCarouselMoving) {
         // easing.damp3(
@@ -250,20 +229,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         lastCameraRotation.current.copy(camera.quaternion);
     });
 
-    // useEffect(() => {
-    //     if (isCarouselMoving) {
-    //         console.log('carousel moving t');
-    //     } else {
-    //         console.log('carousel not moving');
-    //     }
-
-    //     if (isCarouselClicked) {
-    //         console.log('objects clicked');
-    //     } else {
-    //         console.log('objects not clicked');
-    //     }
-    // }, [isCarouselMoving, isCarouselClicked]);
-
     const cardsPropsMemo = useMemo(() => {
         return {
             SETTINGS,
@@ -271,60 +236,38 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         };
     }, [reducer, SETTINGS]);
 
+    const throttledOnHoverHandler = useThrottle((e, card) => {
+        if (
+            isCarouselMoving ||
+            isCarouselClicked ||
+            card.id === reducer.activeContent?.id
+        ) {
+            return;
+        }
+        onHover(e, card, reducer, isCarouselMoving, isCarouselClicked);
+    }, 30);
+
     const debouncedOnHoverHandler = useDebounce((e, card) => {
-        // console.log(
-        //     'onHover called : \n',
-        //     ' isMoving ? :',
-        //     isCarouselMoving,
-        //     '\n isClicked ?',
-        //     isCarouselClicked
-        // );
-        onHover(e, card, reducer, isCarouselMoving, setIsCarouselMoving);
-    }, 50);
+        if (
+            isCarouselMoving ||
+            isCarouselClicked ||
+            card.id === reducer.activeContent?.id
+        ) {
+            return;
+        }
+        onHover(e, card, reducer, isCarouselMoving, isCarouselClicked);
+    }, 20);
     const debouncedOnHoverOutHandler = useDebounce((e, card) => {
-        // console.log(
-        //     'onPointerOut called : \n',
-        //     ' isMoving ? :',
-        //     isCarouselMoving,
-        //     '\n isClicked ?',
-        //     isCarouselClicked
-        // );
-        onPointerOut(e, card, reducer);
+        onPointerOut(e, card, reducer, isCarouselMoving);
     }, 50);
 
     return (
         <animated.group
             ref={groupRef}
             name="cards-container"
-            // onPointerMove={isCarouselMoving && handlePointerMove}
             onPointerMove={isCarouselClicked && handlePointerMove}
-            // onPointerDown={debouncedStartCarouselMovement}
             onPointerDown={debouncedStartCarouselClick}
-            // onPointerDown={(e) => {
-            //     e.stopPropagation();
-            //     // setIsCarouselMoving(true);
-            //     // setIsCarouselClicked(true);
-            //     debouncedStartCarouselClick;
-            // }}
             onPointerUp={debouncedEndCarouselClick}
-            // onPointerUp={(e) => {
-            //     e.stopPropagation();
-            //     console.log(
-            //         'Pointer UP called : \n',
-            //         ' isMoving ? :',
-            //         isCarouselMoving,
-            //         '\n isClicked ?',
-            //         isCarouselClicked
-            //     );
-            //     setIsCarouselClicked(false);
-            //     // endCarouselMovement();
-            // }}
-            // onClick={(e) => {
-            //     e.stopPropagation();
-            //     console.log('test');
-            //     // setIsCarouselClicked(false);
-            //     // endCarouselMovement();
-            // }}
             // scale={animation.scale}
             // scale={isCarouselMoving ? 0.8 : 1}
         >
@@ -336,49 +279,23 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                             receiveShadow={false}
                             key={`eventBox_${card.id}`}
                             ref={(e) => eventBox(e, card)}
-                            onPointerOver={
-                                (e) =>
-                                    // !isCarouselMoving &&
-                                    // // !isCarouselClicked &&
-                                    // debouncedOnHoverHandler(
-                                    //     e,
-                                    //     card,
-                                    //     reducer,
-                                    //     isCarouselMoving,
-                                    //     setIsCarouselMoving
-                                    // )
-                                    !isCarouselMoving &&
-                                    !isCarouselClicked &&
-                                    debouncedOnHoverHandler(e, card)
-                                // onHover(
-                                //     e,
-                                //     card,
-                                //     reducer,
-                                //     isCarouselMoving,
-                                //     setIsCarouselMoving
-                                // )
-                            }
-                            onPointerMove={(e) =>
+                            onPointerOver={(e) =>
                                 !isCarouselMoving &&
                                 !isCarouselClicked &&
-                                card.id !== reducer.activeContent?.id &&
-                                // debouncedOnHoverHandler(e, card)
+                                debouncedOnHoverHandler(e, card)
+                            }
+                            onPointerMove={(e) => {
+                                // throttledOnHoverHandler(e, card);
                                 onHover(
                                     e,
                                     card,
                                     reducer,
                                     isCarouselMoving,
-                                    setIsCarouselMoving
-                                )
-                            }
-                            onPointerOut={
-                                (e) => debouncedOnHoverOutHandler(e, card)
-                                // onPointerOut(
-                                //     e,
-                                //     card,
-                                //     reducer,
-                                //     endCarouselMovement
-                                // )
+                                    isCarouselClicked
+                                );
+                            }}
+                            onPointerOut={(e) =>
+                                debouncedOnHoverOutHandler(e, card)
                             }
                             name={`eventBox_${card.id}`}
                             visible={false}
@@ -406,17 +323,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                     isCarouselClicked
                                 )
                             }
-                            // onPointerOver={(e) =>
-                            //     !isCarouselMoving &&
-                            //     !isCarouselClicked &&
-                            //     debouncedOnHoverHandler(
-                            //         e,
-                            //         card,
-                            //         reducer,
-                            //         isCarouselMoving,
-                            //         setIsCarouselMoving
-                            //     )
-                            // }
                             card={card}
                             presenceRadius={
                                 SETTINGS.PRESENCE_RADIUS * card.baseScale
@@ -433,7 +339,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                 ]}
                             />
 
-                            {/* {reducer.isMobile ? ( */}
                             <Title
                                 text={card.cardTitle ? card.cardTitle : 'test'}
                                 name="card__title"
@@ -447,11 +352,6 @@ const MemoizedCardsContainer = memo(function CardsContainer({
                                 //     bevelThickness: 0.2,
                                 // }}
                             />
-                            {/* // ) : (
-                            //     <FallbackText name="card__title">
-                            //         {card.cardTitle ? card.cardTitle : 'test'}
-                            //     </FallbackText>
-                            // )} */}
 
                             {card.isClicked && (
                                 <group name="htmlContainer">
