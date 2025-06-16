@@ -7,10 +7,13 @@ import {
     CAMERA_ACTIVE_FORWARD_OFFSET,
     CAMERA_ANGLE_OFFSET,
     CAMERA_ANGLELIMITS,
+    CAMERA_CLICKED_DESKTOP_CARD_SAFETY_MARGIN,
     CAMERA_CLICKED_DESKTOP_OFFSET,
     CAMERA_CLICKED_LERP_MULTIPLIER,
     CAMERA_CLICKED_MAX_LERP_FACTOR,
     CAMERA_CLICKED_MOBILE_OFFSET,
+    CAMERA_DISTANCE_DESKTOP_MULTIPLIER,
+    CAMERA_DISTANCE_MOBILE_MULTIPLIER,
     CAMERA_EDGE_COMPENSATION_FACTOR,
     CAMERA_EDGE_LERP_FACTOR,
     CAMERA_EXTRA_PULLBACK_DESKTOP,
@@ -61,7 +64,6 @@ function calculateCameraAngleAndLerp(
         CAMERA_MAX_EDGE_COMPENSATION,
         angleFactor * CAMERA_EDGE_COMPENSATION_FACTOR
     );
-
     const effectiveLerpFactor = isClicked
         ? Math.min(
               CAMERA_CLICKED_MAX_LERP_FACTOR,
@@ -84,7 +86,7 @@ function calculateCameraAngleAndLerp(
 
     return { newAngle, effectiveLerpFactor, edgeCompensation };
 }
-
+const sizeObj = new Vector3();
 /**
  * Calculates the camera position based on the new angle and other parameters.
  *
@@ -96,6 +98,51 @@ function calculateCameraAngleAndLerp(
  * @param isMobile - Boolean indicating if the device is mobile
  * @param isClicked - Boolean indicating if the card is clicked
  */
+// function calculateCameraPosition(
+//     newAngle: number,
+//     edgeCompensation: number,
+//     containerScale: number,
+//     camTargetPos: Vector3,
+//     ref: ElementType['ref'],
+//     isMobile: boolean,
+//     isClicked: boolean
+// ): Vector3 {
+//     if (!ref?.current) return new Vector3(0, 0, 0);
+
+//     const basePullback = isMobile
+//         ? CAMERA_EXTRA_PULLBACK_MOBILE
+//         : isClicked
+//         ? CAMERA_EXTRA_PULLBACK_DESKTOP
+//         : CAMERA_HOVER_PULLBACK_DESKTOP;
+
+//     const finalDesiredRadius =
+//         containerScale +
+//         CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation) +
+//         basePullback;
+
+//     if (isMobile && isClicked) {
+//         const worldPos = new Vector3();
+//         ref.current.getWorldPosition(worldPos);
+
+//         return new Vector3(
+//             worldPos.x,
+//             camTargetPos.y,
+//             worldPos.z + finalDesiredRadius
+//         );
+//     }
+
+//     const calculatedDistance = finalDesiredRadius;
+
+//     const minDistance = containerScale * 3;
+//     const safeDistance = Math.max(calculatedDistance, minDistance);
+
+//     return new Vector3(
+//         Math.sin(newAngle) * safeDistance,
+//         camTargetPos.y,
+//         Math.cos(newAngle) * safeDistance
+//     );
+// }
+
 function calculateCameraPosition(
     newAngle: number,
     edgeCompensation: number,
@@ -106,6 +153,57 @@ function calculateCameraPosition(
     isClicked: boolean
 ): Vector3 {
     if (!ref?.current) return new Vector3(0, 0, 0);
+    // const finalDesiredRadius =
+    //     containerScale + CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation);
+    // const verticalCenterOffset = sizeObj.y / CAMERA_VERTICAL_CENTER_DIVISOR;
+    // const basePullback = isMobile
+    //     ? CAMERA_EXTRA_PULLBACK_MOBILE
+    //     : isClicked
+    //     ? CAMERA_EXTRA_PULLBACK_DESKTOP
+    //     : CAMERA_HOVER_PULLBACK_DESKTOP;
+
+    // const finalDesiredRadius =
+    //     containerScale +
+    //     CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation) +
+    //     basePullback;
+    // // const verticalCenterOffset = sizeObj.y / CAMERA_VERTICAL_CENTER_DIVISOR;
+    // // mobile cliquée
+    // if (isMobile && isClicked) {
+    //     const verticalCenterOffset = containerScale * 0.25;
+    //     const finalDesiredRadius =
+    //         containerScale * CAMERA_DISTANCE_MOBILE_MULTIPLIER;
+
+    //     ref.current.getWorldPosition(sizeObj);
+
+    //     return sizeObj.set(
+    //         sizeObj.x,
+    //         camTargetPos.y + verticalCenterOffset,
+    //         sizeObj.z + finalDesiredRadius
+    //     );
+    // }
+
+    // const baseDistance = isMobile
+    //     ? containerScale * CAMERA_DISTANCE_MOBILE_MULTIPLIER
+    //     : containerScale * CAMERA_DISTANCE_DESKTOP_MULTIPLIER;
+
+    // const totalDistance = baseDistance + edgeCompensation;
+    // const x = Math.sin(newAngle) * totalDistance;
+    // const z = Math.cos(newAngle) * totalDistance;
+
+    // // pour desktop cliqué
+    // if (isClicked && !isMobile) {
+    //     const currentDistance = Math.sqrt(x * x + z * z);
+    //     const minClickedDistance = containerScale * 6.5;
+
+    //     if (currentDistance < minClickedDistance) {
+    //         const scaleFactor = minClickedDistance / currentDistance;
+    //         return sizeObj.set(
+    //             x * scaleFactor,
+    //             camTargetPos.y,
+    //             z * scaleFactor
+    //         );
+    //     }
+    // }
     const finalDesiredRadius =
         containerScale +
         CAMERA_ACTIVE_FORWARD_OFFSET * (1 - edgeCompensation) +
@@ -115,27 +213,46 @@ function calculateCameraPosition(
             ? CAMERA_EXTRA_PULLBACK_DESKTOP
             : CAMERA_HOVER_PULLBACK_DESKTOP);
 
-    // Vertical center offset calculation
-    const bbox = sharedMatrices.box.setFromObject(ref.current);
-    const sizeObj = new Vector3();
-    bbox.getSize(sizeObj);
-    const verticalCenterOffset = sizeObj.y / CAMERA_VERTICAL_CENTER_DIVISOR;
-
-    // Mobile fix : Perpendicular camera position when clicked
     if (isMobile && isClicked) {
-        ref.current.getWorldPosition(sizeObj);
+        const cardWorldPos = new Vector3();
+        ref.current.getWorldPosition(cardWorldPos);
 
-        // Front facing camera position
-        return sizeObj.set(
-            sizeObj.x,
-            camTargetPos.y + verticalCenterOffset,
-            sizeObj.z + finalDesiredRadius
+        return new Vector3(
+            cardWorldPos.x,
+            camTargetPos.y,
+            cardWorldPos.z + finalDesiredRadius
         );
     }
 
-    return sizeObj.set(
+    const baseDistance = isMobile
+        ? containerScale * CAMERA_DISTANCE_MOBILE_MULTIPLIER
+        : containerScale * CAMERA_DISTANCE_DESKTOP_MULTIPLIER;
+    const totalDistance = baseDistance + edgeCompensation;
+    const x = Math.sin(newAngle) * totalDistance;
+    const z = Math.cos(newAngle) * totalDistance;
+
+    if (isClicked && !isMobile) {
+        const vec = new Vector3(x, camTargetPos.y, z);
+        const safeCameraPos = applySafetyDistance(
+            vec,
+            containerScale,
+            CAMERA_CLICKED_DESKTOP_CARD_SAFETY_MARGIN
+        );
+        // const currentDistance = Math.sqrt(x * x + z * z);
+        // const minClickedDistance = containerScale * 6.5;
+        // if (currentDistance < minClickedDistance) {
+        //     const scaleFactor = minClickedDistance / currentDistance;
+        //     sizeObj.set(x * scaleFactor, camTargetPos.y, z * scaleFactor);
+        //     console.log(sizeObj);
+        //     return sizeObj;
+        // }
+        // console.log(safeCameraPos);
+        return sizeObj.set(safeCameraPos.x, safeCameraPos.y, safeCameraPos.z);
+    }
+
+    return new Vector3(
         Math.sin(newAngle) * finalDesiredRadius,
-        camTargetPos.y + verticalCenterOffset,
+        camTargetPos.y,
         Math.cos(newAngle) * finalDesiredRadius
     );
 }
@@ -153,7 +270,9 @@ function calculateTargetWithOffset(params: TargetCalculationParams): Vector3 {
     if (!ref?.current) return rightVector;
 
     const camTargetPos = ref.current.position.clone();
-
+    // if (isMobile && isClicked) {
+    //     return camTargetPos.clone();
+    // }
     // Right vector adjustment
     rightVector.applyQuaternion(ref.current.quaternion);
 
@@ -178,20 +297,25 @@ function calculateTargetWithOffset(params: TargetCalculationParams): Vector3 {
  *
  * @param newCamPos - The new camera position to adjust
  * @param containerScale - The scale of the container to ensure the camera is positioned safely
+ * @param cafeCameraMargin **Default=CAMERA_SAFETY_MARGIN** - The safety margin to apply
  */
 function applySafetyDistance(
     newCamPos: Vector3,
-    containerScale: number
+    containerScale: number,
+    cafeCameraMargin = CAMERA_SAFETY_MARGIN
 ): Vector3 {
     const distanceToCenter = Math.sqrt(
         newCamPos.x * newCamPos.x + newCamPos.z * newCamPos.z
     );
-    const minDistanceToCenter = containerScale + CAMERA_SAFETY_MARGIN;
+    const minDistanceToCenter = containerScale * cafeCameraMargin;
 
     if (distanceToCenter < minDistanceToCenter) {
         const scale = minDistanceToCenter / distanceToCenter;
-        newCamPos.x *= scale;
-        newCamPos.z *= scale;
+        return newCamPos.set(
+            newCamPos.x * scale,
+            newCamPos.y,
+            newCamPos.z * scale
+        );
     }
 
     return newCamPos;
@@ -257,25 +381,71 @@ function handleMobileFitToSphere(
 
         setTimeout(() => {
             if (!cardProps.ref?.current) return;
-
+            // const cardWorldPos = new Vector3();
+            // cardProps.ref.current.getWorldPosition(cardWorldPos);
             const contentHeight = cardProps.viewportHeight || 10;
             const cardBounds = sharedMatrices.box.setFromObject(
                 cardProps.ref.current
             );
+            // console.log(cardProps.ref.current);
+
+            const cardSize = cardBounds.getSize(sizeObj);
+            // console.log(cardSize);
+            // const cardTop = cardSize.y;
             const cardTop = cardBounds.max.y;
-            const currentPos = controlsRef.current.camera.position.clone();
+            // console.log(cardTop);
+            const camera = controlsRef.current.camera;
+            const currentPos = camera.position.clone();
             const targetYOffset = contentHeight / 2 - cardTop;
             const currentTarget = controlsRef.current.getTarget(new Vector3());
+            const distanceToTarget = currentPos.distanceTo(currentTarget);
+            const fov = camera.fov * (Math.PI / 180);
 
+            // Hauteur visible dans le monde à cette distance
+            const visibleHeight = 2 * Math.tan(fov / 2) * distanceToTarget;
+
+            // Pour aligner le haut de la carte avec le haut du viewport
+            // Le target doit être décalé vers le bas de la moitié de la différence
+            const viewportTopY = currentTarget.y + visibleHeight / 2;
+            const offsetNeeded = cardTop - viewportTopY;
+
+            // console.log('📸 Mobile camera focus:', {
+            //     currentPos: currentPos,
+            //     currentTarget: currentTarget,
+            //     targetYOffset: targetYOffset,
+            //     cardTop: cardTop,
+            //     cardbottom: cardBounds.min.y,
+            //     contentHeight: contentHeight,
+            //     cardHeight: cardTop - cardBounds.min.y,
+            //     cardSize: cardSize,
+            //     cardBounds: cardBounds,
+            //     cardSpacePos: cardProps.spacePositions,
+            // });
+            // console.log(
+            //     controlsRef.current.getFocalOffset(
+            //         cardProps.ref.current.position,
+            //         true
+            //     )
+            // );
             controlsRef.current.setLookAt(
                 currentPos.x,
-                currentPos.y - 1.5,
+                currentPos.y,
                 currentPos.z,
                 currentTarget.x,
-                currentTarget.y - targetYOffset,
+                currentTarget.y + offsetNeeded,
                 currentTarget.z,
                 true
             );
+
+            // controlsRef.current.setLookAt(
+            //     currentPos.x,
+            //     currentPos.y - 1.5,
+            //     currentPos.z,
+            //     currentTarget.x,
+            //     currentTarget.y - targetYOffset,
+            //     currentTarget.z,
+            //     true
+            // );
         }, FOCUS_DELAY_MOBILE + 50);
     }, FOCUS_DELAY_MOBILE + 100);
 
@@ -359,7 +529,15 @@ export function useCameraPositioning() {
                 newCamPos,
                 containerScale
             );
-
+            // console.log('📸 Camera positioning:', {
+            //     cardId: cardProps.id,
+            //     safeCameraPos: safeCameraPos.toArray().map((n) => n.toFixed(2)),
+            //     shiftedTarget: shiftedTarget.toArray().map((n) => n.toFixed(2)),
+            //     isClicked,
+            //     isMobile,
+            //     containerScale,
+            //     newAngle: ((newAngle * 180) / Math.PI).toFixed(1) + '°',
+            // });
             // Final camera position and target setting
             controlsRef.current.setLookAt(
                 safeCameraPos.x,
@@ -379,7 +557,6 @@ export function useCameraPositioning() {
 
             camera.updateProjectionMatrix();
             const finalTarget = controlsRef.current.getTarget(new Vector3());
-
             return {
                 cameraPosition: mobilePos ?? safeCameraPos,
                 cameraTarget: finalTarget,
