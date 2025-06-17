@@ -246,7 +246,6 @@ function calculateCameraPosition(
         //     console.log(sizeObj);
         //     return sizeObj;
         // }
-        // console.log(safeCameraPos);
         return sizeObj.set(safeCameraPos.x, safeCameraPos.y, safeCameraPos.z);
     }
 
