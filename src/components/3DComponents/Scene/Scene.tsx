@@ -8,6 +8,7 @@ import MemoizedHome from '@/pages/Home/Home';
 import MemoizedContact from '@/pages/Contact/Contact';
 import { SceneProps } from '@/components/3DComponents/Scene/SceneTypes';
 import { ScrollReset } from '@/components/3DComponents/Scrolling/ScrollReset';
+import { SwitchPagesOnScroll } from '@/components/3DComponents/Scrolling/SwitchPagesOnScroll';
 
 /**
  * Scene component
@@ -66,7 +67,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                 pageCount = 4;
                 break;
             case 'about':
-                pageCount = 4;
+                pageCount = 7;
                 break;
             default:
                 pageCount = 0;
@@ -100,6 +101,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                     damping={0.5}
                 >
                     <ScrollReset visible={visible} />
+                    <SwitchPagesOnScroll visible={visible} />
                     <Scroll key={'scroll-controls__scroller'} ref={pagesRef}>
                         {/* <Rig rotation={[0, 0, 0]}> */}
                         <MemoizedHome {...pagesMemoProps} />
@@ -110,10 +112,15 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                     {pagesRef.current && isMobile && (
                         <PageScroller key={'scroll-controls__page-croller'} />
                     )}
+
+                    <Carousel
+                        reducer={reducer}
+                        boundaries={boundaries}
+                        SETTINGS={SETTINGS}
+                    />
+                    <MemoizedContact {...pagesMemoProps} />
                 </ScrollControls>
             )}
-
-            <MemoizedContact {...pagesMemoProps} />
 
             {/* <mesh rotation={[-Math.PI / 2, 0, 0]}>
                     <planeGeometry args={[50, 50]} />
@@ -132,11 +139,7 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
                 </mesh> */}
             {/* <Suspense fallback={null}> */}
             {/* <Rig rotation={[0, 0, 0]} reducer={reducer}> */}
-            <Carousel
-                reducer={reducer}
-                boundaries={boundaries}
-                SETTINGS={SETTINGS}
-            />
+
             {/* </Rig> */}
             {/* </Suspense> */}
 
