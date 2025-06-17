@@ -13,7 +13,7 @@ export function ScrollReset({ visible }: ScrollResetProps) {
     const scroll = useScroll();
 
     /**
-     * Type error inevitable
+     * Scroll type error is inevitable
      * @description : This is a workaround to reset the scroll position
      */
     useEffect(() => {
