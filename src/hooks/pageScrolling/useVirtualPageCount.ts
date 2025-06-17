@@ -1,6 +1,6 @@
 import { CalculateVirtualPageCountProps } from '@/hooks/pageScrolling/pageScollingTypes';
 import { useScroll } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { easing } from 'maath';
 import { useCallback, useRef, useState } from 'react';
 import { Group } from 'three';
@@ -13,6 +13,7 @@ import { Group } from 'three';
 export function useVirtualPageCount() {
     const [isPageActive, setIsPageActive] = useState(false);
     const scroll = useScroll();
+    const { viewport } = useThree();
 
     const frameCountRef = useRef(0);
     const ref = useRef<Group>(null!);
@@ -30,6 +31,7 @@ export function useVirtualPageCount() {
             isActive,
         }: CalculateVirtualPageCountProps) => {
             if (!groupRef.current || !contentHeight || !isActive) return;
+
             if (groupRef.current.userData?.contentSize?.y)
                 pageSizeRef.current = groupRef.current.userData?.contentSize?.y;
             ref.current = groupRef.current;
@@ -59,12 +61,16 @@ export function useVirtualPageCount() {
 
         if (isPageActive) {
             const margin = 0.2;
+
+            if (ref.current.userData.contentSize.y / viewport.height < 1)
+                viewport.height = contentHeightRef.current;
+
             // (Full box size + half of the top content height) / the viewport + margin
             const count =
-                (ref.current.userData.contentSize.y +
-                    contentHeightRef.current / 2) /
-                    contentHeightRef.current +
+                (ref.current.userData.contentSize.y + viewport.height / 2) /
+                    viewport.height +
                 margin;
+
             // Accurate enought ? If yes, return
             if (Math.abs(scroll.pages - count) < 0.05) return;
 
