@@ -97,7 +97,6 @@ export function Experience({ reducer }: ExperienceProps) {
         // Resets the max camera angles to infinity
         ref.current.minAzimuthAngle = minAngle;
         ref.current.maxAzimuthAngle = maxAngle;
-
         // const cameraPosOnRoute = async () => {
         switch (visible) {
             case 'about':
@@ -327,11 +326,9 @@ export function Experience({ reducer }: ExperienceProps) {
 
     // useEffect(() => {
     //     if (ref.current) {
-    //         // ✅ Reset via CameraControls API
     //         ref.current.setPosition(0, 0, -20, true);
     //         ref.current.setTarget(0, 0, 0, true);
 
-    //         console.log('✅ Camera reset via CameraControls');
     //     }
     // }, [visible]);
 
