@@ -1,9 +1,17 @@
 import { ButtonHTMLAttributes, PropsWithChildren, ReactNode, Ref } from 'react';
 
-export type ButtonProps = {
-    ref: Ref<HTMLButtonElement>;
-} & PropsWithChildren &
-    ButtonHTMLAttributes<HTMLButtonElement>;
+/**
+ * Generic Button Props
+ *
+ * @template T - Generic type for custom properties
+ */
+export interface ButtonProps<T>
+    extends ButtonHTMLAttributes<HTMLButtonElement>,
+        PropsWithChildren {
+    ref?: Ref<HTMLButtonElement>;
+    className?: string;
+    customProps?: T;
+}
 
 export type HeadersProps = {
     isMobile: boolean;
