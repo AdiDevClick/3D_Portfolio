@@ -30,7 +30,7 @@
         "@utils/*": ["src/utils/*"],
         "@hooks/*": ["src/hooks/*"]
       },
-      "types": ["react", "react-dom"],
+      "types": ["react", "react-dom", "jest"],
       "lib": ["DOM", "ES2022", "DOM.Iterable"],
   },
   "references": [
