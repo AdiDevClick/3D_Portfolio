@@ -485,12 +485,11 @@ export function handleCarouselRotation(
 
 let positions;
 let targetRotationY = 0;
-
 /**
  * Calculates card positions for the circular arrangement
  */
 export function calculateCardPositions(
-    item: any,
+    item: ElementType,
     index: number,
     activeCard: number,
     showElementsLength: number,
@@ -499,6 +498,15 @@ export function calculateCardPositions(
     threed: boolean
 ) {
     const { active, onHold } = item.cardAngles;
+    const currentRotation = item.ref?.current?.rotation.y || 0;
+    const flipDirection = item.id % 2 === 0 ? 1 : -1;
+    let rotateTwice = active + flipDirection * TWO_PI;
+    if (Math.abs(currentRotation - rotateTwice) < 0.1) {
+        // If the current rotation matches the actual target rotation,
+        // we need to flip it again to ensure the card is flipped correctly
+        rotateTwice += TWO_PI;
+    }
+    // const flipDirection = (index + 1) % 2 === 0 ? 1 : -1;
 
     if (activeCard !== -1) {
         if (index === activeCard) {
@@ -506,13 +514,27 @@ export function calculateCardPositions(
             // It should be : [sin(angle)*R, 0, cos(angle)*R]
             const targetRadius = containerScale + activeForwardOffset;
             positions = MathPos(active, targetRadius);
-            targetRotationY = active;
+            targetRotationY = rotateTwice;
         } else {
             // Non-active card positioning during selection
             const relativeIndex = index < activeCard ? index : index - 1;
             const angleStep = TWO_PI / (showElementsLength - 1);
-            const nonActiveCardAngle = relativeIndex * angleStep;
-            positions = MathPos(nonActiveCardAngle, containerScale);
+            let nonActiveCardAngle = relativeIndex * angleStep;
+            // Cards on the left side of the active card
+            if (index < activeCard) {
+                // Use space from previews card and simply add half the active card size/angle
+                nonActiveCardAngle = onHold + angleStep / 2;
+            } else {
+                // Cards on the right side of the active card
+                // Use space from previews card and simply remove half the active card size/angle
+                nonActiveCardAngle = onHold - angleStep / 2;
+                // Prevents Infinity from causing issues
+                if (nonActiveCardAngle === Infinity) {
+                    nonActiveCardAngle = angleStep / 2;
+                }
+            }
+            const contractedRadius = containerScale * 0.95;
+            positions = MathPos(nonActiveCardAngle, contractedRadius);
             targetRotationY = nonActiveCardAngle;
         }
     } else {
@@ -879,15 +901,37 @@ export function shortestAnglePath(fromAngle: number, toAngle: number): number {
     // This ensures that the camera rotates in the shortest direction
     // from one half to the other
     while (diff > Math.PI) {
-        diff -= 2 * Math.PI;
+        diff -= TWO_PI;
     }
     while (diff < -Math.PI) {
-        diff += 2 * Math.PI;
+        diff += TWO_PI;
     }
 
     return diff;
 }
 // Normaliser les angles entre -π et π
-function normalizeAngle(angle) {
-    return ((angle + Math.PI) % (2 * Math.PI)) - Math.PI;
+// export function normalizeAngle(angle, toAngle) {
+//     let diff = toAngle - angle;
+
+//     // This ensures that the camera rotates in the shortest direction
+//     // from one half to the other
+//     while (diff > Math.PI) {
+//         diff -= TWO_PI;
+//     }
+//     while (diff < -Math.PI) {
+//         diff += TWO_PI;
+//     }
+
+//     return diff + angle;
+// }
+export function normalizeAngle(angle, targetAngle) {
+    // ✅ FLIP: Ajouter rotation de 180° pour effet flip
+    // const flipAmount = TWO_PI; // 180 degrés
+
+    // // Choisir direction de flip basée sur position
+    // const shouldFlipForward = Math.sin(targetAngle) > 0;
+    // const flipDirection = shouldFlipForward ? flipAmount : -flipAmount;
+
+    // return targetAngle + flipDirection;
+    return ((angle + Math.PI) % TWO_PI) - Math.PI;
 }
