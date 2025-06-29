@@ -257,6 +257,7 @@ const MemoizedCardsContainer = memo(function CardsContainer({
         }
         onHover(e, card, reducer, isCarouselMoving, isCarouselClicked);
     }, 20);
+
     const debouncedOnHoverOutHandler = useDebounce((e, card) => {
         onPointerOut(e, card, reducer, isCarouselMoving);
     }, 50);
