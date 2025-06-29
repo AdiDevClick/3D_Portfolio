@@ -5,7 +5,7 @@
 /**
  * Card offset when the card is hovered
  */
-export const CARD_ACTIVE_FORWARD_OFFSET = 0.7;
+export const CARD_ACTIVE_FORWARD_OFFSET = 0.4;
 // export const CARD_ACTIVE_FORWARD_OFFSET = 0.5;
 
 /**
