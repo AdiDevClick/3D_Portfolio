@@ -13,12 +13,12 @@ import { Group } from 'three';
 export function useVirtualPageCount() {
     const [isPageActive, setIsPageActive] = useState(false);
     const scroll = useScroll();
-    const { viewport } = useThree();
+    const { viewport, camera } = useThree();
 
     const frameCountRef = useRef(0);
+
     const ref = useRef<Group>(null!);
     const contentHeightRef = useRef(0);
-    const pageSizeRef = useRef(0);
 
     /**
      * Saves the current page size and content height
@@ -31,9 +31,9 @@ export function useVirtualPageCount() {
             isActive,
         }: CalculateVirtualPageCountProps) => {
             if (!groupRef.current || !contentHeight || !isActive) return;
-
-            if (groupRef.current.userData?.contentSize?.y)
-                pageSizeRef.current = groupRef.current.userData?.contentSize?.y;
+            camera.updateMatrixWorld(true);
+            camera.updateProjectionMatrix();
+            // Frustum checker saved the contentSize.y ?
             ref.current = groupRef.current;
             contentHeightRef.current = contentHeight;
             setIsPageActive(isActive);
@@ -44,37 +44,28 @@ export function useVirtualPageCount() {
     useFrame((_, delta) => {
         if (!ref.current?.userData?.contentSize || !isPageActive) return;
         frameCountRef.current += 1;
+        const checkInterval = ref.current.userData.contentSize.y < 5 ? 10 : 2;
 
-        const checkInterval = ref.current.userData.contentSize.y < 5 ? 30 : 300;
+        if (frameCountRef.current % checkInterval === 0) {
+            // Drei viewPort is the same as the stable viewport ?
+            // Adding halfSizedViewport to the calculation
+            // Else, we reduce the viewport height by half of the content height
+            // to avoid too many virtual pages.
+            const halfSizedViewport =
+                contentHeightRef.current / viewport.height < 1
+                    ? viewport.height - contentHeightRef.current / 2
+                    : viewport.height / 2;
+            const margin = 0.1;
 
-        if (frameCountRef.current % checkInterval === 0 && isPageActive) {
-            // Sizable difference between previews and current page size ?
-            if (
-                Math.abs(
-                    ref.current.userData.contentSize.y - pageSizeRef.current
-                ) > 0.15
-            ) {
-                pageSizeRef.current = ref.current.userData.contentSize.y;
-                return;
-            }
-        }
-
-        if (isPageActive) {
-            const margin = 0.2;
-
-            if (ref.current.userData.contentSize.y / viewport.height < 1)
-                viewport.height = contentHeightRef.current;
-
+            const contentSize = ref.current.userData.contentSize.y;
             // (Full box size + half of the top content height) / the viewport + margin
-            const count =
-                (ref.current.userData.contentSize.y + viewport.height / 2) /
-                    viewport.height +
-                margin;
+            let count = (contentSize + halfSizedViewport) / viewport.height;
+            count += margin;
 
-            // Accurate enought ? If yes, return
+            // Accurate enough ? If yes, return
             if (Math.abs(scroll.pages - count) < 0.05) return;
 
-            const smoothness = Math.abs(scroll.pages - count) > 1 ? 0.3 : 0.5;
+            const smoothness = Math.abs(scroll.pages - count) > 1 ? 1 : 0.5;
             easing.damp(scroll, 'pages', count, smoothness, delta);
         }
     });
