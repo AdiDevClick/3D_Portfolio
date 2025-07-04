@@ -64,10 +64,10 @@ export function Scene({ children, SETTINGS, boundaries, reducer }: SceneProps) {
         let pageCount = 0;
         switch (visible) {
             case 'home':
-                pageCount = 4;
+                pageCount = 3;
                 break;
             case 'about':
-                pageCount = 7;
+                pageCount = 6;
                 break;
             default:
                 pageCount = 0;
