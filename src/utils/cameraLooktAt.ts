@@ -10,11 +10,13 @@ import type { CameraControls as CameraControlsImpl } from '@react-three/drei';
  * @param prevCamPos - Previews camera position
  * @param cameraPositions - Camera positions
  * @param currentCamera - Camera controls ref.current
+ * @param animate **@default=true** - If true, will animate the camera movement
  */
 export function cameraLookAt(
     newCamPosition: Vector3,
     cameraPositions: { position: Vector3; target: Vector3; fov: number },
-    currentCamera: CameraControlsImpl
+    currentCamera: CameraControlsImpl,
+    animate = true
 ) {
     const { camera } = currentCamera;
     if (!newCamPosition) return;
@@ -30,7 +32,7 @@ export function cameraLookAt(
         cameraPositions.target.x,
         cameraPositions.target.y,
         cameraPositions.target.z,
-        true
+        animate
     );
 
     camera.updateProjectionMatrix();
