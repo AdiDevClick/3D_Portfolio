@@ -1,8 +1,10 @@
 import {
     ErrorWithCause,
+    introProps,
     loadCardByURLProps,
 } from '@/components/3DComponents/Experience/ExperienceTypes';
 import { wait } from '@/functions/promises';
+import { Vector3 } from 'three';
 
 /**
  * Allows a TypeScript function to throw an error with a custom message and status code.
@@ -78,4 +80,52 @@ export async function loadCardByURL(
         }
         console.error('Erreur non gérée :', typedError, error);
     }
+}
+
+/**
+ * Positions the camera on loading -
+ *
+ * @param ref - CameraControls ref
+ * @param setIsIntro - Function to set the intro state
+ */
+async function positionCamOnLoading({
+    ref,
+    setIsIntro,
+    cameraPositions,
+}: introProps) {
+    if (!ref.current) return;
+
+    ref.current.smoothTime = 1.2;
+    await ref.current.dolly(16.5, true);
+
+    // Save/update the final position and fov for later use when switching back to home
+    const finalPosition = ref.current.getPosition(new Vector3());
+    // finalIntroTarget = ref.current.getTarget(new Vector3());
+    const finalIntroFov =
+        'fov' in ref.current.camera ? ref.current.camera.fov : 75;
+
+    cameraPositions.home.position = finalPosition;
+    cameraPositions.home.fov = finalIntroFov;
+
+    ref.current.camera.updateProjectionMatrix();
+    setIsIntro(false);
+}
+
+/**
+ * Intro function to position the camera on the home page
+ * @description : This function sets the camera position and fov
+ * !! IMPORTANT !! - updateProjectionMatrix is MANDATORY
+ *
+ * @param ref - CameraControls ref
+ * @param setIsIntro - Function to set the intro state
+ */
+export async function intro({ ref, setIsIntro, cameraPositions }: introProps) {
+    if (!ref.current) return;
+
+    if ('fov' in ref.current.camera) {
+        ref.current.camera.fov = cameraPositions.home.fov;
+    }
+    ref.current.camera.updateProjectionMatrix();
+    ref.current.setPosition(...cameraPositions.home.startPosition);
+    await positionCamOnLoading({ ref, setIsIntro, cameraPositions });
 }
