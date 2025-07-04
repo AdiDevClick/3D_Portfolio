@@ -1,7 +1,12 @@
-import { loadCardByURL } from '@/components/3DComponents/Experience/ExperienceFunctions';
-import { ExperienceProps } from '@/components/3DComponents/Experience/ExperienceTypes';
+import {
+    intro,
+    loadCardByURL,
+} from '@/components/3DComponents/Experience/ExperienceFunctions';
+import {
+    CameraPosition,
+    ExperienceProps,
+} from '@/components/3DComponents/Experience/ExperienceTypes';
 import { DEFAULT_CAMERA_POSITION } from '@/configs/3DCarousel.config';
-import { CAMERA_FOV_DESKTOP, CAMERA_FOV_MOBILE } from '@/configs/Camera.config';
 import { useCameraPositioning } from '@/hooks/camera/useCameraPositioning';
 import { cameraLookAt } from '@/utils/cameraLooktAt';
 import { CameraControls, Environment } from '@react-three/drei';
@@ -26,8 +31,19 @@ const initialCameraFov = 20;
 
 let cameraResults;
 
-const cameraPositions = {
+const cameraPositions: CameraPosition = {
     home: {
+        startPosition: [
+            DEFAULT_CAMERA_POSITION.x + 2,
+            DEFAULT_CAMERA_POSITION.y + 0.5,
+            DEFAULT_CAMERA_POSITION.z,
+        ],
+
+        position: DEFAULT_CAMERA_POSITION.clone(),
+        target: new Vector3(0, 0, 0),
+        fov: 75,
+    },
+    contact: {
         position: DEFAULT_CAMERA_POSITION.clone(),
         target: new Vector3(0, 0, 0),
         fov: initialCameraFov,
@@ -54,11 +70,12 @@ export function Experience({ reducer }: ExperienceProps) {
     const prevCamPosRef = useRef(DEFAULT_CAMERA_POSITION.clone());
 
     const [isURLLoaded, setIsURLLoaded] = useState(false);
+    const [isIntro, setIsIntro] = useState(true);
+
     const params = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const { positionCameraToCard } = useCameraPositioning();
-
     // useCameraDebug(
     //     ref,
     //     ref.current?.camera,
@@ -66,15 +83,7 @@ export function Experience({ reducer }: ExperienceProps) {
     //     reducer.activeContent?.isClicked ?? false,
     //     isMobile
     // );
-    // useEffect(() => {
-    //     if (ref.current) {
-    //         // cameraLookAt(
-    //         //     new Vector3(200, 0, -2000),
-    //         //     cameraPositions.home,
-    //         //     ref.current
-    //         // );
-    //     }
-    // }, []);
+
     /**
      * Camera positioning -
      * @description : Camera is positionned on the active page or content
@@ -86,13 +95,13 @@ export function Experience({ reducer }: ExperienceProps) {
         // camera.layers.enable(0);
         // Carousel layer
         // camera.layers.enable(2);
-
-        cameraPositions.carousel.fov = isMobile
-            ? CAMERA_FOV_MOBILE
-            : CAMERA_FOV_DESKTOP;
-        cameraPositions.home.fov = isMobile
-            ? CAMERA_FOV_MOBILE
-            : CAMERA_FOV_DESKTOP;
+        ref.current.smoothTime = 0.25;
+        // cameraPositions.carousel.fov = isMobile
+        //     ? CAMERA_FOV_MOBILE
+        //     : CAMERA_FOV_DESKTOP;
+        // cameraPositions.home.fov = isMobile
+        //     ? CAMERA_FOV_MOBILE
+        //     : CAMERA_FOV_DESKTOP;
 
         // Resets the max camera angles to infinity
         ref.current.minAzimuthAngle = minAngle;
@@ -102,34 +111,36 @@ export function Experience({ reducer }: ExperienceProps) {
             case 'about':
                 cameraLookAt(
                     new Vector3(0, 0, -150),
-                    cameraPositions.home,
+                    cameraPositions.contact,
                     ref.current
                 );
                 setTimeout(() => {
                     cameraLookAt(
-                        cameraPositions.home.position,
-                        cameraPositions.home,
+                        cameraPositions.contact.position,
+                        cameraPositions.contact,
                         ref.current
                     );
                 }, 250);
                 break;
-            case 'contact':
             case 'home':
-            case 'error':
-                cameraLookAt(
-                    new Vector3(5, -2, 100),
-                    cameraPositions.home,
-                    ref.current
-                );
-                setTimeout(() => {
+                if (isIntro && location.pathname === '/') {
+                    intro({ ref, setIsIntro, cameraPositions });
+                } else {
                     cameraLookAt(
                         cameraPositions.home.position,
                         cameraPositions.home,
                         ref.current
                     );
-                }, 250);
+                }
                 break;
-
+            case 'error':
+            case 'contact':
+                cameraLookAt(
+                    cameraPositions.contact.position,
+                    cameraPositions.contact,
+                    ref.current
+                );
+                break;
             case 'carousel':
                 cameraLookAt(
                     prevCamPosRef.current.y < 0
@@ -138,9 +149,7 @@ export function Experience({ reducer }: ExperienceProps) {
                     cameraPositions.carousel,
                     ref.current
                 );
-
                 break;
-
             case 'card-opened':
             case 'card-detail':
             case 'URLRequested':
@@ -159,7 +168,6 @@ export function Experience({ reducer }: ExperienceProps) {
                         activeContent.isClicked
                     );
                     cameraResults = results;
-                    // console.log(cameraResults, '📍 cameraResults');
                     // Set the max camera angles to the active card
                     // Forbids the user to rotate the camera more than the angle limit !
                     if (activeContent.isClicked && results?.angleLimits) {
@@ -198,16 +206,16 @@ export function Experience({ reducer }: ExperienceProps) {
                 }
                 break;
             default:
-                cameraLookAt(
-                    new Vector3(0, 0, -200),
-                    cameraPositions.home,
-                    ref.current
-                );
+                // cameraLookAt(
+                //     new Vector3(0, 0, -20),
+                //     cameraPositions.home,
+                //     ref.current
+                // );
                 break;
         }
         // };
         // cameraPosOnRoute();
-    }, [visible, activeContent, isMobile]);
+    }, [visible, activeContent, isMobile, isIntro]);
 
     /**
      * Detect route change -
