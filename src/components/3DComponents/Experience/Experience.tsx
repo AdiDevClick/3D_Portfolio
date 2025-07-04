@@ -1,5 +1,5 @@
 import {
-    intro,
+    playIntro,
     loadCardByURL,
 } from '@/components/3DComponents/Experience/ExperienceFunctions';
 import {
@@ -124,7 +124,7 @@ export function Experience({ reducer }: ExperienceProps) {
                 break;
             case 'home':
                 if (isIntro && location.pathname === '/') {
-                    intro({ ref, setIsIntro, cameraPositions });
+                    playIntro({ ref, setIsIntro, cameraPositions });
                 } else {
                     cameraLookAt(
                         cameraPositions.home.position,

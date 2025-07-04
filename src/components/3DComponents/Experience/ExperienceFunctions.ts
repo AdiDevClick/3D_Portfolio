@@ -119,7 +119,11 @@ async function positionCamOnLoading({
  * @param ref - CameraControls ref
  * @param setIsIntro - Function to set the intro state
  */
-export async function intro({ ref, setIsIntro, cameraPositions }: introProps) {
+export async function playIntro({
+    ref,
+    setIsIntro,
+    cameraPositions,
+}: introProps) {
     if (!ref.current) return;
 
     if ('fov' in ref.current.camera) {
