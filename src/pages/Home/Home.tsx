@@ -107,6 +107,7 @@ const MemoizedHome = memo(function Home({
 
     useFrame((state, delta) => {
         if (!ref.current || !titleRef.current || !stackRef.current) return;
+        if (frameCountRef.current > 5000) frameCountRef.current = 0;
         frameCountRef.current += 1;
 
         // Check if the objects are in the frustum
