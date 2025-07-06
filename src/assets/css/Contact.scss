@@ -1,0 +1,35 @@
+/**
+* Contact Page
+*/
+.contact-form {
+    transform: translate(-50%);
+    transition: transform 0.5s ease-in-out;
+
+}
+
+.contact-portal-content {
+    background: rgba(255, 165, 0, 0.95);
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+    border: 2px solid #ff8c00;
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
+    font-family: Arial, sans-serif;
+    pointer-events: none;
+    // backdrop-filter: blur(5px);
+    transform: translate3d(-50%, 0, 0);
+    transform-origin: top left;
+
+    h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    p {
+        margin: 5px 0;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+}
