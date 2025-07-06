@@ -1,4 +1,5 @@
 import { ButtonProps } from '@/components/HTML/HTMLtypes';
+import '@css/Button.scss';
 
 /**
  * Composant bouton réutilisable -
