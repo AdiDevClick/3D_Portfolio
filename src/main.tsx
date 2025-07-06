@@ -36,6 +36,12 @@ const router = createBrowserRouter(
                 {
                     path: 'contact',
                     element: <Outlet />,
+                    children: [
+                        {
+                            path: ':id',
+                            element: <Outlet />,
+                        },
+                    ],
                 },
                 {
                     path: 'a-propos',
@@ -88,9 +94,20 @@ export function Root(contentType: { contentType?: string }) {
     const aspectRatio = (size[0] ?? 1) / (size[1] ?? 1);
     const width = height * aspectRatio;
 
-    const scaleX = Math.max(0.5, (size[0] ?? 1) / 1920);
-    const scaleY = Math.max(0.5, (size[1] ?? 1) / 1080);
+    const baseWidth = 1920;
+    const baseHeight = 1080;
+    const currentWidth = size[0] ?? 1;
+    const currentHeight = size[1] ?? 1;
 
+    const scaleByWidth = currentWidth / baseWidth;
+    const scaleByHeight = currentHeight / baseHeight;
+    const uniformScale = Math.min(scaleByWidth, scaleByHeight);
+
+    // Limits between 0.5 & 1.1
+    const scaleX = Math.max(0.5, Math.min(uniformScale, 1.1));
+    const scaleY = scaleX;
+    // const scaleX = Math.max(0.5, (size[0] ?? 1) / 1920);
+    // const scaleY = Math.max(0.5, (size[0] ?? 1) / 1080);
     const responsiveBoundaries = {
         x: SETTINGS.x * scaleX,
         y: SETTINGS.y * scaleY,
