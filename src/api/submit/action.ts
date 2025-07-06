@@ -13,6 +13,13 @@
 //         ...options,
 //     });
 
+import {
+    emailErrorMessage,
+    emailInputRegex,
+    emptyInputsErrorMessage,
+    successMessage,
+} from '@/configs/formHandler.config';
+
 //     if (!response.ok) {
 //         throw new Error(`HTTP error! status: ${response.status}`);
 //     }
@@ -20,23 +27,44 @@
 //     return response;
 // }
 
-export async function action<T>(prevState: any, formData: FormData) {
+export async function formActionHandler<T>(prevState: any, formData: FormData) {
+    let success = true;
+    let message = successMessage;
+
     const email = formData.get('email') as string;
-    const message = formData.get('message') as string;
+    const body = formData.get('message') as string;
 
-    if (!email || !message) {
-        throw new Error('Un Email et un message sont requis.');
+    for (let [key, value] of formData) {
+        value = key.type !== 'File' ? value.trim() : value;
+
+        if (value.length === 0) {
+            message = emptyInputsErrorMessage;
+        }
+
+        if (key === 'email' && !emailInputRegex.test(email)) {
+            message = emailErrorMessage;
+        }
     }
 
-    if (!email.includes('@')) {
-        return {
-            success: false,
-            message: 'L\'email doit contenir un "@"',
-        };
-    }
+    // if (email.length === 0 || body.length === 0) {
+    //     throw new Error(emptyInputsErrorMessage);
+    // }
+
+    // if (!emailInputRegex.test(email)) {
+    //     return {
+    //         success: false,
+    //         message: emailErrorMessage,
+    //     };
+    // }
+    // if (!email.includes('@')) {
+    // return {
+    //         success: false,
+    //         message: 'L\'email doit contenir un "@"',
+    //     };
+    // }
 
     return {
-        success: true,
-        message: `Merci pour votre message !`,
+        success: success,
+        message: successMessage,
     };
 }
