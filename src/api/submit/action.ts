@@ -33,7 +33,6 @@ export async function formActionHandler<T>(prevState: any, formData: FormData) {
 
     const email = formData.get('email') as string;
     const body = formData.get('message') as string;
-
     for (let [key, value] of formData) {
         value = key.type !== 'File' ? value.trim() : value;
 
