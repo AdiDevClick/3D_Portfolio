@@ -1,4 +1,4 @@
-import { ClickableBox } from '@/components/3DComponents/Forms/ClickableBox';
+import { ClickableBox } from '@/components/3DComponents/Shapes/ClickableBox';
 import { FallbackText } from '@/components/3DComponents/Title/FallbackText';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { FloatingTitleProps } from '@/components/3DComponents/Title/TitlesTypes';

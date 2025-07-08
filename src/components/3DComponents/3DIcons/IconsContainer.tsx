@@ -1,7 +1,7 @@
 import { IconsContainerProvider } from '@/api/contexts/IconsContainerProvider';
 import { IconsContainerTypes } from '@/components/3DComponents/3DIcons/IconsTypes';
 import { IconWithText } from '@/components/3DComponents/3DIcons/IconWithText';
-import { HexCell } from '@/components/3DComponents/Forms/HexCell';
+import { HexCell } from '@/components/3DComponents/Shapes/HexCell';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { Center } from '@react-three/drei';
