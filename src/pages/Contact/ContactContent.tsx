@@ -13,7 +13,7 @@ export function ContactContent({ ...props }) {
 
     return (
         <form action={formAction} {...props}>
-            <h1 style={{ color: 'black' }}>Me Contacter</h1>
+            {/* <h1 style={{ color: 'black' }}>Me Contacter</h1>
             <p className="contact-form__body" style={{ color: 'black' }}>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Quisquam, voluptatibus. Lorem ipsum dolor sit amet{' '}
@@ -29,10 +29,10 @@ export function ContactContent({ ...props }) {
                 name="message"
                 placeholder="Votre message"
                 rows={5}
-            />
-            <Button type="submit" className="button">
+            /> */}
+            {/* <Button type="submit" className="button">
                 {isPending ? "En cours d'envoi..." : 'Me Contacter'}
-            </Button>
+            </Button> */}
 
             {state?.message && (
                 <p className={state.success ? 'success' : 'error'}>
