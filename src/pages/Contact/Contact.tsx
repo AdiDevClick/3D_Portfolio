@@ -17,14 +17,19 @@ import { ContactContent } from '@/pages/Contact/ContactContent';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import {
     Billboard,
+    Center,
     Edges,
     Environment,
     Html,
     Image,
     MeshPortalMaterial,
     PivotControls,
+    RenderCubeTexture,
+    RenderTexture,
+    RoundedBox,
     Sparkles,
     Stars,
+    Text,
     useCursor,
     useGLTF,
 } from '@react-three/drei';
@@ -35,17 +40,39 @@ import {
     Component,
     createContext,
     memo,
+    useCallback,
     useContext,
     useEffect,
     useRef,
     useState,
 } from 'react';
-import { DoubleSide, Group, Mesh, PlaneGeometry, Vector3, Euler } from 'three';
+import {
+    DoubleSide,
+    Group,
+    Mesh,
+    PlaneGeometry,
+    Vector3,
+    Euler,
+    Material,
+} from 'three';
 import '@css/Contact.scss';
 import { useControls } from 'leva';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer';
 import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import { Title } from '@/components/3DComponents/Title/Title';
+import { ThreeDForm } from '@/components/3DComponents/Forms/ThreeDForm';
+import { ThreeDFormV2 } from '@/components/3DComponents/Forms/ThreeDFormV2';
+import { ThreeDInput } from '@/components/3DComponents/Forms/ThreeDInput';
+import { ContactFormWithNativeForm } from '@/components/3DComponents/Forms/ContactFormExamples';
+import { ContactFormThreeD } from '@/components/3DComponents/Forms/ContactFormThreeD';
+import {
+    checkThisFormValidity,
+    handleChange,
+    handleKeyDown,
+    handleSubmit,
+} from '@/components/3DComponents/Forms/formsFunctions';
+import { mul } from 'three/src/nodes/TSL.js';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentIconsPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
@@ -84,6 +111,8 @@ const MemoizedContact = memo(function Contact({
     const iconsRef = useRef<Group>(null);
     const contentRef = useRef<HTMLDivElement>(null!);
     const boxRef = useRef<Mesh>(null);
+    const envelopeRef = useRef<Mesh>(null);
+    const linkedInRef = useRef<Mesh>(null);
     const portalRefs = useRef<Map<string, React.RefObject<Mesh | null>>>(
         new Map()
     );
@@ -92,6 +121,7 @@ const MemoizedContact = memo(function Contact({
 
     // const { viewport } = useThree((state) => state);
     const [hovered, setHovered] = useState(false);
+    const [isFormActive, setFormActive] = useState(false);
     const navigate = useNavigate();
     const { nodes } = useGLTF(
         '/assets/models/optimized/aobox-transformed-rect.glb'
@@ -152,7 +182,7 @@ const MemoizedContact = memo(function Contact({
             item: {
                 ...ANIM_SCALE_CONFIG_BASE,
                 ref: groupRef,
-                effectOn: scale,
+                effectOn: [scale, scale, scale],
             },
             isActive,
             groupRef,
@@ -196,7 +226,8 @@ const MemoizedContact = memo(function Contact({
 
     return (
         <group ref={groupRef} visible={isActive}>
-            {/* <FloatingTitle
+            <FloatingTitle
+                position={[-2.2, 0, 0]}
                 text="Me contacter sur LinkedIn"
                 isClickable={true}
                 onPointerOver={(e) => {
@@ -223,15 +254,21 @@ const MemoizedContact = memo(function Contact({
                         </div>
                     </Html>
                 )}
-            </FloatingTitle> */}
-
+            </FloatingTitle>
+            {/* <Sparkles
+                // position={[2.2, 0, 0]}
+                count={30}
+                size={6}
+                speed={0.4}
+                color={'blue'}
+            /> */}
             <ContactIconsContainer
                 key={`contact-icons`}
                 ref={iconsRef}
                 scalar={generalScaleX}
                 isMobile={isMobile}
             />
-            {/* <Sparkles count={30} size={6} speed={0.4} color={'blue'} />
+
             {isActive && (
                 <Stars
                     radius={100}
@@ -242,13 +279,13 @@ const MemoizedContact = memo(function Contact({
                     fade
                     speed={1}
                 />
-            )} */}
+            )}
             {/* <group ref={contentRef}>
                 <BillboardPageContainer pageName="/contact">
                     <ContactContent className={'contact-form'} />
                 </BillboardPageContainer>
             </group> */}
-            <PivotControls
+            {/* <PivotControls
                 anchor={[-1.1, -1.1, -1.1]}
                 autoTransform
                 scale={0.75}
@@ -262,8 +299,7 @@ const MemoizedContact = memo(function Contact({
                     <Edges />
                     <portalContext.Provider value={context}>
                         <Side rotation={[0, 0, 0]} bg="orange" index={0}>
-                            <mesh rotation={[0, 1.5, 0]}>
-                                {/* <mesh geometry={new PlaneGeometry(1.5, 1)}> */}
+                            <group rotation={[0, 1.5, 0]}>
                                 <Billboard
                                     position={[
                                         DESKTOP_TITLE_POSITION[0],
@@ -277,28 +313,8 @@ const MemoizedContact = memo(function Contact({
                                         text={'Formulaire de contact'}
                                     />
                                 </Billboard>
-
-                                <boxGeometry args={[2, 1, 1]} />
-                                <meshBasicMaterial
-                                    // transparent
-                                    opacity={1}
-                                    side={DoubleSide}
-                                />
-                                <Html
-                                    // ref={contentRef}
-                                    transform
-                                    occlude="blending"
-                                    position={[0, 0, 0.51]}
-                                    scale={0.3}
-                                >
-                                    <div className="contact-portal-content">
-                                        <h3>🎯 Contact Portal</h3>
-                                        <p>Attached to geometry!</p>
-                                        <p>Follows the 3D Box perfectly!</p>
-                                        <p>With occlude blending!</p>
-                                    </div>
-                                </Html>
-                            </mesh>
+                                <ContactFormThreeD />
+                            </group>
                         </Side>
                         <Side
                             rotation={[0, Math.PI, 0]}
@@ -338,7 +354,47 @@ const MemoizedContact = memo(function Contact({
                         <Rig parentElement={boxRef} />
                     </portalContext.Provider>
                 </mesh>
-            </PivotControls>
+            </PivotControls> */}
+            {/* <mesh ref={linkedInRef} position={[2.2, 0, 0]}>
+                <RoundedBox args={[3, 0.5, 0.5]}>
+                    <meshStandardMaterial color="#f3f3f3" />
+                </RoundedBox>
+                <Text
+                    position={[0, 0, -0.26]}
+                    fontSize={0.2}
+                    rotation={[0, 3.14, 0]}
+                    color={'#4a90e2'}
+                    anchorX="center"
+                    anchorY="middle"
+                    maxWidth={2.5}
+                    textAlign="center"
+                >
+                    Me contacter sur LinkedIn
+                </Text>
+            </mesh> */}
+
+            <mesh
+                ref={envelopeRef}
+                position={[-2.2, 0, 0]}
+                onClick={(e) => createForm({ e, navigate, setFormActive })}
+            >
+                <RoundedBox args={[3, 0.5, 0.5]}>
+                    <meshStandardMaterial color="#f3f3f3" />
+                </RoundedBox>
+                <Text
+                    position={[0, 0, -0.265]}
+                    fontSize={0.2}
+                    rotation={[0, 3.14, 0]}
+                    color={'#4a90e2'}
+                    anchorX="center"
+                    anchorY="middle"
+                    maxWidth={2.5}
+                    textAlign="center"
+                >
+                    Ecrire un message
+                </Text>
+            </mesh>
+            {isFormActive && <ContactForm3D />}
         </group>
     );
 });
@@ -407,17 +463,18 @@ function Side({ rotation = [0, 0, 0], bg = '#f0f0f0', children, index }: any) {
     });
 
     const handleClick = (e: ThreeEvent<MouseEvent>) => {
+        if (!e.object.name || params.id === e.object.name) return;
         e.stopPropagation();
         navigate(`/contact/${e.object.name}`);
-        console.log(e.object.name, bg, 'color');
+        console.log('je clic : ', e.object.name, bg, ' color');
     };
-
     return (
         <MeshPortalMaterial
             worldUnits={false}
             attach={`material-${index}`}
             ref={portal}
             side={DoubleSide}
+            // events={params.id === portalName}
         >
             {/** Everything in here is inside the portal and isolated from the canvas */}
             <ambientLight intensity={0.5} />
@@ -464,6 +521,188 @@ function Side({ rotation = [0, 0, 0], bg = '#f0f0f0', children, index }: any) {
     );
 }
 
+// Composant Button3D - Bouton d'envoi 3D
+
+function Button3D({ position, disabled = false, ...props }: Button3DProps) {
+    const [hovered, setHovered] = useState(false);
+    const meshRef = useRef<Mesh>(null);
+
+    // const handleClick = useCallback(
+    //     (e: any) => {
+    //         e.stopPropagation();
+    //         if (!disabled) {
+    //             onClick();
+    //         }
+    //     },
+    //     [onClick, disabled]
+    // );
+
+    return (
+        <group position={position}>
+            <mesh
+                ref={meshRef}
+                onPointerOver={() => setHovered(true)}
+                onPointerOut={() => setHovered(false)}
+                {...props}
+            >
+                <boxGeometry args={[1.2, 0.3, 0.08]} />
+                <meshStandardMaterial
+                    color={
+                        disabled ? '#6c757d' : hovered ? '#28a745' : '#5cb85c'
+                    }
+                    transparent
+                    opacity={disabled ? 0.5 : 0.9}
+                    emissive={hovered && !disabled ? '#0a4015' : '#000'}
+                />
+            </mesh>
+            <Text
+                fontSize={0.08}
+                color="#ffffff"
+                anchorX="center"
+                anchorY="middle"
+                fontWeight="bold"
+                position={[0, 0, 0.041]}
+            >
+                Envoyer
+            </Text>
+        </group>
+    );
+}
+const inputs = [
+    {
+        position: [0, 0.5, 0],
+        name: 'name',
+        type: 'text',
+        placeholder: 'Saisissez votre nom',
+    },
+    {
+        position: [0, 0, 0],
+        name: 'email',
+        type: 'email',
+        placeholder: 'Saisissez votre email',
+    },
+    {
+        position: [0, -0.7, 0],
+        name: 'message',
+        type: 'textarea',
+        isMultiline: true,
+        placeholder: 'Votre message',
+    },
+];
+
+let eventProps = {};
+const formEvents = {
+    onChange: (e) => handleChange({ e, ...eventProps }),
+    onKeyDown: (e) => handleKeyDown({ e }),
+    onClick: (e) => handleSubmit({ e, ...eventProps }),
+};
+
+/**
+ * 3D Form Component
+ *
+ * @deprecated This generates forms using variables.
+ */
+function ContactForm3D() {
+    const [formData, setFormData] = useState<ContactFormData>({
+        name: '',
+        email: '',
+        message: '',
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
+    eventProps = { setFormData, formData, isSubmitting };
+
+    // Soumission du formulaire
+    // const handleSubmit = useCallback(async () => {
+    //     if (!formData.name || !formData.email || !formData.message) {
+    //         alert('Veuillez remplir tous les champs');
+    //         return;
+    //     }
+
+    //     setIsSubmitting(true);
+
+    //     try {
+    //         // Simuler l'envoi (remplacer par votre API)
+    //         await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    //         alert('Message envoyé avec succès !');
+    //         setFormData({ name: '', email: '', message: '' });
+    //     } catch (error) {
+    //         alert("Erreur lors de l'envoi du message");
+    //     } finally {
+    //         setIsSubmitting(false);
+    //     }
+    // }, [formData]);
+
+    // Validation du formulaire
+    // const isFormValid = formData.name && formData.email && formData.message;
+    const isFormValid = checkThisFormValidity(formData);
+    console.log(isFormValid, 'isFormValid');
+    return (
+        <group rotation={[0, 3.15, 0]} position={[0, 0, -0.8]}>
+            <Html>
+                <form ref={formRef}></form>
+            </Html>
+
+            <Text
+                position={[0, 1.2, 0]}
+                fontSize={0.12}
+                color="#333"
+                anchorX="center"
+                anchorY="middle"
+                fontWeight="bold"
+            >
+                🎯 Formulaire de Contact 3D
+            </Text>
+
+            <Text
+                position={[0, 1, 0]}
+                fontSize={0.06}
+                color="#666"
+                anchorX="center"
+                anchorY="middle"
+                maxWidth={2}
+                textAlign="center"
+            >
+                Cliquez sur les boîtes pour saisir vos informations
+            </Text>
+
+            {inputs.map((input, index) => {
+                return (
+                    <ThreeDInput
+                        key={`input-${index}`}
+                        {...input}
+                        value={formData[input.name]}
+                        formRef={formRef}
+                        {...formEvents}
+                    />
+                );
+            })}
+
+            {/* Bouton d'envoi */}
+            <Button3D
+                position={[0, -1.5, 0]}
+                disabled={!isFormValid}
+                {...formEvents}
+                // disabled={!isFormValid || isSubmitting}
+            />
+
+            {/* Indicateur de chargement */}
+            {isSubmitting && (
+                <Text
+                    position={[0, -1.5, 0]}
+                    fontSize={0.06}
+                    color="#007bff"
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    Envoi en cours...
+                </Text>
+            )}
+        </group>
+    );
+}
+
 function Rig({
     position = new Vector3(0, 0, 20),
     focus = new Vector3(0, 0, 0),
@@ -487,8 +726,8 @@ function Rig({
     useEffect(() => {
         if (!location.pathname.includes('/contact')) return;
 
-        console.log('Looking for portal:', params.id);
-        console.log('active ref ', Array.from(context.portalRefs.values()));
+        // console.log('Looking for portal:', params.id);
+        // console.log('active ref ', Array.from(context.portalRefs.values()));
         // const boxMesh = parentElement.current;
         // if (!boxMesh) {
         //     console.log('No box mesh found');
@@ -529,19 +768,56 @@ function Rig({
         // console.log('Camera position:', camera.position);
         // console.log('Camera target:', boxWorldPosition);.
         const active = context.portalRefs.get(params.id);
-        console.log(active, 'active ref');
+        // console.log(active, 'active ref');
         // const active = parentElement.current?.getObjectByName(params.id);
         if (active) {
             active.localToWorld(position.set(4, 1, -4));
             active.localToWorld(focus.set(0, 0, 0));
             // active.parent.localToWorld(position.set(0, 0.5, 0.25));
             // active.parent.localToWorld(focus.set(0, 0, -2));
-            console.log('monde activé : ', active.localToWorld);
+            // console.log('monde activé : ', active.localToWorld);
         }
-        console.log('je bouge la camera', position, focus);
+        // console.log('je bouge la camera', position, focus);
         controls?.setLookAt(...position.toArray(), ...focus.toArray(), true);
     });
 
     return null;
+}
+
+export function createForm({
+    e,
+    navigate,
+    setFormActive,
+}: {
+    e: ThreeEvent<MouseEvent>;
+    navigate: any;
+}) {
+    e.stopPropagation();
+    navigate('/contact/form');
+    setFormActive(true);
+    console.log('createForm called', e);
+}
+
+interface Button3DProps {
+    position: [number, number, number];
+    onClick: () => void;
+    disabled?: boolean;
+}
+
+// Interface pour les données du formulaire
+interface ContactFormData {
+    name: string;
+    email: string;
+    message: string;
+}
+
+// Composant Input3D - Une boîte 3D interactive qui devient un input de texte
+interface Input3DProps {
+    position: [number, number, number];
+    placeholder: string;
+    value: string;
+    onChange: (value: string) => void;
+    fieldName: keyof ContactFormData;
+    isMultiline?: boolean;
 }
 export default MemoizedContact;
