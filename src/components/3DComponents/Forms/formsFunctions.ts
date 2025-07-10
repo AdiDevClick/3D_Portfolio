@@ -1,5 +1,7 @@
 import { emailInputRegex, phoneRegex } from '@/configs/formHandler.config';
 import { wait } from '@/functions/promises';
+import { ThreeEvent } from '@react-three/fiber';
+import { NavigateFunction } from 'react-router';
 
 /**
  * Saves each type change in the input field
@@ -199,4 +201,31 @@ export function checkThisFormValidity(formData) {
     }
 
     return { isValid: isValid, message: message };
+}
+
+/**
+ * Creates a form when the envelope icon is clicked.
+ *
+ * @description This function navigates to the contact form page and sets the form as active.
+ * - If already active or the current path is '/contact/form', it does nothing.
+ *
+ * @param e - Mouse click Event
+ * @param navigate - Function to navigate to a different route
+ * @param setFormActive - Function to set the form active state
+ * @param isFormActive - Boolean indicating if the form is currently active
+ */
+export function createForm({
+    e,
+    navigate,
+    setFormActive,
+    isFormActive,
+}: {
+    e: ThreeEvent<MouseEvent>;
+    navigate: NavigateFunction;
+    setFormActive: (active: boolean) => void;
+    isFormActive: boolean;
+}) {
+    e.stopPropagation();
+    if (window.location.pathname !== '/contact/form') navigate('/contact/form');
+    if (!isFormActive) setFormActive(true);
 }
