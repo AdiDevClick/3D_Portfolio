@@ -1,0 +1,27 @@
+[
+    {
+        "position": [-1, 0.4, 0],
+        "name": "number",
+        "type": "text",
+        "placeholder": "Saisissez votre numéro de téléphone (optionnel)"
+    },
+    {
+        "position": [-1, -0.1, 0],
+        "name": "name",
+        "type": "text",
+        "placeholder": "Saisissez votre nom"
+    },
+    {
+        "position": [1, -0.1, 0],
+        "name": "email",
+        "type": "email",
+        "placeholder": "Saisissez votre email"
+    },
+    {
+        "position": [0, -0.8, 0],
+        "name": "message",
+        "type": "textarea",
+        "isMultiline": true,
+        "placeholder": "Votre message"
+    }
+]
