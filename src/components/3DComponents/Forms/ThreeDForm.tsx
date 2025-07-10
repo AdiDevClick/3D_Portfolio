@@ -55,7 +55,7 @@ export function ThreeDForm() {
     return (
         <group rotation={[0, 3.15, 0]} position={[0, 0, -0.8]}>
             <Html>
-                <form ref={formRef}></form>
+                <form className="html-input-container" ref={formRef}></form>
             </Html>
 
             <Text
@@ -66,7 +66,7 @@ export function ThreeDForm() {
                 anchorY="middle"
                 fontWeight="bold"
             >
-                🎯 Formulaire de Contact 3D
+                Formulaire de Contact 3D
             </Text>
 
             <Text
