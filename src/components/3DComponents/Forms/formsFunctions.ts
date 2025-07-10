@@ -1,3 +1,6 @@
+import { emailInputRegex, phoneRegex } from '@/configs/formHandler.config';
+import { wait } from '@/functions/promises';
+
 /**
  * Saves each type change in the input field
  * in the formData state.
@@ -16,13 +19,21 @@ export function handleChange({ e, ...props }) {
 /**
  * Deactivate the input field if not focused
  *
- * @param e - The change event
- * @param onChange - Function to handle the change event
+ * @description This will trim the value and update the formData state on blur.
+ *
+ * @param e - The onChange event
  * @param setFocused - Function to set the focused state
+ * @param setIsEditing - Function to set the editing state
+ * @param setFormData - Function to update the form data state
  */
 export function handleBlur({ e, ...props }) {
     e.preventDefault();
     e.stopPropagation();
+    const trimedValue = e.target.value.trim();
+    props.setFormData((prev) => ({
+        ...prev,
+        [e.target.name]: trimedValue,
+    }));
     props.setIsEditing(false);
     props.setFocused(false);
 }
@@ -81,16 +92,55 @@ export function handleClick({ e, ...props }) {
  * @param e - The submit event
  * @param formData - The form data state
  */
-export function handleSubmit({ e, formData, isSubmitting }) {
-    if (!isSubmitting) return;
-    e.stopPropagation();
+export async function handleSubmit({
+    e,
+    formData,
+    isSubmitting,
+    retry = 3,
+    ...props
+}) {
+    // if (isSubmitting) return;
+    const { isFormValid, setIsSubmitting, setFormData } = props;
+    console.log(setFormData);
 
+    e.stopPropagation();
+    if (isFormValid.isValid) {
+        try {
+            setIsSubmitting(true);
+
+            console.log(formData.retry);
+            await wait(3000); // Simulate a network request
+            console.log('React state:', formData, e);
+            throw new Error(`Submission failed : force an error`);
+            setIsSubmitting(false);
+        } catch (error) {
+            if (retry > 0) {
+                console.log(
+                    `Retrying form submission... (${retry} attempts left)`
+                );
+                console.log(formData.retry, retry);
+
+                setFormData((prev) => ({
+                    ...prev,
+                    retry: retry,
+                }));
+                return handleSubmit({
+                    e,
+                    formData,
+                    isSubmitting,
+                    retry: retry - 1,
+                    ...props,
+                });
+            }
+            setIsSubmitting(false);
+            throw new Error(`Error during form submission: ${error}`);
+        }
+    }
     // Use FormData to get the values
     // const data = new FormData(formData);
     // const values = Object.fromEntries(formData);
 
     // console.log('Form data submitted:', values);
-    console.log('React state:', formData, e);
 
     // Reset the form data state
     // setFormData({
@@ -100,22 +150,47 @@ export function handleSubmit({ e, formData, isSubmitting }) {
     // });
 }
 
+const notToCheck = ['number', 'retry'];
+const errorArr = [];
+/**
+ * Check the validity of the form data
+ *
+ * @description This function uses the errorArr as a global just above.
+ *
+ * @param formData - The form data state
+ */
 export function checkThisFormValidity(formData) {
-    // console.log(formData);
-    let isValid = false;
+    errorArr.length = 0;
+    let isValid = null;
     let message = 'This form is not valid';
+
     for (let [key, value] of Object.entries(formData)) {
-        console.log('key : ', key, 'value : ', value);
-        // const newValue = value.trim();
-        // console.log('Ma value est trimed : ', newValue);
-        if (value === '' || value === undefined) {
-            console.warn(`Field ${key} is empty or undefined.`);
-            return false; // Return false if any field is empty
+        value = value.toString().trim();
+        if (
+            (value === '' || value === undefined) &&
+            !notToCheck.includes(key)
+        ) {
+            errorArr.push(`Field ${key} is empty.`);
         }
-        // console.log(key, formData[key]);
-        // if (formData[key] === '' || formData[key] === undefined) {
-        //     return false; // Return false if any field is empty
-        // }
+
+        if (value !== '') {
+            if (key === 'email' && !emailInputRegex.test(value)) {
+                errorArr.push(`Email is not valid.`);
+            }
+
+            if (key === 'number' && !phoneRegex.test(value)) {
+                errorArr.push(`Phone number ${value} is not valid.`);
+            }
+        }
     }
-    return { isValid: true, message: 'This form is valid' };
+
+    if (errorArr.length > 0) {
+        message = errorArr.join('\n');
+        isValid = false;
+    } else {
+        isValid = true;
+        message = 'Form is valid';
+    }
+
+    return { isValid: isValid, message: message };
 }
