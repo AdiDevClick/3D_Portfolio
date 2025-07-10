@@ -616,6 +616,7 @@ function ContactForm3D() {
         number: '',
         retry: 0,
         success: false,
+        failed: false,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
@@ -721,6 +722,17 @@ function ContactForm3D() {
                     anchorY="middle"
                 >
                     Message envoyé avec succès !
+                </Text>
+            )}
+            {formData.failed && (
+                <Text
+                    position={[0, -2, 0]}
+                    fontSize={0.06}
+                    color="#dc3545"
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    Échec de l'envoi du message. Veuillez réessayer.
                 </Text>
             )}
         </group>
