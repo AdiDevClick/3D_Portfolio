@@ -99,27 +99,28 @@ export async function handleSubmit({
     retry = 3,
     ...props
 }) {
-    // if (isSubmitting) return;
     const { isFormValid, setIsSubmitting, setFormData } = props;
-    console.log(setFormData);
 
     e.stopPropagation();
     if (isFormValid.isValid) {
         try {
+            setFormData((prev) => ({ ...prev, success: false, failed: false }));
             setIsSubmitting(true);
 
-            console.log(formData.retry);
-            await wait(3000); // Simulate a network request
-            console.log('React state:', formData, e);
-            throw new Error(`Submission failed : force an error`);
+            await wait(3000);
+            // if (!response.ok)
+            // throw new Error(`Submission failed : force an error`);
+            setFormData(() => ({
+                name: '',
+                email: '',
+                message: '',
+                retry: 0,
+                number: '',
+                success: true,
+            }));
             setIsSubmitting(false);
         } catch (error) {
             if (retry > 0) {
-                console.log(
-                    `Retrying form submission... (${retry} attempts left)`
-                );
-                console.log(formData.retry, retry);
-
                 setFormData((prev) => ({
                     ...prev,
                     retry: retry,
@@ -132,6 +133,11 @@ export async function handleSubmit({
                     ...props,
                 });
             }
+            setFormData((prev) => ({
+                ...prev,
+                failed: true,
+                success: false,
+            }));
             setIsSubmitting(false);
             throw new Error(`Error during form submission: ${error}`);
         }
