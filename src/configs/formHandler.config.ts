@@ -2,8 +2,14 @@
  * Email error : Can only be email@email.co
  */
 export const emailInputRegex = new RegExp(
-    '([a-z0-9A-Z._-]+)@([a-z0-9A-Z_-]+)\\.([a-z.]{2,6})$'
+    '([a-z0-9A-Z._-]+)@([a-z0-9A-Z_-]+)\\.([a-zA-Z.]{2,6})$'
 );
+
+/**
+ * Phone number regex
+ * Allows numbers, spaces, and an optional leading plus sign.
+ */
+export const phoneRegex = /^\+?[0-9\s]+$/;
 
 /**
  * Email inputs error
