@@ -125,8 +125,8 @@
 .html-input-container {
     /* Temporairement visible pour debug */
     position: absolute;
-    left: 0;
-    top: 0;
+    background-color: #007bff;
+    overflow: hidden;
     z-index: 1000;
 }
 
@@ -134,22 +134,20 @@
 .hidden-textarea {
     /* Temporairement visible pour debug */
     opacity: 1;
-    position: relative;
+    position: absolute;
     width: 200px;
     height: 30px;
-    border: 2px solid red;
     outline: none;
     background: white;
     color: black;
-    pointer-events: auto;
 }
 
 /* Styles pour le formulaire 3D */
 .hidden-form {
     position: relative;
-    // left: -9999px;
-    // top: -9999px;
-    opacity: 1;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
     pointer-events: none;
 }
 
