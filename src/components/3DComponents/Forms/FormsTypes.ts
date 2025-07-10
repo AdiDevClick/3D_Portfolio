@@ -16,3 +16,28 @@ export type formState = {
     value: string;
     setValue: (value: string) => void;
 };
+
+export interface Button3DProps {
+    position: [number, number, number];
+    onClick: () => void;
+    disabled?: boolean;
+}
+
+export interface ContactFormData {
+    name: string;
+    email: string;
+    message: string;
+    number?: string;
+    retry: number;
+    success: boolean;
+    failed: boolean;
+}
+
+export interface Input3DProps {
+    position: [number, number, number];
+    placeholder: string;
+    value: string;
+    onChange: (value: string) => void;
+    fieldName: keyof ContactFormData;
+    isMultiline?: boolean;
+}
