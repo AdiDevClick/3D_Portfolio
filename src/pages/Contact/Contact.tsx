@@ -58,8 +58,12 @@ import {
 import '@css/Contact.scss';
 import { useControls } from 'leva';
 import { HtmlContainer } from '@/components/3DComponents/Html/HtmlContainer';
-import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import {
+    NavigateFunction,
+    useLocation,
+    useNavigate,
+    useParams,
+} from 'react-router';
 import { Title } from '@/components/3DComponents/Title/Title';
 import { ThreeDForm } from '@/components/3DComponents/Forms/ThreeDForm';
 import { ThreeDFormV2 } from '@/components/3DComponents/Forms/ThreeDFormV2';
@@ -376,7 +380,9 @@ const MemoizedContact = memo(function Contact({
             <mesh
                 ref={envelopeRef}
                 position={[-2.2, 0, 0]}
-                onClick={(e) => createForm({ e, navigate, setFormActive })}
+                onClick={(e) =>
+                    createForm({ e, navigate, setFormActive, isFormActive })
+                }
             >
                 <RoundedBox args={[3, 0.5, 0.5]}>
                     <meshStandardMaterial color="#f3f3f3" />
@@ -570,19 +576,25 @@ function Button3D({ position, disabled = false, ...props }: Button3DProps) {
 }
 const inputs = [
     {
-        position: [0, 0.5, 0],
+        position: [-1, 0.4, 0],
+        name: 'number',
+        type: 'text',
+        placeholder: 'Saisissez votre numéro de téléphone (optionnel)',
+    },
+    {
+        position: [-1, -0.1, 0],
         name: 'name',
         type: 'text',
         placeholder: 'Saisissez votre nom',
     },
     {
-        position: [0, 0, 0],
+        position: [1, -0.1, 0],
         name: 'email',
         type: 'email',
         placeholder: 'Saisissez votre email',
     },
     {
-        position: [0, -0.7, 0],
+        position: [0, -0.8, 0],
         name: 'message',
         type: 'textarea',
         isMultiline: true,
@@ -592,25 +604,30 @@ const inputs = [
 
 let eventProps = {};
 const formEvents = {
+    // ThreeDInput events
     onChange: (e) => handleChange({ e, ...eventProps }),
     onKeyDown: (e) => handleKeyDown({ e }),
+    // onClick is overridden by the ThreeDInput component
+    // It will only be called in the Button3D component
     onClick: (e) => handleSubmit({ e, ...eventProps }),
 };
 
 /**
  * 3D Form Component
  *
- * @deprecated This generates forms using variables.
+ * @Description Important events are created in the formEvents object just above.
+ * Some events for the ThreeDInput (onClick, onPointerOver,onPointerOut) are hard coded in the ThreeDInput component.
  */
 function ContactForm3D() {
     const [formData, setFormData] = useState<ContactFormData>({
         name: '',
         email: '',
         message: '',
+        number: '',
+        retry: 0,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
-    eventProps = { setFormData, formData, isSubmitting };
 
     // Soumission du formulaire
     // const handleSubmit = useCallback(async () => {
@@ -637,7 +654,14 @@ function ContactForm3D() {
     // Validation du formulaire
     // const isFormValid = formData.name && formData.email && formData.message;
     const isFormValid = checkThisFormValidity(formData);
-    console.log(isFormValid, 'isFormValid');
+    eventProps = {
+        setFormData,
+        formData,
+        isSubmitting,
+        setIsSubmitting,
+        isFormValid,
+    };
+    console.log(isSubmitting, 'isSubmitting');
     return (
         <group rotation={[0, 3.15, 0]} position={[0, 0, -0.8]}>
             <Html>
@@ -667,22 +691,21 @@ function ContactForm3D() {
                 Cliquez sur les boîtes pour saisir vos informations
             </Text>
 
-            {inputs.map((input, index) => {
-                return (
-                    <ThreeDInput
-                        key={`input-${index}`}
-                        {...input}
-                        value={formData[input.name]}
-                        formRef={formRef}
-                        {...formEvents}
-                    />
-                );
-            })}
+            {inputs.map((input, index) => (
+                <ThreeDInput
+                    key={`input-${index}`}
+                    {...input}
+                    value={formData[input.name]}
+                    formRef={formRef}
+                    setFormData={setFormData}
+                    {...formEvents}
+                />
+            ))}
 
             {/* Bouton d'envoi */}
             <Button3D
                 position={[0, -1.5, 0]}
-                disabled={!isFormValid}
+                disabled={!isFormValid.isValid}
                 {...formEvents}
                 // disabled={!isFormValid || isSubmitting}
             />
@@ -690,13 +713,15 @@ function ContactForm3D() {
             {/* Indicateur de chargement */}
             {isSubmitting && (
                 <Text
-                    position={[0, -1.5, 0]}
+                    position={[0, -2, 0]}
                     fontSize={0.06}
                     color="#007bff"
                     anchorX="center"
                     anchorY="middle"
                 >
-                    Envoi en cours...
+                    {formData.retry > 0
+                        ? `Erreur... Nouvelle tentative en cours... (${formData.retry})`
+                        : 'Envoi en cours...'}
                 </Text>
             )}
         </group>
@@ -784,18 +809,31 @@ function Rig({
     return null;
 }
 
+/**
+ * Creates a form when the envelope icon is clicked.
+ *
+ * @description This function navigates to the contact form page and sets the form as active.
+ * - If already active or the current path is '/contact/form', it does nothing.
+ *
+ * @param e - Mouse click Event
+ * @param navigate - Function to navigate to a different route
+ * @param setFormActive - Function to set the form active state
+ * @param isFormActive - Boolean indicating if the form is currently active
+ */
 export function createForm({
     e,
     navigate,
     setFormActive,
+    isFormActive,
 }: {
     e: ThreeEvent<MouseEvent>;
-    navigate: any;
+    navigate: NavigateFunction;
+    setFormActive: (active: boolean) => void;
+    isFormActive: boolean;
 }) {
     e.stopPropagation();
-    navigate('/contact/form');
-    setFormActive(true);
-    console.log('createForm called', e);
+    if (window.location.pathname !== '/contact/form') navigate('/contact/form');
+    if (!isFormActive) setFormActive(true);
 }
 
 interface Button3DProps {
@@ -809,6 +847,7 @@ interface ContactFormData {
     name: string;
     email: string;
     message: string;
+    number?: string;
 }
 
 // Composant Input3D - Une boîte 3D interactive qui devient un input de texte
