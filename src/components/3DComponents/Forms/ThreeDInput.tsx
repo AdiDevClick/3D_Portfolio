@@ -25,6 +25,7 @@ export function ThreeDInput({
 
     // const meshRef = useRef<Mesh>(null!);
     const inputRef = useRef<HTMLInputElement>(null!);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null!);
 
     const functionProps = {
         setFormData: props.setFormData,
@@ -32,7 +33,7 @@ export function ThreeDInput({
         setIsEditing,
         isEditing,
         focused,
-        inputRef,
+        inputRef: isMultiline ? textAreaRef : inputRef,
     };
 
     const getColor = () => {
@@ -111,7 +112,7 @@ export function ThreeDInput({
                         />
                     ) : (
                         <textarea
-                            ref={inputRef}
+                            ref={textAreaRef}
                             value={value}
                             onBlur={(e) => handleBlur({ e, ...functionProps })}
                             placeholder={placeholder}
