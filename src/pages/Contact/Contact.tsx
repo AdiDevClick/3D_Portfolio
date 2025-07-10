@@ -533,16 +533,6 @@ function Button3D({ position, disabled = false, ...props }: Button3DProps) {
     const [hovered, setHovered] = useState(false);
     const meshRef = useRef<Mesh>(null);
 
-    // const handleClick = useCallback(
-    //     (e: any) => {
-    //         e.stopPropagation();
-    //         if (!disabled) {
-    //             onClick();
-    //         }
-    //     },
-    //     [onClick, disabled]
-    // );
-
     return (
         <group position={position}>
             <mesh
@@ -556,7 +546,7 @@ function Button3D({ position, disabled = false, ...props }: Button3DProps) {
                     color={
                         disabled ? '#6c757d' : hovered ? '#28a745' : '#5cb85c'
                     }
-                    transparent
+                    // transparent
                     opacity={disabled ? 0.5 : 0.9}
                     emissive={hovered && !disabled ? '#0a4015' : '#000'}
                 />
@@ -625,6 +615,7 @@ function ContactForm3D() {
         message: '',
         number: '',
         retry: 0,
+        success: false,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
@@ -661,7 +652,7 @@ function ContactForm3D() {
         setIsSubmitting,
         isFormValid,
     };
-    console.log(isSubmitting, 'isSubmitting');
+
     return (
         <group rotation={[0, 3.15, 0]} position={[0, 0, -0.8]}>
             <Html>
@@ -702,15 +693,12 @@ function ContactForm3D() {
                 />
             ))}
 
-            {/* Bouton d'envoi */}
             <Button3D
                 position={[0, -1.5, 0]}
                 disabled={!isFormValid.isValid}
                 {...formEvents}
-                // disabled={!isFormValid || isSubmitting}
             />
 
-            {/* Indicateur de chargement */}
             {isSubmitting && (
                 <Text
                     position={[0, -2, 0]}
@@ -722,6 +710,17 @@ function ContactForm3D() {
                     {formData.retry > 0
                         ? `Erreur... Nouvelle tentative en cours... (${formData.retry})`
                         : 'Envoi en cours...'}
+                </Text>
+            )}
+            {formData.success && (
+                <Text
+                    position={[0, -2, 0]}
+                    fontSize={0.06}
+                    color="#28a745"
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    Message envoyé avec succès !
                 </Text>
             )}
         </group>
