@@ -553,7 +553,7 @@ function Button3D({ position, disabled = false, ...props }: Button3DProps) {
             </mesh>
             <Text
                 fontSize={0.08}
-                color="#ffffff"
+                color={disabled ? '#6c757d' : '#ffffff'}
                 anchorX="center"
                 anchorY="middle"
                 fontWeight="bold"
