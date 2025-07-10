@@ -175,6 +175,7 @@ const MemoizedContact = memo(function Contact({
     // Calcul de la dimension active pour la synchronisation des faces
     const activeTopSide = boxSize.z / (nodes.Cube?.scale.z || 1);
 
+    // Create a context for the portal
     const context = {
         contentHeight: contentHeight,
         contentWidth: contentWidth,
@@ -186,7 +187,6 @@ const MemoizedContact = memo(function Contact({
         navigate,
         portalRefs: portalRefs.current,
     };
-    // Create a context for the portal
 
     return (
         <group ref={groupRef} visible={isActive}>
