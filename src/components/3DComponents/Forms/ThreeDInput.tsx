@@ -27,6 +27,7 @@ export function ThreeDInput({
     const inputRef = useRef<HTMLInputElement>(null!);
 
     const functionProps = {
+        setFormData: props.setFormData,
         setFocused,
         setIsEditing,
         isEditing,
@@ -49,7 +50,13 @@ export function ThreeDInput({
                 onPointerOver={() => setFocused(true)}
                 onPointerOut={() => !isEditing && setFocused(false)}
             >
-                <boxGeometry args={[1.8, isMultiline ? 0.8 : 0.3, 0.05]} />
+                <boxGeometry
+                    args={[
+                        isMultiline ? 3.6 + 0.2 : 1.8,
+                        isMultiline ? 0.8 : 0.3,
+                        0.05,
+                    ]}
+                />
                 <meshStandardMaterial
                     color={getColor()}
                     // transparent
