@@ -7,14 +7,31 @@ import {
 import { ContactFormData } from '@/components/3DComponents/Forms/formsTypes';
 import { Button3D } from '@/components/3DComponents/Forms/ThreeDButton';
 import { ThreeDInput } from '@/components/3DComponents/Forms/ThreeDInput';
-import { Html, Text } from '@react-three/drei';
-import { useRef, useState } from 'react';
+import { Text } from '@react-three/drei';
+import { useState } from 'react';
 import formInputs from '@data/form-inputs.json';
+import { emailInputRegex, phoneRegex } from '@/configs/formHandler.config';
+import { ThreeDFormMessage } from '@/components/3DComponents/Forms/ThreeDFormMessage';
+
+/**
+ * Inputs configuration for the form
+ * This is imported from the form-inputs.json file
+ * and contains the inputs to be displayed in the form.
+ */
 
 const inputs = formInputs;
+
+/**
+ * Event properties to be passed to the form events
+ * This will be used in the formEvents object below
+ * and filled inside the ThreeDForm component
+ */
 let eventProps = {};
+
+/**
+ * ThreeDInput events for the form
+ */
 const formEvents = {
-    // ThreeDInput events
     onChange: (e) => handleChange({ e, ...eventProps }),
     onKeyDown: (e) => handleKeyDown({ e }),
     // onClick is overridden by the ThreeDInput component
@@ -23,12 +40,25 @@ const formEvents = {
 };
 
 /**
+ * Regex patterns for input validation
+ * This regroup all regex patterns from the formHandler.config file
+ */
+const regexArray = {
+    email: emailInputRegex,
+    number: phoneRegex,
+};
+
+/**
  * 3D Form Component
  *
  * @Description Important events are created in the formEvents object just above.
  * Some events for the ThreeDInput (onClick, onPointerOver,onPointerOut) are hard coded in the ThreeDInput component.
  */
-export function ThreeDForm() {
+export function ThreeDForm({
+    setIsFormActive,
+}: {
+    setIsFormActive?: (active: boolean) => void;
+}) {
     const [formData, setFormData] = useState<ContactFormData>({
         name: '',
         email: '',
@@ -39,11 +69,8 @@ export function ThreeDForm() {
         failed: false,
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const formRef = useRef<HTMLFormElement>(null);
-
-    // Validation du formulaire
-    // const isFormValid = formData.name && formData.email && formData.message;
     const isFormValid = checkThisFormValidity(formData);
+
     eventProps = {
         setFormData,
         formData,
@@ -54,16 +81,24 @@ export function ThreeDForm() {
 
     return (
         <group rotation={[0, 3.15, 0]} position={[0, 0, -0.8]}>
-            <Html>
-                <form className="html-input-container" ref={formRef}></form>
-            </Html>
+            {/* <Html>
+                <form className="hidden-form" ref={formRef}></form>
+            </Html> */}
+            <mesh
+                position={[2.1, 1.3, 0]}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setIsFormActive(false);
+                }}
+            >
+                <boxGeometry args={[0.2, 0.2, 0.08]} />
+                <meshBasicMaterial />
+            </mesh>
 
             <Text
                 position={[0, 1.2, 0]}
                 fontSize={0.12}
                 color="#333"
-                anchorX="center"
-                anchorY="middle"
                 fontWeight="bold"
             >
                 Formulaire de Contact 3D
@@ -73,8 +108,6 @@ export function ThreeDForm() {
                 position={[0, 1, 0]}
                 fontSize={0.06}
                 color="#666"
-                anchorX="center"
-                anchorY="middle"
                 maxWidth={2}
                 textAlign="center"
             >
@@ -86,53 +119,24 @@ export function ThreeDForm() {
                     key={`input-${index}`}
                     {...input}
                     value={formData[input.name]}
-                    formRef={formRef}
                     setFormData={setFormData}
+                    isValid={
+                        regexArray[input.name]
+                            ? regexArray[input.name].test(formData[input.name])
+                            : null
+                    }
                     {...formEvents}
                 />
             ))}
-
             <Button3D
                 position={[0, -1.5, 0]}
                 disabled={!isFormValid.isValid}
                 {...formEvents}
             />
-
-            {isSubmitting && (
-                <Text
-                    position={[0, -2, 0]}
-                    fontSize={0.06}
-                    color="#007bff"
-                    anchorX="center"
-                    anchorY="middle"
-                >
-                    {formData.retry > 0
-                        ? `Erreur... Nouvelle tentative en cours... (${formData.retry})`
-                        : 'Envoi en cours...'}
-                </Text>
-            )}
-            {formData.success && (
-                <Text
-                    position={[0, -2, 0]}
-                    fontSize={0.06}
-                    color="#28a745"
-                    anchorX="center"
-                    anchorY="middle"
-                >
-                    Message envoyé avec succès !
-                </Text>
-            )}
-            {formData.failed && (
-                <Text
-                    position={[0, -2, 0]}
-                    fontSize={0.06}
-                    color="#dc3545"
-                    anchorX="center"
-                    anchorY="middle"
-                >
-                    Échec de l'envoi du message. Veuillez réessayer.
-                </Text>
-            )}
+            <ThreeDFormMessage
+                formData={formData}
+                isSubmitting={isSubmitting}
+            />
         </group>
     );
 }
