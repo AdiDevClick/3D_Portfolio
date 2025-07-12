@@ -125,30 +125,27 @@
 .html-input-container {
     /* Temporairement visible pour debug */
     position: absolute;
-    background-color: #007bff;
-    overflow: hidden;
-    z-index: 1000;
+    opacity: 0;
+    z-index: -1;
 }
 
 .hidden-input,
 .hidden-textarea {
     /* Temporairement visible pour debug */
     opacity: 1;
-    position: absolute;
+    transform: translate3d(-40%, -20%, 0);
+    position: relative;
     width: 200px;
     height: 30px;
     outline: none;
-    background: white;
     color: black;
 }
 
 /* Styles pour le formulaire 3D */
 .hidden-form {
-    position: relative;
-    left: -9999px;
-    top: -9999px;
-    opacity: 0;
-    pointer-events: none;
+    position: absolute;
+    // opacity: 0;
+    overflow: hidden;
 }
 
 /* Styles pour ThreeDInputV2 - Version avec formulaire HTML */
