@@ -56,6 +56,7 @@ const regexArray = {
  */
 export function ThreeDForm({
     setIsFormActive,
+    navigate,
 }: {
     setIsFormActive?: (active: boolean) => void;
 }) {
@@ -89,6 +90,7 @@ export function ThreeDForm({
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsFormActive(false);
+                    navigate('/contact');
                 }}
             >
                 <boxGeometry args={[0.2, 0.2, 0.08]} />

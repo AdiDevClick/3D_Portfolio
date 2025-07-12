@@ -360,7 +360,12 @@ const MemoizedContact = memo(function Contact({
                     Ecrire un message
                 </Text>
             </mesh>
-            {isFormActive && <ThreeDForm setIsFormActive={setFormActive} />}
+            {isFormActive && (
+                <ThreeDForm
+                    setIsFormActive={setFormActive}
+                    navigate={navigate}
+                />
+            )}
         </group>
     );
 });
