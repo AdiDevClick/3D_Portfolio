@@ -44,6 +44,7 @@ export function handleBlur({ e, ...props }) {
  * Handle accessibility keys.
  *
  * @param e - The change event
+ * @param isMultiline - Whether the input is multiline/textarea
  */
 export function handleKeyDown({ e, isMultiline = false }) {
     isMultiline = e.target.type === 'textarea' || isMultiline;
@@ -139,23 +140,12 @@ export async function handleSubmit({
                 ...prev,
                 failed: true,
                 success: false,
+                retry: 0,
             }));
             setIsSubmitting(false);
             throw new Error(`Error during form submission: ${error}`);
         }
     }
-    // Use FormData to get the values
-    // const data = new FormData(formData);
-    // const values = Object.fromEntries(formData);
-
-    // console.log('Form data submitted:', values);
-
-    // Reset the form data state
-    // setFormData({
-    //     name: '',
-    //     email: '',
-    //     message: '',
-    // });
 }
 
 const notToCheck = ['number', 'retry'];
@@ -183,7 +173,7 @@ export function checkThisFormValidity(formData) {
 
         if (value !== '') {
             if (key === 'email' && !emailInputRegex.test(value)) {
-                errorArr.push(`Email is not valid.`);
+                errorArr.push('Email is not valid.');
             }
 
             if (key === 'number' && !phoneRegex.test(value)) {
