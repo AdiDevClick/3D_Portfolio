@@ -1,5 +1,5 @@
 import { Button3DProps } from '@/components/3DComponents/Forms/formsTypes';
-import { Text } from '@react-three/drei';
+import { Html, Text, useCursor } from '@react-three/drei';
 import { useRef, useState } from 'react';
 import { Mesh } from 'three';
 
@@ -20,6 +20,8 @@ export function Button3D({
 }: Button3DProps) {
     const [hovered, setHovered] = useState(false);
     const meshRef = useRef<Mesh>(null);
+
+    useCursor(hovered && !disabled);
 
     return (
         <group position={position}>
@@ -49,6 +51,13 @@ export function Button3D({
             >
                 Envoyer
             </Text>
+            {hovered && disabled && (
+                <Html position={[0, 0.5, 0]}>
+                    <div className="about__tooltip">
+                        Veuillez remplir le formulaire pour activer le bouton
+                    </div>
+                </Html>
+            )}
         </group>
     );
 }
