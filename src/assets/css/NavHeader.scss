@@ -72,7 +72,7 @@ header {
         transform: translate(calc(-100% + $buttonWidth));
     }
 
-    button {
+    .header__button {
         cursor: pointer;
         height: 100%;
         width: 50px;

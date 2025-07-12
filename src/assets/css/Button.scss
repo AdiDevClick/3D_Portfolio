@@ -1,0 +1,19 @@
+/**
+* Generic button style
+*/
+.button {
+    font-size: var(--fs-bigger-medium);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--dark-bg-color) 35%, transparent);
+    // outline: 1px solid color-mix(in oklab, var(--dark-bg-color) 35%, transparent);
+    display: flex;
+    overflow: hidden;
+    max-height: 30px;
+    gap: 10px;
+    border-radius: .75rem;
+    padding: 1.1rem;
+    background-color: var(--dark-bg-color);
+    // width: fit-content;
+    align-items: center;
+    color: white;
+    transition: scale 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
