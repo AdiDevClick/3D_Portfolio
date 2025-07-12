@@ -3,19 +3,22 @@
         "position": [-1, 0.4, 0],
         "name": "number",
         "type": "text",
-        "placeholder": "Saisissez votre numéro de téléphone (optionnel)"
+        "placeholder": "Saisissez votre numéro de téléphone (optionnel)",
+        "autoComplete": "tel"
     },
     {
         "position": [-1, -0.1, 0],
         "name": "name",
         "type": "text",
-        "placeholder": "Saisissez votre nom"
+        "placeholder": "Saisissez votre nom",
+        "autoComplete": "name"
     },
     {
         "position": [1, -0.1, 0],
         "name": "email",
         "type": "email",
-        "placeholder": "Saisissez votre email"
+        "placeholder": "Saisissez votre email",
+        "autoComplete": "email"
     },
     {
         "position": [0, -0.8, 0],
