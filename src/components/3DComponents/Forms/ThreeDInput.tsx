@@ -12,6 +12,7 @@ export function ThreeDInput({
     type = 'text',
     isMultiline = false,
     formRef,
+    isValid = true,
     ...props
 }: {
     position: any;
@@ -38,8 +39,9 @@ export function ThreeDInput({
 
     const getColor = () => {
         // if (error) return '#dc3545';
+        if (value && !focused && !isValid && isValid !== null) return '#dc3545';
         if (focused) return '#4a90e2';
-        if (value) return '#5cb85c';
+        if (value && (isValid || isValid === null)) return '#5cb85c';
         return '#6c757d';
     };
 
@@ -97,7 +99,7 @@ export function ThreeDInput({
                 <Html
                     position={[0, 0, 0]}
                     className="html-input-container"
-                    portal={formRef}
+                    // portal={formRef}
                 >
                     {!isMultiline ? (
                         <input
