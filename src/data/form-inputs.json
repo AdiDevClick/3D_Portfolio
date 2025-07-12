@@ -10,14 +10,14 @@
         "position": [-1, -0.1, 0],
         "name": "name",
         "type": "text",
-        "placeholder": "Saisissez votre nom",
+        "placeholder": "Saisissez votre nom*",
         "autoComplete": "name"
     },
     {
         "position": [1, -0.1, 0],
         "name": "email",
         "type": "email",
-        "placeholder": "Saisissez votre email",
+        "placeholder": "Saisissez votre email*",
         "autoComplete": "email"
     },
     {
@@ -25,6 +25,6 @@
         "name": "message",
         "type": "textarea",
         "isMultiline": true,
-        "placeholder": "Votre message"
+        "placeholder": "Votre message*"
     }
 ]
