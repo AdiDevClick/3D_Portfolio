@@ -110,7 +110,8 @@ const MemoizedContact = memo(function Contact({
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 
     useFrame((state, delta) => {
-        if (!groupRef.current || !iconsRef.current) return;
+        if (!groupRef.current || !iconsRef.current || !linkedInRef.current)
+            return;
         frameCountRef.current += 1;
 
         // Check if the objects are in the frustum
@@ -145,7 +146,7 @@ const MemoizedContact = memo(function Contact({
         animateItem({
             item: {
                 ...ANIM_SCALE_CONFIG_BASE,
-                ref: groupRef,
+                ref: linkedInRef,
                 effectOn: [scale, scale, scale],
             },
             isActive,
@@ -191,6 +192,7 @@ const MemoizedContact = memo(function Contact({
     return (
         <group ref={groupRef} visible={isActive}>
             <FloatingTitle
+                ref={linkedInRef}
                 position={[-2.2, 0, 0]}
                 text="Me contacter sur LinkedIn"
                 isClickable={true}
