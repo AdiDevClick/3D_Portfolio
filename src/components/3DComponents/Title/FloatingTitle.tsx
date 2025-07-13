@@ -39,10 +39,11 @@ const FloatingTitle = memo(function FloatingTitle({
         floatIntensity: Math.random(),
         floatingRange: [-0.1, 0.1] as [number, number],
     },
+    ref,
     ...props
 }: FloatingTitleProps) {
     return (
-        <group>
+        <group ref={ref}>
             <Float
                 name={props.name + '-float-container'}
                 rotation={[0, 3.164, 0]}
@@ -67,6 +68,7 @@ const FloatingTitle = memo(function FloatingTitle({
                         onPointerOver={props.onPointerOver}
                         onPointerOut={props.onPointerOut}
                         onClick={props.onClick}
+                        position={props.position}
                     />
                 )}
             </Float>
