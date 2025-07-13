@@ -45,6 +45,16 @@ export function ThreeDInput({
         return '#6c757d';
     };
 
+    const inputProps = {
+        value,
+        onBlur: (e) => handleBlur({ e, ...functionProps }),
+        placeholder: placeholder,
+        className: 'hidden-input',
+        autoFocus: true,
+        ...props,
+        onClick: (e) => e.stopPropagation(),
+    };
+
     return (
         <group position={position}>
             <mesh
@@ -66,6 +76,20 @@ export function ThreeDInput({
                     // opacity={0.8}
                     emissive={focused ? '#111' : '#000'}
                 />
+                {/* <RoundedBox
+                    args={[
+                        isMultiline ? 3.6 + 0.2 : 1.8,
+                        isMultiline ? 0.8 : 0.3,
+                        0.05,
+                    ]}
+                >
+                    <meshStandardMaterial
+                        color={getColor()}
+                        // transparent
+                        // opacity={0.8}
+                        emissive={focused ? '#111' : '#000'}
+                    />
+                </RoundedBox> */}
             </mesh>
 
             <Text
@@ -102,27 +126,9 @@ export function ThreeDInput({
                     // portal={formRef}
                 >
                     {!isMultiline ? (
-                        <input
-                            ref={inputRef}
-                            value={value}
-                            onBlur={(e) => handleBlur({ e, ...functionProps })}
-                            placeholder={placeholder}
-                            className="hidden-input"
-                            autoFocus
-                            {...props}
-                            onClick={(e) => e.stopPropagation()}
-                        />
+                        <input ref={inputRef} {...inputProps} />
                     ) : (
-                        <textarea
-                            ref={textAreaRef}
-                            value={value}
-                            onBlur={(e) => handleBlur({ e, ...functionProps })}
-                            placeholder={placeholder}
-                            className="hidden-input"
-                            autoFocus
-                            {...props}
-                            onClick={(e) => e.stopPropagation()}
-                        />
+                        <textarea ref={textAreaRef} {...inputProps} />
                     )}
                 </Html>
             )}
