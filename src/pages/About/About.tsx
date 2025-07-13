@@ -369,7 +369,7 @@ const MemoizedAbout = memo(function About({
                                             fontWeight={700}
                                             maxWidth={
                                                 isMobile
-                                                    ? contentWidth - 0.7
+                                                    ? contentWidth - 0.4
                                                     : contentWidth / 2
                                             }
                                             font={importedNormalFont}
@@ -386,7 +386,6 @@ const MemoizedAbout = memo(function About({
             </group>
 
             <ContactIconsContainer
-                // key={`about-icons`}
                 ref={iconsRef}
                 scalar={generalScaleX}
                 isMobile={isMobile}
