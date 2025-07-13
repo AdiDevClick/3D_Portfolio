@@ -102,7 +102,11 @@ export function Title({
 
     return (
         <Center ref={actualRef} name={name} {...props}>
-            <mesh scale={0.008 * scalar} material={metalBlack}>
+            <mesh
+                name={`title-mesh-${name}`}
+                scale={0.008 * scalar}
+                material={metalBlack}
+            >
                 <textBufferGeometry args={geometryConfig} />
             </mesh>
         </Center>
