@@ -37,20 +37,13 @@ import '@css/Contact.scss';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { ThreeDForm } from '@/components/3DComponents/Forms/ThreeDForm';
 import { createForm } from '@/components/3DComponents/Forms/formsFunctions';
+import {
+    ANIM_POSITION_CONFIG_BASE,
+    ANIM_SCALE_CONFIG_BASE,
+} from '@/configs/easingAnimation.confg';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentIconsPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-
-const ANIM_CONFIG_BASE = {
-    animationType: easing.damp3,
-    time: 0.3,
-    type: 'position' as const,
-};
-const ANIM_SCALE_CONFIG_BASE = {
-    animationType: easing.damp3,
-    time: 0.2,
-    type: 'scale' as const,
-};
 
 export const portalContext = createContext<{
     contentHeight: number;
@@ -75,6 +68,7 @@ const MemoizedContact = memo(function Contact({
     const iconsRef = useRef<Group>(null);
     const contentRef = useRef<HTMLDivElement>(null!);
     const boxRef = useRef<Mesh>(null);
+    const formRef = useRef<Group>(null);
     const envelopeRef = useRef<Mesh>(null);
     const linkedInRef = useRef<Mesh>(null);
     const portalRefs = useRef<Map<string, React.RefObject<Mesh | null>>>(
@@ -124,9 +118,9 @@ const MemoizedContact = memo(function Contact({
 
         animateItem({
             item: {
-                ...ANIM_CONFIG_BASE,
+                ...ANIM_POSITION_CONFIG_BASE,
                 ref: groupRef,
-                effectOn: currentGroupPos,
+                vectorTarget: currentGroupPos,
                 time: 0.2,
             },
             isActive,
@@ -135,9 +129,9 @@ const MemoizedContact = memo(function Contact({
         });
         animateItem({
             item: {
-                ...ANIM_CONFIG_BASE,
+                ...ANIM_POSITION_CONFIG_BASE,
                 ref: iconsRef,
-                effectOn: currentIconsPos,
+                vectorTarget: currentIconsPos,
             },
             isActive,
             groupRef,
@@ -147,19 +141,32 @@ const MemoizedContact = memo(function Contact({
             item: {
                 ...ANIM_SCALE_CONFIG_BASE,
                 ref: linkedInRef,
-                effectOn: [scale, scale, scale],
+                vectorTarget: [scale, scale, scale],
             },
             isActive,
             groupRef,
             delta,
         });
-        // console.log(contentRef.current);
-        // item.animationType(
-        //     item.ref.current[item.type] as any,
-        //     item.effectOn as any,
-        //     item.time,
-        //     delta
-        // );
+        animateItem({
+            item: {
+                ...ANIM_POSITION_CONFIG_BASE,
+                ref: formRef,
+                vectorTarget: new Vector3(0, 0, -0.8),
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
+        animateItem({
+            item: {
+                ...ANIM_SCALE_CONFIG_BASE,
+                ref: formRef,
+                vectorTarget: [scale, scale, scale],
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
     });
     const boxSize = {
         x:
@@ -364,8 +371,11 @@ const MemoizedContact = memo(function Contact({
             </mesh>
             {isFormActive && (
                 <ThreeDForm
+                    ref={formRef}
                     setIsFormActive={setFormActive}
                     navigate={navigate}
+                    position={envelopeRef.current?.position}
+                    scale={0.1}
                 />
             )}
         </group>

@@ -7,17 +7,17 @@ import {
     DEFAULT_PROJECTS_POSITION_SETTINGS,
     DESKTOP_HTML_TITLE_POSITION_SETTINGS,
 } from '@/configs/3DCarousel.config';
-import { easing } from 'maath';
 import { frustumChecker } from '@/utils/frustrumChecker';
 import { AboutTypes } from '@/components/3DComponents/Html/HtmlPagesTypes';
 import FloatingTitle from '@/components/3DComponents/Title/FloatingTitle';
 import { GridLayout } from '@/components/3DComponents/Grid/GridLayout';
 import aboutText from '@data/about-texts.json';
-import { importedNormalFont } from '@/configs/3DFonts.config';
 import { useSpring, animated } from '@react-spring/three';
 import { ContactIconsContainer } from '@/components/3DComponents/Contact/ContactIconsContainer';
 import { animateItem } from '@/hooks/animation/useAnimateItems';
 import { useVirtualPageCount } from '@/hooks/pageScrolling/useVirtualPageCount';
+import { ANIM_POSITION_CONFIG_BASE } from '@/configs/easingAnimation.confg';
+import { AboutText } from '@/components/3DComponents/Text/AboutText';
 
 const GradientTextMaterial = shaderMaterial(
     {
@@ -66,12 +66,6 @@ const GradientTextMaterial = shaderMaterial(
 extend({ GradientTextMaterial });
 
 let isActive = false;
-
-const ANIM_CONFIG_BASE = {
-    animationType: easing.damp3,
-    time: 0.3,
-    type: 'position' as const,
-};
 
 /**
  * Contains the about page content/informations.
@@ -229,9 +223,9 @@ const MemoizedAbout = memo(function About({
 
         animateItem({
             item: {
-                ...ANIM_CONFIG_BASE,
+                ...ANIM_POSITION_CONFIG_BASE,
                 ref: contentRef,
-                effectOn: contentPositionRef.current,
+                vectorTarget: contentPositionRef.current,
             },
             isActive,
             groupRef: ref,
@@ -240,9 +234,9 @@ const MemoizedAbout = memo(function About({
 
         animateItem({
             item: {
-                ...ANIM_CONFIG_BASE,
+                ...ANIM_POSITION_CONFIG_BASE,
                 ref: titleRef,
-                effectOn: titlePositionRef.current,
+                vectorTarget: titlePositionRef.current,
             },
             isActive,
             groupRef: ref,
@@ -251,9 +245,9 @@ const MemoizedAbout = memo(function About({
 
         animateItem({
             item: {
-                ...ANIM_CONFIG_BASE,
+                ...ANIM_POSITION_CONFIG_BASE,
                 ref: iconsRef,
-                effectOn: iconsPositionRef.current,
+                vectorTarget: iconsPositionRef.current,
             },
             isActive,
             groupRef: ref,
@@ -317,41 +311,75 @@ const MemoizedAbout = memo(function About({
                             >
                                 <Suspense fallback={null}>
                                     {text.type === 'title' && (
-                                        <Text
-                                            // lineHeight={1.3}
+                                        <AboutText
                                             position={[-0.05, 0, -0.1]}
                                             fontSize={
                                                 (isMobile ? 0.6 : 0.5) *
                                                 generalScaleX
                                             }
-                                            outlineWidth={
-                                                isMobile ? 0.005 : 0.004
-                                            }
-                                            outlineColor="black"
-                                            // outlineColor="rgba(0, 0, 0, 0.01)"
-                                            anchorY="top"
-                                            textAlign="center"
-                                            anchorX="center"
-                                            maxWidth={contentWidth - 0.6}
-                                            // maxWidth={viewport.width - 0.5}
-                                            font={importedNormalFont}
-                                            userData={{ isWrappedText: true }}
                                         >
-                                            {text.text}
-                                            <gradientTextMaterial
-                                                ref={(ref) => {
-                                                    if (ref)
-                                                        materials.current.set(
-                                                            index,
-                                                            ref
-                                                        );
+                                            {/* <Text
+                                                // lineHeight={1.3}
+                                                position={[-0.05, 0, -0.1]}
+                                                fontSize={
+                                                    (isMobile ? 0.6 : 0.5) *
+                                                    generalScaleX
+                                                }
+                                                outlineWidth={
+                                                    isMobile ? 0.005 : 0.004
+                                                }
+                                                outlineColor="black"
+                                                anchorY="top"
+                                                textAlign="center"
+                                                anchorX="center"
+                                                maxWidth={contentWidth - 0.6}
+                                                // maxWidth={viewport.width - 0.5}
+                                                font={importedNormalFont}
+                                                userData={{
+                                                    isWrappedText: true,
                                                 }}
-                                            />
-                                        </Text>
+                                            >
+                                                {text.text}
+                                                <gradientTextMaterial
+                                                    ref={(ref) => {
+                                                        if (ref)
+                                                            materials.current.set(
+                                                                index,
+                                                                ref
+                                                            );
+                                                    }}
+                                                />
+                                            </Text> */}
+                                        </AboutText>
                                     )}
                                     {text.type === 'text' && (
-                                        <Text
-                                            lineHeight={isMobile ? 1.3 : 1.4}
+                                        // <Text
+                                        //     lineHeight={isMobile ? 1.3 : 1.4}
+                                        //     position={[0, 0, -0.3]}
+                                        //     fontSize={
+                                        //         (isMobile ? 0.4 : 0.2) *
+                                        //         generalScaleX
+                                        //     }
+                                        //     outlineWidth={
+                                        //         isMobile ? 0.002 : 0.002
+                                        //     }
+                                        //     outlineColor="black"
+                                        //     color={'black'}
+                                        //     textAlign="left"
+                                        //     anchorY="top"
+                                        //     anchorX="center"
+                                        //     fontWeight={700}
+                                        //     maxWidth={
+                                        //         isMobile
+                                        //             ? contentWidth - 0.4
+                                        //             : contentWidth / 2
+                                        //     }
+                                        //     font={importedNormalFont}
+                                        //     userData={{ isWrappedText: true }}
+                                        // >
+                                        //     {text.text}
+                                        // </Text>
+                                        <AboutText
                                             position={[0, 0, -0.3]}
                                             fontSize={
                                                 (isMobile ? 0.4 : 0.2) *
@@ -360,23 +388,15 @@ const MemoizedAbout = memo(function About({
                                             outlineWidth={
                                                 isMobile ? 0.002 : 0.002
                                             }
-                                            outlineColor="black"
-                                            // outlineColor="rgba(0, 0, 0, 0.01)"
-                                            color={'black'}
-                                            textAlign="left"
-                                            anchorY="top"
-                                            anchorX="center"
-                                            fontWeight={700}
                                             maxWidth={
                                                 isMobile
                                                     ? contentWidth - 0.4
                                                     : contentWidth / 2
                                             }
-                                            font={importedNormalFont}
-                                            userData={{ isWrappedText: true }}
+                                            isMobile={isMobile}
                                         >
                                             {text.text}
-                                        </Text>
+                                        </AboutText>
                                     )}
                                 </Suspense>
                             </animated.group>
