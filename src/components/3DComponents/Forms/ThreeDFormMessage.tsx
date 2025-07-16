@@ -1,3 +1,4 @@
+import { ThreeDFormMessageProps } from '@/components/3DComponents/Forms/formsTypes';
 import { Text } from '@react-three/drei';
 
 /**
@@ -8,7 +9,10 @@ import { Text } from '@react-three/drei';
  * @param formData - The form data state containing the message and status.
  * @param isSubmitting - Boolean indicating if the form is currently being submitted.
  */
-export function ThreeDFormMessage({ formData, isSubmitting }) {
+export function ThreeDFormMessage({
+    formData,
+    isSubmitting,
+}: ThreeDFormMessageProps) {
     const getMessage = () => {
         let message = '';
         let color = '#007bff';
