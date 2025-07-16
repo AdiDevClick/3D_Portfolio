@@ -1,3 +1,9 @@
+import {
+    handleBlurProps,
+    handleChangeProps,
+    handleKeyDownProps,
+    handleSubmitProps,
+} from '@/components/3DComponents/Forms/formsTypes';
 import { emailInputRegex, phoneRegex } from '@/configs/formHandler.config';
 import { wait } from '@/functions/promises';
 import { ThreeEvent } from '@react-three/fiber';
@@ -7,10 +13,10 @@ import { NavigateFunction } from 'react-router';
  * Saves each type change in the input field
  * in the formData state.
  *
- * @param e - The change event
+ * @param e - The onChange event
  * @param setFormData - Function to update the form data state
  */
-export function handleChange({ e, ...props }) {
+export function handleChange({ e, ...props }: handleChangeProps) {
     e.preventDefault();
     e.stopPropagation();
     const newValue = e.target.value;
@@ -23,18 +29,19 @@ export function handleChange({ e, ...props }) {
  *
  * @description This will trim the value and update the formData state on blur.
  *
- * @param e - The onChange event
+ * @param e - The onBlur event
  * @param setFocused - Function to set the focused state
  * @param setIsEditing - Function to set the editing state
  * @param setFormData - Function to update the form data state
  */
-export function handleBlur({ e, ...props }) {
+export function handleBlur({ e, ...props }: handleBlurProps) {
     e.preventDefault();
     e.stopPropagation();
-    const trimedValue = e.target.value.trim();
+    const target = e.currentTarget || e.target;
+    const trimedValue = target.value.trim();
     props.setFormData((prev) => ({
         ...prev,
-        [e.target.name]: trimedValue,
+        [target.name]: trimedValue,
     }));
     props.setIsEditing(false);
     props.setFocused(false);
@@ -46,8 +53,8 @@ export function handleBlur({ e, ...props }) {
  * @param e - The change event
  * @param isMultiline - Whether the input is multiline/textarea
  */
-export function handleKeyDown({ e, isMultiline = false }) {
-    isMultiline = e.target.type === 'textarea' || isMultiline;
+export function handleKeyDown({ e, isMultiline = false }: handleKeyDownProps) {
+    isMultiline = e.currentTarget.type === 'textarea' || isMultiline;
     if (
         (e.key === 'Enter' && !isMultiline) ||
         e.key === 'Tab' ||
@@ -67,11 +74,23 @@ export function handleKeyDown({ e, isMultiline = false }) {
  * @param setFocused - Function to set the focused state
  * @param setIsEditing - Function to set the editing state
  */
-export function handleClick({ e, ...props }) {
+export function handleClick({
+    e,
+    ...props
+}: {
+    e: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement>;
+    [key: string]: any;
+}) {
     e.stopPropagation();
 
     if (!props.isEditing) props.setIsEditing(true);
     if (!props.focused) props.setFocused(true);
+
+    const selectionStart = () => {
+        props.inputRef.current.focus();
+        props.inputRef.current.selectionStart =
+            props.inputRef.current.value.length;
+    };
 
     // Auto focus the last character in the input field
     if (!props.inputRef.current) {
@@ -79,14 +98,10 @@ export function handleClick({ e, ...props }) {
             if (!props.inputRef.current) {
                 return timer;
             }
-            props.inputRef.current.focus();
-            props.inputRef.current.selectionStart =
-                props.inputRef.current.value.length;
+            selectionStart();
         }, 5);
     } else {
-        props.inputRef.current.focus();
-        props.inputRef.current.selectionStart =
-            props.inputRef.current.value.length;
+        selectionStart();
     }
 }
 
@@ -101,7 +116,7 @@ export async function handleSubmit({
     isSubmitting,
     retry = 3,
     ...props
-}) {
+}: handleSubmitProps) {
     const { isFormValid, setIsSubmitting, setFormData } = props;
 
     e.stopPropagation();
