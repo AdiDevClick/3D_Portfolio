@@ -4,7 +4,13 @@ import {
     handleKeyDown,
     handleSubmit,
 } from '@/components/3DComponents/Forms/formsFunctions';
-import { ContactFormData } from '@/components/3DComponents/Forms/formsTypes';
+import {
+    ContactFormData,
+    eventTypeProps,
+    formEventsProps,
+    handleChangeProps,
+    ThreeDFormProps,
+} from '@/components/3DComponents/Forms/formsTypes';
 import { Button3D } from '@/components/3DComponents/Forms/ThreeDButton';
 import { ThreeDInput } from '@/components/3DComponents/Forms/ThreeDInput';
 import { Text } from '@react-three/drei';
@@ -18,7 +24,6 @@ import { ThreeDFormMessage } from '@/components/3DComponents/Forms/ThreeDFormMes
  * This is imported from the form-inputs.json file
  * and contains the inputs to be displayed in the form.
  */
-
 const inputs = formInputs;
 
 /**
@@ -26,13 +31,13 @@ const inputs = formInputs;
  * This will be used in the formEvents object below
  * and filled inside the ThreeDForm component
  */
-let eventProps = {};
+let eventProps: eventTypeProps = {};
 
 /**
  * ThreeDInput events for the form
  */
-const formEvents = {
-    onChange: (e) => handleChange({ e, ...eventProps }),
+const formEvents: formEventsProps = {
+    onChange: (e) => handleChange({ e, ...eventProps } as handleChangeProps),
     onKeyDown: (e) => handleKeyDown({ e }),
     // onClick is overridden by the ThreeDInput component
     // It will only be called in the Button3D component
@@ -57,9 +62,9 @@ const regexArray = {
 export function ThreeDForm({
     setIsFormActive,
     navigate,
-}: {
-    setIsFormActive?: (active: boolean) => void;
-}) {
+    position = [0, 0, -0.8],
+    ...props
+}: ThreeDFormProps) {
     const [formData, setFormData] = useState<ContactFormData>({
         name: '',
         email: '',
@@ -81,7 +86,7 @@ export function ThreeDForm({
     };
 
     return (
-        <group rotation={[0, 3.15, 0]} position={[0, 0, -0.8]}>
+        <group rotation={[0, 3.15, 0]} position={position} {...props}>
             {/* <Html>
                 <form className="hidden-form" ref={formRef}></form>
             </Html> */}
