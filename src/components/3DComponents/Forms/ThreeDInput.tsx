@@ -47,12 +47,12 @@ export function ThreeDInput({
 
     const inputProps = {
         value,
-        onBlur: (e) => handleBlur({ e, ...functionProps }),
+        onBlur: (e: MouseEvent) => handleBlur({ e, ...functionProps }),
         placeholder: placeholder,
         className: 'hidden-input',
         autoFocus: true,
         ...props,
-        onClick: (e) => e.stopPropagation(),
+        onClick: (e: MouseEvent) => e.stopPropagation(),
     };
 
     return (
