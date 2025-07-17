@@ -276,7 +276,6 @@ const MemoizedAbout = memo(function About({
                         <GridLayout
                             width={contentWidth ?? 0}
                             key={'about-' + index + '-grid'}
-                            // key={'about-' + index * Math.random() + '-grid'}
                             name={'about-' + index + '-grid'}
                             length={aboutText.length}
                             index={index}
@@ -288,16 +287,10 @@ const MemoizedAbout = memo(function About({
                                 // {...animation}
                                 {...useSpring({
                                     from: {
-                                        // transform:
-                                        // 'scale(0.1) translateY(-20px)',
-                                        // scale: 1,
-                                        // scale: 0.1,
                                         position: [-20, 10, -80],
                                         opacity: 0,
                                     },
                                     to: {
-                                        // transform: 'scale(1) translateY(0px)',
-                                        // scale: 1,
                                         position: [0, 0, 0],
                                         opacity: 1,
                                     },
@@ -317,68 +310,24 @@ const MemoizedAbout = memo(function About({
                                                 (isMobile ? 0.6 : 0.5) *
                                                 generalScaleX
                                             }
+                                            outlineWidth={
+                                                isMobile ? 0.005 : 0.004
+                                            }
+                                            maxWidth={contentWidth - 0.6}
                                         >
-                                            {/* <Text
-                                                // lineHeight={1.3}
-                                                position={[-0.05, 0, -0.1]}
-                                                fontSize={
-                                                    (isMobile ? 0.6 : 0.5) *
-                                                    generalScaleX
-                                                }
-                                                outlineWidth={
-                                                    isMobile ? 0.005 : 0.004
-                                                }
-                                                outlineColor="black"
-                                                anchorY="top"
-                                                textAlign="center"
-                                                anchorX="center"
-                                                maxWidth={contentWidth - 0.6}
-                                                // maxWidth={viewport.width - 0.5}
-                                                font={importedNormalFont}
-                                                userData={{
-                                                    isWrappedText: true,
+                                            {text.text}
+                                            <gradientTextMaterial
+                                                ref={(ref) => {
+                                                    if (ref)
+                                                        materials.current.set(
+                                                            index,
+                                                            ref
+                                                        );
                                                 }}
-                                            >
-                                                {text.text}
-                                                <gradientTextMaterial
-                                                    ref={(ref) => {
-                                                        if (ref)
-                                                            materials.current.set(
-                                                                index,
-                                                                ref
-                                                            );
-                                                    }}
-                                                />
-                                            </Text> */}
+                                            />
                                         </AboutText>
                                     )}
                                     {text.type === 'text' && (
-                                        // <Text
-                                        //     lineHeight={isMobile ? 1.3 : 1.4}
-                                        //     position={[0, 0, -0.3]}
-                                        //     fontSize={
-                                        //         (isMobile ? 0.4 : 0.2) *
-                                        //         generalScaleX
-                                        //     }
-                                        //     outlineWidth={
-                                        //         isMobile ? 0.002 : 0.002
-                                        //     }
-                                        //     outlineColor="black"
-                                        //     color={'black'}
-                                        //     textAlign="left"
-                                        //     anchorY="top"
-                                        //     anchorX="center"
-                                        //     fontWeight={700}
-                                        //     maxWidth={
-                                        //         isMobile
-                                        //             ? contentWidth - 0.4
-                                        //             : contentWidth / 2
-                                        //     }
-                                        //     font={importedNormalFont}
-                                        //     userData={{ isWrappedText: true }}
-                                        // >
-                                        //     {text.text}
-                                        // </Text>
                                         <AboutText
                                             position={[0, 0, -0.3]}
                                             fontSize={
@@ -394,6 +343,7 @@ const MemoizedAbout = memo(function About({
                                                     : contentWidth / 2
                                             }
                                             isMobile={isMobile}
+                                            lineHeight={isMobile ? 1.3 : 1.4}
                                         >
                                             {text.text}
                                         </AboutText>
