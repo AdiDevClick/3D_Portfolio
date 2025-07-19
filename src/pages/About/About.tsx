@@ -334,15 +334,11 @@ const MemoizedAbout = memo(function About({
                                                 (isMobile ? 0.4 : 0.2) *
                                                 generalScaleX
                                             }
-                                            outlineWidth={
-                                                isMobile ? 0.002 : 0.002
-                                            }
                                             maxWidth={
                                                 isMobile
                                                     ? contentWidth - 0.4
                                                     : contentWidth / 2
                                             }
-                                            isMobile={isMobile}
                                             lineHeight={isMobile ? 1.3 : 1.4}
                                         >
                                             {text.text}
