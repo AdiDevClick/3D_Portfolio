@@ -16,9 +16,7 @@ import {
     Environment,
     Html,
     MeshPortalMaterial,
-    RoundedBox,
     Stars,
-    Text,
     useCursor,
     useGLTF,
 } from '@react-three/drei';
@@ -36,11 +34,11 @@ import { DoubleSide, Group, Mesh, Vector3 } from 'three';
 import '@css/Contact.scss';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { ThreeDForm } from '@/components/3DComponents/Forms/ThreeDForm';
-import { createForm } from '@/components/3DComponents/Forms/formsFunctions';
 import {
     ANIM_POSITION_CONFIG_BASE,
     ANIM_SCALE_CONFIG_BASE,
 } from '@/configs/easingAnimation.confg';
+import { Envelop } from '@/components/3DComponents/Shapes/Envelop';
 
 let currentGroupPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentIconsPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
@@ -69,7 +67,7 @@ const MemoizedContact = memo(function Contact({
     const contentRef = useRef<HTMLDivElement>(null!);
     const boxRef = useRef<Mesh>(null);
     const formRef = useRef<Group>(null);
-    const envelopeRef = useRef<Mesh>(null);
+    const envelopRef = useRef<Mesh>(null);
     const linkedInRef = useRef<Mesh>(null);
     const portalRefs = useRef<Map<string, React.RefObject<Mesh | null>>>(
         new Map()
@@ -102,6 +100,19 @@ const MemoizedContact = memo(function Contact({
                   : DESKTOP_ICONS_MARGINS_POSITION_SETTINGS
           )
         : DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
+
+    const animateEnvelopPosition = () => {
+        if (!envelopRef.current) return;
+        const position = envelopRef.current.position.clone();
+        if (isFormActive) {
+            position.set(0, 0.2, -0.8);
+            if (envelopRef.current.position.x === 2) {
+                position.set(0, 2, -0.8);
+                // console.log(envelopRef.current.position, 'position');
+            }
+        }
+        return position;
+    };
 
     useFrame((state, delta) => {
         if (!groupRef.current || !iconsRef.current || !linkedInRef.current)
@@ -147,11 +158,13 @@ const MemoizedContact = memo(function Contact({
             groupRef,
             delta,
         });
+
         animateItem({
             item: {
                 ...ANIM_POSITION_CONFIG_BASE,
                 ref: formRef,
-                vectorTarget: new Vector3(0, 0, -0.8),
+                // vectorTarget: envelopRef.current?.position,
+                vectorTarget: animateEnvelopPosition(),
             },
             isActive,
             groupRef,
@@ -161,7 +174,19 @@ const MemoizedContact = memo(function Contact({
             item: {
                 ...ANIM_SCALE_CONFIG_BASE,
                 ref: formRef,
-                vectorTarget: [scale, scale, scale],
+                vectorTarget: [0.5, 0.5, 0.1],
+            },
+            isActive,
+            groupRef,
+            delta,
+        });
+        animateItem({
+            item: {
+                ...ANIM_POSITION_CONFIG_BASE,
+                ref: linkedInRef,
+                vectorTarget: isFormActive
+                    ? new Vector3(0, 0, 5)
+                    : new Vector3(0, 0, 0),
             },
             isActive,
             groupRef,
@@ -346,7 +371,7 @@ const MemoizedContact = memo(function Contact({
                 </Text>
             </mesh> */}
 
-            <mesh
+            {/* <mesh
                 ref={envelopeRef}
                 position={[-2.2, 0, 0]}
                 onClick={(e) =>
@@ -368,13 +393,21 @@ const MemoizedContact = memo(function Contact({
                 >
                     Ecrire un message
                 </Text>
-            </mesh>
+            </mesh> */}
+            <Envelop
+                ref={envelopRef}
+                navigate={navigate}
+                setFormActive={setFormActive}
+                isFormActive={isFormActive}
+                isActive={isActive}
+                groupRef={groupRef}
+            />
             {isFormActive && (
                 <ThreeDForm
                     ref={formRef}
                     setIsFormActive={setFormActive}
                     navigate={navigate}
-                    position={envelopeRef.current?.position}
+                    position={envelopRef.current?.position}
                     scale={0.1}
                 />
             )}
