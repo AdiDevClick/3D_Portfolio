@@ -1,10 +1,14 @@
 import { Text } from '@react-three/drei';
 import { importedNormalFont } from '@/configs/3DFonts.config';
+import { FallbackTextTypes } from '@/components/3DComponents/Title/TitlesTypes';
 
-export function AboutText({ children, isMobile, ...props }) {
+/**
+ * Component that will create text for the About Page
+ */
+export function AboutText({ children, ...props }: FallbackTextTypes) {
     return (
         <Text
-            outlineWidth={isMobile ? 0.005 : 0.004}
+            outlineWidth={0.002}
             outlineColor="black"
             anchorY="top"
             anchorX="center"
