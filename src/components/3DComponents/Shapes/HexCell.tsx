@@ -1,8 +1,8 @@
 import {
     cylinderGeometry,
     hexBlackMetalMaterial,
-} from '@/components/3DComponents/Forms/FormsMats';
-import { HexCellProps } from '@/components/3DComponents/Forms/FormsTypes';
+} from '@/components/3DComponents/Shapes/FormsMats';
+import { HexCellProps } from '@/components/3DComponents/Shapes/FormsTypes';
 
 /**
  * Creates a hexagonal cell component

@@ -95,6 +95,7 @@ export function Experience({ reducer }: ExperienceProps) {
         // camera.layers.enable(0);
         // Carousel layer
         // camera.layers.enable(2);
+        // camera.layers.enable(1);
         ref.current.smoothTime = 0.25;
         // cameraPositions.carousel.fov = isMobile
         //     ? CAMERA_FOV_MOBILE
@@ -343,7 +344,7 @@ export function Experience({ reducer }: ExperienceProps) {
     return (
         <>
             <directionalLight
-                castShadow={false}
+                castShadow={true}
                 intensity={0.8}
                 position={[10, 5, 3]}
                 shadow-mapSize={[2048, 2048]}

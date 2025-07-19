@@ -89,7 +89,12 @@ export function Header({ isMobile }: HeadersProps) {
             </nav>
             {/* )} */}
             {/* {!isMobile && ( */}
-            <Button ref={buttonRef} type="button" onClick={handleClick}>
+            <Button
+                className="header__button"
+                ref={buttonRef}
+                type="button"
+                onClick={handleClick}
+            >
                 {isOpen ? 'Open' : 'Close'}
             </Button>
             {/* )} */}

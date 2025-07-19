@@ -58,6 +58,7 @@ export default function App({
 
             {/* <Suspense fallback={null}> */}
             <Canvas
+                shadows
                 // shadows={{
                 //     enabled: true,
                 //     type: 'soft', // soft, basic, variance

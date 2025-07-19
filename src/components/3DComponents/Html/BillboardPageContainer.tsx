@@ -7,16 +7,18 @@ import {
 import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { easing } from 'maath';
-import { f } from 'node_modules/react-router/dist/development/route-data-5OzAzQtT.d.mts';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Group } from 'three';
 
 /**
  * PageContainer component
+ *
  * @description This component is used to create a container for the HTML content of a page.
  * The container will have a default .html-container class.
  * It will always face the camera
+ * By default, the content will be on the right side of the position 0 of the container
+ * If not needed, specify transform: translate(-50%); in the css of the content class
  *
  * @param pageName - Name of the page
  * @returns
@@ -35,6 +37,7 @@ export function BillboardPageContainer({
      */
     useEffect(() => {
         if (!groupRef.current) return;
+        console.log(location.pathname);
         location.pathname === pageName
             ? setActiveURL(true)
             : setActiveURL(false);

@@ -1,4 +1,4 @@
-import { HexCell } from '@/components/3DComponents/Forms/HexCell.tsx';
+import { HexCell } from '@/components/3DComponents/Shapes/HexCell.tsx';
 import { Center } from '@react-three/drei';
 
 /**

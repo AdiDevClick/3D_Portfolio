@@ -19,8 +19,8 @@ export function animateItem({
     if (!item.ref.current) return;
     if (item.ref.current.visible || isActive || groupRef?.current?.visible) {
         item.animationType(
-            item.ref.current[item.type] as any,
-            item.effectOn as any,
+            item.ref.current[item.animateProperty] as any,
+            item.vectorTarget as any,
             item.time,
             delta
         );

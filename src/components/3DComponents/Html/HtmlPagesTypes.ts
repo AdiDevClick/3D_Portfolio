@@ -14,6 +14,7 @@ export type AboutTypes = {
 
 export type HtmlContainerTypes = {
     reducer?: ReducerType;
+    ref?: React.RefObject<HTMLDivElement> | null;
     children: ReactNode;
     dynamicContent?: boolean;
     forceMeasure?: boolean;

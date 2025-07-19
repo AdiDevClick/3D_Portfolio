@@ -10,6 +10,9 @@ export function ClickableBox({ ...props }) {
     const floatRef = useCallback((node: Group) => {
         if (!node) return;
         let ancestorContent: Vector3 | undefined;
+
+        // Traverse ancestors to find the content size
+        // created by the grid component.
         node.traverseAncestors((ancestor) => {
             if (ancestor.name.includes('-grid')) {
                 ancestorContent = ancestor.userData.contentSize;
@@ -17,13 +20,16 @@ export function ClickableBox({ ...props }) {
         });
 
         const floatContainer = node.parent?.parent;
+
         if (floatContainer) {
+            // No ancestor content size found ? Calculate from floatContainer size.
             if (!ancestorContent) {
                 const box = sharedMatrices.box.setFromObject(floatContainer);
                 const contentSize = new Vector3();
                 box.getSize(contentSize);
                 node.scale.set(contentSize.x, contentSize.y, contentSize.z);
             } else {
+                // Use the ancestor content size to set the scale.
                 node.scale.set(
                     ancestorContent.x,
                     ancestorContent.y,

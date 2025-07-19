@@ -21,12 +21,15 @@ export function HtmlContainer({
     dynamicContent = false,
     forceMeasure = false,
     distanceFactor = 1,
+    ref,
     ...props
 }: HtmlContainerTypes) {
     const [scaleRatio, setScaleRatio] = useState(1);
     const [done, setDone] = useState(false);
 
     const htmlRef = useRef<HTMLDivElement>(null);
+    const actualRef = ref || htmlRef;
+
     const frameCountRef = useRef(0);
 
     // Scale animation
@@ -43,7 +46,7 @@ export function HtmlContainer({
     });
 
     useFrame(() => {
-        if (done || !htmlRef.current) return;
+        if (done || !actualRef.current) return;
         frameCountRef.current += 1;
         // Update every 20 frames or 200 on mobile
         if (
@@ -52,7 +55,7 @@ export function HtmlContainer({
             0
         ) {
             // if (frameCountRef.current % 50 === 0) {
-            measure(htmlRef.current, {
+            measure(actualRef.current, {
                 scaleRatio,
                 setScaleRatio,
                 done,
@@ -67,7 +70,7 @@ export function HtmlContainer({
      */
     useEffect(() => {
         if (dynamicContent || forceMeasure) {
-            htmlRef.current?.removeAttribute('style');
+            actualRef.current?.removeAttribute('style');
             setDone(false);
             frameCountRef.current = 0;
         }
@@ -76,7 +79,7 @@ export function HtmlContainer({
     return (
         <animated.group scale={springProps.scale}>
             <Html
-                ref={htmlRef}
+                ref={actualRef}
                 transform
                 distanceFactor={distanceFactor}
                 {...props}

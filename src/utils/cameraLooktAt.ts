@@ -18,8 +18,8 @@ export function cameraLookAt(
     currentCamera: CameraControlsImpl,
     animate = true
 ) {
+    if (!newCamPosition || !currentCamera) return;
     const { camera } = currentCamera;
-    if (!newCamPosition) return;
 
     if ('fov' in camera) {
         camera.fov = cameraPositions.fov;

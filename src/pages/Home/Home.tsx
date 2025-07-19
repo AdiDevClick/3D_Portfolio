@@ -13,6 +13,7 @@ import { ContactShadows } from '@react-three/drei';
 import { PlaceholderIcon } from '@/components/3DComponents/3DIcons/PlaceHolderIcon';
 import { animateItem } from '@/hooks/animation/useAnimateItems';
 import { useVirtualPageCount } from '@/hooks/pageScrolling/useVirtualPageCount';
+import { ANIM_POSITION_CONFIG_BASE } from '@/configs/easingAnimation.confg';
 
 type HomeTypes = {
     contentWidth: ReducerType['contentWidth'];
@@ -26,12 +27,6 @@ type HomeTypes = {
 
 let currentTitlePos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
 let currentStackPos = DEFAULT_PROJECTS_POSITION_SETTINGS.clone();
-
-const ANIM_CONFIG_BASE = {
-    animationType: easing.damp3,
-    time: 0.2,
-    type: 'position' as const,
-};
 
 const gridOptions = {
     columnsNumber: 3,
@@ -120,9 +115,9 @@ const MemoizedHome = memo(function Home({
 
         animateItem({
             item: {
-                ...ANIM_CONFIG_BASE,
+                ...ANIM_POSITION_CONFIG_BASE,
                 ref: stackRef,
-                effectOn: currentStackPos,
+                vectorTarget: currentStackPos,
             },
             isActive,
             groupRef: ref,
@@ -131,9 +126,9 @@ const MemoizedHome = memo(function Home({
 
         animateItem({
             item: {
-                ...ANIM_CONFIG_BASE,
+                ...ANIM_POSITION_CONFIG_BASE,
                 ref: titleRef,
-                effectOn: currentTitlePos,
+                vectorTarget: currentTitlePos,
             },
             isActive,
             groupRef: ref,

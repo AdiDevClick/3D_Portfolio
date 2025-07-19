@@ -12,9 +12,9 @@ export type EasingFunctionTypes = (
     delta: number
 ) => void;
 export type MaathEasingFunction =
-    | typeof easing.damp3 // ✅ Fonction spécifique
-    | typeof easing.damp2 // ✅ Fonction spécifique
-    | typeof easing.dampE // ✅ Fonction spécifique
+    | typeof easing.damp3
+    | typeof easing.damp2
+    | typeof easing.dampE
     | typeof easing.damp;
 /**
  * Configuration for a single animation item
@@ -24,10 +24,15 @@ export interface AnimationItemType {
     ref: RefObject<Group | null>;
 
     /** Type of animation to apply */
-    type: keyof Pick<Group, 'position' | 'scale' | 'rotation'>;
+    animateProperty: keyof Pick<Group, 'position' | 'scale' | 'rotation'>;
 
     /** Target position/scale/rotation to animate towards */
-    effectOn: Vector3 | [number, number, number] | number[] | Vector2 | Euler;
+    vectorTarget:
+        | Vector3
+        | [number, number, number]
+        | number[]
+        | Vector2
+        | Euler;
 
     /** Animation duration/damping time */
     time: number;
