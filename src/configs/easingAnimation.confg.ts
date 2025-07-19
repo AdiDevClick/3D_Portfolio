@@ -10,3 +10,9 @@ export const ANIM_SCALE_CONFIG_BASE = {
     time: 0.2,
     animateProperty: 'scale' as const,
 };
+
+export const ANIM_ROTATION_CONFIG_BASE = {
+    animationType: easing.damp3,
+    time: 0.3,
+    animateProperty: 'rotation' as const,
+};
